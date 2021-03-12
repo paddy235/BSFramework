@@ -1,0 +1,169 @@
+﻿@model IEnumerable<BSFramework.Application.Entity.Activity.HumanDangerEntity>
+@{
+    ViewBag.Title = "Template";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+<div class="main-content">
+    <div class="container-fluid">
+        @*<div class="title">
+                <a href="@Url.Action("Index")">
+                    <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+                    历史记录
+                </a>
+            </div>*@
+        <div class="bg-f5f8fe pd-20 my-body">
+            @using (Html.BeginForm("Template", "HumanDanger", FormMethod.Get))
+            {
+                <div class="form-inline">
+                    <div class="form-group">
+                        <label for="name">任务名</label>
+                        @Html.TextBox("name", string.Empty, new { @class = "form-control", style = "width:200px;" })
+                    </div>
+                    <div class="form-group">
+                        <label for="status">审核状态</label>
+                        @Html.DropDownList("status", null, new { @class = "form-control", style = "width:200px;" })
+                    </div>
+                    <a class="btn btn-default" onclick="fn$query()">查询</a>
+                    <a class="btn btn-default" onclick="fn$all()">全部</a>
+                    <div class="checkbox">
+                        <label>
+                            @Html.CheckBox("onlyMine") 只看待我审核的
+                        </label>
+                    </div>
+                </div>
+            }
+            <div>
+                <div>
+                    <table class="table text-center table-striped no-mg c-67748d">
+                        <thead>
+                            <tr>
+                                <th style="width:50px;">序号</th>
+                                <th>工作任务</th>
+                                <th>作业区域</th>
+                                <th style="width:200px;">作业性质类型</th>
+                                <th style="width:130px;">人身伤害风险</th>
+                                <th style="width:100px;">审批状态</th>
+                                <th style="width:180px;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ var idx = 1;}
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@Html.Raw(idx)</td>
+                                    <td>@Html.Raw(item.Task)</td>
+                                    <td>@Html.Raw(item.TaskArea)</td>
+                                    <td>@Html.Raw(item.TaskType)</td>
+                                    <td>@Html.Raw(item.DangerLevel)</td>
+                                    <td>@Html.Raw(item.StateDescription)</td>
+                                    <td>
+                                        <a class="c-orange" onclick="fn$view('@Html.Raw(item.HumanDangerId)');" style="color:orange;cursor:pointer;">查看</a>
+                                        @if (item.State == 1 && ViewBag.isApproveUser == true)
+                                        {
+                                            /**/
+                                            <a class="c-orange" onclick="fn$approve('@Html.Raw(item.HumanDangerId)');" style="color:orange;cursor:pointer;">审核</a>
+                                        }
+                                    </td>
+                                </tr>
+                                idx++;
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+                <div style="text-align:center;">
+                    <ul class="pagination" style="margin:0px auto;">
+                        @*@if ((int)ViewBag.current == 1)
+                            {
+                                <li class="disabled">
+                                    <a>首页</a>
+                                </li>
+                                <li class="disabled">
+                                    <a>上一页</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    @Html.ActionLink("首页", "Index", new { page = "1", pagesize = "15" })
+                                </li>
+                                <li>
+                                    @Html.ActionLink("上一页", "Index", new { page = ((int)ViewBag.current - 1).ToString(), pagesize = "15" })
+                                </li>
+                            }
+                            @for (int i = (ViewBag.current - 1) / 10 * 10; i < (Math.Ceiling((decimal)ViewBag.current / 10) * 10 > ViewBag.pages ? ViewBag.pages : Math.Ceiling((decimal)ViewBag.current / 10) * 10); i++)
+                            {
+                                <li class="@((i + 1) == ViewBag.current ? "active" : string.Empty)">
+                                    @Html.ActionLink((i + 1).ToString(), "Index", new { page = (i + 1).ToString(), pagesize = "15" })
+                                </li>
+                            }
+                            @if ((int)ViewBag.current == (int)ViewBag.pages || (int)ViewBag.pages == 0)
+                            {
+                                <li class="disabled">
+                                    <a>下一页</a>
+                                </li>
+                                <li class="disabled">
+                                    <a>末页</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    @Html.ActionLink("下一页", "Index", new { page = ((int)ViewBag.current + 1).ToString(), pagesize = "15" })
+                                </li>
+                                <li>
+                                    @Html.ActionLink("末页", "Index", new { page = ((int)ViewBag.pages).ToString(), pagesize = "15" })
+                                </li>
+                            }*@
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <footer class="main-footer">
+            武汉博晟安全技术股份有限公司   版权所有
+        </footer>
+    </div>
+</div>
+<script>
+    function fn$all() {
+        jQuery('#name').val('');
+        jQuery('#status').val('全部');
+        jQuery('form').submit();
+    }
+
+    function fn$query() {
+        jQuery('form').submit();
+    }
+
+    function fn$callback() {
+        setTimeout(function () {
+            layer.closeAll();
+            window.location.reload();
+        }, 200);
+    }
+
+    function fn$view(id) {
+        layer.open({
+            type: 2,
+            title: '查看',
+            area: ['1000px', '600px'],
+            content: '/../@Url.Action("Edit4")/' + id,
+        });
+    }
+
+    function fn$approve(id) {
+        layer.open({
+            type: 2,
+            title: '审核',
+            area: ['1000px', '600px'],
+            content: '/../@Url.Action("Edit3")/' + id,
+            btn: ['审核通过并提交', '关闭'],
+            yes: function (index, layero) {
+                layero.find('iframe')[0].contentWindow.AcceptClick();
+            }
+        });
+    }
+</script>

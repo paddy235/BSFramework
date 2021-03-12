@@ -1,0 +1,61 @@
+﻿@using BSFramework.Application.Entity.SystemManage;
+@using Newtonsoft.Json
+@{
+    ViewBag.Title = "BindForm";
+    Layout = "~/Views/Shared/_Form.cshtml";
+    List<DataSetEntity> entities = Model;
+    List<string> checkIds = ViewBag.ChceckIds;
+    string titleId = ViewBag.TitleId;
+    string chekc = JsonConvert.SerializeObject(checkIds);
+}
+<script>
+    var titleId = '@titleId'
+    var checkdata = JSON.parse('@Html.Raw(chekc)');
+    $(function () {
+
+    })
+    function CheckEvent(Id, elemt) {
+        if ($(elemt).is(":checked")) {
+            if (checkdata.length < 5) {
+                checkdata.push(Id);
+            } else {
+                $(elemt).prop("checked", false)
+                dialogMsg('每个分类指标最多勾选5个！', 0);
+            }
+        } else {
+            for (var i = 0; i < checkdata.length; i++) {
+                if (checkdata[i] == Id) {
+                    checkdata.splice(i, 1);
+                }
+            }
+        }
+    }
+
+    function AcceptClick() {
+
+        var postData = {
+            indexIdStr: JSON.stringify(checkdata),
+            titleId: titleId
+        }
+        console.log(postData);
+        $.SaveForm({
+           url: '/..@Url.Action("SaveAssociation")' ,
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<div class="container" style="width:100%;">
+    @if (entities != null && entities.Count > 0)
+    {
+        foreach (var item in entities)
+        {
+            <div class="col-md-4" style="height:50px; margin-top:10px;">
+                <input type="checkbox" value="@item.Id" id="@item.Id" @Html.Raw(checkIds.Any(x => x == item.Id) ? "checked=\"checked\"" : "") @*onchange="CheckEvent('@item.Id',this)"*@ />&nbsp;<label for="@item.Id">@item.ItemName</label>&nbsp;&nbsp;&nbsp;
+            </div>
+        }
+    }
+</div>

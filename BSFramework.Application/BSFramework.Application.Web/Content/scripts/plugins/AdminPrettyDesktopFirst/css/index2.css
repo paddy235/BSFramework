@@ -1,0 +1,325 @@
+.mainBox2 {
+  width: 100%;
+  background-size: 100% 100%;
+  /* min-width: 1660px;
+   */
+   overflow: hidden;
+  /* background-image: url(../img/index_bg.png); */
+}
+.mainBox2 .top2 {
+  height: 86px;
+  width: 100%;
+  position: relative;
+}
+.mainBox2 .top2 img {
+  position: absolute;
+  top: 0;
+}
+.mainBox2 .top2 .topImg1 {
+  left: 0;
+}
+.mainBox2 .top2 .topImg2 {
+  left: 50%;
+  top: 20px;
+  transform: translate(-50%);
+}
+.mainBox2 .top2 .topImg3 {
+  right: 0;
+}
+.mainBox2 .main2 {
+  width: 100%;
+  height: 998px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+.mainBox2 .main2 .mainUl2 {
+  width: 100%;
+  height: 100%;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 {
+  width: 49.5%;
+  float: left;
+  height: 420px;
+  background: rgba(14, 28, 64, 0.5);
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 p {
+  width: 100%;
+  height: 48px;
+  line-height: 48px;
+  padding-left: 22px;
+  box-sizing: border-box;
+  color: #fff;
+  font-size: 18px;
+  border-bottom: 2px solid #033d6e;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 p .clickUi {
+  float: right;
+  width: 200px;
+  margin-top: 10px;
+  margin-right: 10px;
+  border: 1px solid #3879e7;
+  border-radius: 5px;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 p .clickUi span {
+    width: 66px;
+    height: 26px;
+    line-height: 26px;
+    text-align: center;
+    float: left;
+    font-size: 16px;
+    border-right: 1px solid #3879e7;
+    cursor: pointer;
+    /* overflow: hidden; */
+    z-index:7;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 p .clickUi span>span{
+  border-right: 0;
+  background-color: #101c3a;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 p .clickUi span:hover{
+  background:#3879e7;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 p .clickUi .spa {
+  background-color: #3879e7;
+  color: #fff;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 p .clickUi span:nth-of-type(3) {
+  border-right: 0;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv,
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv2 {
+  width: 100%;
+  height: 370px;
+  box-sizing: border-box;
+  padding: 16px 22px;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv table,
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv2 table {
+  width: 100%;
+  height: 340px;
+  display: block;
+  border: 0;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv table tbody,
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv2 table tbody {
+  width: 100%;
+  display: block;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv table tr,
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv2 table tr {
+  text-align: center;
+  height: 38px!important;
+  line-height: 38px;
+  font-size: 16px;
+  color: #fff;
+  width: 100%;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv table tr td,
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv2 table tr td {
+  text-align: center;
+  height: 38px;
+  line-height: 38px;
+  font-size: 16px;
+  color: #ccc;
+  margin: 0;
+  padding: 0;
+  letter-spacing: 2px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv table tr:first-child td,
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv2 table tr:first-child td {
+  color:#fff;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv table tr:nth-child(odd),
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv2 table tr:nth-child(odd) {
+  background-color: rgba(56,121,231,0.1);
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 {
+  width: 100%;
+  height: 370px;
+  box-sizing: border-box;
+  padding: 6px 0;
+  position: relative;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl {
+  width:700px;
+  height: 100%;
+  margin:0 auto;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li {
+  width: 170px;
+  height: 126px;
+  /* background-color: rgba(78, 92, 140, 0.6); */
+  border-radius: 20%;
+  padding-top: 10px;
+  box-sizing: border-box;
+  float: left;
+  padding:30px;
+  padding-top: 10px;
+  /* position: relative; */
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:nth-child(1){
+  /* position: absolute; */
+  /* top:0;
+  right:0; */
+  background:url("../img/right.png")no-repeat center right;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:nth-child(2){
+  /* position: absolute; */
+  /* top:0;
+  right:0; */
+  background:url("../img/right.png")no-repeat center right;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:nth-child(3){
+  /* position: absolute; */
+  /* top:0;
+  right:0; */
+  background:url("../img/right.png")no-repeat center right;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:nth-child(4){
+  /* position: absolute; */
+  /* top:0;
+  right:0; */
+  background:url("../img/down.png")no-repeat bottom center;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:nth-child(5){
+  /* position: absolute; */
+  /* top:0;
+  right:0; */
+  background:url("../img/down.png")no-repeat bottom center;
+
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:nth-child(6){
+  /* position: absolute; */
+  /* top:0;
+  right:0; */
+  background:url("../img/left.png")no-repeat center left;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:nth-child(7){
+  /* position: absolute; */
+  /* top:0;
+  right:0; */
+  background:url("../img/left.png")no-repeat center left;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:nth-child(8){
+  /* position: absolute; */
+  /* top:0;
+  right:0; */
+  background:url("../img/left.png")no-repeat center left;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:nth-child(9){
+  /* position: absolute; */
+  /* top:0;
+  right:0; */
+  background:url("../img/right.png")no-repeat center right;
+}.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:nth-child(10){
+  /* position: absolute; */
+  /* top:0;
+  right:0; */
+  background:url("../img/right.png")no-repeat center right;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:nth-child(11){
+  /* position: absolute; */
+  /* top:0;
+  right:0; */
+  background:url("../img/right.png")no-repeat center right;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:nth-child(12){
+  /* position: absolute; */
+  /* top:0;
+  right:0; */
+  background:url("../img/right.png")no-repeat center right;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:nth-child(13){
+  /* position: absolute; */
+  /* top:0;
+  right:0; */
+  background:url("../img/right.png")no-repeat center right;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:last-child{
+  /* position: absolute; */
+  /* top:0;
+  right:0; */
+  background-image: none;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:nth-child(1){
+  /* position: absolute; */
+  /* top:0;
+  right:0; */
+  background:url("../img/right.png")no-repeat center right;
+}.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:nth-child(1){
+  /* position: absolute; */
+  /* top:0;
+  right:0; */
+  background:url("../img/right.png")no-repeat center right;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:nth-child(1){
+  /* position: absolute; */
+  /* top:0;
+  right:0; */
+  background:url("../img/right.png")no-repeat center right;
+}
+.mainDiv3 li .item-c-qq{
+  border-radius: 20%;
+  background-color: rgba(56,121,231,0.1);
+  padding: 7px;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li img {
+  display: block;
+  margin: 0 auto;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li em,
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li span {
+  width: 100%;
+  display: inline-block;
+  text-align: center;
+  color: #fff;
+  margin-top: 2px;
+  letter-spacing: 1px;
+  overflow: hidden;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li em{
+  margin-top:8px;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:nth-of-type(4n) {
+  margin-right: 0;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:nth-of-type(1),
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:nth-of-type(2),
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:nth-of-type(3),
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .divUl li:nth-of-type(4) {
+  margin-top: 0;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 .mainDiv3 .imgPic {
+  position: absolute;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2 #echarts1,
+.mainBox2 .main2 .mainUl2 .mainLi2 #echarts2 {
+  width: 100%;
+  height: 440px;
+  box-sizing: border-box;
+  padding: 16px 22px;
+}
+
+.mainBox2 .main2 .mainUl2 .mainLi2:nth-child(even) {
+  float: right;
+}
+.mainBox2 .main2 .mainUl2 .mainLi2:nth-of-type(3),
+.mainBox2 .main2 .mainUl2 .mainLi2:nth-of-type(4) {
+  height: 500px;
+  margin-top: 20px;
+}
+.a-c-item-list{
+  width:36px;
+  height:26px;
+  border-radius: 15px;
+  text-align: center;
+  line-height:26px;
+  background-color: rgba(56,121,231,0.2);
+  position: absolute;
+  top:10px;
+  left:0;
+  color:#ccc;
+}

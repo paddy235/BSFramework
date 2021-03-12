@@ -1,0 +1,277 @@
+﻿@model List<BSFramework.Application.Entity.Activity.HumanDangerTrainingEntity>
+
+@{
+    ViewBag.Title = "考评标准";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<link href="@Url.Content("~/Content/scripts/plugins/bootstrap-select/bootstrap-select.min.css")" rel="stylesheet" />
+<link href="@Url.Content("~/Content/scripts/plugins/jqgrid/jqgrid.css")" rel="stylesheet" />
+<script src="~/Content/scripts/business/Common.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.url.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/bootstrap-select/bootstrap-select.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jqgrid/grid.locale-cn.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jqgrid/jqgrid.js")"></script>
+<style>
+    .status0 {
+        color: orange;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+
+    .status1 {
+        color: black;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+
+    .status2 {
+        color: red;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+
+    .high {
+        width: 180px;
+        background-color: red;
+    }
+
+    .mid {
+        width: 120px;
+        background-color: orange;
+    }
+
+    .low {
+        width: 60px;
+        background-color: green;
+    }
+
+    .table > tbody > tr > td {
+        vertical-align: middle;
+    }
+</style>
+
+<script>
+    var action = request("action")
+    jQuery(function () {
+        jQuery('.table').each(function () {
+            var text = '', rowspan = 0, td = null;
+            jQuery(this).find('tbody tr').each(function (i, o) {
+                var ctd = jQuery(o).find('td:eq(1)');
+                if (ctd.text() == text) {
+                    rowspan += 1;
+                    jQuery(ctd).remove();
+                } else {
+                    if (td) jQuery(td).attr('rowspan', rowspan);
+                    rowspan = 1;
+                    td = ctd;
+                    text = ctd.text();
+                }
+            });
+            if (td && rowspan > 1) jQuery(td).attr('rowspan', rowspan);
+        });
+        if (!!action && action == "edit") {
+            $("input").removeAttr("readonly", "readonly")
+        }
+    });
+
+    function fn$evaluate(id) {
+        jQuery.get('@Url.Action("IsEvaluate")', { id: id }, function (data) {
+            if (data) {
+                dialogOpen({
+                    id: "form1",
+                    title: '评价',
+                    url: encodeURI('/../@Url.Action("Evaluate")?id=' + id + "&iframeId=" + jQuery(self.frameElement).attr('id') + '&category=人身风险预控'),
+                    width: "500px",
+                    height: "350px",
+                    callBack: function (iframeId) {
+                        top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                    }
+                });
+            } else {
+                layer.msg("已评价");
+            }
+        });
+    }
+
+    function fn$refresh() {
+        jQuery('.grid').trigger("reloadGrid");
+        var win = jQuery.currentIframe();
+        if (win && win.fn$refresh) win.fn$refresh();
+    }
+</script>
+<div style="margin:10px">
+    <ul class="nav nav-tabs">
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <li class="@(i == 0 ? "active" : "")"><a href="#BaseInfo@(i)" data-toggle="tab">@Model[i].UserName</a></li>
+        }
+    </ul>
+    <div class="tab-content" style="padding-top: 15px;">
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <div id="BaseInfo@(i)" class="tab-pane @(i == 0 ? "active" : "")" style="padding-right:30px;">
+                <table class="form">
+                    <tr>
+                        <td class="formTitle" style="width:120px;"></td>
+                        <td class="formValue" colspan="3">
+                            <div style="float:right">@Html.ActionLink("查看pdf版", "ShowPdf", new { id = Model[i].TrainingId, userName = Model[i].UserName, taskName = Model[i].TrainingTask }, new { @class = "btn btn-primary" })</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="formTitle" style="width:120px;">工作任务</td>
+                        <td class="formValue">
+                            @Html.TextBoxFor(x => Model[i].TrainingTask, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+                        <td class="formTitle" style="width:120px;">作业人</td>
+                        <td class="formValue">
+                            @Html.TextBoxFor(x => Model[i].UserName, new { @class = "form-control", @readonly = "readonly", Value = string.Join(",", Model[i].TrainingUsers.Select(x => x.UserName)) })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="formTitle">工作地点</td>
+                        <td class="formValue">
+                            @Html.TextBoxFor(x => Model[i].TrainingPlace, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+                        <td class="formTitle">工作/操作票编号 </td>
+                        <td class="formValue">
+                            @Html.TextBoxFor(x => Model[i].No, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="formTitle">日期</td>
+                        <td class="formValue">
+                            @Html.TextBoxFor(x => Model[i].CreateTime, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+                        <td class="formTitle">班组</td>
+                        <td class="formValue">
+                            @Html.TextBoxFor(x => Model[i].DeptName, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="formTitle">作业性质</td>
+                        <td class="formValue" colspan="3">
+                            <div style="float:left">
+                                @foreach (var item in Model[i].TaskTypes)
+                                {
+                                    <label class="status@(item.State)">@item.TaskTypeName</label>
+                                }
+                            </div>
+                            @if (Model[i].HumanDangerId != null)
+                            {
+                                <div style="float:right">异常颜色说明：<label style="color:red">红色为遗漏项或错误项</label>，<label style=" color:orange;">黄色为多余项</label></div>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <td style="width:50px;">#</td>
+                                        <th style="width:180px;">风险类别</th>
+                                        <th style="width:180px;">风险因素</th>
+                                        <th>风险预控措施</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (int j = 0; j < Model[i].Measures.Count; j++)
+                                    {
+                                        <tr>
+                                            <td>@(j + 1)</td>
+                                            <td>@Model[i].Measures[j].Category</td>
+                                            <td class="status@(Model[i].HumanDangerId == null ? 4 : Model[i].Measures[j].State)">@Model[i].Measures[j].DangerReason</td>
+                                            <td>@Html.Raw(Model[i].HumanDangerId == null ? Model[i].Measures[j].MeasureContent : Model[i].Measures[j].State == 1 ? Model[i].Measures[j].Standard == Model[i].Measures[j].MeasureContent ? Model[i].Measures[j].MeasureContent : ("<span>正确措施：" + Model[i].Measures[j].Standard + "</span><br/><span style='color:red;'>错误措施：" + Model[i].Measures[j].MeasureContent + "</span>") : ("<span class='status" + Model[i].Measures[j].State + "'>" + Model[i].Measures[j].MeasureContent + "</span>"))</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="formTitle">人身伤害风险</td>
+                        <td class="formValue" colspan="3">
+                            <div style="width:180px;height:20px;float:left;">
+                                <label class="@(Model[i].DangerLevel == "高" ? "high" : Model[i].DangerLevel == "高" ? "mid" : "low")" style="height:100%;"> </label>
+                            </div>
+                            <div style="line-height:20px;float:left;margin-left:10px;">@Html.DisplayFor(x => Model[i].DangerLevel)</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="formTitle">预控效果及补充措施</td>
+                        <td class="formValue" colspan="3">
+                            @Html.TextAreaFor(x => Model[i].OtherMeasure, new { @class = "form-control", @readonly = "readonly", style = "height:80px;" })
+                        </td>
+                    </tr>
+                    @if (Model[i].HumanDangerId != null)
+                    {
+                        <tr>
+                            <td class="formTitle">系统评判</td>
+                            <td class="formValue" colspan="3">
+                                @{
+                                    float allCount = Model[i].Measures.Count;
+                                    float rightCount = Model[i].Measures.Count(p => p.State == 1);
+                                    int forgetCount = Model[i].Measures.Count(p => p.State == 2);
+                                    if (allCount > 0)
+                                    {
+                                        if (2.0 / 3.0 <= rightCount / allCount)
+                                        {
+                                            @Html.Raw("分析的很棒！    本次识别：正确风险" + Convert.ToInt32(rightCount) + "；遗漏风险" + forgetCount + "个")
+                                        }
+                                        else if (1.0 / 3.0 <= rightCount / allCount && rightCount / allCount < 2.0 / 3.0)
+                                        {
+                                            @Html.Raw("分析的一般，再接再厉！    本次识别：正确风险" + Convert.ToInt32(rightCount) + "；遗漏风险" + forgetCount + "个")
+                                        }
+                                        else if (rightCount < 1 || rightCount / allCount < 1.0 / 3.0)
+                                        {
+                                            @Html.Raw("分析辨识能力有待加强！    本次识别：正确风险" + Convert.ToInt32(rightCount) + "；遗漏风险" + forgetCount + "个")
+                                        }
+                                    }
+
+                                }
+                            </td>
+                        </tr>
+                                    }
+                    <tr>
+                        <td colspan="4">
+                            <div class="pd-20 bg-fff bd-t-e3ebfd">
+                                <div class="f-18 f-w c-0d0d0d"><a id="lr-edit" class="btn btn-default" onclick="fn$evaluate('@Model[i].TrainingId')"><i class="fa fa-pencil-square-o"></i>&nbsp;评价</a></div>
+                                <div class="gridPanel">
+                                    <table id="grid@(i)" class="grid"></table>
+                                    <div id="gridPager"></div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <script>
+                jQuery(function () {
+                    jQuery('#grid@(i)').jqGrid({
+                        colModel: [
+                            { label: '评价人', name: 'EvaluateUser', width: 100, align: 'center', sortable: false },
+                            { label: '评价部门', name: 'DeptName', width: 100, align: 'center', sortable: false },
+                            { label: '评价时间', name: 'EvaluateDate', width: 100, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d H:i', newformat: 'Y-m-d H:i' } },
+                            { label: '评分', name: 'Score', width: 100, align: 'center', sortable: false },
+                            { label: '点评', name: 'EvaluateContent', align: 'center', sortable: false }
+                        ],
+                        height: 200,
+                        width: 1148,
+                        url: '@Url.Action("GetDataEvaluate", "Danger")?keyValue=' + '@Model[i].TrainingId',
+                        datatype: "json",
+                        viewrecords: true,
+                        gridview: true,
+                        sortable: false,
+                        rowNum: 10,
+                        rownumbers: true,
+                        pager: "#gridPager",
+                    });
+                });
+            </script>
+                                    }
+    </div>
+</div>

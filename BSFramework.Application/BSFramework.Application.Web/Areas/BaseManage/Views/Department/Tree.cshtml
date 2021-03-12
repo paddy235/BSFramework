@@ -1,0 +1,47 @@
+﻿<script src="~/Content/scripts/jquery/jquery.url.js"></script>
+<script>
+    jQuery(function () {
+        setTimeout('initTreeView();', 10);
+        //initTreeView();
+    });
+
+    function initTreeView() {
+        var checkMode = jQuery.getUrlArgs('checkMode');
+        var category = jQuery.getUrlArgs('categorys');
+        var deptid = jQuery.getUrlArgs('deptid');
+
+        if (typeof (getTreeMode) == 'function')
+            checkMode = getTreeMode();
+
+        jQuery('#departments').treeview({
+            cascadecheck: false,
+            showcheck: checkMode == "multiple" ? true : false,
+            url: encodeURI('@Url.Action("GetDepartments", "Department", new { area = "BaseManage" })?deptid=' + (deptid || '') + '&checkMode=' + checkMode + '&category=' + (category || '')),
+            onnodeclick: typeof (onNodeSelected) == 'function' ? onNodeSelected : null,
+            oncheckboxclick: function (node, checked) {
+                jQuery.each(node.ChildNodes, function (i, o) {
+                    jQuery('#departments').setCheckedNodeOne(o.id);
+                });
+            }
+        });
+    }
+
+    function getCheckedNodes() {
+        var checkMode = jQuery.getUrlArgs('checkMode');
+        var nodes;
+        if (checkMode == 'multiple')
+            nodes = jQuery('#departments').getTSNs();
+        else
+            nodes = jQuery('#departments').getCurrentNode();
+        if (!nodes) {
+            dialogAlert('请选择部门!', 0);
+            return;
+        }
+
+        return nodes;
+    }
+</script>
+<div id="departments"></div>
+
+
+@*注意：使用本分部页，区域选中的节点调用 getCheckedNodes 函数；节点选中调用 onNodeSelected 函数；高度问题需要在主页面自主处理*@

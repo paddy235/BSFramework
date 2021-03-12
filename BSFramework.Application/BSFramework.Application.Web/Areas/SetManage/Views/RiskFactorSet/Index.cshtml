@@ -1,0 +1,231 @@
+﻿@{ ViewBag.Title = "Index";
+                Layout = "~/Views/Shared/_LayoutIndex.cshtml"; }
+
+<script src="@Url.Content("~/Content/scripts/plugins/datepicker/WdatePicker.js")"></script>
+<script>
+
+    var deptCode = '@ViewBag.deptcode';//当前用户所属部门Code
+    var orgCode = top.currUserOrgCode;//当前用户所属机构Code
+    var deptId = '@ViewBag.deptid';
+    var userId = '@ViewBag.userid';
+    var keyValue = '';
+    var selectedRowIndex = 0;
+    $(function () {
+        InitialPage();
+        //GetTree();
+        GetGrid();
+
+    });
+    //初始化页面
+    function InitialPage() {
+        $('#layout').layout({
+            west: {
+                size: 300
+            },
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $("#departments").height($(window).height() - 50);
+                $("#gridTable").setGridHeight($(window).height() - 170);
+            }, 200);
+            e.stopPropagation();
+        });
+
+        $("#departments").height($(window).height() - 50);
+
+    }
+
+    function onNodeSelected(item) {
+        deptCode = item.Code;
+        deptId = item.id;
+        search();
+    }
+
+    //加载表格
+    function GetGrid() {
+
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            url: "../../SetManage/RiskFactorSet/GetPageList",
+            postData: { queryJson: JSON.stringify({ deptid: deptId, deptcode: deptCode }) },
+            datatype: "json",
+            height: $(window).height() - 170,
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'tid', hidden: true },
+                {
+                    label: '危险因素', name: 'riskfactor', index: 'riskfactor', width: 200, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        if (cellvalue != null) {
+                            return "<div>" + cellvalue + "</div>";
+                        }
+                    }
+                },
+                {
+                    label: '防范措施', name: 'measure', index: 'measure', width: 400, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        if (cellvalue != null) {
+                            return "<div>" + cellvalue + "</div>";
+                        }
+                    }
+                }
+            ],
+            viewrecords: true,
+            rowNum: 30,
+            pager: "#gridPager",
+            sortname: 'a.Id asc,a.CreateDate desc,b.Sort asc',
+            sortorder: '',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            shrinkToFit: true,
+            forceFit: true,
+            onSelectRow: function () {
+                selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            },
+            gridComplete: function () {
+                $('#' + this.id).setSelection(selectedRowIndex, false);
+                var arr = new Array("riskfactor");
+                Merger("gridTable", arr);
+            }
+        });
+    }
+    //合并单元格//问题所在：
+    function Merger(gridName, arr) {
+        //得到显示到界面的id集合
+        var mya = $("#" + gridName + "").getDataIDs();
+        //数据总行数
+        var length = mya.length;
+        //定义合并行数
+        var rowSpanTaxCount = 1;
+        $(arr).each(function (i, item) {
+            var CellName = item;
+            for (var i = 0; i < length; i += rowSpanTaxCount) {
+                //从当前行开始比对下面的信息
+                var before = $("#" + gridName + "").jqGrid('getRowData', mya[i]);
+                rowSpanTaxCount = 1;
+                for (j = i + 1; j <= length; j++) {
+                    //和上边的信息对比 如果值一样就合并行数+1 然后设置rowspan 让当前单元格隐藏
+                    //alert(mya[j]);
+                    var end = $("#" + gridName + "").jqGrid('getRowData', mya[j]);
+                    if (before[CellName] == end[CellName]) {
+                        rowSpanTaxCount++;
+                        $("#" + gridName + "").setCell(mya[j], CellName, '', { display: 'none' });
+                    } else {
+                        break;
+                    }
+                }
+                $("#" + gridName + "").setCell(mya[i], CellName, '', '', { rowspan: rowSpanTaxCount });
+            }
+        });
+    }
+    function search() {
+        $('#gridTable').jqGrid('setGridParam', {
+            postData: { queryJson:JSON.stringify({ deptid: deptId, deptcode: deptCode }) }, page: 1
+        }).trigger('reloadGrid');
+    }
+    //新增
+    function add() {
+        var height = "800px";
+        dialogOpen({
+            id: "Form",
+            title: '新增',
+            url: '/../@Url.Action("Form")?deptid=' + deptId + "&deptcode=" + deptCode,
+            width: "1000px",
+            height: height,
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    };
+
+    function edit() {
+        var rowData = $("#gridTable").getRowData(selectedRowIndex);
+        keyValue = rowData.tid;
+        if (!keyValue) {
+            dialogMsg('请选择编辑项！', 0);
+            return;
+        }
+        url = '/../@Url.Action("Form")?keyValue=' + keyValue + "&deptid=" + deptId + "&deptcode=" + deptCode;
+        dialogOpen({
+            id: "Edit",
+            title: '编辑',
+            url: url,
+            width: "1000px",
+            height: "650px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+    function del() {
+        var rowData = $("#gridTable").getRowData(selectedRowIndex);
+        keyValue = rowData.tid;
+        if (!keyValue) {
+            dialogMsg('请选择删除项！', 0);
+            return;
+        }
+        $.RemoveForm({
+            url: '/../@Url.Action("RemoveForm")/',
+            param: { keyValue: keyValue },
+            success: function (data) {
+                $("#gridTable").resetSelection();
+                $("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+    function fn$import(){
+        dialogOpen({
+            id: "Import",
+            title: '导入',
+            url: '/..@Url.Action("Import")?deptid=' + deptId + '&deptcode=' + deptCode,
+            width: "600px",
+            height: "300px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.fn$ok();
+            }
+        });
+    }
+</script>
+
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                <div class="col-md-10">
+                    组织机构
+                </div>
+                <div class="col-md-2 text-right" style="padding-right:8px;">
+                    <i class="fa fa-arrow-left" onclick="setBar(this)" style="cursor:pointer;" title="展开/收起"></i>
+                </div>
+            </div>
+            @Html.Partial("~/Areas/BaseManage/Views/Department/Tree.cshtml")
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title">风险点措施库</div>
+            <div class="titlePanel">
+                <div class="title-search">
+                </div>
+                <div class="toolbar">
+                    <div class="btn-group">
+                        <a id="replace" class="btn btn-default"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+                        <a id="add" class="btn btn-default" onclick="add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+                        <a id="edit" class="btn btn-default" onclick="edit()"><i class="fa fa-pencil-square-o"></i>&nbsp;编辑</a>
+                        <a id="del" class="btn btn-default" onclick="del()"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+                        <a id="import" class="btn btn-default" onclick="fn$import()"><i class="fa fa-file-excel-o"></i>&nbsp;导入</a>
+                    </div>
+                    <script>$('.toolbar').authorizeButton()</script>
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="gridTable"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,209 @@
+﻿@model BSFramework.Application.Entity.DrugManage.DrugInventoryEntity
+@using BSFramework.Application.Entity.PublicInfoManage
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+
+@*<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>*@
+<style>
+    .images-container {
+        min-height: 120px;
+    }
+
+        .images-container li {
+            list-style: none;
+            float: left;
+            padding: 0px 5px;
+        }
+
+    .yinpin li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+
+    .items li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+
+    table tr {
+        height: 45px;
+    }
+</style>
+<script>
+    function msds() {
+        var id = '@Model.Id';
+        dialogOpen({
+            id: "Detail1",
+            title: '查看详情',
+            url: '/../@Url.Action("MSDS")/' + id,
+            width: "1300px",
+            height: "900px",
+            btn: null
+        });
+    }
+    function video() {
+        var id = '@Model.Id';
+        dialogOpen({
+            id: "Detail2",
+            title: '查看详情',
+            url: '/../@Url.Action("Video")/' + id,
+            width: "1050px",
+            height: "720px",
+            btn: null
+        });
+    }
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style=" padding-right: 30px;">
+            <table class="form">
+                <tr>
+                    <td class="formTitle">药品名称<font face="宋体">*</font></td>
+                    <td class="formValue" colspan="2">
+                        @Html.TextBoxFor(x => x.DrugName, new { @class = "form-control", @readonly = "readonly" })
+                        @Html.HiddenFor(x => x.CreateDate)
+                        @Html.HiddenFor(x => x.CreateUserId)
+                        @Html.HiddenFor(x => x.CreateUserName)
+                        @Html.HiddenFor(x => x.Id)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">英文名</td>
+                    <td class="formValue" colspan="2">
+
+                        @Html.TextBoxFor(x => x.EnglishName, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle">CAS NO.</td>
+                    <td class="formValue" colspan="2">
+
+                        @Html.TextBoxFor(x => x.CASNO, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle">分子式</td>
+                    <td class="formValue" colspan="2">
+
+                        @Html.TextBoxFor(x => x.MolecularFormula, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle">分子量</td>
+                    <td class="formValue" colspan="2">
+
+                        @Html.TextBoxFor(x => x.MolecularWeight, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle">性状</td>
+                    <td class="formValue" colspan="2">
+
+                        @Html.TextBoxFor(x => x.Properties, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle">用途</td>
+                    <td class="formValue" colspan="2">
+
+                        @Html.TextBoxFor(x => x.Purpose, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle" rowspan="2">危险性说明</td>
+                    <td class="formValue" colspan="2">
+                        <div id="pics">
+                            @{
+                                List<FileInfoEntity> files = (List<FileInfoEntity>)ViewBag.pics;
+                                for (int i = 0; i < files.Count(); i++)
+                                {
+                                    <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:200px; height:180px; padding-left:20px;">
+                                }
+                            }
+                        </div>
+                    </td>
+
+
+                </tr>
+                <tr>
+                    <td class="formValue" colspan="2">
+
+                        @Html.TextBoxFor(x => x.DangerInstruction, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+
+                </tr>
+                <tr style="line-height:100px;">
+                    <td class="formTitle">
+                        预防措施
+                    </td>
+                    <td class="formValue" colspan="2">
+                        @Html.TextAreaFor(x => x.Measure, new { @style = "height:120px;", @class = "form-control", placeholder = "", @readonly = "readonly" })
+                        @*<textarea id="Dangers" class="form-control" style="height: 70px;"></textarea>*@
+                    </td>
+                </tr>
+                <tr style="line-height:100px;">
+                    <td class="formTitle">
+                        事故响应
+                    </td>
+                    <td class="formValue" colspan="2">
+                        @Html.TextAreaFor(x => x.Danger, new { @style = "height:120px;", @class = "form-control", placeholder = "", @readonly = "readonly" })
+                        @*<textarea id="Measure" class="form-control" style="height: 70px;"></textarea>*@
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">安全储存</td>
+                    <td class="formValue" colspan="2">
+
+                        @Html.TextBoxFor(x => x.Position, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle">废弃处理</td>
+                    <td class="formValue" colspan="2">
+
+                        @Html.TextBoxFor(x => x.Dispose, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle" rowspan="2">
+                        相关文件
+                    </td>
+
+                    <td style="text-align:center;">
+                        @{
+                            if (ViewBag.msds != "")
+                            {
+                                <a id="msds" onclick="msds()" style="text-decoration:none;color:blue;">MSDS</a>
+                            }
+                        }
+                    </td>
+                </tr>
+                <tr>
+
+                    <td style="text-align:center; color:blue;">
+                        @{
+                            if (ViewBag.video != "")
+                            {
+                                <a id="video" onclick="video()" style="text-decoration:none;color:blue;" target="_blank">操作视频</a>
+                            }
+                        }
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

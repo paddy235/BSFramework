@@ -1,0 +1,265 @@
+﻿@model BSFramework.Application.Web.Areas.EvaluateAbout.Models.EvaluateItemModel
+@using BSFramework.Application.Entity.BaseManage;
+@using BSFramework.Application.Entity.EvaluateAbout;
+@using BSFramework.Application.Code;
+
+@{
+    ViewBag.Title = "考评标准";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+    DepartmentEntity userDept = ViewBag.UserDept;
+    List<EvaluateMarksRecordsEntity> masksRecords = ViewBag.MarksRecords;
+    List<EvaluateMarksRecordsEntity> orgDatas = new List<EvaluateMarksRecordsEntity>();
+    List<EvaluateMarksRecordsEntity> deptDatas = new List<EvaluateMarksRecordsEntity>();
+    if (masksRecords != null && masksRecords.Count>0)
+    {
+        orgDatas = masksRecords.Where(p => p.IsOrg == 1).ToList();
+        deptDatas = masksRecords.Where(p => p.IsOrg == 0).ToList();
+    }
+    Operator thisUser = ViewBag.ThisUser;
+}
+<script src="~/Content/scripts/business/Common.js" type="text/javascript"></script>
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.url.js")"></script>
+<script>
+    var action = request("action");
+    function fn$select() {
+        dialogOpen({
+            id: "Category",
+            title: "选择类别",
+            url: '/..@Url.Action("Select")',
+            width: "300px",
+            height: "500px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick(fn$selectover1);
+            }
+        });
+    }
+
+    function fn$selectover1(node) {
+        if (node) {
+            jQuery('#pcid').val(node.value);
+            jQuery('#pcategory').val(node.text);
+        }
+    }
+
+    function AcceptClick() {
+        @*if (!$('#form1').Validform()) {
+            return false;
+        }
+
+        if (parseInt(jQuery('#Score').val()) > 0 && parseInt(jQuery('#ActualScore').val()) > parseInt(jQuery('#Score').val())) {
+            dialogAlert("评分不能高于标准分", -1);
+            return false;
+        }
+
+        var json = jQuery('#form1').serializeJSON();
+        $.SaveForm({
+            url: '@Url.Action("Edit")',
+            param: json,
+            loading: "正在保存数据...",
+            success: function () {
+                var frameid = jQuery.getUrlArgs('frameid');
+                top.jQuery('#' + frameid).get(0).contentWindow.fn$refresh(json.ActualScore);
+            }
+        })*@
+        top.window.frames["Form"].reload();
+        dialogClose();
+    }
+
+    var selele
+    function fn$select2(e) {
+        selele = e
+        var select = 'single';
+        var id = jQuery(e).attr('id');
+        if (id == 'UseDept') select = 'multi';
+        showModa('/..@Url.Action("DeptSelect", "Department", new { area = "BaseManage" })', '选择部门', '300px', '600px', { select: select, category: '省级,厂级,部门' }, fn$selectover2);
+    }
+
+    function fn$selectover2(nodes) {
+        if (nodes) {
+            if (jQuery.type(nodes) == 'array') {
+                var str = '';
+                jQuery.each(nodes, function (i, o) {
+                    str += o.text + '|'
+                });
+                jQuery(selele).val(str.replace(/\|$/, ''));
+            } else
+                jQuery(selele).val(nodes.text);
+        }
+    }
+
+    jQuery(function () {
+        var node = $.currentIframe().currentNode;
+
+        if (node) {
+            jQuery('#pcid').val(node.value);
+            jQuery('#pcategory').val(node.text);
+        }
+
+        if (!!action && action == "show") {
+            $("input").attr("readonly", "true");
+            $("textarea").attr("readonly", "true")
+        }
+    });
+
+    function EditMask(id) {
+           dialogOpen({
+            id: "Form1",
+            title: "修改考评",
+            url: '/..@Url.Action("AddScoreForm",new { itemId=Model.EvaluateItemId})&id=' + id,
+            width: "500px",
+            height: "300px",
+            callBack: function (frameid) {
+               // console.log(top.document)
+                //contentWindow
+               // console.log(top.document.getElementById("Form1"))
+                //console.log(top.document.getElementById("Form1").contentWindow.AcceptClick())
+                top.document.getElementById(frameid).contentWindow.AcceptClick();
+            }
+        });
+    }
+    function DelMask(id) {
+        if (!!id && id != "") {
+            $.RemoveForm({
+                url: '/..@Url.Action("RemoveMarksRecord")',
+                param: { id: id },
+                success: function (data) {
+                    location.href = location.href;
+                }
+            })
+        } else {
+            dialogMsg('请选择需要删除的数据！', 0);
+        }
+    }
+    function AddScore(type) {
+        dialogOpen({
+            id: "Form1",
+            title: "新增考评",
+            url: '/..@Url.Action("AddScoreForm",new { itemId=Model.EvaluateItemId})&type=' + type,
+            width: "500px",
+            height: "300px",
+            callBack: function (frameid) {
+               // console.log(top.document)
+                //contentWindow
+               // console.log(top.document.getElementById("Form1"))
+                //console.log(top.document.getElementById("Form1").contentWindow.AcceptClick())
+                top.document.getElementById(frameid).contentWindow.AcceptClick();
+            }
+        });
+    }
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right 30px;">
+            @Html.HiddenFor(x => x.EvaluateItemId)
+            <table class="form">
+                <tr>
+                    <td class="formTitle">考评内容</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.EvaluateContent, new { @class = "form-control", @readonly = true, style = "height:60px;" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">考评标准</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.EvaluateStandard, new { @class = "form-control", @readonly = true, style = "height:60px;" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">评分<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.ActualScore, new { @class = "form-control", placeholder = "请输入评分", isvalid = "yes", checkexpession = "Num", @readonly = true })
+                    </td>
+                    <td class="formTitle">标准分</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Score, new { @class = "form-control", @readonly = true })
+                    </td>
+                </tr>
+      
+
+            </table>
+            <div class="row">
+                @if (Request["action"] == "edit")
+                {
+                    <div class="col-md-2">
+                        <a class="btn btn-primary" onclick="AddScore(0)">加/扣分</a>
+                    </div>
+                }
+                <div class="col-md-12"><div class="col-md-2" style="height:30px;"><h5 style="line-height:30px;">部门考评记录</h5></div></div>
+                <div class="row">
+                    <table class="table table-hover text-center table-bordered">
+                        <tr>
+                            <th>操作</th>
+                            <th>加分/扣分</th>
+                            <th>加分/扣分原因</th>
+                            <th>考评人</th>
+                            <th>考评时间</th>
+                        </tr>
+                        @if (deptDatas != null && deptDatas.Count > 0)
+                        {
+                            foreach (var item in deptDatas)
+                            {
+                                <tr>
+                                    <td>
+                                        @if ((userDept.IsOrg.HasValue && userDept.IsOrg.Value) || thisUser.UserId == item.CreateUserId)
+                                        {
+                                            <a href="javascript:EditMask('@item.Id')" title="修改"><i class="fa fa-pencil-square-o"></i></a> <a href="javascript:DelMask('@item.Id')" title="删除"><i class="fa fa-trash-o"></i></a>
+                                        }
+                                    </td>
+                                    <td>@Html.Raw(item.Score > 0 ? ("+" + item.Score.ToString("0.##")) : item.Score.ToString("0.##"))</td>
+                                    <td>@item.Cause</td>
+                                    <td>@item.CreateUserName</td>
+                                    <td>@item.CreateDate.ToString("yyyy-MM-dd hh:mm:ss")</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="5">暂无记录</td></tr>
+                        }
+                    </table>
+                </div>
+                <div class="col-md-12"><div class="col-md-2" style="height:30px;"><h5 style="line-height:30px;">公司考评记录</h5></div></div>
+                <div class="row">
+                    <table class="table table-hover text-center table-bordered">
+                        <tr>
+                            <th>操作</th>
+                            <th>加分/扣分</th>
+                            <th>加分/扣分原因</th>
+                            <th>考评人</th>
+                            <th>考评时间</th>
+                        </tr>
+                        @if (orgDatas != null && orgDatas.Count > 0)
+                        {
+                            foreach (var item in orgDatas)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (thisUser.UserId == item.CreateUserId)
+                                        {
+                                            <a href="javascript:EditMask('@item.Id')" title="修改"><i class="fa fa-pencil-square-o"></i></a> <a href="javascript:DelMask('@item.Id')" title="删除"><i class="fa fa-trash-o"></i></a>
+                                        }
+                                    </td>
+                                    <td>@Html.Raw(item.Score > 0 ? ("+" + item.Score.ToString("0.##")) : item.Score.ToString("0.##"))</td>
+                                    <td>@item.Cause</td>
+                                    <td>@item.CreateUserName</td>
+                                    <td>@item.CreateDate.ToString("yyyy-MM-dd hh:mm:ss")</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="5">暂无记录</td></tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div id="ExpandInfo" class="tab-pane">
+            <div class="app_layout app_preview" style="border-top: 1px solid #ccc;" id="frmpreview"></div>
+        </div>
+    </div>
+</div>

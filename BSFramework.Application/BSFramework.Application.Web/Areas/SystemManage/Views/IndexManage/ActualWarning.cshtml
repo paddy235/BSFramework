@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+    <script src="~/Content/styles/static/js/rem.js"></script>
+    <link href="~/Content/styles/static/css/indexmanage.css" rel="stylesheet" />
+    <link href="~/Content/styles/framework-ui.css" rel="stylesheet" />
+
+    <script>
+        $(function(){
+            getData();
+        })
+
+        function getData() {
+           $.ajax({
+            url: "@Url.Action("GetActualWarning", "IndexManage", new { area = "SystemManage" })",
+            type: "post",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.length > 0) {
+                    var addhtml = "";
+                    for (var i = 0; i < data.length; i++) {
+                        var html = "<li>";
+                        html += data[i].name;
+                        switch (data[i].sort) {
+                            case 1:
+                                html += '<a style=\"cursor:pointer;\" onclick="top.openTab(\'\',\'@Url.Action("Index3", "WorkMeeting", new { area= "Works" })\',\'' + data[i].name +'\')">';
+                                break;
+                                   case 2:
+                                html += '<a  style=\"cursor:pointer;\" onclick="top.openTab(\'\',\'@Url.Action("Index5", "Activity", new { category= "安全日活动", area= "Works" })\',\'' + data[i].name +'\')">';
+                                break;
+                                   case 3:
+                                html += '<a style=\"cursor:pointer;\" onclick="top.openTab(\'\',\'@Url.Action("Index3", "HumanDanger", new { area = "Works" })\',\'' + data[i].name+'\')">';
+                                break;
+                                   case 4:
+                                html += '<a style=\"cursor:pointer;\" onclick="top.openTab(\'\',\'@Url.Action("Index2", "Danger", new { area= "Works" })\',\'' + data[i].name+'\')">';
+                                break;
+                                   case 5:
+                                html += '<a style=\"cursor:pointer;\" onclick="top.openTab(\'109d0e86-d8d8-4794-a15e-7308d1646344\',\'../LllegalManage/LllegalRegisterGrp/SdIndex\',\'' + data[i].name +'\')">';
+                                break;
+                                   case 6:
+                                html += '<a style=\"cursor:pointer;\" onclick="top.openTab(\'67fdd0b7-6629-48dc-a70f-3eb7ba2df1f0\',\'../HiddenTroubleManage/HTBaseInfo/Index\',\'' + data[i].name +'\')">';
+                                break;
+                                   case 7:
+                                html += '<a  style=\"cursor:pointer;\" onclick="top.openTab(\'\',\'@Url.Action("Index2", "Education", new { area= "Works" })\',\'' + data[i].name +'\')">';
+                                break;
+                            default:
+                                html += '';
+                                break;
+                        }
+                        html +="<span>" + data[i].num +"</span></a>";
+                         html+= "</li>";
+                        addhtml += html;
+                    }
+                    $("#tabledata").append(addhtml);
+                }
+            }
+           });
+
+
+        }
+
+
+    </script>
+</head>
+<body>
+    <div style="">
+        <div class="item_title">
+            <h2>实时预警</h2>
+        </div>
+        <div class="content">
+            <ul id="tabledata">
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

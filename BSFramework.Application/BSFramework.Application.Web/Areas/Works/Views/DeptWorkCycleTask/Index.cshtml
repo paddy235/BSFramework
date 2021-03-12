@@ -1,0 +1,320 @@
+﻿@using BSFramework.Application.Entity.BaseManage
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+<script src="~/Content/scripts/plugins/AdminPrettyDesktopFirst/js/LoadData.js"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script>
+    var userid = '@ViewBag.userid';
+    var rolename = '@ViewBag.RoleName';
+    $(function () {
+
+        InitialPage();
+      
+        GetGrid();
+    });
+
+    //初始化页面
+    function InitialPage() {
+
+
+        $('#layout').layout({
+            west: {
+                size: 300
+            },
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+
+                $("#gridTable").setGridHeight($(window).height() - 170);
+            }, 200);
+            e.stopPropagation();
+        });
+        $("#departments").height($(window).height() - 50);
+    }
+
+
+    //加载表格
+    function GetGrid() {
+        var queryJson = {
+            content: "",
+            starttime: $("#starttime").val(),
+            endtime: $("#endtime").val(),
+            workstate:"",
+            name: ""
+        }
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            url: '/..@Url.Action("GetPageListJson")',
+            datatype: "json",
+            height: $(window).height() - 200,
+            postData: { queryJson: JSON.stringify(queryJson) },
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'id', hidden: true },
+                { label: '责任人id', name: 'dutyuserid', hidden: true },
+                {
+                    label: '操作', name: 'action', width: 135, align: 'center', sortable: false
+                },
+                { label: '工作任务', name: 'content', index: 'content', width: 800, align: 'center', sortable: false},
+                { label: '工作状态', name: 'workstate', index: 'workstate', width: 300, align: 'center', sortable: false },
+                { label: '责任人', name: 'dutyuser', index: 'dutyuser', width: 300, align: 'center', sortable: false},
+                //{
+                //    label: '上报时间', name: 'createdate', index: 'createdate', width: 200, align: 'center', sortable: false
+                //    ,
+                //    formatter: function (cellvalue, options, rowObject) {
+                //        return formatDate(cellvalue, 'yyyy-MM-dd');
+                //    },
+                //    formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                //},
+
+                {
+                    label: '开始时间', name: 'starttime', index: 'starttime', width: 280, align: 'center', sortable: false,
+                    formatter: function (cellvalue, options, rowObject) {
+                        return formatDate(cellvalue, 'yyyy-MM-dd');
+                    },
+                    formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+
+                },
+                {
+                    label: '结束时间', name: 'endtime', index: 'endtime', width: 280, align: 'center', sortable: false,
+                          formatter: function (cellvalue, options, rowObject) {
+                        return formatDate(cellvalue, 'yyyy-MM-dd');
+                    },
+                    formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+
+                }
+            ],
+            viewrecords: true,
+            rowNum: 30,
+            // rowList: [30, 50, 100],
+            pager: "#gridPager",
+            //sortname: 'createdate',
+            //sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            gridComplete: function () {
+                var gridid = this.id;
+                $("#" + this.id).setSelection(selectedRowIndex, false);
+                var rows = $("#" + this.id).jqGrid("getRowData");//获取当前页记录行数据
+                //查询用户对该模块的数据操作权限
+                $(rows).each(function (i, item) {
+                    var html = "";
+                    html += "<a href=\"javascript:show('" + item.id + "')\" title=\"查看\">查看</a>";
+                    if (userid == item.dutyuserid && item.workstate!="已取消") {
+                        html += "<a href=\"javascript:edit('" + item.id + "')\" title=\"编辑\">编辑</a>";
+                    }
+
+                    if (rolename.indexOf("负责人")>=0&& item.workstate != "已取消") {
+                        html += "<a href=\"javascript:cancel('" + item.id + "')\" title=\"取消\">取消</a>";
+                    }
+                    $("td[aria-describedby='" + gridid + "_action']").eq(i).html(html);
+
+                });
+            }
+            //,
+            //loadError: function (xhr, status, error) {
+            //    top.location.href = "../../Login/Index?Login_Error=1";
+            //}
+        });
+        //$gridTable.authorizeColModel()
+        //查询事件
+        $("#btn_Search").click(function () {
+            var $gridTable = $('#gridTable');
+            var queryJson = {
+                content: $("#content").val(),
+                dutyuserid: $("#dutyuser").val(),
+                starttime: $("#starttime").val(),
+                endtime: $("#endtime").val(),
+                workstate: $("#workstate").val()
+            }
+            $gridTable.jqGrid('setGridParam', {
+                postData: { queryJson: JSON.stringify(queryJson) }, page: 1
+            }).trigger('reloadGrid');
+        });
+        //查询回车
+        $('#txt_Keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+    }
+    function onNodeSelected(item) {
+        deptid = item.id;
+        _parentId = item.EnCode;
+        _isOrg = item.Sort;
+        $('#btn_Search').trigger("click");
+    }
+
+
+    //查看
+    @*function show(id) {
+        var keyValue = id;
+        if (checkedRow(keyValue)) {
+            var dlg = dialogOpen({
+                id: "Detail",
+                title: '查看',
+                url: '/../@Url.Action("IndexAudit")?keyValue=' + keyValue,
+                width: "1000px",
+                height: "750px",
+                btn: ['关闭'],
+                callBack: function (iframeId) {
+                    top.layer.close(dlg);
+
+                }, end() {
+                    ref();
+                }
+            });
+        }
+    }*@
+    function show(id) {
+        var dlg = dialogOpen({
+                id: "Detail",
+                title: '查看',
+             url: '/..@Url.Action("Edit")?keyvalue='+id+"&type=show",
+            width: '820px',
+            height: ($(top.window).height() - 720) + 'px',
+                btn: ['关闭'],
+                callBack: function (iframeId) {
+                    top.layer.close(dlg);
+
+                }
+            });
+    }
+        function edit(id) {
+        dialogOpen({
+            id: 'edit',
+            title: '编辑定期任务',
+            url: '/..@Url.Action("Edit")?keyvalue='+id+"&type=state",// '/Works/Safetyday/Form',
+            width: '820px',
+            height: ($(top.window).height() - 720) + 'px',
+            callBack: function (iframeId) {
+            top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+    function cancel(recId) {
+        layer.confirm('确定要取消此任务？', { btn: ['确定', '取消'] }, function () {
+            layer.closeAll();
+            layer.load("取消中");
+            jQuery.post('@Url.Action("PostState")', { keyvalue: recId, state:'取消' }, function (data) {
+                layer.closeAll();
+                if (data.message.indexOf("操作成功")>=0) {
+                    $("#gridTable").trigger("reloadGrid");
+                }
+                else {
+                    layer.msg(data.message)
+                };
+            }, 'json');
+        });
+    }
+
+    function ref() {
+        var $gridTable = $('#gridTable');
+        var queryJson = {
+            content: $("#content").val(),
+            dutyuserid: $("#dutyuser").val(), starttime: $("#starttime").val(),
+            endtime: $("#endtime").val(),
+            workstate: $("#workstate").val()
+        }
+        $gridTable.jqGrid('setGridParam', {
+            postData: { queryJson: JSON.stringify(queryJson) }, page: 1
+        }).trigger('reloadGrid');
+    }
+
+</script>
+
+
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    @*<div class="ui-layout-west">
+            <div class="west-Panel">
+                <div class="panel-Title">
+                    <div class="col-md-10">
+                        组织机构
+                    </div>
+                    <div class="col-md-2 text-right" style="padding-right:8px;">
+                        <i class="fa fa-arrow-left" onclick="setBar(this)" style="cursor:pointer;" title="展开/收起"></i>
+                    </div>
+                </div>
+                 @Html.Partial("~/Areas/BaseManage/Views/Department/Tree.cshtml")
+
+            </div>
+        </div>*@
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+
+            <div id="titlebar" class="panel-Title">部门定期任务</div>
+            <div id="toolbar" class="titlePanel">
+                <div class="title-search">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label for="team">选择日期</label>
+                            <input type="text" class="form-control" id="starttime" onfocus="WdatePicker();" value="@DateTime.Now.ToShortDateString()" readonly="readonly">
+                            - <input type="text" class="form-control" id="endtime" onfocus="WdatePicker();" value="@DateTime.Now.ToShortDateString()" readonly="readonly">
+                        </div>
+                        <div class="form-group">
+                            <label for="team">责任人</label>
+                            <select id="dutyuser">
+                                <option value="" selected="selected">全部</option>
+                                @{ var deptuser = ViewData["deptuser"] as List<UserEntity>;
+                                                foreach (var item in deptuser)
+                                                {
+                                    <option value="@item.UserId">@item.RealName</option> } }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="team">任务状态</label>
+                            <select id="workstate">
+                                <option value="" selected="selected">全部</option>
+                                <option value="未完成">未完成</option>
+                                <option value="进行中">进行中</option>
+                                <option value="已取消">已取消</option>
+                                <option value="已完成">已完成</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="team">工作内容</label>
+                            <input type="text" class="form-control" id="content" placeholder="请输入工作内容关键字">
+                        </div>
+                        <div class="form-group">
+                            <a id="btn_Search" class="btn btn-primary" onclick="fn$query();">
+                                <i class="fa fa-search"></i> 查询
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="toolbar">
+                    <div class="btn-group">
+                        <a id="replace" class="btn btn-default" onclick="reload();"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+                    </div>
+                    <div class="btn-group">
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        <div class="gridPanel">
+            <table id="gridTable"></table>
+            <div id="gridPager"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+

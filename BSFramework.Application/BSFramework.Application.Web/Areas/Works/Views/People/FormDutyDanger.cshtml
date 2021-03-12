@@ -1,0 +1,122 @@
+﻿@model BSFramework.Application.Entity.BaseManage.RoleEntity
+@{
+    ViewBag.Title = "FormDutyDanger";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")" />
+
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/hammer.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<script>
+
+
+    function AcceptClick() {
+        if (!valid()) {
+            return false;
+        }
+        var json = jQuery('#form1').serializeJSON();
+        $.SaveForm({
+            url: '/..@Url.Action("SaveDutyDanger")',
+            param: json,
+            loading: "数据提交中...",
+            success: function (data) {
+                    $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        });
+
+    }
+    function valid() {
+        var name = $("#DutyContent1").val();
+        var danger= $("#Danger").val();
+        var measure= $("#Measure").val();
+        if (name == ""&&danger==""&&measure=="") {
+            dialogMsg('岗位安全职责、危险点及防范措施不能全部为空！', 0);
+            return false;
+        }
+
+        return true;
+    }
+</script>
+<style>
+    table tr {
+        height: 45px;
+    }
+</style>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" >
+            <table class="form">
+                <tr>
+                    <td class="formTitle">岗位名称</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.FullName, new { @class = "form-control", @readonly = "readonly" })
+                        @Html.HiddenFor(x => x.RoleId)
+
+                    </td>
+                    <td class="formTitle">部门名称</td>
+                    <td class="formValue">
+
+                        @Html.TextBoxFor(x => x.DepartmentName, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">岗位安全职责</td>
+                </tr>
+                <tr>
+                    <td class="formValue" colspan="4">
+                        @Html.TextAreaFor(x => x.DutyContent1, new { @style = "height:450px;margin-left:5px;", @class = "form-control", placeholder = "" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle">修订人员</td>
+                    <td class="formValue">
+
+                        @Html.TextBoxFor(x => x.ReviseUserName1, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">修订时间</td>
+                    <td class="formValue">
+
+                        @Html.TextBoxFor(x => x.ReviseDate1, new { @class = "form-control", @readonly = "readonly", Value = string.Format("{0:yyyy-MM-dd HH:mm}", Model.ReviseDate1.Value) })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">岗位危险及防范措施</td>
+                </tr>
+                <tr>
+                    <td class="formTitle" colspan="2" style="text-align:left;">岗位存在的危险点：</td>
+
+                    <td class="formTitle" colspan="2" style="text-align:left;">危险点防范措施：</td>
+
+                </tr>
+                <tr>
+                    <td class="formValue" colspan="2">
+                        @Html.TextAreaFor(x => x.Danger, new { @style = "height:300px;margin-left:5px;", @class = "form-control", placeholder = "" })
+                    </td>
+                    <td class="formValue" colspan="2">
+                        @Html.TextAreaFor(x => x.Measure, new { @style = "height:300px;margin-left:5px;", @class = "form-control", placeholder = "" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">修订人员</td>
+                    <td class="formValue">
+
+                        @Html.TextBoxFor(x => x.ReviseUserName2, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">修订时间</td>
+                    <td class="formValue">
+
+                        @Html.TextBoxFor(x => x.ReviseDate2, new { @class = "form-control", @readonly = "readonly", Value = string.Format("{0:yyyy-MM-dd HH:mm}", Model.ReviseDate2.Value) })
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

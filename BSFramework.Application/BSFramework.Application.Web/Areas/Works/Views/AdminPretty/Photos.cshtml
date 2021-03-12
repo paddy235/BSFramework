@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Photos";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+@{
+    var photos = (IList<BSFramework.Application.Entity.PublicInfoManage.FileInfoEntity>)ViewData["Photos"];
+}
+<div style="height:100%;width:100%;">
+    @if (photos != null)
+    {
+        for (int i = 0; i < photos.Count(); i++)
+        {
+            <div style="float:left;margin:15px 30px;">
+                <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = photos[i].FileId, area = "PublicInfoManage" })" width="200" height="150" alt="">
+            </div>
+        }
+    }
+</div>

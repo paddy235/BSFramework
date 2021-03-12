@@ -1,0 +1,14 @@
+﻿@{ ViewBag.Title = "预览";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml"; }
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/pdfjs/pdf.js")"></script>
+<script src="@Url.Content("~/Content/scripts/pdfjs/pdf.worker.js")"></script>
+<script>
+    $(function () {
+        //BuildPagePdf(1);
+        var url = "../../Content/scripts/pdfjs/web/viewer.html?file=" + '@Request.QueryString["httpUrl"]';
+        location.href = url;
+    });
+
+</script>
+

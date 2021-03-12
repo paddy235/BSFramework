@@ -1,0 +1,56 @@
+﻿@{
+    ViewBag.Title = "MoreOverView";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<script>
+
+    $(function () {
+        GetGrid();
+
+    })
+
+
+    function GetGrid() {
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTableP');
+        $gridTable.jqGrid({
+            url: "../../BaseManage/Department/GetMore1",
+            datatype: "json",
+            height: $(window).height() - 170,
+            autowidth: true,
+            colModel: [
+
+                { label: '班组名称', name: 'Bz', index: 'Bz', width: 350, align: 'center' },
+                { label: '任务完成率', name: 'Num', index: 'Num', width: 130, align: 'center' }
+            ],
+            viewrecords: true,
+            rowNum: -1,
+            // rowList: [30, 50, 100],
+           // pager: false,
+            sortname: 'count',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            onSelectRow: function () {
+               // selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            },
+            loadError: function (xhr, status, error) {
+                top.location.href = "../../Login/Index?Login_Error=1";
+            }
+        });
+    }
+</script>
+<div style="margin-left: 10px; margin-right: 10px; margin-top:10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div class="gridPanel" style="padding-top:20px;">
+            <table id="gridTableP"></table>
+            @*<div id="gridPager"></div>*@
+        </div>
+
+    </div>
+
+</div>

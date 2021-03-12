@@ -1,0 +1,173 @@
+﻿@{
+    ViewBag.Title = "安卓终端菜单配置页";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+<script>
+    $(function () {
+        InitialPage();
+        GetGrid();
+        //查询事件
+        $("#btn_Search").click(function () {
+            $("#gridTable").jqGrid('setGridParam', {
+                postData: {
+                    keyword: $("#txt_Keyword").val()
+                }
+            }).trigger('reloadGrid');
+        });
+    });
+    //初始化页面
+    function InitialPage() {
+        //resize重设(表格、树形)宽高
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#gridTable').setGridWidth(($('.gridPanel').width()));
+                $("#gridTable").setGridHeight($(window).height() - 108.5);
+            }, 200);
+            e.stopPropagation();
+        });
+    }
+    //加载表格
+    function GetGrid() {
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            url: '@Url.Action("GetMenuTreeJson")',
+            datatype: "json",
+            height: $(window).height() - 108.5,
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'MenuId', hidden: true },
+                { label: 'ParentId', name: 'ParentId', hidden: true },
+                { label: 'Sort', name: 'Sort', hidden: true },
+                { label: "名称", name: "MenuName", width: 350, align: "center", sortable: false },
+                {
+                    label: "有效", name: "IsEffective", width: 135, align: "center", sortable: false,
+                    formatter: function (cellvalue, options, rowObject) {
+                        return cellvalue == true ? "<i class=\"fa fa-toggle-on\"></i>" : "<i class=\"fa fa-toggle-off\"></i>";
+                    }
+                },
+                { label: "描述", name: "Description", width: 135, align: "center", sortable: false }
+            ],
+            treeGrid: true,
+            treeGridModel: "nested",
+            ExpandColumn: "IsEffective",
+            rowNum: "all",
+            rownumbers: true,
+            onSelectRow: function (rowid) {
+                selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            }
+        });
+
+    }
+
+    //
+    function del() {
+
+        var MenuId = $("#gridTable").jqGridRowValue("MenuId");
+        var MenuName = $("#gridTable").jqGridRowValue("MenuName");
+        var ParentId = $("#gridTable").jqGridRowValue("ParentId");
+        if (MenuId != "") {
+            $.RemoveForm({
+                url: '/..@Url.Action("RemoveForm")',
+                param: { keyValue: MenuId },
+                success: function (data) {
+                    if (data.message == "删除成功。") {
+                        $("#gridTable").resetSelection();
+                        $("#gridTable").trigger("reloadGrid");
+                    }
+                }
+            })
+        } else {
+            dialogMsg('请选择需要删除的节点！', 0);
+        }
+    }
+    //新增
+    function btn_add() {
+        var MenuId = $("#gridTable").jqGridRowValue("MenuId");
+        var MenuName = $("#gridTable").jqGridRowValue("MenuName");
+        if (MenuName.length > 20) {
+            MenuName = MenuName.split('</span>')[0];
+            var count = MenuName.split('>').length;
+            MenuName = MenuName.split('>')[count - 1];
+        }
+        var ParentId = $("#gridTable").jqGridRowValue("ParentId");
+        if (MenuId != "" && (ParentId == "0" || ParentId == "")) {
+            dialogOpen({
+                id: "Form",
+                title: '添加菜单',
+                url: "/..@Url.Action("Form")?MenuId=" + MenuId + "&MenuName=" + MenuName,
+                width: "800px",
+                height: "400px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        } else {
+
+            dialogOpen({
+                id: "Form",
+                title: '添加菜单',
+                url: "/..@Url.Action("Form")",
+                width: "800px",
+                height: "400px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+
+
+        }
+
+    }
+
+    //修改菜单
+    function edit() {
+        var MenuId = $("#gridTable").jqGridRowValue("MenuId");
+        if (MenuId == "") { dialogMsg('请选择需要修改的节点！', 0); return false; }
+        dialogOpen({
+            id: "Form",
+            title: '修改菜单',
+            url: "/..@Url.Action("Edit")?keyValue=" + MenuId,
+            width: "800px",
+            height: "400px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+
+
+    }
+</script>
+<div class="ui-layout-center">
+
+    <div class="center-Panel">
+        <div class="panel-Title">功能信息</div>
+        <div class="titlePanel">
+            <div class="title-search">
+                <table>
+                    <tr>
+
+                        <td style="padding-left: 2px;">
+                            <input id="txt_Keyword" type="text" class="form-control" placeholder="请输入要查询关键字" style="width: 200px;" />
+                        </td>
+                        <td style="padding-left: 5px;">
+                            <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="toolbar">
+                <div class="btn-group">
+                    <a id="replace" class="btn btn-default" onclick="reload();"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+                    <a id="add" class="btn btn-default" onclick="btn_add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+                    <a id="edit" class="btn btn-default" onclick="edit()"><i class="fa fa-pencil-square-o"></i>&nbsp;编辑</a>
+                    <a id="delete" class="btn btn-default" onclick="del()"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+                </div>
+            </div>
+        </div>
+        <div class="gridPanel">
+            <table id="gridTable"></table>
+        </div>
+    </div>
+</div>

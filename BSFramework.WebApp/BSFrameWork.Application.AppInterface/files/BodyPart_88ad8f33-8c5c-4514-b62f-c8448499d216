@@ -1,0 +1,297 @@
+Debug: 2019-09-20 08:30:42-1568939442195
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 08:47:50-1568940470898
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 09:19:13-1568942353441
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 09:19:14-1568942354363
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 09:26:20-1568942780409
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 09:28:57-1568942937457
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 09:28:58-1568942938211
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 09:37:36-1568943456166
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 09:39:26-1568943566783
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 09:41:48-1568943708437
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 09:47:37-1568944057127
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 09:56:46-1568944606222
+LaunchActivity
+LaunchActivity
+
+Error: 2019-09-20 09:56:48-1568944608803
+crash_handler
+java.lang.ClassCastException: com.bossien.module.ledger.databinding.LeRecyclerItemDepartmentClassBindingImpl cannot be cast to com.bossien.module.ledger.databinding.LeRecyclerItemDepartmentClassTitleBinding
+	at com.bossien.module.ledger.view.dialog.classselect.ClassItemAdapter.initContentView(ClassItemAdapter.java:43)
+	at com.bossien.module.ledger.view.dialog.classselect.ClassItemAdapter.initContentView(ClassItemAdapter.java:22)
+	at com.bossien.bossienlib.base.adapter.CommonRecyclerMultipleAdapter.onBindViewHolder(CommonRecyclerMultipleAdapter.java:43)
+	at android.support.v7.widget.RecyclerView$Adapter.onBindViewHolder(RecyclerView.java:6781)
+	at android.support.v7.widget.RecyclerView$Adapter.bindViewHolder(RecyclerView.java:6823)
+	at android.support.v7.widget.RecyclerView$Recycler.tryBindViewHolderByDeadline(RecyclerView.java:5752)
+	at android.support.v7.widget.RecyclerView$Recycler.tryGetViewHolderForPositionByDeadline(RecyclerView.java:6019)
+	at android.support.v7.widget.RecyclerView$Recycler.getViewForPosition(RecyclerView.java:5858)
+	at android.support.v7.widget.RecyclerView$Recycler.getViewForPosition(RecyclerView.java:5854)
+	at com.bossien.module.support.main.weight.flowlayout.FlowLayoutManager.onLayoutChildren(FlowLayoutManager.java:125)
+	at android.support.v7.widget.RecyclerView.dispatchLayoutStep2(RecyclerView.java:3924)
+	at android.support.v7.widget.RecyclerView.dispatchLayout(RecyclerView.java:3641)
+	at android.support.v7.widget.RecyclerView.onLayout(RecyclerView.java:4194)
+	at android.view.View.layout(View.java:15671)
+	at android.view.ViewGroup.layout(ViewGroup.java:5038)
+	at android.widget.LinearLayout.setChildFrame(LinearLayout.java:1703)
+	at android.widget.LinearLayout.layoutVertical(LinearLayout.java:1557)
+	at android.widget.LinearLayout.onLayout(LinearLayout.java:1466)
+	at android.view.View.layout(View.java:15671)
+	at android.view.ViewGroup.layout(ViewGroup.java:5038)
+	at android.widget.FrameLayout.layoutChildren(FrameLayout.java:579)
+	at android.widget.FrameLayout.onLayout(FrameLayout.java:514)
+	at android.view.View.layout(View.java:15671)
+	at android.view.ViewGroup.layout(ViewGroup.java:5038)
+	at android.widget.FrameLayout.layoutChildren(FrameLayout.java:579)
+	at android.widget.FrameLayout.onLayout(FrameLayout.java:514)
+	at android.view.View.layout(View.java:15671)
+	at android.view.ViewGroup.layout(ViewGroup.java:5038)
+	at android.widget.FrameLayout.layoutChildren(FrameLayout.java:579)
+	at android.widget.FrameLayout.onLayout(FrameLayout.java:514)
+	at android.view.View.layout(View.java:15671)
+	at android.view.ViewGroup.layout(ViewGroup.java:5038)
+	at android.view.ViewRootImpl.performLayout(ViewRootImpl.java:2086)
+	at android.view.ViewRootImpl.performTraversals(ViewRootImpl.java:1843)
+	at android.view.ViewRootImpl.doTraversal(ViewRootImpl.java:1061)
+	at android.view.ViewRootImpl$TraversalRunnable.run(ViewRootImpl.java:5885)
+	at android.view.Choreographer$CallbackRecord.run(Choreographer.java:767)
+	at android.view.Choreographer.doCallbacks(Choreographer.java:580)
+	at android.view.Choreographer.doFrame(Choreographer.java:550)
+	at android.view.Choreographer$FrameDisplayEventReceiver.run(Choreographer.java:753)
+	at android.os.Handler.handleCallback(Handler.java:739)
+	at android.os.Handler.dispatchMessage(Handler.java:95)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Debug: 2019-09-20 09:56:51-1568944611788
+LaunchActivity
+LaunchActivity
+
+Info: 2019-09-20 09:58:24-1568944704453
+BaseApplication
+onTrimMemory ... level:5
+
+Debug: 2019-09-20 09:58:26-1568944706780
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 10:00:32-1568944832760
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 10:03:36-1568945016852
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 10:07:19-1568945239729
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 10:11:39-1568945499309
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 10:13:59-1568945639357
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 10:16:00-1568945760463
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 10:39:05-1568947145942
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 10:52:55-1568947975889
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 10:53:35-1568948015150
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 11:13:23-1568949203429
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 11:21:11-1568949671869
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 11:24:33-1568949873774
+LaunchActivity
+LaunchActivity
+
+Info: 2019-09-20 11:59:03-1568951943039
+BaseApplication
+onTrimMemory ... level:20
+
+Debug: 2019-09-20 13:41:36-1568958096924
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 14:27:46-1568960866548
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 14:49:18-1568962158668
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 14:53:22-1568962402572
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 15:01:32-1568962892662
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 15:10:47-1568963447695
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 15:15:39-1568963739951
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 15:21:39-1568964099766
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 15:34:04-1568964844121
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 16:24:07-1568967847165
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 16:24:07-1568967847853
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 16:42:54-1568968974260
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 16:43:20-1568969000901
+LaunchActivity
+LaunchActivity
+
+Info: 2019-09-20 16:45:10-1568969110901
+Upload Process
+resume
+
+Info: 2019-09-20 16:45:10-1568969110903
+Upload Process
+resume
+
+Info: 2019-09-20 16:45:12-1568969112040
+Upload Process
+{}
+
+Info: 2019-09-20 16:45:12-1568969112041
+Upload Process
+{}
+
+Info: 2019-09-20 16:45:12-1568969112894
+Upload Process
+pause
+
+Info: 2019-09-20 16:45:12-1568969112896
+Upload Process
+pause
+
+Info: 2019-09-20 16:45:13-1568969113311
+Upload Process
+destroy
+
+Info: 2019-09-20 16:45:13-1568969113311
+Upload Process
+destroy
+
+Debug: 2019-09-20 16:53:53-1568969633033
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 17:07:36-1568970456458
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 17:07:37-1568970457096
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-20 17:12:40-1568970760328
+LaunchActivity
+LaunchActivity
+
+Info: 2019-09-20 17:20:45-1568971245835
+Upload Process
+resume
+
+Info: 2019-09-20 17:20:45-1568971245836
+Upload Process
+resume
+
+Info: 2019-09-20 17:20:46-1568971246428
+Upload Process
+{}
+
+Info: 2019-09-20 17:20:46-1568971246429
+Upload Process
+{}
+
+Info: 2019-09-20 17:21:25-1568971285110
+Upload Process
+pause
+
+Info: 2019-09-20 17:21:25-1568971285112
+Upload Process
+pause
+
+Info: 2019-09-20 17:21:25-1568971285512
+Upload Process
+destroy
+
+Info: 2019-09-20 17:21:25-1568971285514
+Upload Process
+destroy
+

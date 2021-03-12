@@ -1,0 +1,109 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/plugins/layui/css/layui.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/person.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/app.css")" />
+<script src="~/Content/scripts/plugins/echarts/echarts.min.js"></script>
+
+<script>
+    $(function () {
+        $.ajax({
+            url: '@Url.Action("GetData")',
+            type: 'post',
+            data: {},
+            success: function (data) {
+                var rows = data.rows;
+                bindChart(rows);
+            }
+        });
+    });
+    function bindChart(rows) {
+        var array = eval('(' + rows + ')');
+        var name = new Array();
+        var count = new Array();
+        for (var i in array) {
+            name.push(array[i].category);
+            count.push(array[i].value);
+        }
+        var n = echarts.init(document.getElementById("mainChart")), t;
+        //var ecConfig = echarts.config;
+        //var ecConfig1 = require('echarts/config');
+        //function eConsole(param) {
+        //    if (typeof param.seriesIndex != 'undefined') {
+        //        alert(param.name);
+        //    }
+        //}
+        //n.on(ecConfig.EVENT.CLICK, eConsole);
+        n.setOption(
+            {
+                backgroundColor: "#fff",
+                title: {
+                    text: "月度违章次数统计",
+                    left: 15,
+                    top: 15,
+                    textStyle: {
+                        color: "#666666",
+                        fontSize: 24,
+                        fontWeight: 100,
+                        fontFamily: "微软雅黑"
+                    },
+                    subtext: "",
+                    subtextStyle: {
+                        color: "#878787", fontSize: 14, fontWeight: 100, fontFamily: "微软雅黑"
+                    },
+                    itemGap: 20
+                },
+                tooltip: {
+                    trigger: "axis",
+                    axisPointer: {
+                        type: "shadow",
+                        textStyle: { color: "#fff" }
+                    }
+                },
+                //tooltip:
+                //    {
+                //        formatter: function (a) {
+                //            return (a['seriesName'] + '</br>' + a['name'] + ':' + a['value']);
+                //        }
+                //    },
+                legend: {
+                    //data: ["违章次数"],
+                    //x: 15, y: 45, textStyle: { color: "#878787" }
+                },
+                grid: {
+                    borderWidth: 0, top: 100, left: "2%", right: "1%", bottom: "12%", containLabel: !0
+                },
+                xAxis: [{
+                    type: "category",
+                    data: name,
+                    splitLine: !1, axisTick: !1,
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 40,
+                        textStyle: {}
+                    }
+                }],
+                yAxis: [{
+                    type: "value",
+                    splitLine: !1, axisTick: !1,
+                    splitNumber: 1
+                }],
+                series: [{
+                    name: "违章次数", type: "bar", label: { normal: { show: true, position: "top", textStyle: { color: "#87A1F6" } } },
+                    itemStyle: { normal: { color: "#DDE0E5" } },
+                    data: count
+                }]
+            });
+    }
+</script>
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="content" id="mainChart"></div>
+        </div>
+</div>

@@ -1,0 +1,160 @@
+﻿
+@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script src="~/Content/scripts/business/Common.js"></script>
+<script src="~/Content/scripts/layui/layer.js"></script>
+<style>
+
+    i {
+        cursor: pointer;
+    }
+
+        i.on_color {
+            color: #449d44;
+            margin-top: -1px;
+        }
+
+        i.off_color {
+            color: #aaa;
+            margin-top: -1px;
+        }
+</style>
+<script>
+    var keyValue = request('keyValue');
+    var actiontype = request('actiontype');
+    $(function () {
+        initControl();
+    });
+    /**初始化控件 */
+    function initControl() {
+        if (actiontype == "show") {
+            $("input,textarea").attr("disabled", "disabled");
+        }
+        ////获取表单
+        if (!!keyValue) {
+            $.SetForm({
+                url: "@Url.Action("GetDetail")",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#form1").formDeserialize(data);
+                    if (data.State == "未完成") {
+                        $("#StateShow").css("display","none");
+                    }
+                }
+            });
+        }
+
+
+    }
+
+    /** 保存表单 */
+    @*function AcceptClick(IsCommit) {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+
+        var postData = $("#form1").formSerialize(keyValue);
+        postData["CategoryId"]= $("#Category").find("option:selected").val();
+        postData["Category"]= $("#Category").find("option:selected").text(),
+       // postData["IsOpen"] =
+        $.SaveForm({
+            url: "@Url.Action("SaveForm")",
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }*@
+
+
+
+</script>
+<div style="margin-top: 20px; margin-right: 30px;">
+    <table id="form1" class="form">
+        <tr>
+            <th class="formTitle">检查区域@*<font face="宋体">*</font>*@</th>
+            <td class="formValue">
+
+                <input type="hidden" id="ID" name="ID" />
+                <input id="District" name="District" type="text" class="form-control" placeholder="" maxlength="20" isvalid="yes" checkexpession="NotNull" value="" />
+
+            </td>
+            <th class="formTitle">区域编号@*<font face="宋体">*</font>*@</th>
+            <td class="formValue">
+
+                <input id="DistrictCode" name="DistrictCode" type="text" class="form-control" placeholder="" maxlength="20" isvalid="yes" checkexpession="NotNull" value="" />
+
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">登记人@*<font face="宋体">*</font>*@</th>
+            <td class="formValue">
+
+                <input id="CreateUserName" name="CreateUserName" type="text" class="form-control" placeholder="" maxlength="20" isvalid="yes" checkexpession="NotNull" value="" />
+
+            </td>
+            <th class="formTitle">登记时间@*<font face="宋体">*</font>*@</th>
+            <td class="formValue">
+
+                <input id="CreateDate" name="CreateDate" type="text" class="form-control" placeholder="" maxlength="20" isvalid="yes" checkexpession="NotNull" value="" />
+
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">问题描述<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <textarea id="Describe" class="form-control" style="height:100px" maxlength="2000"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">处理措施<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <textarea id="Measure" class="form-control" style="height:100px" maxlength="2000"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">处理情况<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <textarea id="Situation" class="form-control" maxlength="2000"></textarea>
+            </td>
+        </tr>
+
+        <tr>
+            <th class="formTitle">责任部门@*<font face="宋体">*</font>*@</th>
+            <td class="formValue">
+
+                <input id="DutyDeptName" name="DutyDeptName" type="text" class="form-control" placeholder="" maxlength="20" isvalid="yes" checkexpession="NotNull" value="" />
+
+            </td>
+            <th class="formTitle">处理结果@*<font face="宋体">*</font>*@</th>
+            <td class="formValue">
+
+                <input id="State" name="State" type="text" class="form-control" placeholder="" maxlength="20" isvalid="yes" checkexpession="NotNull" value="" />
+
+            </td>
+        </tr>
+        <tr id="StateShow">
+            <th class="formTitle">处理人@*<font face="宋体">*</font>*@</th>
+            <td class="formValue">
+
+                <input id="ModifyUserName" name="ModifyUserName" type="text" class="form-control" placeholder="" maxlength="20" isvalid="yes" checkexpession="NotNull" value="" />
+
+            </td>
+            <th class="formTitle">处理时间@*<font face="宋体">*</font>*@</th>
+            <td class="formValue">
+
+                <input id="ModifyDate" name="ModifyDate" type="text" class="form-control" placeholder="" maxlength="20" isvalid="yes" checkexpession="NotNull" value="" />
+
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+

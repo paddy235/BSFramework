@@ -1,0 +1,1161 @@
+﻿@model  BSFramework.Application.Web.Areas.Works.Models.GetDrillRecordBase
+@{
+    ViewBag.Title = "drillAssess";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+    label {
+     font-weight:50;
+}
+        ul {
+        list-style: none;
+     padding:0;
+    }
+          .step_div ul li > div > div:first-child{padding: 0;}
+        .warp {
+            position: relative;
+        }
+
+            .warp .aside {
+                position: absolute;
+                right: 10px;
+                bottom: 10px;
+                z-index: 10;
+                background-color: #fff;
+                border: none;
+                border-left: 2px solid #e3ebfd;
+                border-top: 2px solid #e3ebfd;
+            }
+
+                .warp .aside p {
+                    color: #666666;
+                    font-size: 16px;
+                    margin-top: 10px;
+                }
+
+                .warp .aside button {
+                    display: block;
+                    width: 100%;
+                    line-height: 58px;
+                    color: #fff;
+                    font-size: 18px;
+                    border: none;
+                }
+
+        .step_main {
+            font-size: 16px;
+        }
+
+        /*演练历史详情页面*/
+        .wrap {
+            position: relative;
+        }
+
+        .drillHistory_main {
+            font-size: 16px;
+            padding: 20px 50px 90px 25px;
+        }
+
+        .drill_div {
+            margin-bottom: 20px;
+        }
+
+      .drill_div > li {
+            margin-bottom: 20px;
+        }
+            .drill_div label {
+                display: inline-block;
+            }
+
+        .drill_list1 > li {
+            height: 44px;
+            margin-bottom: 20px;
+            line-height: 44px;
+        }
+
+            .drill_list1 > li > label {
+                width: 23%;
+            }
+
+            .drill_list1 > li > span {
+                border-bottom: 2px solid #e3ebfd;
+                display: inline-block;
+                height: 44px;
+                width: 72%;
+            }
+
+        .drill_div > div {
+            display: inline-block;
+            width: 92.7%;
+        }
+
+        .content_box {
+            border: 2px solid #e3ebfd;
+            padding: 20px;
+            line-height: 30px;
+        }
+
+        .score_div {
+            line-height: 60px;
+        }
+
+            .score_div i, .score_div .score_span {
+                margin: 0 10px;
+                display: inline-block;
+                width: 32px;
+                height: 60px;
+            }
+
+            .score_div .score_span {
+                color: #999999;
+                font-weight: bold;
+            }
+
+        .drill_div > label {
+            width: 7.3%;
+            float: left;
+        }
+        .score_div > label {
+            margin-right: 30px;
+            cursor: pointer;
+        }
+
+            .score_div > label > span {
+                display: inline-block;
+                height: 30px;
+                width: 30px;
+                background: url("../static/images/checkbox-bg.png");
+                background-repeat: no-repeat;
+                background-position: left center;
+                margin: 15px 10px 0 0;
+                float: left;
+            }
+
+            .score_div > label.check_on > span {
+                background-position: right center;
+            }
+
+        .audio_div {
+            border-bottom: 2px solid #e3ebfd;
+            padding: 18px 0;
+        }
+
+            .audio_div li a {
+                color: #3669e1;
+            }
+
+        .step_div ul li {
+            margin-bottom: 10px;
+        }
+
+            .step_div ul li:last-child {
+                margin-bottom: 0;
+            }
+
+            .step_div ul li > span {
+                display: inline-block;
+                height: 40px;
+                width: 80px;
+                line-height: 40px;
+                text-align: center;
+                background: #f1f4fa;
+                float: left;
+                margin-right: 20px;
+                cursor: pointer;
+            }
+
+                .step_div ul li > span.active {
+                    background: #3669e1;
+                    color: #fff;
+                }
+
+            .step_div ul li > div {
+                display: inline-block;
+                border: 2px solid #e3ebfd;
+                width: calc(100% - 100px);
+            }
+
+                .step_div ul li > div > div {
+                    padding: 10px 20px;
+                }
+
+                    .step_div ul li > div > div:first-child {
+                        border-right: 2px solid #e3ebfd;
+                        width: 80%;
+                    }
+
+        /*应急演练进度页面*/
+        .drill_list {
+            margin-left: 0;
+            margin-right: 0;
+            margin-bottom: 20px;
+            padding-top: 10px;
+        }
+
+            .drill_list li {
+                background:url(@Url.Content("~/Content/styles/static/images/li_bg1.png"))  no-repeat;
+                background-size: 100% 100%;
+                height: 66px;
+                font-size: 24px;
+                color: #fff;
+                line-height: 66px;
+                text-align: center;
+            }
+
+                .drill_list li.active {
+                    background:url(@Url.Content("~/Content/styles/static/images/li_bg2.png")) no-repeat;
+                    background-size: 100% 100%;
+                }
+
+                .drill_list li:first-child {
+                    background:url(@Url.Content("~/Content/styles/static/images/first_li_bg1.png")) no-repeat;
+                    background-size: 100% 100%;
+                }
+
+                    .drill_list li:first-child.active {
+                        background:url(@Url.Content("~/Content/styles/static/images/first_li_bg2.png")) no-repeat;
+                        background-size: 100% 100%;
+                    }
+
+                .drill_list li:last-child {
+                    background:url(@Url.Content("~/Content/styles/static/images/last_li_bg1.png"))  no-repeat;
+                    background-size: 100% 100%;
+                }
+
+                    .drill_list li:last-child.active {
+                        background: url(@Url.Content("~/Content/styles/static/images/last_li_bg2.png")) no-repeat;
+                        background-size: 100% 100%;
+                    }
+
+
+        .response_div {
+            height: 100%;
+        }
+
+        .hide_bg, .points_hide_bg, .hide_bg2 {
+            position: relative;
+        }
+
+        .hide_bg {
+            height: 90px;
+        }
+
+            .hide_bg img, .points_hide_bg img {
+                width: 100%;
+                height: 100%;
+            }
+
+            .hide_bg p, .points_hide_bg p, .hide_bg2 img {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+                font-size: 24px;
+                color: #dfe8f1;
+                font-weight: bold;
+            }
+
+        .points_hide_bg p {
+            font-size: 36px;
+        }
+
+        .response_text, .response_show, .points_show {
+            padding: 15px 20px;
+            line-height: 30px;
+        }
+
+        .response_person {
+            width: 20%;
+        }
+
+        .hide_bg2 {
+            background: #f1f4fa;
+            padding: 10px 0;
+            text-align: center;
+            height: 90px;
+        }
+
+        .height_div {
+        }
+</style>
+<div id="audio-warp" style="height:36px;width:460px;display: none;">
+    <audio id="audio" autoplay></audio>
+</div>
+<!-- Content Wrapper. Contains page content -->
+<div class="main-content">
+    <div class="container-fluid">
+
+        <div class="mg-b-10">
+            <div class="" style="overflow: hidden;">
+                <div class="pull-left title">
+                    <a href="javascript:;">
+                        应急演练
+                    </a>
+                </div>
+            </div>
+
+        </div>
+        <div class="bg-e3ebfd pd-10 warp">
+            <div class="aside pd-20 bd-e3ebfd">
+                <div class="clearfix mg-b-20">
+                    <div class="pull-left" id="qrcode">
+                        @*<img src="@Url.Content(" ~/Content/styles/static/images/erweima.png")">*@
+                    </div>
+                    <div class="pull-right mg-l-10">
+                        <p>用APP扫码</p>
+                        <p>可上传会议</p>
+                        <p class="c-3669e1">图片和音频</p>
+                    </div>
+                </div>
+                @*<button class="bg-3669e1">保存记录</button>*@
+            </div>
+            <div class="bg-fff pd-20 step_main h-100-">
+                <div class="" style="padding-bottom: 20px;">
+                    <ul class="row drill_list">
+                        <li class="col-md-2">
+                            演练目的
+                        </li>
+                        <li class="col-md-2">
+                            情景模拟
+                        </li>
+                        <li class="col-md-2">
+                            职责分配
+                        </li>
+                        <li class="col-md-2">
+                            实施步骤
+                        </li>
+                        <li class="col-md-2">
+                            演练要点
+                        </li>
+                        <li class="col-md-2 active">
+                            演练评估
+                        </li>
+                    </ul>
+                </div>
+
+                <div style="padding-bottom: 180px;">
+                    <div class="drill_div">
+                        <label>方案评估</label>
+                        <div class="content_box">
+                            <!--one-->
+                            <div class="drill_div" name="1">
+
+                                <label style="width:200px">1、预案适应性充分性评审</label>
+
+                            </div>
+                            <!--two-->
+                            <div class="drill_div" name="2" style="display:none">
+
+                                <label style="width:200px">2、人员到位情况</label>
+
+                            </div>
+                            <!--three-->
+                            <div class="drill_div" name="3" style="display:none">
+
+                                <label style="width:200px">3、物质到位情况</label>
+
+                            </div>
+                            <!--four-->
+                            <div class="drill_div" name="4" style="display:none">
+
+                                <label style="width:200px">4、组织协调情况</label>
+
+                            </div>
+                            <br><br><br>
+                            <!--one-->
+                            <div class="drill_div" name="1">
+                                <label style="width:200px">适应性</label>
+                                <ul class="row">
+                                    <li class="col-md-2">
+                                        <input value="0" name="suitable" onclick="ck(this, '0')" type='checkbox'>
+                                        <label onclick="cklabel(this, '0')">全部能执行</label>
+                                    </li>
+                                    <li class="col-md-2">
+                                        <input value="1" name="suitable" onclick="ck(this, '1')" type='checkbox'>
+                                        <label onclick="cklabel(this, '1')">执行过程不够顺利</label>
+                                    </li>
+                                    <li class="col-md-2">
+                                        <input value="2" name="suitable" onclick="ck(this, '2')" type='checkbox'>
+                                        <label onclick="cklabel(this, '2')">明显不适宜</label>
+                                    </li>
+                                </ul>
+                                <br>
+                                <br>
+                                <br>
+                                <label style="width:200px">充分性</label>
+                                <ul class="row">
+                                    <li class="col-md-2">
+                                        <input value="0" name="fullable" onclick="ck(this, '0')" type='checkbox'>
+                                        <label onclick="cklabel(this, '0')">完全满足应急需求</label>
+                                    </li>
+                                    <li class="col-md-2">
+                                        <input value="1" name="fullable" onclick="ck(this, '1')" type='checkbox'>
+                                        <label onclick="cklabel(this, '1')">基本满足应急需求</label>
+                                    </li>
+                                    <li class="col-md-2">
+                                        <input value="2" name="fullable" onclick="ck(this, '2')" type='checkbox'>
+                                        <label onclick="cklabel(this, '2')">不充分，必须修改</label>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--two-->
+                            <div class="drill_div" name="2" style="display:none">
+                                <label style="width:200px">人员到位</label>
+                                <ul class="row">
+                                    <li class="col-md-2">
+                                        <input value="0" name="personstandby" onclick="ck(this, '0')" type='checkbox'>
+                                        <label onclick="cklabel(this, '0')">迅速准确</label>
+                                    </li>
+                                    <li class="col-md-2">
+                                        <input value="1" name="personstandby" onclick="ck(this, '1')" type='checkbox'>
+                                        <label onclick="cklabel(this, '1')">基本按时到位</label>
+                                    </li>
+                                    <li class="col-md-2">
+                                        <input value="2" name="personstandby" onclick="ck(this, '2')" type='checkbox'>
+                                        <label onclick="cklabel(this, '2')">个别人员不到位</label>
+                                    </li>
+                                    <li class="col-md-2">
+                                        <input value="3" name="personstandby" onclick="ck(this, '3')" type='checkbox'>
+                                        <label onclick="cklabel(this, '3')">重点人员不到位</label>
+                                    </li>
+                                </ul>
+                                <br>
+                                <br>
+                                <br>
+                                <label style="width:200px">人员职责</label>
+                                <ul class="row">
+                                    <li class="col-md-2">
+                                        <input value="0" name="personstandbyduty" onclick="ck(this, '0')" type='checkbox'>
+                                        <label onclick="cklabel(this, '0')">职责明确，操作熟练</label>
+                                    </li>
+                                    <li class="col-md-2">
+                                        <input value="1" name="personstandbyduty" onclick="ck(this, '1')" type='checkbox'>
+                                        <label onclick="cklabel(this, '1')">职责明确，操作不熟练</label>
+                                    </li>
+                                    <li class="col-md-2">
+                                        <input value="2" name="personstandbyduty" onclick="ck(this, '2')" type='checkbox'>
+                                        <label onclick="cklabel(this, '2')">职责不明确，操作不熟练</label>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--three-->
+                            <div class="drill_div" name="3" style="display:none">
+                                <label style="width:200px">现场物质</label>
+                                <ul class="row">
+                                    <li class="col-md-2">
+                                        <input value="0" name="sitesupplies" onclick="ck(this, '0')" type='checkbox'>
+                                        <label onclick="cklabel(this, '0')">充分、有效</label>
+                                    </li>
+                                    <li class="col-md-2">
+                                        <input value="1" name="sitesupplies" onclick="ck(this, '1')" type='checkbox'>
+                                        <label onclick="cklabel(this, '1')">不充分</label>
+                                    </li>
+                                    <li class="col-md-2">
+                                        <input value="2" name="sitesupplies" onclick="ck(this, '2')" type='checkbox'>
+                                        <label onclick="cklabel(this, '2')">严重缺乏</label>
+                                    </li>
+                                </ul>
+                                <br>
+                                <br>
+                                <br>
+                                <label style="width:200px">人员职责</label>
+                                <ul class="row">
+                                    <li class="col-md-2">
+                                        <input value="0" name="sitesuppliesduty" onclick="ck(this, '0')" type='checkbox'>
+                                        <label onclick="cklabel(this, '0')">防护到位</label>
+                                    </li>
+                                    <li class="col-md-2">
+                                        <input value="1" name="sitesuppliesduty" onclick="ck(this, '1')" type='checkbox'>
+                                        <label onclick="cklabel(this, '1')">防护不到位</label>
+                                    </li>
+                                    <li class="col-md-2">
+                                        <input value="2" name="sitesuppliesduty" onclick="ck(this, '2')" type='checkbox'>
+                                        <label onclick="cklabel(this, '2')">部分防护不到位</label>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--four-->
+                            <div class="drill_div" name="4" style="display:none">
+                                <label style="width:200px">整体组织</label>
+                                <ul class="row">
+                                    <li class="col-md-2">
+                                        <input value="0" name="wholeorganize" onclick="ck(this, '0')" type='checkbox'>
+                                        <label onclick="cklabel(this, '0')">准确、高效、满足需求</label>
+                                    </li>
+                                    <li class="col-md-2">
+                                        <input value="1" name="wholeorganize" onclick="ck(this, '1')" type='checkbox'>
+                                        <label onclick="cklabel(this, '1')">效率低、有待改进</label>
+                                    </li>
+                                </ul>
+                                <br>
+                                <br>
+                                <br>
+                                <label style="width:200px">组织分工</label>
+                                <ul class="row">
+                                    <li class="col-md-2">
+                                        <input value="0" name="dividework" onclick="ck(this, '0')" type='checkbox'>
+                                        <label onclick="cklabel(this, '0')">安全、快速</label>
+                                    </li>
+                                    <li class="col-md-2">
+                                        <input value="1" name="dividework" onclick="ck(this, '1')" type='checkbox'>
+                                        <label onclick="cklabel(this, '1')">基本完成任务</label>
+                                    </li>
+                                    <li class="col-md-2">
+                                        <input value="2" name="dividework" onclick="ck(this, '2')" type='checkbox'>
+                                        <label onclick="cklabel(this, '2')">效率低未完成任务</label>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--five-->
+                            <div class="drill_div" name="5" style="display:none">
+                                <label style="width:200px">5、实战效果评价</label>
+                                <br>
+                                <br>
+                                <ul class="row">
+                                    <li class="col-md-2">
+                                        <input value="0" name="effectevaluate" onclick="ck(this, '0')" type='checkbox'>
+                                        <label onclick="cklabel(this, '0')">达到预期目标</label>
+                                    </li>
+                                    <li class="col-md-10">
+                                        <input value="1" name="effectevaluate" onclick="ck(this, '1')" type='checkbox'>
+                                        <label onclick="cklabel(this, '1')">基本达到目的，部分环节有待改善</label>
+                                    </li>
+                                </ul>
+                                <br>
+                                <br>
+                                <br>
+                                <ul class="row">
+                                    <li class="col-md-2">
+                                        <input value="2" name="effectevaluate" onclick="ck(this, '2')" type='checkbox'>
+                                        <label onclick="cklabel(this, '2')">没达到目的，需重新演练</label>
+                                    </li>
+                                    <li class="col-md-2">
+                                        <input value="3" name="effectevaluate" onclick="ck(this, '3')" type='checkbox'>
+                                        <label onclick="cklabel(this, '3')">无</label>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--six-->
+                            <div class="drill_div" name="6" style="display:none">
+                                <label style="width:200px">6、支援部门协作性</label>
+                                <br><br>
+                                <ul class="row">
+                                    <li class="col-md-2">报告上级：</li>
+                                    <li class="col-md-2">
+                                        <input value="0" name="reportsuperior" onclick="ck(this, '0')" type='checkbox'>
+                                        <label onclick="cklabel(this, '0')">报告及时</label>
+                                    </li>
+                                    <li class="col-md-2">
+                                        <input value="1" name="reportsuperior" onclick="ck(this, '1')" type='checkbox'>
+                                        <label onclick="cklabel(this, '1')">联系不上</label>
+                                    </li>
+                                </ul>
+                                <br>
+                                <br>
+                                <br>
+                                <ul class="row">
+                                    <li class="col-md-2">救援、后勤配合：</li>
+                                    <li class="col-md-2">
+                                        <input value="0" name="rescue" onclick="ck(this, '0')" type='checkbox'>
+                                        <label onclick="cklabel(this, '0')">按要求协作练</label>
+                                    </li>
+                                    <li class="col-md-2">
+                                        <input value="1" name="rescue" onclick="ck(this, '1')" type='checkbox'>
+                                        <label onclick="cklabel(this, '1')">行动迟缓</label>
+                                    </li>
+                                </ul>
+                                <br>
+                                <br>
+                                <br>
+
+                                <ul class="row">
+                                    <li class="col-md-2">警戒、撤离配合：</li>
+                                    <li class="col-md-2">
+                                        <input value="0" name="evacuate" onclick="ck(this, '0')" type='checkbox'>
+                                        <label onclick="cklabel(this, '0')">按要求配合和</label>
+                                    </li>
+                                    <li class="col-md-2">
+                                        <input value="1" name="evacuate" onclick="ck(this, '1')" type='checkbox'>
+                                        <label onclick="cklabel(this, '1')">不配合</label>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--seven-->
+                            <div class="drill_div" name="7" style="display:none">
+                                <label style="width:200px">7、存在问题和改进措施</label>
+                                <div>
+                                    <table class="table" style="border:1px solid #e3ebfd;text-align:center;">
+                                        <colgroup>
+
+                                            <col style="" />
+                                            <col style="" />
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th class="bg-fff" style="text-align:center;"></th>
+                                                <th class="bg-fff" style="text-align:center;">存在问题</th>
+                                                <th class="bg-fff" style="text-align:center;">改进措施
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table_set"></tbody>
+                                    </table>
+                                </div>
+                                <div class="text-center table bg-fff" style="border-top:1px solid #e3ebfd;padding:10px 0; margin-bottom:6px;">
+                                    <a class="add icon-btn" href="javascript:;" onclick="btn_add()" id="btn-new"></a>
+                                </div>
+                            </div>
+                            <!--8-->
+                            <div class="drill_div" name="8" style="width:100%;height:150px;display:none">
+                                <label style="width:200px">8、评价人员</label>
+                                <div id="userPerson" style="border:1px solid #e3ebfd;height:150px" name="userPerson">
+                                    <span style="display:none" name="personid">
+
+                                    </span>
+                                    <span name="Persons" style="font-size: 23px;">
+
+                                    </span>
+                                </div>
+                            </div>
+                            <br><br><br><br><br>
+                            <div class="text-left">
+                                <button class="my-btn " disabled="disabled" id="ckupbtn" onclick="ckup()">上一题</button>
+                                <button class="my-btn bg-3669e1" id="ckgobtn" onclick="ckgo()">下一题</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="drill_div">
+                        <label>音频记录</label>
+                        <div class="audio_div">
+                            <ul class="row">
+                                @{
+                                    var audioList = Model.data.vediolist.Where(x => x.filepath.Contains("mp3"));
+
+
+                                    foreach (var item in audioList)
+                                    {
+
+                                        var filePath = item.filepath;
+
+                                        var FileName = item.filename;
+                                        <li class="col-md-2"><div onclick="play(this)" class="play-audio" data-url="@filePath"><img src="../../Content/styles/static/images/horn-icon.png" width="24" />&nbsp;&nbsp;@FileName </div></li>
+
+                                    }
+
+                                }
+                            </ul>
+                        </div>
+
+                        <div class="drill_div">
+                            <label>演练照片</label>
+                            <div>
+                                <ul class="row" id="photos">
+                                    @{
+                                        var pic = Model.data.picturelist.Where(x => x.filepath.Contains(".jpg") || x.filepath.Contains(".png") || x.filepath.Contains(".jpeg"));
+                                        int k = 0;
+
+                                        var picJson = "";
+                                        foreach (var item in pic)
+                                        {
+
+                                            var filePath = item.filepath;
+                                            picJson += Html.Raw("{ src: '" + filePath + "'");
+
+                                            <li class="col-md-2"><img onclick="playPic(this, @k)" src="@filePath" style="width:160px;height:120px;" /></li>
+
+                                            picJson += "},";
+                                            k++;
+                                        }
+                                        if (picJson.Length > 2)
+                                        {
+                                            picJson = picJson.Substring(0, picJson.Length - 1);
+                                        }
+
+                                        var GetpicJosn = Html.Raw(HttpUtility.HtmlDecode(picJson));
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="drill_div">
+                            <label style="line-height: 60px;">自评分</label>
+                            <div class="score_div">
+                                <i><img onclick="getScore(1)" name="score" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"><span style="display:none">1</span></i>
+                                <i><img onclick="getScore(2)" name="score" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"><span style="display:none">2</span></i>
+                                <i><img onclick="getScore(3)" name="score" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"><span style="display:none">3</span></i>
+                                <i><img onclick="getScore(4)" name="score" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"><span style="display:none">4</span></i>
+                                <i><img onclick="getScore(5)" name="score" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"><span style="display:none">5</span></i>
+                                <span class="score_span" id="txtScore">0分</span>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button class="my-btn bg-3669e1 mg-r-15" onclick="up()">上一步</button>
+                            <button class="my-btn bg-3669e1" onclick="go()">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="main-footer">
+                武汉博晟安全技术股份有限公司   版权所有
+            </footer>
+        </div>
+
+    </div>
+    <!-- /.content-wrapper -->
+    <div class="sign addr" style="display:none;" id="myperson">
+        <ul class="nav my-nav" style="text-align:center;">
+
+            @{
+                var person = ViewBag.person;
+                foreach (var item in person)
+                {
+                    <li data-id="@Html.Raw(item.Value)">
+
+                        <span>@Html.Raw(item.Text)</span>
+                        <span class="my-radio"></span>
+                    </li>
+                }
+
+            }
+        </ul>
+        <div class="text-center mg-t-10">
+            <button class="btn bg-3669e1 c-fff" style="width:200px;">确定</button>
+        </div>
+    </div>
+    <!-- /.content-wrapper -->
+
+    <script src="@Url.Content("~/Content/scripts/plugins/audiojs/audio.min.js")"></script>
+
+    <script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/plugins/qrcode/qrcode.min.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/bootstrap/js/bootstrap.min.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+    <link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/launch-activity.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/app.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/before.css")" />
+    <script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/base.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+    <script>
+    var entity = @Html.Raw(System.Web.HttpUtility.HtmlDecode(ViewBag.content));
+        function btn_add() {
+            jQuery('#table_set').append("<tr class='grid-row'>" +
+                        "<td><a class='c-orange' onclick='deleteTr(this);' style='color:orange;cursor:pointer;'>删除</a></td><td><input  type='text' class='form-control'/>" +
+                        "</td><td><input  type='text' class='form-control'/></td></tr>")
+        }
+        jQuery('#myperson button').click(function () {
+            layer.closeAll();
+            return false;
+        });
+        var getThis;
+        jQuery("div[name='userPerson']").click(function () {
+            var size = jQuery('#myperson li').size();
+            var h = 52 * (size + 1) + 60;
+            var winH = $(window).height();
+            if (h > winH - 100) {
+                h = winH - 100
+            }
+            getThis = this;
+            var personid = getThis.children[0].innerText;
+            var personidList = personid.split(',');
+            jQuery('#myperson li span.on').each(function () {
+                jQuery(this).prev().prev().val('False');
+                jQuery(this).removeClass('on');
+            });
+            jQuery('#myperson li span').each(function () {
+                var id = jQuery(this).parent().data('id')
+                for (var i = 0; i < personidList.length; i++) {
+                    if (personidList[i] == id) {
+
+                        jQuery(this).prev().prev().val('True');
+                        jQuery(this).addClass('on');
+
+                    }
+
+                }
+
+            });
+            layer.open({
+                area: ['300px', h + 'px'],
+                title: '选择参加人员',
+                type: 1,
+                content: $('#myperson'),
+                end() {
+                    $('#myperson').hide();
+                }
+            });
+        });
+        jQuery('.my-radio').click(function () {
+            if (jQuery(this).hasClass('on')) {
+                jQuery(this).prev().prev().val('False');
+                jQuery(this).removeClass('on');
+            }
+            else {
+                jQuery(this).prev().prev().val('True');
+                jQuery(this).addClass('on');
+            }
+
+            var names = '', userids = '';
+            jQuery('#myperson li span.on').each(function () {
+                userids += jQuery(this).parent().data('id') + ','
+                names += jQuery(this).prev().text() + ','
+            });
+            var Persons = getThis.children[1];
+            var personid = getThis.children[0];
+            Persons.innerHTML = "";
+            personid.innerHTML = "";
+            Persons.innerHTML = names.replace(/,$/, '');
+            personid.innerHTML = userids.replace(/,$/, '');
+            //jQuery('#PersonId').val(userids.replace(/,$/, ''));
+            //jQuery('#Persons').val(names.replace(/,$/, ''));
+        });
+        function deleteTr(o) {
+            jQuery(o).parent().parent().remove();
+        } function getTable() {
+            var data = new Array();
+            $("#table_set input").each(function (i, o) {
+                data.push(jQuery(this).val())
+            })
+            return data
+        }
+        var index = 1;
+        function ckup() {
+            $("div[name='" + index + "']").css("display", "none");
+            index--
+            if (index == 1) {
+                $("#ckupbtn").attr("disabled", true);
+                $("#ckupbtn").removeClass("bg-3669e1");
+            }
+            if (index == 7) {
+                $("#ckgobtn").removeAttr("disabled");
+                $("#ckgobtn").addClass("bg-3669e1");
+            }
+            $("div[name='" + index + "']").css("display", "");
+        }
+        function ckgo() {
+            if (index == 1) {
+
+                if ($("input[name='suitable']:checked").val() == undefined) {
+
+                    layer.msg('请选择适宜性问题！');
+                    return;
+
+                }
+                if ($("input[name='fullable']:checked").val() == undefined) {
+                    layer.msg('请选择充分性问题！')
+                    return;
+                }
+
+            }
+            if (index == 2) {
+                if ($("input[name='personstandby']:checked").val() == undefined) {
+                    layer.msg('请选择人员到位问题！')
+                    return;
+                }
+                if ($("input[name='personstandbyduty']:checked").val() == undefined) {
+                    layer.msg('请选择人员到位职责问题！')
+                    return;
+                }
+            }
+            if (index == 3) {
+                if ($("input[name='sitesupplies']:checked").val() == undefined) {
+                    layer.msg('请选择现场物资问题！')
+                    return;
+                }
+                if ($("input[name='sitesuppliesduty']:checked").val() == undefined) {
+                    layer.msg('请选择物资到位人员职责问题！')
+                    return;
+                }
+            }
+
+            if (index == 4) {
+                if ($("input[name='wholeorganize']:checked").val() == undefined) {
+                    layer.msg('请选择现场物资问题！')
+                    return;
+                }
+                if ($("input[name='dividework']:checked").val() == undefined) {
+                    layer.msg('请选择物资到位人员职责问题！')
+                    return;
+                }
+            }
+            if (index == 5) {
+                if ($("input[name='effectevaluate']:checked").val() == undefined) {
+                    layer.msg('请选择实战效果评价问题！')
+                    return;
+                }
+
+            }
+            if (index == 6) {
+                if ($("input[name='reportsuperior']:checked").val() == undefined) {
+                    layer.msg('请选择报告上级问题！')
+                    return;
+                }
+                if ($("input[name='rescue']:checked").val() == undefined) {
+                    layer.msg('请选择救援、后援配合问题！')
+                    return;
+                } if ($("input[name='evacuate']:checked").val() == undefined) {
+                    layer.msg('请选择警戒撤离配合问题！')
+                    return;
+                }
+            }
+            $("div[name='" + index + "']").css("display", "none");
+            
+            index++;
+            if (index == 2) {
+                $("#ckupbtn").removeAttr("disabled");
+                $("#ckupbtn").addClass("bg-3669e1");
+            }
+            if (index == 8) {
+                $("#ckgobtn").attr("disabled", true);
+                $("#ckgobtn").removeClass("bg-3669e1");
+            }
+            $("div[name='" + index + "']").css("display", "");
+        }
+        function ck(ckinput, ckval) {
+
+            $("input[name='" + ckinput.name + "']").each(function (i, o) {
+                var nowval = jQuery(o).val();
+                if (nowval != ckval) {
+                    jQuery(o).removeAttr("checked");
+                } else {
+                    jQuery(o).prop("checked", true);
+                }
+
+            });
+        }
+
+        function cklabel(cklabel, ckval) {
+            $("input[name='" +$(cklabel).prev()[0].name + "']").each(function (i, o) {
+                var nowval = jQuery(o).val();
+                if (nowval != ckval) {
+                    jQuery(o).removeAttr("checked");
+                } else {
+                    jQuery(o).prop("checked", true);
+                }
+
+            });
+        }
+        var myscore = 0;
+        $(function () {
+            //设置命名空间
+            var CodeSTD = window.CodeSTD || {};
+
+            window.CodeSTD = CodeSTD;
+
+
+            CodeSTD.form = function (config) {
+                config = config || {};
+
+                var url = config.url,
+                    method = config.method || 'GET',
+                    params = config.params || {};
+
+                var form = document.createElement('form');
+                form.action = url;
+                form.method = method;
+                form.target = "_self";
+
+                for (var param in params) {
+                    var value = params[param],
+                        input = document.createElement('input');
+
+                    input.type = 'hidden';
+                    input.name = param;
+                    input.value = value;
+
+                    form.appendChild(input);
+                }
+                document.body.appendChild(form);
+                return form;
+            }
+
+            $('.main-sidebar,.main-content').niceScroll({
+                autohidemode: false
+            });
+            $("#qrcode").children().remove();
+            var qrcode = new QRCode(document.getElementById("qrcode"), {
+                width: 120,
+                height: 120
+            });
+            qrcode.clear();
+            qrcode.makeCode('@ViewBag.EmergencyReportId' + "|应急演练");
+        })
+        function playPic(obj, idx) {
+            var json = {
+                "data": [@GetpicJosn]
+            }
+            json.start = idx;
+            layer.photos({
+                photos: json,
+                anim: 5
+            })
+        }
+        function play(obj) {
+            var url = $(obj).data('url');
+            $('#audio').attr('src', url);
+            audiojs.events.ready(function () {
+                audiojs.createAll();
+            })
+            layer.open({
+                type: 1,
+                area: ['460px', '36px'],
+                content: $('#audio-warp '),
+                title: false,
+                end: function () {
+                    $('#audio-warp').html('<audio id="audio" autoplay></audio>').css('display', 'none');
+                }
+            });
+        }
+
+        function getScore(i) {
+            var j = 1;
+            myscore = i;
+            jQuery("#txtScore").text(i + "分");
+            jQuery("img[name='score']").each(function () {
+                if (j <= i) {
+                    this.src = "@Url.Content("~/Content/styles/static/images/score_icon1.png")";
+                } else {
+                    this.src = "@Url.Content("~/Content/styles/static/images/score_icon2.png")";
+                }
+                j = j + 1;
+            });
+        }
+
+        function up() {
+            var data = JSON.stringify(entity);
+            //window.location.href = "@Url.Action("drillPoints")?entity=" + data;
+              var form = new CodeSTD.form({
+            url: '@Url.Action("drillPoints")',
+            method: 'POST',
+            params: {
+                entity: data
+            }
+        })
+
+        $(form).submit();
+
+        form = null;
+        }
+        function go() {
+            var gock = true;
+
+            entity.data.suitable = $("input[name='suitable']:checked").val();
+            entity.data.fullable = $("input[name='fullable']:checked").val();
+            entity.data.personstandby = $("input[name='personstandby']:checked").val();
+            entity.data.personstandbyduty = $("input[name='personstandbyduty']:checked").val();
+            entity.data.sitesupplies = $("input[name='sitesupplies']:checked").val();
+            entity.data.sitesuppliesduty = $("input[name='sitesuppliesduty']:checked").val();
+            entity.data.wholeorganize = $("input[name='wholeorganize']:checked").val();
+            entity.data.dividework = $("input[name='dividework']:checked").val();
+            entity.data.effectevaluate = $("input[name='effectevaluate']:checked").val();
+            entity.data.reportsuperior = $("input[name='reportsuperior']:checked").val();
+            entity.data.rescue = $("input[name='rescue']:checked").val();
+            entity.data.evacuate = $("input[name='evacuate']:checked").val();
+            if (entity.data.suitable == "" || entity.data.suitable == undefined) {
+                layer.msg('请答完题目！');
+                return;
+            }
+            if (entity.data.fullable == "" || entity.data.fullable == undefined) {
+                layer.msg('请答完题目！');
+                return;
+            }
+            if (entity.data.personstandbyduty == "" || entity.data.personstandbyduty == undefined) {
+                layer.msg('请答完题目！');
+                return;
+            }
+            if (entity.data.personstandby == "" || entity.data.personstandby == undefined) {
+                layer.msg('请答完题目！');
+                return;
+            }
+            if (entity.data.sitesupplies == "" || entity.data.sitesupplies == undefined) {
+                layer.msg('请答完题目！');
+                return;
+            }
+            if (entity.data.sitesuppliesduty == "" || entity.data.sitesuppliesduty == undefined) {
+                layer.msg('请答完题目！');
+                return;
+            }
+            if (entity.data.wholeorganize == "" || entity.data.wholeorganize == undefined) {
+                layer.msg('请答完题目！');
+                return;
+            }
+            if (entity.data.dividework == "" || entity.data.dividework == undefined) {
+                layer.msg('请答完题目！');
+                return;
+            }
+            if (entity.data.effectevaluate == "" || entity.data.effectevaluate == undefined) {
+                layer.msg('请答完题目！');
+                return;
+            } if (entity.data.reportsuperior == "" || entity.data.reportsuperior == undefined) {
+                layer.msg('请答完题目！');
+                return;
+            }
+            if (entity.data.rescue == "" || entity.data.rescue == undefined) {
+                layer.msg('请答完题目！');
+                return;
+            }
+            if (entity.data.evacuate == "" || entity.data.evacuate == undefined) {
+                layer.msg('请答完题目！');
+                return;
+            }
+            var problem = "";
+            var measure = "";
+            var Table = getTable();
+            entity.data.score = myscore;
+            for (var i = 1; i <= Table.length; i++) {
+                if (i % 2 != 0 || i == 1) {
+                    if ($.trim(Table[i - 1]) == "") {
+                        layer.msg('存在问题不能为空！');
+                        return;
+
+                    } else {
+                        problem = problem + $.trim(Table[i - 1]) + ";";
+                    }
+                } else {
+                    if ($.trim(Table[i - 1]) == "") {
+                        layer.msg('改进措施不能为空！');
+                        return;
+                    } else {
+                        measure = measure + $.trim(Table[i - 1]) + ";";
+                    }
+                }
+            }
+            entity.data.problem = problem.substring(0, problem.length - 1);
+            entity.data.measure = measure.substring(0, problem.length - 1);
+            jQuery("div[name='userPerson']").each(function () {
+                var Persons = $.trim(this.children[1].innerText);
+                var personid = $.trim(this.children[0].innerText);
+                entity.data.valuatepersonname = Persons;
+                entity.data.valuateperson = personid;
+                if (Persons == "" || Persons == undefined) {
+                    layer.msg('请选好评价人！');
+                    gock = false;
+                    return;
+
+                }
+            });
+            if (!gock) {
+                return;
+            }
+            var data = JSON.stringify(entity);
+            $.ajax({
+                url: '/..@Url.Action("EmergencySave")',
+                data: { data: data },
+                type: "post",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.success == true) {
+                        window.location.href = "@Url.Action("drillReady")";
+                    } else {
+                        layer.msg(data.message);
+
+                    }
+                }
+            });
+        }
+    </script>

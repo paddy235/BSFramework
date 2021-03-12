@@ -1,0 +1,122 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="~/Content/styles/static/js/rem.js"></script>
+    <link href="~/Content/styles/static/css/indexmanage.css" rel="stylesheet" />
+    <!-- jQuery 2.1.4 -->
+    <script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/plugins/echarts/echarts.min.js")"></script>
+    <link href="~/Content/styles/framework-ui.css" rel="stylesheet" />
+    <script>
+
+
+          $(function () {
+              getData();
+
+        })
+        function getData() {
+            var colorList = ['#00afff', '#bf2caf', '#ffb01b', '#5264ff', '#13f2a3'];
+
+           $.ajax({
+            url: "@Url.Action("GetIndexEduManage", "IndexManage", new { area = "SystemManage" })",
+            type: "post",
+            dataType: "json",
+            async: false,
+               success: function (data) {
+                   var setData = new Array();
+                   var html = "<tr>"; var addhtml = "";
+                   var i = 0;
+                   for (var item in data) {
+                       var oneData = {};
+                       var html = "<div  style=\"cursor:pointer;\" onclick='gohref(\"" + item +"\")' > <span  style='background:" + colorList[i] + "'></span>";
+                       html += item + "<span>|";
+                       html += data[item] + "次</span> </div>";
+                       oneData.name = item;
+                       oneData.value = data[item];
+                       setData.push(oneData);
+                       addhtml += html;
+                       i++;
+                   }
+                   $("#tabledata").append(addhtml);
+                   chartData(setData)
+            }
+           });
+
+
+        }
+
+        function gohref(name) {
+            top.openTab('', '@Url.Action("Index2", "Education", new { area= "Works" })?type=' + name + '', '教育培训信息');
+        }
+        function chartData(setData) {
+            let option2 = {
+                title: {
+                    text: "",
+                    textStyle: {
+                        fontSize: 14
+                    }
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{b}: {c} 次({d}%)',
+
+                },
+                series: [
+                    {
+                        name: '',
+                        type: 'pie',
+                        radius: ['50%', '80%'],
+                        // center:['50%','50%'],
+                        avoidLabelOverlap: false,
+                        label: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                fontSize: '14',
+                                fontWeight: 'bold'
+                            }
+                        },
+                        labelLine: {
+                            show: false
+                        },
+                        data: setData,
+                        itemStyle: {
+                            normal: {
+                                color: function (params) {
+                                    var colorList = ['#00afff', '#bf2caf', '#ffb01b', '#5264ff', '#13f2a3', '#8cfa76', '#cde0bf']
+                                    return colorList[params.dataIndex]
+                                }
+                            }
+                        }
+                    }
+                ]
+            };
+
+            var chart2 = echarts.init(document.getElementById('chart2'));
+            chart2.on('click', function (params) {
+                top.openTab('', '@Url.Action("Index2", "Education", new { area= "Works" })?type=' + params.data.name + '', '教育培训信息');
+            });
+            chart2.setOption(option2);
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <div class="item_title">
+            <a  style="cursor:pointer;" onclick="top.openTab('','@Url.Action("Index2", "Education", new { area= "Works" })','教育培训信息')">  <h2>教育培训统计</h2></a>
+        </div>
+        <div class="content chart2_content"  style=" width: 100%;">
+            <div id="chart2" style="width:60%;min-height:300px;"></div>
+            <div class="finish" id="tabledata">
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

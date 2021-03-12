@@ -1,0 +1,245 @@
+﻿@model IEnumerable<BSFramework.Application.Entity.ToolManage.ToolBorrowEntity>
+@using BSFramework.Application.Entity.ToolManage
+
+@{
+    ViewBag.Title = "BorrowList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")" />
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/record.css")" />
+@*<link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="../static/css/index.css">
+<link rel="stylesheet" href="../static/css/extend.css">
+<link rel="stylesheet" href="../Font-Awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="../static/css/peccancy.css">*@
+<script>
+    var key = "";
+    $(function () {
+        
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#from',
+                type: 'date',
+            });
+            laydate.render({
+                elem: '#to',
+                type: 'date',
+            });
+        })
+    });
+
+    function getall()
+    {
+        
+        $('#from').val('');
+        $('#to').val('');
+        $('#name').val('');
+    }
+    function openback(id) {
+        key = id;
+        layer.open({
+            type: 1,
+            title: '归还工器具',
+            content: $('#m4'),
+            area: ['430px', '280px']
+
+        })
+    }
+    function backnew(s) {
+        if (s == "完好") {
+            g = "y";
+        } else {
+            g = "n";
+        }
+
+        $.ajax({
+            url: '@Url.Action("Back")',
+            type: 'post',
+            data: { id: key, isgood: g, state: s },
+            success: function (data) {
+                window.location.reload();
+            }
+        });
+    }
+    function back() {
+        
+        var s = "";
+        var obj = document.getElementsByName('state');
+        var g = $('input[type=radio][name=isgood]:checked').val();  //是否完好
+        for (var i = 0; i < obj.length; i++) {
+            if (obj[i].checked) {
+
+                s += obj[i].value + ",";     //破损情况
+            }
+        }
+        if (g == "n" && s == "") {
+            alert('请选择破算情况！');
+            return;
+        }
+        $.ajax({
+            url: '@Url.Action("Back")',
+            type: 'post',
+            data: { id: key, isgood: g, state: s },
+            success: function (data) {
+                window.location.reload();
+            }
+        });
+    }
+</script>
+
+<div class="main-content" >
+    <div class="container-fluid" >
+@using (Html.BeginForm("BorrowList", "Tool", FormMethod.Post))
+{
+        <div class="mg-b-10">
+            <div class="" style="overflow: hidden;">
+                <div class="pull-left title">
+                    <a href="@Url.Action("List")">
+                        <img src="~/Content/styles/static/images/arrow-back-icon.png" alt="">
+                        工器具借用记录
+                    </a>
+                </div>
+            </div>
+
+        </div>
+        <div class="bg-e3ebfd pd-10">
+            <div class="bg-fff peccancy-list">
+
+                <div class="head">
+                    <div class="searchs text-center" style="overflow: hidden;">
+
+                        <span class="my-input mg-r-15">
+                            <input type="text" name="from" id="from" value="@Html.Raw(ViewData["from"])">
+                            <img src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                        </span>
+                        -
+                        <span class="my-input mg-r-15">
+                            <input type="text" name="to" id="to" value="@Html.Raw(ViewData["to"])">
+                            <img src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                        </span>
+                        <span class="my-input mg-r-15">
+                            <input type="text" name="name" id="name" value="@Html.Raw(ViewData["name"])" placeholder="请输入关键字搜索">
+                        </span>
+                        <button class="my-btn bg-3669e1 mg-r-15">
+                            <img src="@Url.Content("~/Content/styles/static/images/search-icon.png")" alt="">
+                            搜索
+                        </button>
+                        <button onclick="getall();" class="my-btn bg-8fadce">全部</button>
+                    </div>
+                </div>
+                <div style="min-height:690px;">
+                    <table class="table text-center table-striped no-mg c-67748d">
+                        <thead>
+                            <tr>
+                                <th width="5%" class="bg-fff">序号</th>
+                                <th width="5%" class="bg-fff">操作</th>
+                                <th width="8%" class="bg-fff">工器具名称</th>
+                                <th width="7%" class="bg-fff">规格型号</th>
+                                <th width="10%" class="bg-fff">借用人</th>
+                                <th width="10%" class="bg-fff">借用时间</th>
+                                <th width="10%" class="bg-fff">归还时间</th>
+                                <th width="10%" class="bg-fff">归还时外观是/否良好</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+    var lls = (IList<ToolBorrowEntity>)ViewData["TList"];
+                            }
+                            @for (int i = 0; i < lls.Count(); i++)
+                        {
+                            int n = i + 1;
+                            string date = "";
+                            if (lls[i].BackDate != null)
+                            {
+                                date = lls[i].BackDate.Value.ToString("yyyy-MM-dd HH:mm:ss");
+                            }
+                            string state = "";
+                            if (lls[i].IsGood == "y")
+                            {
+                                state = "是";
+                            }
+                            else
+                            {
+                                state = lls[i].Remark;
+                            }
+                            string id = lls[i].ID;
+                        <tr>
+                            <td width="5%">@n</td>
+                            <td width="5%">
+                                @if (lls[i].BackDate == null && lls[i].BorrwoPersonId == ViewData["userid"].ToString())
+                                {
+                                <a style="text-decoration:none;color:#0094ff;" href="#" id="@id" onclick="openback(this.id); return false;">归还</a>
+                                }
+                            </td>
+                            <td width="10%">@lls[i].ToolName</td>
+                            <td width="10%">@lls[i].ToolSpec</td>
+                            <td width="10%">@lls[i].BorrwoPerson</td>
+                            <td width="10%">@lls[i].BorrwoDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                            <td width="10%">@date</td>
+                            <td width="10%">@lls[i].Remark</td>
+                        </tr>
+                        }
+                        </tbody>
+
+                    </table>
+                    </div>
+                </div>
+        </div>
+
+        <footer class="main-footer">
+            武汉博晟安全技术股份有限公司   版权所有
+        </footer>
+        }
+    </div>
+
+</div>
+    
+<style type="text/css">
+    #m4 ul li {
+        list-style: none;
+        font-size: 19px;
+        margin-left: -20px;
+        line-height: 36px;
+    }
+
+        #m4 ul li a {
+            color: #3669E1;
+        }
+</style>
+
+<div class="m4" id="m4">
+
+    <div style="text-align:center">
+        <ul style="margin-top:20px;">
+            <li>
+                <a href="#" onclick="backnew(this.text);">完好</a>
+            </li>
+            <li>
+                <a href="#" onclick="backnew(this.text);">破损</a>
+            </li>
+            <li>
+                <a href="#" onclick="backnew(this.text);">失效</a>
+            </li>
+            <li>
+                <a href="#" onclick="backnew(this.text);">超期</a>
+            </li>
+            <li>
+                <a href="#" onclick="backnew(this.text);">其他</a>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+@*<script src="@Url.Content("~/Content/bootstrap/js/bootstrap.min.js")"></script>*@
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+@*<script src="../bootstrap/js/bootstrap.min.js"></script>
+<script src="../plugins/nicescroll/nicescroll.min.js"></script>*@

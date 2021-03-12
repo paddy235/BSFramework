@@ -1,0 +1,133 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+@*<script src="~/Content/scripts/layui/layer.js"></script>*@
+<script>
+    jQuery(function () {
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $("#grid").setGridHeight($(window).height() - 140);
+            }, 200);
+            e.stopPropagation();
+        });
+
+        initGrid();
+    });
+
+    function initGrid() {
+        jQuery('#grid').jqGrid({
+            url: '/..@Url.Action("GetToEvaluate")',
+            mtype: 'POST',
+            datatype: "json",
+            height: $(window).height() - 140,
+            //postData: { deptid: deptid },
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'TrainingId', hidden: true },
+                {
+                    label: '操作', name: 'action', width: 120, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        var html = "";
+                        html += "<a href=\"javascript:fn$view('" + rowObject.TrainingId + "')\" title=\"查看\" style=\"color:blue;padding-left:0px;\">查看</a> ";
+                        return html;
+                    }
+                },
+                { label: "工作任务", name: "TrainingTask", width: 400, align: "center", sortable: false },
+                {
+                    label: "分析人", name: "UserName", width: 400, align: "center", sortable: false
+                    //label: "分析人", name: "TrainingUser", width: 300, align: "center", sortable: false, formatter: function (cellvalue, options, rowObject) {
+                    //    //var ary = [];
+                    //    //jQuery.each(rowObject.TrainingUsers, function (i, o) {
+                    //    //    ary.push(o.UserName);
+                    //    //});
+                    //    //return ary.join(',');
+                    //}
+                },
+                { label: "分析时间", name: "TrainingTime", width: 150, align: "center", sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s' } },
+                { label: "部门班组", name: "DeptName", width: 200, align: "center", sortable: false },
+                //{ label: "完成状态", name: "Status", width: 200, align: "center", sortable: false },
+                //{
+                //    label: "评价状态", name: "IsEvaluated", width: 120, align: "center", sortable: false, formatter: function (cellvalue, options, rowObject) {
+                //        if (rowObject != null && rowObject.Evaluates != null) {
+                //            var has = false;
+                //            var evluateCount = 0;
+                //            for (var i = 0; i < rowObject.Evaluates.length; i++) {
+                //                if (rowObject.Evaluates[i].EvaluateId == thisUserId) {
+                //                    has = true;
+                //                }
+                //                if (rowObject.Evaluates != null) {
+                //                    evluateCount = rowObject.Evaluates.length;
+                //                }
+                //            }
+                //        }
+                //        if (has) {
+                //            return "本人已评价(" + evluateCount + "人已评价" + ")"
+                //        } else {
+                //            return "本人未评价(" + evluateCount + "人已评价" + ")"
+                //        }
+                //    }
+                //},
+            ],
+            rownumbers: true,
+            rowNum: 20,
+            viewrecords: true,
+            pager: '#gridPager',
+        });
+    }
+
+    function fn$query() {
+        jQuery('#grid').jqGrid('setGridParam', { postData: { analyst: jQuery('#analyst').val(), begin: jQuery('#begin').val(), end: jQuery('#end').val() } }).trigger("reloadGrid");
+    }
+
+    function fn$refresh() {
+        fn$query();
+    }
+
+    function fn$all() {
+        jQuery('#user').val('');
+        jQuery('#status').val('全部');
+        jQuery('#evaluatelevel').val('全部');
+        jQuery('#from').val('');
+        jQuery('#to').val('');
+        jQuery('#fzuser').val('');
+        fn$query();
+    }
+
+    function fn$view(id) {
+        dialogOpen({
+            id: "Edit",
+            title: '查看',
+            url: '/../@Url.Action("Edit2")?id=' + id + "&fn=show",
+            width: "1200px",
+            height: "800px",
+            btn: null,
+            callBack: function (iframeId) {
+                end();
+            }
+        });
+    }
+</script>
+<div class="titlePanel">
+    <div class="title-search">
+        <div class="form-inline">
+            <div class="form-group">
+                <label for="team">分析人</label>
+                <input type="text" class="form-control" id="analyst" placeholder="请输入关键字">
+            </div>
+            <div class="form-group">
+                <label for="team">日期</label>
+                <input type="text" class="form-control" id="begin" onfocus="WdatePicker();" readonly="readonly">
+                - <input type="text" class="form-control" id="end" onfocus="WdatePicker();" readonly="readonly">
+            </div>
+            <div class="form-group">
+                <a id="btn_Search" class="btn btn-primary" onclick="fn$query()"><i class="fa fa-search"></i>&nbsp;查询</a>
+            </div>
+        </div>
+    </div>
+    <div class="toolbar">
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="grid"></table>
+    <div id="gridPager"></div>
+</div>

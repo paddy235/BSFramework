@@ -1,0 +1,448 @@
+﻿@model BSFramework.Application.Entity.DrugManage.DrugGlassWareEntity
+@using BSFramework.Application.Entity.PublicInfoManage
+@{
+    ViewBag.Title = "FormGlassWare";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")" />
+
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/hammer.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<style>
+    .images-container {
+        min-height: 120px;
+    }
+
+        .images-container li {
+            list-style: none;
+            float: left;
+            padding: 0px 5px;
+        }
+
+    .yinpin li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+
+    .items li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+
+    table tr {
+        height: 45px;
+    }
+
+    .imgDiv {
+        display: inline-block;
+        position: relative;
+    }
+
+        .imgDiv .delete {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: 50px;
+            height: 50px;
+            display: none;
+        }
+
+    .photo-list ul li img {
+        width: 172px;
+        height: 162px;
+    }
+</style>
+<script>
+    var contentPath = '@Url.Content("~")'.substr(0, '@Url.Content("~")'.length - 1);
+    window.onload = function () {
+        if ('@Model.Img' != "") {
+            document.getElementById('uploadPreview').src = '@Model.Img';
+        }
+if ('@Model.BGImg' != "") {
+            document.getElementById('uploadPreview2').src = '@Model.BGImg';
+        }
+    }
+    $(function () {
+        //init();
+        $('#uploadFile').change(cp);
+        $('#uploadFile1').change(cp1);
+        $('#uploadFile2').change(cp2);
+    });
+    function init() {
+        $(".imgDiv").mouseenter(function () {
+            $(this).find(".delete").show();
+        });
+        $(".imgDiv").mouseleave(function () {
+            $(this).find(".delete").hide();
+        });
+    }
+
+    function AcceptClick() { //新增
+        if (!valid()) {
+            return false;
+        }
+
+        var name = $("#GlassWareName").val();
+        $.ajax({
+            url: '@Url.Action("CheckGlassWareName")',
+            type: 'post',
+            data: { name: name, type: "玻璃器皿" },
+            loading: "数据提交中...",
+            success: function (data) {
+                if (data.success) {
+                    dialogMsg('玻璃器皿已存在！', 0);
+                } else {
+                    saveform();
+                }
+            }
+        });
+
+    }
+    function AcceptClick1() {
+        if (!valid()) {
+            return false;
+        }
+
+        saveform();
+
+    }
+    function saveform() {
+        var json = jQuery('#form1').serializeJSON();
+        $.SaveForm({
+            url: '/..@Url.Action("SaveFormDrugGlassWare")',
+            param: json,
+            loading: "数据提交中...",
+            success: function (data) {
+
+                if (data.success) {
+                    $.currentIframe().$("#gridTable").trigger("reloadGrid");
+                } else {
+                    //alert('1');
+                }
+            }
+        });
+    }
+
+    function delimg(id) {
+        $.ajax({
+            url: '@Url.Action("delGlasimg")',
+            type: 'post',
+            data: { id: id, drugid: '@Model.GlassWareId' },
+            loading: "数据提交中...",
+            success: function (data) {
+                var data = JSON.parse(data);
+                var html = '';
+                var dv = document.getElementById("pics");
+                dv.innerHTML = "";
+
+                for (var i = 0; i < data.resultdata.files.length; i++) {
+                    html += '<img src="' + top.location.origin + contentPath + data.resultdata.files[i].FilePath + '" style="width:180px;height:180px;padding-left:20px;"  /><a id="' + data.resultdata.files[i].FileId + '"  style="color:red;font-size:10px;vertical-align:bottom;" onclick="delimg(this.id)">删除</a>';
+                }
+                html += '<input type="file" name="uploadFile2" id="uploadFile2" style="display:none;"><label for="uploadFile2" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                dv.innerHTML = html;
+                $('#uploadFile2').change(cp2);
+            }
+        });
+    }
+    function msds(id) {
+        var id = '@Model.GlassWareId';
+        dialogOpen({
+            id: "Detail",
+            title: '查看详情',
+            url: '/../@Url.Action("MSDS")/' + id,
+            width: "1300px",
+            height: "900px",
+            btn: null
+        });
+    }
+    function video(id) {
+        var id = '@Model.GlassWareId';
+        dialogOpen({
+            id: "Detail",
+            title: '查看详情',
+            url: '/../@Url.Action("GlassWareVideo")/' + id,
+            width: "1050px",
+            height: "720px",
+            btn: null
+        });
+    }
+    function valid() {
+        var name = $("#GlassWareName").val();
+        if (name == "") {
+            dialogMsg('化验仪器名称不能为空！', 0);
+            return false;
+        }
+
+        return true;
+    }
+    function cp() {
+        $.ajaxFileUpload({
+            url: "@Url.Action("UploadFileNew")?uptype=3&id=@Model.GlassWareId",
+            secureuri: false,
+            fileElementId: 'uploadFile',
+            dataType: 'json',
+            success: function (data) {
+                //if (top.document.getElementById('photo') != undefined) {
+
+                //    top.document.getElementById('photo').src = top.contentPath + data.resultdata.path;
+                //}
+
+                document.getElementById('uploadPreview').src = top.location.origin + contentPath + data.resultdata.path;
+                $("#Img").val(top.location.origin + contentPath + data.resultdata.path);
+                $("#filename").val(data.resultdata.name);
+                $('#uploadFile').change(cp);
+            }
+        });
+    }
+    function cp2() { //上传背景图
+        $.ajaxFileUpload({
+            url: "@Url.Action("UploadFileNew")?uptype=4&id=@Model.GlassWareId",
+            secureuri: false,
+            fileElementId: 'uploadFile2',
+            dataType: 'json',
+            success: function (data) {
+                //if (top.document.getElementById('photo') != undefined) {
+
+                //    top.document.getElementById('photo').src = top.contentPath + data.resultdata.path;
+                //}
+
+                document.getElementById('uploadPreview2').src = top.location.origin + contentPath + data.resultdata.path;
+                $("#BGImg").val(top.location.origin + contentPath + data.resultdata.path);
+                $("#filename2").val(data.resultdata.name);
+                $('#uploadFile2').change(cp);
+            }
+        });
+    }
+    function cp1() {
+        $.ajaxFileUpload({
+            url: "@Url.Action("UploadFileNew")?uptype=1&id=@Model.GlassWareId",
+            secureuri: false,
+            fileElementId: 'uploadFile1',
+            dataType: 'json',
+            success: function (data) {
+
+                if (data.message == "1") {
+                    var obj = document.getElementById('uploadFile1');
+                    obj.outerHTML = obj.outerHTML;
+                    alert("请上传MP4视频文件！");
+                    $('#uploadFile1').change(cp1);
+                } else {
+                    dialogMsg('上传成功！', 1);
+                    $('#uploadFile1').change(cp1);
+                }
+                //  $('#video').attr('href', top.location.origin + top.contentPath + data.resultdata.path);
+            }
+        });
+    }
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style=" padding-right: 30px;">
+            <table class="form">
+                <tr>
+                    <td class="formTitle">展示图片</td>
+                    <td class="formValue">
+
+                        @*@Html.TextBoxFor(x => x.Img, new { @class = "form-control" })*@
+                        <div class="file">
+                            <label for="uploadFile">
+                                <img id="uploadPreview" style="width: 160px; height: 160px; " src="~/Content/styles/static/images/tools/photo-add.png" />
+                                <br />
+                                点击框可修改图片
+                                <input type="file" name="uploadFile" id="uploadFile" style="display:none;">
+                                @*<input type="hidden" id="tempImageSrc" />*@
+                                @Html.HiddenFor(x => x.Img)
+                            </label>
+                            <span class="select-btn" id="select-btn">选择图库图片</span>
+                        </div>
+                    </td>
+                    <td class="formTitle">背景图片</td>
+                    <td class="formValue">
+
+                        @*@Html.TextBoxFor(x => x.Img, new { @class = "form-control" })*@
+                        <div class="file">
+                            <label for="uploadFile2">
+                                <img id="uploadPreview2" style="width: 160px; height: 160px; " src="~/Content/styles/static/images/tools/photo-add.png" />
+                                <br />
+                                点击框可修改图片
+                                <input type="file" name="uploadFile2" id="uploadFile2" style="display:none;">
+                                @*<input type="hidden" id="tempImageSrc" />*@
+                                @Html.HiddenFor(x => x.BGImg)
+                            </label>
+                            <span class="select-btn" id="select-btn1">选择图库图片</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">器皿名称<font face="宋体">*</font></td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextBoxFor(x => x.GlassWareName, new { @class = "form-control" })
+                        @Html.HiddenFor(x => x.CreateDate)
+                        @Html.HiddenFor(x => x.CreateUserId)
+                        @Html.HiddenFor(x => x.CreateUserName)
+                        @Html.HiddenFor(x => x.GlassWareId)
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">操作视频</td>
+                    <td class="formValue" colspan="3">
+                        @*@Html.TextBoxFor(x => x.OperateVideo, new { @class = "form-control" })*@
+                        @{
+                            if (ViewBag.video != "")
+                            {
+                                <a id="video" onclick="video()" style="text-decoration:none;color:blue;" target="_blank">操作视频</a>
+                            }
+                            else
+                            {
+                                <a id="video" style="text-decoration: none; color: black;" target="_blank">操作视频</a>
+                            }
+                        }
+                        <input type="file" name="uploadFile1" id="uploadFile1" style="display:none;">
+                        <label for="uploadFile1" style="margin-left:20px;color:blue;text-align:center;vertical-align:middle;font-size:12px;">上传</label>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle">使用方法</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.UseWay, new { @style = "height:120px;", @class = "form-control", placeholder = "" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle">注意事项</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.Attention, new { @style = "height:120px;", @class = "form-control", placeholder = "" })
+                    </td>
+
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    var lay;
+    $(function () {
+        $('#select-btn').click(function () {
+            // layer.close(iframeIndex);
+            lay = layer.open({
+                type: 1,
+                title: '图库',
+                content: $('#photoId'),
+                area: ['1000px', '580px'],
+                end: function () {
+                    document.getElementById("photoId").style.display = "none";
+                }
+            })
+        })
+        $('#select-btn1').click(function () {
+            // layer.close(iframeIndex);
+            lay = layer.open({
+                type: 1,
+                title: '图库',
+                content: $('#photoId1'),
+                area: ['1000px', '580px'],
+                end: function () {
+                    document.getElementById("photoId1").style.display = "none";
+                }
+            })
+        })
+    });
+    function setImg(obj) {
+        layer.close(lay);
+        document.getElementById('uploadPreview').src = obj.src;
+        $("#Img").val(obj.src);
+        var i = obj.src.lastIndexOf("/");
+        console.log(i);
+        console.log(obj.src.slice(i + 1));
+        var name = obj.src.slice(i + 1);
+        name = name.substring(0, name.length - 4);
+        $("#GlassWareName").val(name);
+        // $("#filename").val(obj.alt);
+        document.getElementById("photoId").style.display = "none";
+    }
+    function setImg1(obj) {
+        layer.close(lay);
+        document.getElementById('uploadPreview2').src = obj.src;
+        $("#BGImg").val(obj.src);
+        var i = obj.src.lastIndexOf("/");
+        console.log(i);
+        console.log(obj.src.slice(i + 1));
+        var name = obj.src.slice(i + 1);
+        name = name.substring(0, name.length - 4);
+        // $("#GlassWareName").val(name);
+        // $("#filename2").val(obj.alt);
+        document.getElementById("photoId1").style.display = "none";
+    }
+</script>
+<div class="photo-list" id="photoId" style="display:none">
+    <ul class="nav">
+        <li><img src="~/Content/styles/static/images/glass/大肚吸管.jpg" alt="大肚吸管" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/大肚吸管.png" alt="大肚吸管" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/滴定板.jpg" alt="滴定板" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/滴定板.png" alt="滴定板" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/滴定板黑色.jpg" alt="滴定板黑色" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/滴定板黑色.png" alt="滴定板黑色" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/滴定瓶棕色.jpg" alt="滴定瓶棕色" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/滴定瓶棕色.png" alt="滴定瓶棕色" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/碱式滴定管.jpg" alt="碱式滴定管" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/碱式滴定管.png" alt="碱式滴定管" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/具塞量筒.jpg" alt="具塞量筒" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/具塞量筒.png" alt="具塞量筒" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/具塞锥形瓶.jpg" alt="具塞锥形瓶" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/具塞锥形瓶.png" alt="具塞锥形瓶" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/量筒.jpg" alt="量筒" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/量筒.png" alt="量筒" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/球形冷凝管.jpg" alt="球形冷凝管" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/球形冷凝管.png" alt="球形冷凝管" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/细磨口瓶.jpg" alt="细磨口瓶" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/细磨口瓶.png" alt="细磨口瓶" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/研钵.jpg" alt="研钵" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/研钵.png" alt="研钵" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/锥形瓶.jpg" alt="锥形瓶" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/锥形瓶.png" alt="锥形瓶" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/棕色烧瓶.jpg" alt="棕色烧瓶" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/棕色烧瓶.png" alt="棕色烧瓶" onclick="setImg(this)"></li>
+    </ul>
+</div>
+<div class="photo-list" id="photoId1" style="display:none">
+    <ul class="nav">
+        <li><img src="~/Content/styles/static/images/glass/大肚吸管.jpg" alt="大肚吸管" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/大肚吸管.jpg" alt="大肚吸管" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/大肚吸管.png" alt="大肚吸管" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/滴定板.jpg" alt="滴定板" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/滴定板.png" alt="滴定板" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/滴定板黑色.jpg" alt="滴定板黑色" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/滴定板黑色.png" alt="滴定板黑色" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/滴定瓶棕色.jpg" alt="滴定瓶棕色" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/滴定瓶棕色.png" alt="滴定瓶棕色" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/碱式滴定管.jpg" alt="碱式滴定管" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/碱式滴定管.png" alt="碱式滴定管" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/具塞量筒.jpg" alt="具塞量筒" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/具塞量筒.png" alt="具塞量筒" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/具塞锥形瓶.jpg" alt="具塞锥形瓶" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/具塞锥形瓶.png" alt="具塞锥形瓶" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/量筒.jpg" alt="量筒" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/量筒.png" alt="量筒" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/球形冷凝管.jpg" alt="球形冷凝管" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/球形冷凝管.png" alt="球形冷凝管" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/细磨口瓶.jpg" alt="细磨口瓶" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/细磨口瓶.png" alt="细磨口瓶" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/研钵.jpg" alt="研钵" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/研钵.png" alt="研钵" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/锥形瓶.jpg" alt="锥形瓶" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/锥形瓶.png" alt="锥形瓶" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/棕色烧瓶.jpg" alt="棕色烧瓶" onclick="setImg1(this)"></li>
+        <li><img src="~/Content/styles/static/images/glass/棕色烧瓶.png" alt="棕色烧瓶" onclick="setImg1(this)"></li>
+    </ul>
+</div>

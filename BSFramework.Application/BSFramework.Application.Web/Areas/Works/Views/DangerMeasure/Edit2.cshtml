@@ -1,0 +1,76 @@
+﻿@model BSFramework.Application.Entity.Activity.DangerMeasureEntity
+
+@{
+    ViewBag.Title = "考评标准";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script src="~/Content/scripts/business/Common.js" type="text/javascript"></script>
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.url.js")"></script>
+<script>
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+
+        var postData = $("#form1").formSerialize();
+        $.SaveForm({
+            url: '@Url.Action("Edit2")',
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().fn$refresh();
+            }
+        })
+    }
+
+    jQuery(function () {
+        //风险类别
+        $("#Category").ComboBoxTree({
+            url: '@Url.Action("GetCategories")',
+            description: "",
+            height: "180px",
+            click: function (item) {
+                jQuery('#CategoryId').val(item.id);
+            }
+        });
+
+        if (jQuery('#CategoryId').val()) {
+            var categoryid = jQuery('#CategoryId').val();
+            $("#Category").ComboBoxTreeSetValue(categoryid == '00000000-0000-0000-0000-000000000000' ? '' : categoryid);
+        }
+
+        if (jQuery.getUrlArgs('categoryid')) {
+            $("#CategoryId").val(jQuery.getUrlArgs('categoryid'));
+            $("#Category").ComboBoxTreeSetValue(jQuery.getUrlArgs('categoryid'));
+        }
+    });
+</script>
+<div style="margin:20px 10px">
+    @Html.HiddenFor(x => x.MeasureId)
+    <table class="form">
+        <tr>
+            <td class="formTitle">风险类别<font face="宋体">*</font></td>
+            <td class="formValue">
+                <div id="Category" type="selectTree" class="ui-select" isvalid="yes" checkexpession="NotNull"></div>
+                @Html.HiddenFor(x => x.CategoryId)
+                @*@Html.TextBoxFor(x => x.CategoryId, new { @class = "form-control ui-select", type = "select", placeholder = "请选择风险类别", isvalid = "yes", checkexpession = "NotNull" })*@
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">风险因素<font face="宋体">*</font></td>
+            <td class="formValue">
+                @Html.TextBoxFor(x => x.DangerReason, new { @class = "form-control", maxlength = 200, placeholder = "请输入风险因素", isvalid = "yes", checkexpession = "NotNull" })
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">风险预控措施</td>
+            <td class="formValue">
+                @Html.TextAreaFor(x => x.MeasureContent, new { @class = "form-control", maxlength = 500, placeholder = "请输入风险预控措施", style = "height:60px;" })
+            </td>
+        </tr>
+    </table>
+</div>

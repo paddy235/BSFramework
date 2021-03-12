@@ -1,0 +1,253 @@
+﻿@using BSFramework.Application.Entity.EducationManage
+@{
+    ViewBag.Title = "LeartTimeCount";
+    Layout = "~/Views/Shared/_FlowIndex.cshtml";
+}
+
+<script src="~/Content/scripts/jquery/jquery-1.10.2.min.js"></script>
+<script src="~/Content/scripts/plugins/echarts/echarts.min.js"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/datepicker/WdatePicker.js")"></script>
+<script>
+    $(function () {
+        initchart();
+        //GetGrid();
+        inittab();
+    });
+    function select()
+    {
+        initchart();
+        //GetGrid();
+        inittab();
+    }
+    function selectall() {
+        $("#from").val('');
+        $("#to").val('');
+        initchart();
+        //GetGrid();
+    }
+    function inittab()
+    {
+        
+        var from = $("#from").val();
+        var to = $("#to").val();
+        $.ajax({
+            url: '@Url.Action("GetLeartTimeCount", "Education", new { area = "Works" })',
+            type: 'post',
+            data: { from: from, to: to },
+            success: function (data) {
+                debugger;
+                //var data1 = JSON.parse(data);
+                //var rows = data1.resultdata.rows;
+                var dv = document.getElementById("tb");
+                var rows = eval(data.rows);
+                var html = "<table style='width:100%; text-align:center;margin-top:20px;' class='table table-bordered'><colgroup><col style='width:200px;' /><col /><col style='width:350px;' /><col style='width:350px;' /><col style='width:350px;' /></colgroup><thead><tr><th class='bg-fff'>序号</th><th class='bg-fff'>班组名称</th><th class='bg-fff'>班组人数</th><th class='bg-fff'>班组总学时/小时</th><th class='bg-fff'>班组人均学时/小时</th></tr></thead><tbody >";
+                for (var i = 0; i < rows.length; i++) {
+                    var bzid = rows[i].bzid;
+                    html += "<tr>";
+                    html += "<td style='vertical-align:middle;'>" + (i+1) + "</td>";
+                    html += "<td style='vertical-align:middle;'>" + rows[i].bzname + "</td>";
+                    html += "<td style='vertical-align:middle;'>" + rows[i].persons + "</td>";
+                    html += "<td style='vertical-align:middle;'><a href=\"javascript:showdetail('" + bzid + "')\"> " + rows[i].totalhours + "</a></td>";
+                    html += "<td style='vertical-align:middle;'>" + rows[i].avghours + "</td>";
+                    html += "</tr>";
+                }
+                html += "</tbody></table>";
+                dv.innerHTML = html;
+            }
+        });
+    }
+    function GetGrid() {
+        var from = $("#from").val();
+        var to = $("#to").val();
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            url: "../../Danger/GetLearnTime?from="+from+"&to="+to,
+            datatype: "json",
+            height: $(window).height() - 170,
+            autowidth: true,
+            colModel: [
+                 { label: '主键', name: 'ID', hidden: true, align: 'center' },
+                 {
+                     label: '班组名称', name: 'jobname', name: 'jobname', width: 350, align: 'center'
+                 },
+                 { label: '班组人数', name: 'jobuser', index: 'jobuser', width: 200, align: 'center' },
+                 { label: '班组总学时/小时', name: 'groupname', index: 'groupname', width: 220, align: 'center' },
+                 {
+                     label: '班组人均学时/小时', name: 'time', index: 'time', width: 360, align: 'center'
+                 }
+            ],
+            viewrecords: true,
+            rowNum: 30,
+            // rowList: [30, 50, 100],
+            pager: "#gridPager",
+            sortname: 'fullname',
+            sortorder: 'asc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            onSelectRow: function () {
+                selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            },
+            loadError: function (xhr, status, error) {
+                //top.location.href = "../../Login/Index?Login_Error=1";
+            }
+
+        });
+    }
+    function initchart()
+    {
+        var from = $("#from").val();
+        var to = $("#to").val();
+        $.ajax({
+            url: '@Url.Action("GetNewData", "Education", new { area = "Works" })',
+            type: 'post',
+            data: { from: from, to: to },
+            success: function (data) {
+                var rows = data.rows;
+                bindChart(rows);
+            }
+        });
+    }
+    function showdetail(id) {
+        
+        var url = '/../@Url.Action("LearnDetail")?id=' + id;
+        dialogOpen({
+            id: "LearnDetail",
+            title: '查看学时信息',
+            url: url,
+            width: "800px",
+            height: "500px",
+            btn: null
+        });
+    }
+    function bindChart(rows) {
+        var array = eval('(' + rows + ')');
+        var name = new Array();
+        var count = new Array();
+        for (var i in array) {
+            name.push(array[i].category);
+            count.push(array[i].value);
+        }
+        var n = echarts.init(document.getElementById("mainChart")), t;
+
+        n.setOption(
+            {
+                backgroundColor: "#fff",
+                title: {
+                    text: "班组人均学时统计图",
+                    left: 15,
+                    top: 'top',
+                    textStyle: {
+                        color: "#666666",
+                        fontSize: 24,
+                        fontWeight: 100,
+                        fontFamily: "微软雅黑"
+                    },
+                    subtext: "",
+                    subtextStyle: {
+                        color: "#878787", fontSize: 14, fontWeight: 100, fontFamily: "微软雅黑"
+                    },
+                    itemGap: 20
+                },
+                tooltip: {
+                    trigger: "axis",
+                    axisPointer: {
+                        type: "shadow",
+                        textStyle: { color: "#fff" }
+                    }
+                },
+                //tooltip:
+                //    {
+                //        formatter: function (a) {
+                //            return (a['seriesName'] + '</br>' + a['name'] + ':' + a['value']);
+                //        }
+                //    },
+                legend: {
+                    //data: ["违章次数"],
+                    //x: 15, y: 45, textStyle: { color: "#878787" }
+                },
+                grid: {
+                    borderWidth: 0, top: 100, left: "2%", right: "1%", bottom: "12%", containLabel: !0
+                },
+                xAxis: [{
+                    type: "category",
+                    data: name,
+                    splitLine: !1, axisTick: !1,
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 40,
+                        textStyle: {}
+                    }
+                }],
+                yAxis: [{
+                    type: "value",
+                    splitLine: !1, axisTick: !1,
+                    splitNumber: 1
+                }],
+                series: [{
+                    name: "人均学时", type: "bar", label: { normal: { show: true, position: "top", textStyle: { color: "#87A1F6" } } },
+                    itemStyle: { normal: { color: "#DDE0E5" } },
+                    data: count
+                }]
+            });
+    }
+
+</script>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;overflow-y:hidden;">
+    <div class="ui-layout-center" style="padding-left:5px;">
+        <div class="center-Panel">
+            <div class="titlePanel" style="">
+                <div class="title-search">
+                    <table>
+                        <tr>
+                            <td style="padding-left: 15px; ">
+                                选择日期
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                <input id="from" type="text" value="@Html.Raw(ViewData["from"])" class="form-control" readonly="readonly" onfocus="WdatePicker();" style="width: 150px;" />
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                --
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                <input id="to" type="text" value="@Html.Raw(ViewData["to"])" class="form-control" readonly="readonly" onfocus="WdatePicker();" style="width: 150px;" />
+                            </td>
+                            <td style="padding-left: 5px;">
+                                <a id="btn_Search" class="btn btn-primary" onclick="select();"><i class="fa fa-search"></i>&nbsp;查询</a>
+                                <a id="btn_SearchAll" class="btn btn-primary" onclick="selectall();">&nbsp;全部</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="gridPanel">
+                <div class="content" id="mainChart" style="width:100%;height:450px;margin-top:50px;"></div>
+            </div>
+            <div id="tb" style="">
+                
+                        
+                        @*@{
+                var dt = (System.Data.DataTable)ViewData["dt"];
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    <tr>
+                        <td style="vertical-align:middle;">
+                            @Html.Raw(i + 1)
+                        </td>
+                        <td style="vertical-align:middle;">@Html.Raw(dt.Rows[i][1])</td>
+                        <td style="vertical-align:middle;">@Html.Raw(dt.Rows[i][2])</td>
+                        <td style="vertical-align:middle;"><a href="#" onclick="showdetail(this.id);" id="@dt.Rows[i][0]" >@Html.Raw(dt.Rows[i][3])</a></td>
+                        <td style="vertical-align:middle;">@Html.Raw(dt.Rows[i][4])</td>
+                    </tr>
+                }
+            }*@
+            </div>
+            <div class="gridPanel" style="display:none;">
+                <table id="gridTable"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>
+

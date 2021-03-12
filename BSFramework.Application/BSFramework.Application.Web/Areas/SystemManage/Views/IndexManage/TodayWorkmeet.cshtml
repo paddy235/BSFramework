@@ -1,0 +1,80 @@
+﻿@*@{
+    ViewBag.Title = "";
+    Layout = "~/Views/Shared/_Index.cshtml";
+    }*@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+    <script src="~/Content/styles/static/js/rem.js"></script>
+    <link href="~/Content/styles/static/css/indexmanage.css" rel="stylesheet" />
+    <link href="~/Content/styles/framework-ui.css" rel="stylesheet" />
+    <script>
+        $(function(){
+            getData();
+        })
+
+        function getData() {
+           $.ajax({
+            url: "@Url.Action("GetTodayWorkmeet", "IndexManage", new { area = "SystemManage" })",
+            type: "post",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.length > 0) {
+                    var addhtml = "";
+                    for (var i = 0; i < data.length; i++) {
+                        var html = "<tr>";
+                        html += "<td>" + (i + 1) + "</td>";
+                        html += "<td>" + data[i].DeptName + "</td>";
+                        var url = "@Url.Action("Index2", "WorkMeeting", new { area= "Works" })?getdeptid=" + data[i].DeptId;
+
+                            if (data[i].MeetingId.length == 0) {
+                                html += "<td >未开</td>";
+
+                            } else {
+                                html += "<td style='color:red'>";
+                                html += "<a style='cursor:pointer;color:red' onclick='top.openTab(\"\",\"" + url +"\",\"班前班后会记录\")'>";
+                                html += "已开</a ></td > ";
+                            }
+
+                        if (data[i].MeetingId.length == 0 || data[i].AfterStartTime == null) {
+                            html += "<td>未开</td>";
+                        } else {
+                              html += "<td style='color:red'>";
+                                html += "<a style='cursor:pointer;color:red' onclick='top.openTab(\"\",\"" + url +"\",\"班前班后会记录\")'>";
+                                html += "已开</a ></td > ";
+                        }
+
+                        html += "</tr> ";
+                        addhtml += html;
+                    }
+                    $("#tabledata").append(addhtml);
+                }
+            }
+           });
+
+
+        }
+    </script>
+</head>
+<body>
+    <div style="width:100%">
+        <div class="item_title">
+            <a style="cursor:pointer;" onclick="top.openTab('','@Url.Action("Index2", "WorkMeeting", new { area= "Works" })','班前班后会记录')">  <h2>今日班前班后会</h2></a>
+        </div>
+        <div class="content">
+            <table cellspacing="0" id="tabledata">
+                <tr>
+                    <th>序号</th>
+                    <th>班组</th>
+                    <th>班前会</th>
+                    <th>班后会</th>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+</body>
+</html>

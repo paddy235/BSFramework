@@ -1,0 +1,181 @@
+﻿@model BSFramework.Application.Entity.EducationManage.EduInventoryEntity
+@using BSFramework.Application.Entity.PublicInfoManage
+@{
+    ViewBag.Title = "EduInventoryInfo";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/before.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")" />
+
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/hammer.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<style>
+    .imgDiv {
+        display: inline-block;
+        position: relative;
+    }
+
+        .imgDiv .delete {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: 50px;
+            height: 50px;
+            display: none;
+        }
+</style>
+<script>
+    var contentPath = '@Url.Content("~")'.substr(0, '@Url.Content("~")'.length - 1);
+    $(function () {
+        var json = {
+            "data": [
+                @foreach (var item in ViewBag.pics)
+            {
+            if (item.Description == "2") {
+                  @Html.Raw(string.Format("{{ \"src\" : \"{0}\"}},", @Url.Action("DownloadFile", "ResourceFile", new { keyValue = item.FileId, area = "PublicInfoManage" })));
+    }
+    }
+            ]
+        }
+        $('.images-container').delegate('li', 'click', function () {
+            json.start = jQuery(this).index();
+            layer.photos({
+                photos: json,
+                anim: 5
+            })
+        });
+        //init();
+        $('#uploadFile').change(cp);
+        $('#uploadFile1').change(cp1);
+        $('#uploadFile2').change(cp2);
+
+    });
+
+    function init() {
+        $(".imgDiv").mouseenter(function () {
+            $(this).find(".delete").show();
+        });
+        $(".imgDiv").mouseleave(function () {
+            $(this).find(".delete").hide();
+        });
+    }
+
+
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style=" padding-right: 30px;">
+            @Html.HiddenFor(x => x.CreateUserId)
+            @Html.HiddenFor(x => x.ID)
+            @Html.HiddenFor(x => x.EduType)
+            <table class="form">
+                @{
+                    if (Model.EduType == "1")
+                    {
+                        <tr>
+                            <td class="formTitle">名称</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextBoxFor(x => x.Name, new { @class = "form-control", @readonly = "readonly" })
+
+                            </td>
+                        </tr>
+                        <tr>
+                        <tr>
+                            <td class="formTitle">新增课件</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextBoxFor(x => x.kjname, new { @class = "form-control", @readonly = "readonly" })
+                                <a href="@Model.kjpath" target="_blank" style="margin-left:20px;color:blue;text-align:center;vertical-align:middle;font-size:12px;">下载</a>
+                            </td>
+                        </tr>
+                        </tr>
+                    }
+                    else if (Model.EduType == "2")
+                    {
+                        <tr>
+                            <td class="formTitle">试题内容</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextBoxFor(x => x.Question, new { @class = "form-control", @readonly = "readonly" })
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">参考答案</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextAreaFor(x => x.Answer, new { @style = "height:250px;margin-left:5px;", @class = "form-control", placeholder = "", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">
+                                图片
+                            </td>
+                            <td class="formValue" colspan="3">
+                                <div id="pics" class="imgDiv">
+                                    <ul class="images-container">
+                                        @{
+                        List<FileInfoEntity> files = (List<FileInfoEntity>)ViewBag.pics;
+                        if (files.Count() > 0)
+                        {
+
+                            for (int i = 0; i < files.Count(); i++)
+                            {
+                                <li style="float:left;"><img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:200px; height:180px; padding-left:20px;"></li>
+                            }
+                        }
+                                        }
+                                    </ul>
+                                </div>
+
+                            </td>
+                        </tr>
+                    }else if (Model.EduType == "3") 
+                    {
+                        <tr>
+                            <td class="formTitle">题目</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextBoxFor(x => x.Name, new { @class = "form-control", @readonly = "readonly" })
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">事故现象</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextAreaFor(x => x.Danger, new { @style = "height:200px;margin-left:5px;", @class = "form-control", placeholder = "", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                    <tr>
+                            <td class="formTitle">采取措施</td>
+                            <td class="formValue" colspan="3">
+                               @Html.TextAreaFor(x => x.Measure, new { @style = "height:200px;margin-left:5px;", @class = "form-control", placeholder = "", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                    }
+                }
+
+
+                <tr>
+                    <td class="formTitle">操作人</td>
+                    <td class="formValue">
+
+                        @Html.TextBoxFor(x => x.CreateUserName, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">操作时间</td>
+                    <td class="formValue">
+
+                        @Html.TextBoxFor(x => x.CreateDate, new { @class = "form-control", @readonly = "readonly", Value = string.Format("{0:yyyy-MM-dd HH:mm}", Model.CreateDate) })
+                    </td>
+                </tr>
+
+
+
+            </table>
+        </div>
+    </div>
+</div>

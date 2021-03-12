@@ -1,0 +1,50 @@
+﻿@{
+    ViewBag.Title = "班制类别";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+
+<script>
+    $(function () {
+        initControl();
+    })
+    //初始化控件
+    function initControl() {
+        //选择类别
+        $("#ParentId").ComboBoxTree({
+            url: "@Url.Action("GetTreeJson")",
+            description: "==请选择==",
+            height: "260px",
+            allowSearch: false
+        });
+    }
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var WorksetType = $("#ParentId").attr('data-value');
+        if (WorksetType.length==0) {
+            return false;
+        }
+        $.SaveForm({
+            url: "/..@Url.Action("SaveForm")?WorksetType=" + WorksetType,
+            loading: "正在保存数据...",
+            param: {},
+            success: function () {
+                $.currentIframe().$("#gridTable").resetSelection();
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<div style="margin-left: 10px; margin-top: 20px; margin-right: 30px;">
+    <table class="form">
+        <tr>
+            <th class="formTitle">班制类别</th>
+            <td class="formValue">
+                <div id="ParentId" type="selectTree" class="ui-select">
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

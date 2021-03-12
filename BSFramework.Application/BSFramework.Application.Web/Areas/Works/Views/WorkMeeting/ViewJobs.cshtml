@@ -1,0 +1,194 @@
+﻿@model IList<BSFramework.Entity.WorkMeeting.MeetingJobEntity>
+
+@{
+    ViewBag.Title = "ViewJobs";
+    Layout = null;
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/before.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/app.css")" />
+<script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script>
+
+    function go(meetingjobid, jobid) {
+        layer.open({
+            title: '任务详情',
+            type: 2,
+            area: ['1500px', '800px'],
+            content: '@Url.Action("HomeDetail")?id=' + meetingjobid + '&jobid=' + jobid
+
+        });
+    }
+
+</script>
+<div style="height:704px;overflow-y:auto;">
+    <table class="table vertical table-today no-border">
+        <tbody>
+            @{
+                int i = 0;
+                if (Model.Count > 0)
+                {
+                    foreach (var item in Model)
+                    {
+                        var meetingjobid = item.Relation.MeetingJobId;
+                        //if (string.IsNullOrEmpty(meetid))
+                        //{
+                        //    meetid = item.Relation.EndMeetingId;
+                        //}
+                        <tr class="@(item.IsFinished == "finish" ? Html.Raw("actives") : Html.Raw(string.Empty))">
+
+                            <td class="icon" width="40%" style="height:76px;">
+                                <span class="icon-1"></span>
+                                @Html.Raw(item.StartTime.ToString("yyyy/M/dd H:mm"))
+                                -
+                                @Html.Raw(item.EndTime.ToString("yyyy/M/dd H:mm"))
+                            </td>
+                         
+                            <td width="40%" onclick="go('@meetingjobid','@item.JobId')">
+                                
+                                <h3 class="content">
+                                    @Html.Raw(item.Job)
+                                </h3>
+                                <p class="person">
+                                    @Html.Raw(item.Relation.JobUser)
+                                </p>
+                                @if (item.Files.Count > 0 || item.FileList1.Count > 0)
+                                {
+                                    <img src="@Url.Content("~/Content/styles/static/images/pic.png")" alt="">
+                                    @item.Files.Count
+                                    <img src="@Url.Content("~/Content/styles/static/images/audios.png")" alt="">
+                                    @item.FileList1.Count
+                                }
+                            </td>
+                            <td width="15%">
+                                <span class="my-checkbox @Html.Raw(item.IsFinished == "finish" ? "on" : string.Empty)"></span>
+                            </td>
+                        </tr>
+                        i = i + 1;
+
+                    }
+                }
+                if (i < 10)
+                {
+                    for (int j = i; j < 10; j++)
+                    {
+                        <tr>
+                            <td class="icon" width="40%" style="height:76px;">
+                                <span class="icon-1"></span>
+                            </td>
+                            <td>
+                                <h3 class="content"></h3>
+                                <p class="person">
+                                </p>
+                            </td>
+                            <td></td>
+                        </tr>
+                    }
+
+                }
+            }
+        </tbody>
+    </table>
+</div>
+@*<div class="pull-left l" style="height:704px;overflow-y:auto;">
+        <table class="table vertical table-today no-border">
+            <tbody>
+                @for (int i = 0; i < (Model.Count > 18 ? Model.Count / 2 : 9); i++)
+                {
+                    if (Model.Count > i)
+                    {
+                        var meetid = Model[i].StartMeetingId;
+                        if (string.IsNullOrEmpty(meetid))
+                        {
+                            meetid = Model[i].EndMeetingId;
+                        }
+                        <tr class="@(Model[i].IsFinished == "finish" ? Html.Raw("actives") : Html.Raw(string.Empty))" >
+
+                            <td class="icon" width="40%" style="height:76px;">
+                                <span class="icon-1"></span>
+                                @Html.Raw(Model[i].StartTime.ToString("HH:mm"))
+                                -
+                                @Html.Raw(Model[i].EndTime.ToString("HH:mm"))
+                            </td>
+                            <td width="45%" onclick="go('@meetid','@Model[i].JobId')">
+                                <h3 class="content">
+                                    @Html.Raw(Model[i].Job)
+                                </h3>
+                                <p class="person">
+                                    @Html.Raw(Model[i].JobUsers)
+                                </p>
+                            </td>
+                            <td width="15%">
+
+                                <span class="my-checkbox @Html.Raw(Model[i].IsFinished == "finish" ? "on" : string.Empty)"></span>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td class="icon" width="40%" style="height:76px;">
+                                <span class="icon-1"></span>
+                            </td>
+                            <td>
+                                <h3 class="content"></h3>
+                                <p class="person">
+                                </p>
+                            </td>
+                            <td></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>*@
+@*<div class="pull-left l" style="height:704px;overflow:auto">
+        <table class="table vertical table-today no-border">
+            <tbody>
+                @for (int i = (Model.Count > 18 ? Model.Count / 2 : 9); i < (Model.Count > 18 ? Model.Count : 18); i++)
+                {
+                    if (Model.Count > i)
+                    {
+                        var meetid = Model[i].StartMeetingId;
+                        if (string.IsNullOrEmpty(meetid))
+                        {
+                            meetid = Model[i].EndMeetingId;
+                        }
+                        <tr class="@(Model[i].IsFinished == "finish" ? Html.Raw("actives") : Html.Raw(string.Empty))"  >
+                            <td class="icon" width="40%" style="height:76px;">
+                                <span class="icon-1"></span>
+                                @Html.Raw(Model[i].StartTime.ToString("HH:mm"))
+                                -
+                                @Html.Raw(Model[i].EndTime.ToString("HH:mm"))
+                            </td>
+                            <td width="45%" onclick="go('@meetid','@Model[i].JobId')">
+                                <h3 class="content">
+                                    @Html.Raw(Model[i].Job)
+                                </h3>
+                                <p class="person">
+                                    @Html.Raw(Model[i].JobUsers)
+                                </p>
+                            </td>
+                            <td width="15%">
+                                <span class="my-checkbox @Html.Raw(Model[i].IsFinished == "finish" ? "on" : string.Empty)"></span>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td class="icon" width="40%" style="height:76px;">
+                                <span class="icon-1"></span>
+                            </td>
+                            <td>
+                                <h3 class="content"></h3>
+                                <p class="person">
+                                </p>
+                            </td>
+                            <td></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>*@

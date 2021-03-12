@@ -1,0 +1,219 @@
+﻿@{;
+    ViewBag.Title = "列表页面";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script type="text/javascript">
+
+    var selectedRowIndex = -1;
+    var planId = "";
+    var hidpointname = "";
+    var hidpoint = "";
+    var disreictchargeperson = "";
+    var disreictchargepersonid = "";
+    var chargedept = "";
+    var chargedeptcode = "";
+    var linktel = "";
+    var mode = request("mode");
+    var areaId = "";
+    var dataType = "";
+    var objId = '@ViewBag.companyid';//'b2db6277-6f1d-78f2-9375-b852aba14a2c'//request("objId"); //所属单位
+    $(function () {
+        InitialPage();
+        GetGrid();
+    });
+    //初始化页面
+    function InitialPage() {
+        if(top.Plan!=undefined){
+            areaId = top.Plan.window.areaId;
+            planId = top.Plan.window.keyValue;
+            dataType = top.Risk.window.dataType;
+        }
+        //resize重设布局;
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#gridTable').setGridWidth(($('.gridPanel').width()));
+                $("#gridTable").setGridHeight($(window).height() - 60);
+
+            }, 200);
+            e.stopPropagation();
+        });
+    }
+    //加载表格
+    function GetGrid() {
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            autowidth: true,
+            height: $(window).height() - 60,
+            autowidth: true,
+            url: "/..@Url.Action("GetDistrict")",
+            postData: { companyId: objId },
+            //postData: { areaId: areaId, mode: mode, planId: planId, dataType: dataType, objId: objId, areaName: $("#txt_Keyword").val() },
+            datatype: "json",
+            colModel: [
+                { label: '主键', name: 'DistrictID', hidden: true },
+                { label: 'ParentID', name: 'ParentID', index:'ParentID', hidden: true},
+                { label: '区域名称', name: 'DistrictName', index: 'DistrictName', width: 200, align: 'center', sortable: false, align:'left' },
+                { label: '区域编码', name: 'DistrictCode', index: 'DistrictCode', width: 100, align: 'center', sortable: true },
+                { label: '管控部门', name: 'ChargeDept', index: 'ChargeDept', width: 100, align: 'center', sortable: true },
+                { label: '所属公司', name: 'BelongCompany', index: 'BelongCompany', align: 'center', sortable: true },
+                { label: '管控部门编码', name: 'ChargeDeptCode', hidden: true },
+                { label: '联系电话', name: 'LinkTel', index: 'LinkTel', width: 100, align: 'center', sortable: true, hidden: true },
+            ],
+            treeGrid: true,
+            treeGridModel: "nested",
+            ExpandColumn: "DistrictCode",
+            rownumbers: true,
+            rownumWidth: 90,
+            treeReader: {
+                parent_id_field: 'ParentID',
+                level_field: 'Level',
+                leaf_field: 'IsLeaf',
+                expanded_field: 'Expanded',
+            },
+            onSelectRow: function () {
+                selectedRowIndex = $('#' + this.id).getGridParam('selrow');
+            },
+        });
+        //查询事件
+        $("#btn_Search").click(function () {
+
+            $gridTable.jqGrid('setGridParam', {
+                postData: { name: $("#txt_Keyword").val() }, page: 1
+            }).trigger('reloadGrid');
+        });
+        //查询全部事件
+        $("#btn_SearchAll").click(function () {
+            $("#txt_Keyword").val("");
+
+            $gridTable.jqGrid('setGridParam', {
+                postData: { name: "" }, page: 1
+            }).trigger('reloadGrid');
+        });
+        //查询回车
+        $('#txt_Keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+    }
+
+
+    //返回选择后的结果并赋值到dom控件
+    //winObject:窗体中需要查找domId的对象，一般可写成window.document.body
+    //domId：接收返回值的dom节点的ID，多个用逗号分隔，顺序依次为区域名称，区域Code ,区域负责人，区域负责人ID,（多选用逗号分隔）
+    function AcceptClick(winObject, domId) {
+        if (!!mode) {
+            var ids = ""; var codes = ""; var texts = "";
+            $("input:checked").each(function (i, dom) {
+                  ids += dom.value + ",";
+                  codes += $(dom).attr("code") + ",";
+                  texts += $(dom).attr("text") + ",";
+                  //if ($(dom).attr("code").length>6) {
+                  //   var code = $(dom).attr("code").substring(0, 6);
+                  //   var arr = $("input[code='" + code + "']");
+                  //   if (arr.length > 0 && codes.indexOf(arr.eq(0).attr("code")) < 0) {
+                  //      ids += arr.eq(0).attr("value") + ",";
+                  //      codes += arr.eq(0).attr("code") + ",";
+                  //   }
+                  //}
+            });
+            if (ids.length == 0) {
+                dialogAlert("请选择区域！", 2);
+                return;
+            } else {
+                if (domId.length > 0) {
+                    ids = ids.substring(0, ids.length - 1);
+                    codes = codes.substring(0, codes.length - 1);
+                    texts = texts.substring(0, texts.length - 1);
+                    var arr = domId.split(',');
+                    var selVal = new Array(texts, codes, ids);
+                    for (var j = 0; j < arr.length; j++) {
+                        if (arr[j].length >= 0) {
+                            if (arr[j] != "") {
+                                var dom = $(winObject).find("#" + arr[j]).eq(0);
+                                if (dom != undefined) {
+                                    dom.val(selVal[j]);
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        } else {
+            if (selectedRowIndex <= 0) {
+                dialogAlert("请选择区域!", 2);
+                return;
+            }
+            else {
+
+                hidpointname = $("#gridTable tr:eq(" + selectedRowIndex + ") td:eq(3)").attr("title");
+
+                hidpoint = $("#gridTable tr:eq(" + selectedRowIndex + ") td:eq(4)").attr("title");
+
+                disreictchargeperson = $("#gridTable tr:eq(" + selectedRowIndex + ") td:eq(7)").attr("title");
+
+                chargedept = $("#gridTable tr:eq(" + selectedRowIndex + ") td:eq(5)").attr("title");
+
+                chargedeptcode = $("#gridTable tr:eq(" + selectedRowIndex + ") td:eq(10)").attr("title");
+
+                var distid = $("#gridTable tr:eq(" + selectedRowIndex + ") td:eq(1)").attr("title");
+
+
+
+                var ids = domId.split(',');
+                var selVal = new Array(hidpointname, hidpoint, disreictchargeperson, disreictchargepersonid, chargedept, chargedeptcode, linktel, distid);
+
+                for (var j = 0; j < ids.length; j++) {
+                    if (ids[j].length >= 0) {
+                        if (!!ids[j]) {
+                            //此处为用户账号，要获取对应的用户id
+                            var dom = $(winObject).find("#" + ids[j]).eq(0);
+                            //CHANGEPERSONNAME,CHANGEPERSON 用于判断选择区域，对与整改责任人的展示问题，整改责任人不支持多选
+                            if (ids[j].indexOf('CHANGEPERSONNAME') >= 0 || ids[j].indexOf('CHANGEPERSON') >= 0) {
+                                var  lastValu = selVal[j];
+                                if (!!lastValu)
+                                {
+                                    //对于负责人
+                                    if (lastValu.split(',').length == 1)
+                                    {
+                                        if (dom != undefined) {
+                                            dom.val(selVal[j]);
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                if (dom != undefined) {
+                                    dom.val(selVal[j]);
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+
+            }
+        }
+        dialogClose();
+    }
+</script>
+<div class="gridPanel">
+    @*<div class="title-search">
+        <table>
+            <tr>
+                <td style="padding-left: 2px;">
+                    <input id="txt_Keyword" type="text" class="form-control" placeholder="请输入区域名称搜索" style="width: 200px;" />
+                </td>
+                <td style="padding-left: 5px;">
+                    <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                    <a id="btn_SearchAll" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;全部</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <br />*@
+    <table id="gridTable"></table>
+    <div id="gridPager"></div>
+</div>

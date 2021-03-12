@@ -1,0 +1,215 @@
+﻿
+@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script src="~/Content/scripts/business/Common.js"></script>
+<script src="~/Content/scripts/layui/layer.js"></script>
+<style>
+
+    i {
+        cursor: pointer;
+    }
+
+        i.on_color {
+            color: #449d44;
+            margin-top: -1px;
+        }
+
+        i.off_color {
+            color: #aaa;
+            margin-top: -1px;
+        }
+</style>
+<script>
+    var keyValue = request('keyValue');
+    var actiontype = request('actiontype');
+    $(function () {
+        initControl();
+    });
+    /**初始化控件 */
+    function initControl() {
+        if (actiontype == "show") {
+            $("input,textarea").attr("disabled", "disabled");
+        } else
+            if (actiontype == "update") {
+
+                $("#Category").attr("disabled", "disabled");
+            } else {
+                getCodeList();
+            }
+
+        $("#KeyCode").attr("disabled", "disabled");
+        ////获取表单
+        if (!!keyValue) {
+            $.SetForm({
+                url: "@Url.Action("GetDetail")",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#form1").formDeserialize(data);
+                   // if (actiontype == "show") {
+                        $("#Category").append("<option value='" + data.CategoryId + "'>" + data.Category + "</option>");
+                        $("#Category").attr("disabled", "disabled");
+                    //} else {
+                    //    getCodeList(data);
+
+                    //}
+
+
+                }
+            });
+        }
+        $("#Category").bind("change", function () {
+            var value = $(this).find("option:selected").val();
+            var text = $(this).find("option:selected").text();
+            selectval(text,text);
+        });
+
+    }
+    function selectval(keyValue, name) {
+        if (!!keyValue) {
+             $.ajax({
+               url: "@Url.Action("GetSort")?keyValue=" + keyValue + "&name=" + name,
+            type: 'post',
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            clearForm: true,
+                 success: function (data) {
+                     var code = "";
+                     for (var i = 0; i < data.length; i++) {
+                         code = code + data[i];
+                         if (i==1) {
+                             $("#Sort").val(data[i]);
+                         }
+                         
+                     }
+                     $("#KeyCode").val(code);
+
+            },
+            error: function (data) {
+            }
+        });
+        } else {
+            $("#KeyCode").val("");
+
+        }
+
+    }
+
+    function getCodeList(/*entity*/) {
+            $.ajax({
+            url: "@Url.Action("GetCodeList")",
+            type: 'post',
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            clearForm: true,
+            success: function (data) {
+                $("#Category").empty();
+                $("#Category").append("<option  value=''>请选择</option>");
+                for (var i = 0; i < data.length; i++) {
+                    //if (entity.Category == data[i].ItemName && entity.CategoryId == data[i].ItemValue) {
+                    //    $("#Category").append("<option selected='selected' onclick='selectval('" + data[i].ItemValue + "')' value='" + data[i].ItemValue + "'>" + data[i].ItemName + "</option>");
+
+                    //} else {
+                        $("#Category").append("<option  value='" + data[i].ItemValue + "'>" + data[i].ItemName + "</option>");
+
+                   // }
+                }
+            },
+            error: function (data) {
+            }
+        });
+        }
+    /** 保存表单 */
+    function AcceptClick(IsCommit) {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+
+        var postData = $("#form1").formSerialize(keyValue);
+        postData["CategoryId"]= $("#Category").find("option:selected").val();
+        postData["Category"]= $("#Category").find("option:selected").text(),
+       // postData["IsOpen"] =
+        $.SaveForm({
+            url: "@Url.Action("SaveForm")",
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+
+      function fn$select() {
+        var select = 'single';
+        showModa('/..@Url.Action("DeptSelect", "Department", new { area = "BaseManage" })', '选择部门', '300px', '600px', { deptid:'',select: select, category: '班组' }, fn$selectover);
+    }
+
+    function fn$selectover(nodes) {
+        if (nodes) {
+            if (jQuery.type(nodes) == 'array') {
+                var str = '';
+                jQuery.each(nodes, function (i, o) {
+                    str += o.text + '|'
+                });
+                jQuery('#GroupId').val(str.replace(/\|$/, ''));
+            } else {
+                jQuery('#DeptName').val(nodes.text);
+                jQuery('#DeptId').val(nodes.value);
+                jQuery('#DeptCode').val(nodes.Code);
+            }
+        }
+    }
+
+</script>
+<div style="margin-top: 20px; margin-right: 30px;">
+    <table id="form1" class="form">
+        <tr>
+            <th class="formTitle">钥匙编号<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <div class="input-group" style="width:100%;">
+                    <input type="hidden" id="ID" name="ID" />
+                    <input id="KeyCode" name="KeyCode" type="text" class="form-control" placeholder="自动生成" maxlength="20" isvalid="yes" checkexpession="NotNull" value="" />
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">钥匙地点<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <input id="KeyPlace" name="KeyPlace" type="text" max="8" class="form-control" placeholder="" maxlength="20" isvalid="yes" checkexpession="NotNull">
+            </td>
+
+        </tr>
+        <tr>
+            <th class="formTitle">专业分类<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <select class="form-control" id="Category" name="Category"></select>
+                <input type="hidden" id="CategoryId" name="CategoryId" />
+                <input type="hidden" id="State" name="State" />
+                <input type="hidden" id="Sort" name="Sort" />
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">班组<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <input id="DeptName" name="DeptName" type="text" max="8" class="form-control" onclick="fn$select()" placeholder="" maxlength="20" isvalid="yes" checkexpession="NotNull">
+                <input type="hidden" id="DeptId" name="DeptId" />
+                <input type="hidden" id="DeptCode" name="DeptCode" />
+                <input type="hidden" id="CreateDate" name="CreateDate" />
+                <input type="hidden" id="CreateUserId" name="CreateUserId" />
+                <input type="hidden" id="CreateUserName" name="CreateUserName" />
+
+            </td>
+        </tr>
+
+
+    </table>
+</div>
+
+
+

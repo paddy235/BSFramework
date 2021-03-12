@@ -1,0 +1,209 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script type="text/javascript">
+    var parentId = request('parentId');
+    var moduleButtonId = request('moduleButtonId');
+    var moduleId = request('moduleId');
+    $(function () {
+        initControl();
+    })
+    var dataJson = top.Form.buttonJson;
+    //初始化控件
+    function initControl() {
+        ////上级
+        //$("#ParentId").ComboBoxTree({
+        //    url: "../../AuthorizeManage/ModuleButton/ListToTreeJson",
+        //    param: { moduleButtonJson: JSON.stringify(dataJson) },
+        //    method: "post",
+        //    description: "==请选择==",
+        //    height: "150px"
+        //});
+        if (!!moduleButtonId) {
+            $.each(dataJson, function (i) {
+                var row = dataJson[i];
+                if (row.ModuleButtonId == moduleButtonId) {
+                    $("#form1").formDeserialize(row);
+                    $("#operType").val(row.EnCode); 
+                    if (document.getElementById("operType").selectedIndex<0) {
+                        $("#operType").val("other");
+                        $("#ButtonType").val("0");
+                    }
+                    if (document.getElementById("ButtonType").selectedIndex < 0) {
+                        $("#ButtonType").val("0");
+                    }
+                    var val = row.EnCode;
+                    if (row.ActionName == null) {
+                        $("#ActionName").val(val);
+                    }
+                    if (row.FaImage==null) {
+                        if (val == "search") {
+                          $("#FaImage").val("fa fa-search");
+                        }
+                        if (val=="add") {
+                           $("#FaImage").val("fa fa-plus");
+                        }
+                       if (val == "edit") {
+                          $("#FaImage").val("fa fa-pencil-square-o");
+                        }
+                       if (val == "delete") {
+                         $("#FaImage").val("fa fa-trash-o");
+                         $("#ActionName").val("del");
+                       }
+                       if (val == "export") {
+                        $("#FaImage").val("fa fa-download");
+                        }
+                    }
+                }
+            });
+        } else {
+            $("#ModuleId").val(moduleId);
+            //if (!!parentId) {
+            //    $("#ParentId").ComboBoxTreeSetValue(parentId);
+            //} else {
+            //    $("#ParentId").ComboBoxTreeSetValue(0);
+            //}
+        }
+    }
+    //保存表单
+    function AcceptClick(callback) {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var val = $("#buttonType").val();
+        if (val == "other") {
+            var code=$.trim($("#EnCode").val());
+            if (code == "search" || code == "add" || code == "edit" || code == "delete" || code == "export") {
+                dialogMsg("请填写系统指定类型之外的编号！", 2);
+                return false;
+            }
+        }
+        var data = $("#form1").formSerialize(moduleButtonId);
+        data["SortCode"] = $.trim($("#SortCode").val().replace("&nbsp;", ""));
+        //if (data["ParentId"] == "") {
+            data["ParentId"] = 0;
+        //}
+        callback(data);
+        dialogClose();
+    }
+    //选择功能类型
+    function selBtn(obj) {
+        var val=$(obj).val();
+        if (val == "other") {
+                $("#EnCode").val("");
+                $("#FullName").val("");
+                $("#EnCode").removeAttr("disabled");
+                $("#FullName").removeAttr("disabled");
+                $("#FaImage").val(""); $("#ActionName").val("");
+        } else {
+            $("#EnCode").attr("disabled", "disabled");
+            //$("#FullName").attr("disabled", "disabled");
+            $("#EnCode").val(val);
+            $("#FullName").val($(obj).find("option:selected").text());
+            $("#ActionName").val(val);
+            if (val == "search") {
+                $("#FaImage").val("fa fa-search");
+            }
+            if (val=="add") {
+                $("#FaImage").val("fa fa-plus");
+            }
+            if (val == "edit") {
+                $("#FaImage").val("fa fa-pencil-square-o");
+           
+            }
+            if (val == "delete") {
+                $("#FaImage").val("fa fa-trash-o");
+                $("#ActionName").val("del");
+            }
+            if (val == "export") {
+                $("#FaImage").val("fa fa-download");
+            }
+            
+        }
+    }
+    
+    //选取图标
+    function SelectIcon() {
+      var idx= dialogOpen({
+            id: "SelectIcon",
+            title: '选取图标',
+            url: '/AuthorizeManage/Module/Icon?ControlId=FaImage&mode=0',
+            width: "1000px",
+            height: "600px",
+            btn: ["关闭"],
+            callBack: function (iframeId) {
+                top.layer.close(idx);
+            }
+        })
+    }
+</script>
+<div style="margin-top: 10px; margin-right: 30px;">
+    <input id="ModuleButtonId" type="hidden" value="@Guid.NewGuid().ToString()" />
+    <input id="ModuleId" type="hidden" />
+    <table class="form">
+        <tr>
+            <th class="formTitle">功能分类<font face="宋体">*</font></th>
+            <td class="formValue">
+                <select id="ButtonType" class="form-control"  isvalid="yes" checkexpession="NotNull">
+                    <option value="0">页面(如新增,导出)</option>
+                    <option value="1">列表(如Grid操作列中的修改,删除)</option>
+                </select>
+            </td>
+        </tr>
+
+        <tr>
+            <th class="formTitle">功能类型<font face="宋体">*</font></th>
+            <td class="formValue">
+                <select id="operType" class="form-control" onchange="selBtn(this)" isvalid="yes" checkexpession="NotNull">
+                    <option value="">请选择</option>
+                    <option value="search">查询</option>
+                    <option value="add">新增</option>
+                    <option value="edit">修改</option>
+                    <option value="delete">删除</option>
+                    <option value="export">导出</option>
+                    <option value="other">自定义</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">编号<font face="宋体">*</font></th>
+            <td class="formValue">
+                <input id="EnCode" type="text" class="form-control" placeholder="请输入编号" isvalid="yes" checkexpession="NotNull" disabled="disabled" />
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">名称<font face="宋体">*</font></th>
+            <td class="formValue">
+                <input id="FullName" type="text" class="form-control" placeholder="请输入名称" isvalid="yes" checkexpession="NotNull"  />
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">图标<font face="宋体">*</font></th>
+            <td class="formValue">
+                <input id="FaImage" type="text" class="form-control" placeholder="请选择按钮图标"  />
+                <span class="input-button" onclick="SelectIcon()" title="选取图标" style="margin-top:5px; margin-right:30px;">...</span>
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">排序</th>
+            <td class="formValue">
+                <input id="SortCode" type="text" class="form-control" placeholder="请输入排序号" isvalid="yes" checkexpession="NumOrNull" />
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">JS函数名称</th>
+            <td class="formValue">
+                <input id="ActionName" type="text" class="form-control" placeholder="请输入脚本函数名称" />
+            </td>
+        </tr>
+     
+        <tr>
+            <th class="formTitle">地址</th>
+            <td class="formValue">
+                <input id="ActionAddress" type="text" class="form-control" />
+            </td>
+        </tr>
+    </table>
+</div>
+

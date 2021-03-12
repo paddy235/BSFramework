@@ -1,0 +1,138 @@
+body{
+    background: #f5f5f5;
+}
+.manage-content{
+    width:1101px;
+    margin:16px auto;
+    overflow: hidden;
+}
+.manage-content .side-nav{
+    width:210px;
+    background: #fff;
+    margin-bottom: -10000px;
+    padding-bottom: 10000px;
+    background: #fcfcfc;
+    border-right: 1px solid #f2f2f2;
+}
+.manage-content .side-nav .manage_menu{
+    line-height: 72px;
+    color: #5dc952;
+    font-size: 16px;
+    margin-left: 30px;
+}
+.manage-content .side-nav .manage_menu span{
+    color: #d3d3d3;
+    font-size: 12px;
+    margin-left: 7px;
+}
+.manage-content .side-nav dd{
+    box-sizing: border-box;
+    height: 44px;
+    line-height: 44px;
+    color:#212121;
+    font-size: 15px;
+    padding-left: 30px;
+    cursor: pointer;
+}
+.manage-content .side-nav dd.active{
+    width: 211px;
+    border-left: 4px solid #5dc952;
+    padding-left: 26px;
+    color: #4d4d4d;
+    border-bottom: 1px solid #f2f2f2;
+    border-top: 1px solid #f2f2f2;
+    border-right: none;
+    background: #fff;
+}
+.manage-text{
+    width: 750px;
+    background: #fff;
+    height: auto;
+    padding: 20px 70px 50px;
+}
+
+.manage_main{
+    padding-top: 50px;
+    color: #7e7e7e;
+    font-size: 14px;
+    line-height: 30px;
+}
+.manage_main p{
+    text-indent: 2em;
+}
+.manage_main_1{
+
+}
+.manage_main_2{
+    display: none;
+}
+.manage_main_3{
+    display: none;
+}
+.manage_main_4{
+    display: none;
+}
+.manage_main_5{
+    display: none;
+}
+.manage_main_title{
+    margin-bottom: 30px;
+}
+.manage_main_title h3{
+    display: inline-block;
+    border-bottom: 1px solid #e5e5e5;
+    font-size: 22px;
+    color: #4d4d4d;
+    padding-bottom: 12px;
+    position: relative;
+    width: 550px;
+}
+.manage_main_title h3 span{
+    color: #a0a0a0;
+    font-size: 14px;
+    margin-left: 20px;
+}
+.manage_main_title h3 i{
+    position: absolute;
+    display: inline-block;
+    height: 3px;
+    bottom: -1px;
+    left: 0;
+    width: 60px;
+    background: #6aec5c;
+}
+.content_img{
+    margin: 10px 0;
+}
+.content_img img{
+    max-width: 100%;
+}
+.content_img,.img_title{
+    text-align: center;
+}
+.img_title{
+    padding-top: 5px;
+    background: url("../images/trangel_icon.png") no-repeat center top;
+    margin-bottom: 15px;
+}
+.case_inter{
+    margin-top: 30px;
+    padding-top: 30px;
+    background: url("../images/down_circle.png") no-repeat center top;
+    text-align: center;
+}
+.case_inter a{
+    color: #7e7e7e;
+    border: 1px solid #6aec5c;
+    padding: 5px 10px;
+    border-radius: 3px;
+}
+.case_inter a:hover{
+    color: rgba(126,126,126,.8);
+}
+.manage_main p.sub_title{
+    font-size: 16px;
+    color: #333;
+    margin-top: 20px;
+    text-indent: 0;
+}

@@ -1,0 +1,350 @@
+﻿@using BSFramework.Entity.EvaluateAbout
+
+@model IList<BSFramework.Entity.EvaluateAbout.EvaluateEntity>
+
+@{
+    ViewBag.Title = "考评";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script src="@Url.Content("~/Content/scripts/plugins/highcharts/highcharts.js")"></script>
+<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+</style>
+<script>
+    var indexType = 1;//直接按分类来排名
+    jQuery(function () {
+        var type = '@ViewBag.type';
+        
+        $("#queryCondition .dropdown-menu li").click(function () {
+            var text = $(this).find('a').text();
+            var value = $(this).find('a').data('id');
+            $("#queryCondition .dropdown-text").text(text).data('id', value)
+        });
+
+        $("#query1 .dropdown-menu li").click(function () {
+            var text = $(this).find('a').text();
+            var value = $(this).find('a').data('id');
+            $("#query1 .dropdown-text").text(text).data('id', value)
+        });
+        GetGrid();
+        var pcts = jQuery.parseJSON('@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.pcts))');
+        var data = [];
+        
+        jQuery.each(pcts, function (i, o) {
+            data.push([o.GroupName, o.Pct]);
+        });
+       
+           
+            jQuery('#container').height(jQuery(window).height() - 80).highcharts({
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: '@Html.Raw(ViewBag.season)' + '各班组考评总分排名'
+                },
+                subtitle: {
+                    text: '总分排名'
+                },
+                legend: {
+                    enabled: false
+                },
+                xAxis: {
+                    type: 'category',
+                    labels: {
+                        rotation: -30
+                    }
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: '评分'
+                    }
+                },
+                tooltip: {
+                    pointFormat: '<span style="color:{point.color}">\u25CF</span> 总分：<b>{point.y:.2f}</b>'
+                },
+                series: [
+                    {
+                        name: '总分',
+                        data: data,
+                        dataLabels: {
+                            enabled: true,
+                            rotation: -90,
+                            color: '#fff',
+                            align: 'right',
+                            format: '{point.y:.2f}',
+                            y: 10
+                        }
+                    }
+                ]
+            });
+
+        if (type == "3") //首页跳转
+        {
+            $("#query2").val('1');
+
+            document.getElementById("dvgrid").style.display = 'none';
+            document.getElementById("dvchart").style.display = '';
+        }
+        $("input[name=indexType]").change(function () {
+            indexType = $(this).val();
+            //var queryJson = {
+            //    keyword: $("#txt_Keyword").val(),
+            //    indexType: indexType
+            //}
+            //$gridTable.jqGrid('setGridParam', {
+            //    postData: queryJson
+            //}).trigger('reloadGrid');
+        })
+        //按钮权限控制
+         @if (!BSFramework.Application.Code.OperatorProvider.Provider.Current().IsSystem)
+                {
+                    @Html.Raw("AuthiruzeBtn($('.toolbar'), $(''));");//操作按钮权限控制
+                }
+    });
+
+    function fn$search() {
+        var text = jQuery("#queryCondition .dropdown-text").text();
+        var text1 = jQuery("#query1 .dropdown-text").text();
+        var id = jQuery("#queryCondition .dropdown-text").data('id');
+        var categoryid = jQuery("#query1 .dropdown-text").data('id');
+        var type = $("#query2").val();
+        if (!id) return;
+        jQuery.getJSON('@Url.Action("GetCalcScore")/' + id, { categoryid: categoryid, indexType: indexType }, function (data) {
+                var pcts = []; names = [];
+                jQuery.each(data, function (i, o) {
+                    pcts.push([o.GroupName, o.Pct]);
+                    names.push(o.GroupName);
+                });
+                jQuery('#container').highcharts().series[0].setData(pcts);
+                jQuery('#container').highcharts().setTitle({ text: text + '各班组考评总分排名' }, { text: text1 ? text1 + '排名' : '总分排名' });
+            });
+
+    }
+    function showdata()
+    {
+        var val = $("#query2").val();
+        if (val == "0") {
+            document.getElementById("dvchart").style.display = 'none';
+            document.getElementById("dvgrid").style.display = '';
+        }
+        else if (val == "1")
+        {
+            document.getElementById("dvchart").style.display = '';
+            document.getElementById("dvgrid").style.display = 'none';
+        }
+    }
+    var color = ["red", "orange", "#610000", "green", "blue", "aqua", "blueviolet"];
+    var titleColor = [];
+
+    function GetGrid() {
+        var selectedRowIndex = 0;
+        var $grid = $("#gridTable");
+        $grid.jqGrid({
+            height: $(window).height() - 136.5,
+            url: '@Url.Action("GetCalcScoreNew")',
+            datatype: "json",
+            autowidth: true,
+            colModel: [
+                { label: '', name: 'Tid', index: 'Tid', hidden: true, align: 'Tid' },
+                { label: '', name: 'TitleId', index: 'TitleId', hidden: true, align: 'center' },
+                { label: '', name: 'DeptId', index: 'DeptId', hidden: true, align: 'center' },
+                { label: '', name: 'GroupId', index: 'GroupId', hidden: true, align: 'center' },
+                { label: '', name: 'GroupBy', index: 'GroupBy', hidden: true, align: 'center' },
+                {
+                    label: '班组', name: 'GroupName', index: 'GroupName', width: 400, sortable: false, align: 'center'
+                },
+                { label: '本次评分', name: 'Score1', index: 'Score1', width: 200, sortable: false, align: 'center' },
+                { label: '上次评分', name: 'Score2', index: 'Score2', width: 200, sortable: false, align: 'center' },
+                {
+                    label: '标准分', name: 'Score', index: 'Score', width: 200, sortable: false, align: 'center',
+                    cellattr: function (rowid, value, rowobj, colModel, arrobj) {
+
+                        return 'id=\'Score' + rowid + "\'";
+                    }
+                },
+                {
+                    label: '得分率', name: 'Percent', index: 'Percent', width: 200, sortable: false, align: 'center'
+                },
+                {
+                    label: '环比', name: 'Percent1', index: 'Percent1', width: 200, sortable: false, align: 'center'
+                },
+                {
+                    label: '考评排名', name: 'Index', index: 'Index', width: 200, sortable: false, align: 'center'
+                },
+                {
+                    label: '称号', name: 'TitleName', index: 'TitleName', width: 200, sortable: false, align: 'center', formatter: function (a, b, c) {
+                        if (a != null) {
+                            if (titleColor.hasOwnProperty(a)) {
+                                return "<span style=\"color:" + titleColor[a] + "\">" + a + "</span>";
+                            } else {
+                                var size = 0;
+                                for (var key in titleColor) {
+                                    if (titleColor.hasOwnProperty(key)) size++
+                                }
+                                titleColor[a] = color[size % 7];
+                                return "<span style=\"color:" + color[size % 7]+ "\">" + a + "</span>";
+                            }
+                        }
+                        return "";
+                    }
+                }
+            ],
+            rowNum: 10000,
+            viewrecords: true,
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            gridComplete: function ()
+            {
+                var gridName = "gridTable";
+                Merger(gridName, 'Score');
+            }
+
+        });
+        function Merger(gridName, CellName)
+        {
+            var mya = $("#" + gridName + "").getDataIDs();
+            var length = mya.length;
+            for (var i = 0; i < length; i++)
+            {
+                var before = $("#" + gridName + "").jqGrid('getRowData', mya[i]);
+                var rowSpanTaxCount = 1;
+                for (j = i + 1; j <= length; j++)
+                {
+                    var end = $("#" + gridName + "").jqGrid('getRowData', mya[j]);
+                    if (before["GroupBy"] == end["GroupBy"]) {
+                        rowSpanTaxCount++;
+                        $("#" + gridName + "").setCell(mya[j], CellName, '', { display: 'none' });
+                    } else {
+                        rowSpanTaxCount = 1;
+                        break;
+                    }
+                    $("#" + CellName + "" + mya[i] + "").attr("rowspan", rowSpanTaxCount);
+                }
+            }
+        }
+        $("#btn_Search").click(function () {
+            var id = jQuery("#queryCondition .dropdown-text").data('id');
+            var categoryid = jQuery("#query1 .dropdown-text").data('id');
+            $grid.jqGrid('setGridParam', {
+                postData: { id: id, categoryid: categoryid, indexType: indexType },
+            }).trigger('reloadGrid');
+        });
+
+    }
+    function fn$deduct()
+    {
+        var id = jQuery("#queryCondition .dropdown-text").data('id');
+        dialogOpen({
+            id: "Form",
+            title: '扣分统计',
+            url: '/../@Url.Action("Deducts")/'+id,
+            width: "1600px",
+            height: "800px",
+            btn: null
+        });
+    }
+    function SetTitle() {
+        var groupId = $("#gridTable").jqGridRowValue('GroupId');
+        var groupName = $("#gridTable").jqGridRowValue('GroupName');
+        var titleId = $("#gridTable").jqGridRowValue('TitleId');
+        var tid = $("#gridTable").jqGridRowValue('Tid');
+        var id = jQuery("#queryCondition .dropdown-text").data('id');
+        if (!!groupId && groupId != "") {
+            dialogOpen({
+                id: "SetForm",
+                title: '称号设置',
+                url: '/../@Url.Action("SetTitleForm")?groupId=' + groupId + "&groupName=" + groupName + "&evaluateId=" + id + "&TitleId=" + titleId + "&Tid=" + tid,
+                width: "500px",
+                height: "200px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        } else {
+            dialogMsg('请先选择列表中要设置称号的班组！', 0);
+        }
+    }
+</script>
+<div class="titlePanel">
+    <div class="title-search">
+        <div class="form-inline">
+            <div class="form-group">
+                @*<input type="radio" name="indexType" value="0" checked="checked" />按部门排名<input type="radio" name="indexType" value="1" />按分类排名*@
+                <label for="queryCondition">考评季度</label>
+                <div id="queryCondition" class="btn-group">
+                    @{
+                        if (Model.Count > 0)
+                        {
+                            <a class="btn btn-default dropdown-text" data-toggle="dropdown" style="width:200px;text-align:left;" data-id="@Html.Raw(Model[0].EvaluateId)">@Html.Raw(Model[0].EvaluateSeason)</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-default dropdown-text" data-toggle="dropdown" style="width:200px;text-align:left;" data-id=""></a>
+                        }
+                    }
+
+                    <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                    <ul class="dropdown-menu" style="width:200px;text-align:left;">
+                        @foreach (var item in Model)
+                        {
+                            <li><a data-id="@Html.Raw(item.EvaluateId)">@Html.Raw(item.EvaluateSeason)</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="query1">要素</label>
+                <div id="query1" class="btn-group">
+                    <a class="btn btn-default dropdown-text" data-toggle="dropdown" style="width:200px;text-align:left;">总分</a>
+                    <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                    <ul class="dropdown-menu" style="width:200px;text-align:left;">
+                        <li><a data-id="">总分</a></li>
+                        @{
+                            var categories = ViewBag.categories as IList<EvaluateCategoryEntity>;
+                            foreach (var item in categories)
+                            {
+                                <li><a data-id="@Html.Raw(item.CategoryId)">@Html.Raw(item.Category)</a></li>
+                            }
+                        }
+                    </ul>
+                </div>
+                <label for="query2">状态</label>
+                <select id="query2" onchange="showdata();">
+                    <option value="0" >实际得分</option>
+                    <option value="1" >百分制得分</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <a id="btn_Search" class="btn btn-primary" onclick="fn$search();"><i class="fa fa-search"></i>&nbsp;查询</a>
+                @*<a id="btn_Deduct" class="btn btn-primary" onclick="fn$deduct();">&nbsp;扣分统计</a>*@
+            </div>
+        </div>
+    </div>
+    <div class="toolbar">
+        <div class="btn-group">
+            <a id="SetTitle" class="btn btn-default" onclick="SetTitle()"><i class="fa fa-trophy"></i>&nbsp;称号设置</a>
+        </div>
+    </div>
+</div>
+<div style="border: 1px solid #ccc; padding-bottom: 2px;text-align:center;padding-right:0px; display: none;" id="dvchart" >
+    <div id="container" style="height: 100%;width:98%; margin:0px;"></div>
+    
+</div>
+<div class="gridPanel" id="dvgrid" style="">
+    <table id="gridTable"></table>
+</div>
+

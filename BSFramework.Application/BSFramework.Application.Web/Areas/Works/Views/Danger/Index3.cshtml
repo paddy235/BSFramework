@@ -1,0 +1,180 @@
+﻿@{
+    ViewBag.Title = "危险预知训练统计";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<script src="~/Content/scripts/jquery/jquery-1.10.2.min.js"></script>
+<script src="~/Content/scripts/plugins/echarts/echarts.min.js"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/datepicker/WdatePicker.js")"></script>
+<script>
+    $(function () {
+        var from = $("#from").val();
+        var to = $("#to").val();
+
+        jQuery('#mainChart').height(jQuery(window).height() - 140);
+
+        $.ajax({
+            url: '@Url.Action("GetNewData", "Danger", new { area = "Works" })',
+            type: 'post',
+            data: {from:from,to:to},
+            success: function (data) {
+                var rows = data.rows;
+                bindChart(rows);
+            }
+        });
+
+    });
+    function select()
+    {
+        var from = $("#from").val();
+        var to = $("#to").val();
+        $.ajax({
+            url: '@Url.Action("GetNewData", "Danger", new { area = "Works" })',
+            type: 'post',
+            data: { from: from, to: to },
+            success: function (data) {
+                var rows = data.rows;
+                bindChart(rows);
+            }
+        });
+    }
+    function selectall() {
+        $("#from").val('');
+        $("#to").val('');
+        var from = $("#from").val();
+        var to = $("#to").val();
+        $.ajax({
+            url: '@Url.Action("GetNewData", "Danger", new { area = "Works" })',
+            type: 'post',
+            data: { from: from, to: to },
+            success: function (data) {
+                var rows = data.rows;
+                bindChart(rows);
+            }
+        });
+    }
+    function bindChart(rows) {
+        var array = eval('(' + rows + ')');
+        var name = new Array();
+        var count = new Array();
+        for (var i in array) {
+            name.push(array[i].category);
+            count.push(array[i].value);
+        }
+        var n = echarts.init(document.getElementById("mainChart")), t;
+        n.off('click'); // 避免多次调用
+        n.on('click', function (params)
+        {
+            detail(params.name);
+            
+        });
+        n.setOption(
+            {
+                backgroundColor: "#fff",
+                title: {
+                    text: "实际开展次数",
+                    left: 15,
+                    top: 15,
+                    textStyle: {
+                        color: "#666666",
+                        fontSize: 24,
+                        fontWeight: 100,
+                        fontFamily: "微软雅黑"
+                    },
+                    subtext: "",
+                    subtextStyle: {
+                        color: "#878787", fontSize: 14, fontWeight: 100, fontFamily: "微软雅黑"
+                    },
+                    itemGap: 20
+                },
+                tooltip: {
+                    trigger: "axis",
+                    axisPointer: {
+                        type: "shadow",
+                        textStyle: { color: "#fff" }
+                    }
+                },
+                //tooltip:
+                //    {
+                //        formatter: function (a) {
+                //            return (a['seriesName'] + '</br>' + a['name'] + ':' + a['value']);
+                //        }
+                //    },
+                legend: {
+                    //data: ["违章次数"],
+                    //x: 15, y: 45, textStyle: { color: "#878787" }
+                },
+                grid: {
+                    borderWidth: 0, top: 100, left: "2%", right: "1%", bottom: "12%", containLabel: !0
+                },
+                xAxis: [{
+                    type: "category",
+                    data: name,
+                    splitLine: !1, axisTick: !1,
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 40,
+                        textStyle: {}
+                    }
+                }],
+                yAxis: [{
+                    type: "value",
+                    splitLine: !1, axisTick: !1,
+                    splitNumber: 1
+                }],
+               
+                series: [{
+                    name: "开展次数", type: "bar", label: { normal: { show: true, position: "top", textStyle: { color: "#87A1F6" } } },
+                    itemStyle: { normal: { color: "#DDE0E5" } },
+                    data: count
+                }]
+            });
+    }
+    function detail(name) {
+        var from = $("#from").val();
+        var to = $("#to").val();
+        var url = '/../@Url.Action("Detail3")?name=' + name + '&from=' + from + '&to=' + to;
+        dialogOpen({
+            id: "Detail",
+            title: '危险预知训练台账',
+            url: url,
+            width: "1300px",
+            height: "850px",
+            btn:null
+        });
+        return;
+        // }
+    }
+</script>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;overflow-y:auto;">
+    <div class="ui-layout-center" style="padding-left:5px;">
+        <div class="center-Panel">
+            <div class="titlePanel">
+                <div class="title-search">
+                    <table>
+                        <tr>
+                            <td style="padding-left: 15px; ">
+                                选择日期
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                <input id="from" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker();" style="width: 150px;" />
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                --
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                <input id="to" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker();" style="width: 150px;" />
+                            </td>
+                            <td style="padding-left: 5px;">
+                                <a id="btn_Search" class="btn btn-primary" onclick="select();" ><i class="fa fa-search"></i>&nbsp;查询</a>
+                                <a id="btn_SearchAll" class="btn btn-primary" onclick="selectall();">&nbsp;全部</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="gridPanel">
+                <div class="content" id="mainChart" style="width:100%;height:500px;margin-top:50px;"></div>
+            </div>
+        </div>
+    </div>
+</div>

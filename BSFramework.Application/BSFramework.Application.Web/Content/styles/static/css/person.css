@@ -1,0 +1,28 @@
+@charset "utf-8";
+.tab-toggle .nav-tabs>li>a{
+    font-size:18px;
+    color:#0d0d0d;
+    padding:15px 30px;
+    border-bottom:4px solid transparent;
+}
+.tab-toggle .nav-tabs{border:none;}
+.tab-toggle .nav>li>a:focus,
+.tab-toggle .nav>li>a:hover{
+    background: none;
+}
+.tab-toggle .nav-tabs>li.active>a,
+.tab-toggle .nav-tabs>li.active>a:focus,
+.tab-toggle .nav-tabs>li.active>a:hover{
+    background: none;
+    border-width:0 0 4px 0;
+    border-color: transparent transparent #3669e1 transparent;
+    border-style:solid;
+    font-weight:bold;
+    color:#3669e1;
+}
+.tab-toggle .show-div > div{
+    display: none;
+}
+.show-div .my-form-control{
+    margin-bottom:15px;
+}

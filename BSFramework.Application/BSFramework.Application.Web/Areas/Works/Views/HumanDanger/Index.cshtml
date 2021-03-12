@@ -1,0 +1,255 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+@section Scripts {
+    <script>
+        var deptid = '@ViewBag.deptid';
+        var isallowd = '@ViewBag.isallowd';
+        jQuery(function () {
+
+            $('#layout').layout({
+                west: {
+                    size: 300
+                },
+                onresize: function () {
+                    $(window).resize()
+                }
+            });
+
+            $(window).resize(function (e) {
+                window.setTimeout(function () {
+
+                    $("#grid").setGridHeight($(window).height() - 170);
+                }, 200);
+                e.stopPropagation();
+            });
+            $("#departments").height($(window).height() - 50);
+
+            //$('#layout').layout({
+            //    applyDemoStyles: false,
+            //    onresize: function () {
+            //        $(window).resize()
+            //    }
+            //});
+
+            //$(window).resize(function (e) {
+            //    window.setTimeout(function () {
+            //        $('#grid').setGridWidth(($('.gridPanel').width()));
+            //        $("#grid").setGridHeight($(window).height() - 170);
+            //        $("#itemTree").css('height', $(window).height() - 50);
+            //    }, 200);
+            //    e.stopPropagation();
+            //});
+
+            if (isallowd != 'True') {
+                jQuery('#add').hide();
+                jQuery('#import').hide();
+            }
+            initGrid();
+
+        });
+
+        function reload() {
+            jQuery('#key').val('');
+            jQuery('.bbit-tree-selected').removeClass('bbit-tree-selected');
+            deptid = '';
+            fn$query();
+        }
+
+        @*function initTree() {
+            $("#itemTree").treeview({
+                height: $(window).height() - 50,
+                url: '/..@Url.Action("GetDepartmentTree", "Department", new { area = "BaseManage"})?deptid=' + deptid,
+                onnodeclick: function (item) {
+                    deptid = item.id;
+                    $('#btn_Search').click();
+                }
+            });
+        }*@
+
+        function initGrid() {
+            jQuery('#grid').jqGrid({
+                url: '@Url.Action("GetData")',
+                mtype: 'POST',
+                datatype: "json",
+                height: $(window).height() - 170,
+                autowidth: true,
+                colModel: [
+                    { label: '主键', name: 'ItemId', hidden: true },
+                    {
+                        label: '操作', name: 'action', width: 120, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                            var html = "";
+                            html += "<a href=\"javascript:fn$view('" + rowObject.HumanDangerId + "')\" title=\"查看\" style=\"color:blue;padding-left:0px;\">查看</a> ";
+                            if (isallowd == 'True') {
+                                html += "<a href=\"javascript:fn$edit('" + rowObject.HumanDangerId + "')\" title=\"修改\" style=\"color:blue;padding-left:0px;\">修改</a> ";
+                                html += "<a href=\"javascript:fn$delete('" + rowObject.HumanDangerId + "')\" title=\"删除\" style=\"color:blue;padding-left:0px;\">删除</a> ";
+                            }
+                            return html;
+                        }
+                    },
+                    { label: "工作任务", name: "Task", width: 400, align: "center", sortable: false },
+                    { label: "作业区域", name: "TaskArea", width: 300, align: "center", sortable: false },
+                    { label: "适用部门", name: "DeptName", width: 200, align: "center", sortable: false },
+                    { label: "作业性质类型", name: "TaskType", width: 200, align: "center", sortable: false },
+                    { label: "人身伤害风险", name: "DangerLevel", width: 120, align: "center", sortable: false },
+                    { label: "操作时间", name: "OperateTime", width: 120, align: "center", sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' } },
+                ],
+                rownumbers: true,
+                rowNum: 20,
+                viewrecords: true,
+                pager: '#gridPager',
+            });
+        }
+
+        function fn$add() {
+            dialogOpen({
+                id: "Edit",
+                title: '新增',
+                url: '/../@Url.Action("Edit", new  { id = string.Empty})',
+                width: "1000px",
+                height: "620px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        }
+
+        function fn$edit(id) {
+            dialogOpen({
+                id: "Edit",
+                title: '修改',
+                url: '/../@Url.Action("Edit")/' + id,
+                width: "1000px",
+                height: "620px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        }
+
+        function fn$view(id) {
+            dialogOpen({
+                id: "Edit",
+                title: '查看',
+                url: '/../@Url.Action("Edit")/' + id + '?fn=view',
+                width: "1000px",
+                height: "620px",
+                btn: null,
+                callBack: function (iframeId) {
+                    end();
+                }
+            });
+        }
+
+        function fn$delete(id) {
+            $.RemoveForm({
+                url: '/..@Url.Action("Remove")' + '/' + id,
+                success: function (data) {
+                    fn$refresh();
+                }
+            });
+        }
+
+        function fn$query() {
+            jQuery('#grid').jqGrid('setGridParam', { postData: { key: jQuery('#key').val(), deptId: deptid } }).trigger("reloadGrid");
+        }
+        function onNodeSelected(item) {
+            deptid = item.id;
+
+            fn$query();
+        }
+        function fn$refresh() {
+            fn$query();
+        }
+
+        function fn$all() {
+            jQuery('#key').val('');
+            fn$query();
+        }
+
+        function fn$import() {
+            dialogOpen({
+                id: "Import",
+                title: '导入',
+                url: '/..@Url.Action("Import")',
+                width: "500px",
+                height: "200px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.fn$ok();
+                }
+            });
+        }
+
+        function association() {
+            dialogConfirm("将【人身风险预控设置】中的风险对应的预控措施与【人身风险预控库】中的任务风险对应的预控措施关联。\r\n注意：关联之后前者的措施内容会将后者的替换，请谨慎关联！", function (action) {
+                if (action) {
+                    $.SaveForm({
+                        url: '/..@Url.Action("MeasureAssociation")',
+                        loading: "正在保存数据...",
+                        success: function () {
+
+                        }
+                    })
+                }
+            });
+        }
+
+    </script>
+}
+
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                <div class="col-md-10">
+                    组织机构
+                </div>
+            </div>
+            @Html.Partial("~/Areas/BaseManage/Views/Department/Tree.cshtml")
+
+            @*<div id="itemTree" style="border: 1px solid #ccc;border-top:none;"></div>*@
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title">
+                人身风险预控库
+                <div class="btn-group" style="float:right;margin-right:30px">
+                    本月未开展人身风险预控次数：<a id="undo" href="#" onclick="fn$undo()" style="color:blue;text-decoration:underline;"></a>
+                </div>
+            </div>
+            <div class="titlePanel">
+                <div class="title-search">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="key">
+                        </div>
+                        <div class="form-group">
+                            <a id="btn_Search" class="btn btn-primary" onclick="fn$query();">
+                                <i class="fa fa-search"></i> 查询
+                            </a>
+                            <a id="btn_SearchAll" class="btn btn-primary" onclick="fn$all();">&nbsp;全部</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="toolbar">
+                    @if (ViewBag.isallowd)
+                    {
+                        <div class="btn-group">
+                            <a id="replace" class="btn btn-default" onclick="reload();"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+                            <a id="association" class="btn btn-default" onclick="association()"><i class="fa fa-gears"></i>&nbsp;预控措施关联同步</a>
+                            <a id="add" class="btn btn-default" onclick="fn$add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+                            <a id="import" class="btn btn-default" onclick="fn$import()"><i class="fa fa-file-excel-o"></i>&nbsp;导入</a>
+                        </div>
+                    }
+                    @*<script>$('.toolbar').authorizeButton()</script>*@
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="grid"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>

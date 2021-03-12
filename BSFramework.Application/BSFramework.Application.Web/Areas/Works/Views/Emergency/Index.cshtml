@@ -1,0 +1,341 @@
+﻿@model IEnumerable<BSFramework.Application.Entity.EmergencyManage.EmergencyCardTypeEntity>
+@using BSFramework.Application.Entity.EmergencyManage
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/scripts/plugins/layui/css/layui.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/skin.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")" />
+
+
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>  @*此js必须在2.1.4之后*@
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/hammer.js")"></script>
+<script src="@Url.Content("~/Content/scripts/bootstrap/js/bootstrap.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/layui/layui.all.js")"></script>
+<style>
+.bs-area-1 .row,.bs-area-1 .col-md-3,.bs-area-1 dl{height: 725px;}
+.bs-area-1 .col-md-3:nth-child(5) dt{background: #32b16c;}
+.bs-area-1 .col-md-3:nth-child(6) dt{background: #dd9146;}
+.bs-area-1 .col-md-3:nth-child(7) dt{background: #00bcd4;}
+.bs-area-1 .col-md-3:nth-child(8) dt{background: #9ccc65;}
+.bs-area-1 .col-md-3:nth-child(9) dt{background: #32b16c;}
+.bs-area-1 .col-md-3:nth-child(10) dt{background: #dd9146;}
+.bs-area-1 .col-md-3:nth-child(11) dt{background: #00bcd4;}
+.bs-area-1 .col-md-3:nth-child(12) dt{background: #9ccc65;}
+</style>
+<script>
+    function getall() {
+
+        $('#name').val('');
+    }
+    @*var l;
+    var v;
+    var etype;
+    var keyValue;
+    $(function () {
+        $('#uploadFile').change(cp);
+
+        $('#container li').each(function () {
+            var mc = new Hammer(this);
+            var $p = $(this).parents('dl').parent();
+            var $btn = $(this).find('button.remove');
+            /*点击当前按钮阻止冒泡事件  删除操作*/
+            $(this).click(function (e) {
+                e.stopPropagation();
+            });
+            /*列表移除事件*/
+            $btn.click(function (e) {
+                e.stopPropagation();
+                var $dl = $(this).parents('dl');
+                var $div = $dl.parent();
+                var length = 0;
+                if (del(e.currentTarget.id)) {
+                    $(this).parents('li').remove();
+                } else
+                {
+                    return false;
+                }
+                length = $div.find('li').length;
+                if (!length) {
+                    $div.removeClass('remove');
+                }
+            })
+            /*移除class*/
+            mc.on('press', function (e) {
+                $p.addClass('remove');
+                $('body').bind('click', clickHand);
+                return false;
+            })
+        })
+        /*移除class*/
+        function clickHand() {
+            $('#container > div').removeClass('remove');
+        }
+    })
+    function add(type) {
+        l = layer.open({
+            type: 1,
+            area: ['600px', '300px'],
+            content: $('#modal')
+        })
+        $("#ename").val('');
+        $("#tempImageSrc").val('');
+        $("#filename").val('');
+        etype = type;
+    }
+    function btnOK() {
+        var path = $("#tempImageSrc").val();
+        var filename = $("#filename").val();
+        var name = $("#ename").val();
+        if (!name) {
+            v = layer.open({
+                type: 1,
+                title: '数据验证',
+                content: $('#vn'),
+                area: ['300px', '180px']
+            })
+            return;
+        }
+        if (!filename) {
+            v = layer.open({
+                type: 1,
+                title: '数据验证',
+                content: $('#vf'),
+                area: ['300px', '180px']
+            })
+            return;
+        }
+        $.ajax({
+            url: '@Url.Action("Add")',
+            type: 'post',
+            data: { type: etype, name: name, path: path },
+            success: function (data) {
+                //layer.close(iframeIndex);
+                // alert('新增成功');
+                window.location.href = '@Url.Action("Index")';
+            }
+        });
+    }
+    var vimg;
+    function cp() {
+
+        $.ajaxFileUpload({
+            url: "@Url.Action("UploadFile")",
+            secureuri: false,
+            fileElementId: 'uploadFile',
+            dataType: 'json',
+            success: function (data) {
+                if (data.resultdata.code == 0) {
+                    var src = $("#tempImageSrc").val();
+                    if (src != "") {
+                        src = src + ',';
+                    }
+                    var name = $("#filename").val();
+                    if (name != "") {
+                        name = name + ',';
+                    }
+
+                    $("#tempImageSrc").val(src + top.contentPath + data.resultdata.path);
+                    $("#filename").val(name + data.resultdata.name);
+                    $('#uploadFile').change(cp);
+                } else {
+                    vimg = layer.open({
+                        type: 1,
+                        title: '数据验证',
+                        content: $('#up'),
+                        area: ['400px', '180px']
+                    })
+                    $('#uploadFile').change(cp);
+                }
+            }
+        });
+    }
+    function getall() {
+
+        $('#name').val('');
+    }
+    var vdel;
+    function del(id) {
+        keyValue = id;
+
+        var msg = "删除后将无法恢复，请确认！";
+        if (confirm(msg) == true) {
+
+            $.ajax({
+                url: '@Url.Action("Del")',
+                type: 'post',
+                data: { id: id },
+                success: function (data) {
+                }
+            });
+            return true;
+        } else {
+            return false;
+            //window.location.href = '@Url.Action("Index")';
+        }
+    }
+    function delOK() {
+        $.ajax({
+            url: '@Url.Action("Del")',
+            type: 'post',
+            data: { id: keyValue },
+            success: function (data) {
+                layer.close(vdel);
+            }
+        });
+    }
+    function edit(id) {
+
+        window.location.href = '@Url.Action("Edit")' + '?id=' + id;
+    }*@
+
+
+    //???
+</script>
+
+@using (Html.BeginForm("Index", "Emergency", FormMethod.Post, new { @class = "sf", enctype = "multipart/form-data", @id = "upimg" }))
+{
+    <div class="main-content" style="height:970px;overflow-y:hidden;">
+        <div class="container-fluid bs-box">
+            <div class="bs-header">
+                <div class="title">
+                    <a href="javascript:;">
+                        @*<img src="../static/images/arrow-back-icon.png" alt="">*@
+                        应急处置卡
+                    </a>
+                </div>
+            </div>
+            @{
+                var lls = (IList<EmergencyCardTypeEntity>)ViewData["list"];
+                var heightNum = Math.Ceiling((double)lls.Count() / 4);
+                var px = (heightNum * 725 + 150).ToString() + "px";
+            }
+            <div class="bs-body" style="height:@px">
+                <div class="bs-area-1">
+                    <div class="text-center bs-search">
+                        <span class="my-input mg-r-15">
+                            <input type="text" name="name" id="name" value="@Html.Raw(ViewData["name"])" placeholder="请输入关键字搜索">
+                        </span>
+                        <button class="my-btn bg-3669e1 mg-r-15">
+                            <img src="@Url.Content("~/Content/styles/static/images/search-icon.png")" alt="">
+                            搜索
+                        </button>
+                        <button onclick="getall();" class="my-btn bg-8fadce">全部</button>
+                    </div>
+                    <div class="row" id="container">
+                        @{
+                            for (int i = 0; i < lls.Count(); i++)
+                            {
+                                <div class="col-md-3">
+                                    <dl>
+                                        <dt>@lls[i].TypeName</dt>
+                                        <dd>
+                                            <ul>
+                                                @for (int j = 0; j < lls[i].childList.Count; j++)
+                                                {
+
+                                                    <li>
+                                                        <a href="@Url.Action("Detail", new {id=@lls[i].childList[j].ID })">@lls[i].childList[j].Name</a><div>
+                                                        </div>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            }
+                        }
+
+                        @*<div class="col-md-3">
+                                                        <dl>
+                                                            <dt>应急设备操作卡</dt>
+                                                            <dd>
+                                                                <ul>
+                                                                    @{
+                                lls = (IList<EmergencyEntity>)ViewData["list4"];
+                                                                    }
+                                                                    @for (int i = 0; i < lls.Count(); i++)
+                                                                    {
+                                                                        <li>
+                                                                            <a href="@Url.Action("Detail", new {id=@lls[i].ID })">@lls[i].Name</a><div><button value="@lls[i].ID" onclick=" edit(this.value); return false;" class="edit"></button>
+                            <button id="@lls[i].ID"  class="remove"></button>
+                                                                            </div>
+                                                                        </li>
+                                                                    }
+                                                                </ul>
+                                                            </dd>
+                                                        </dl>
+                                                        <span class="add" onclick="add('4');"></span>
+                                                    </div>*@
+                    </div>
+                </div>
+            </div>
+            <div class="main-footer">武汉博晟安全技术股份有限公司 版权所有</div>
+        </div>
+    </div>
+                            }
+
+
+<div id="modal" class="area-modal">
+    <table>
+        <tr>
+            <td>名称</td>
+            <td><input type="text" id="ename" class="my-input" data-type="*" placeholder="请输入应急处置卡名称" style="width:400px;"></td>
+        </tr>
+        <tr>
+            <td>附件</td>
+            <td class="file-group">
+                <input type="text" id="filename" class="my-input" data-type="*" readonly="readonly" style="width:345px;padding-right:10px;" placeholder="请上传附件（可上传多张图片）">
+                <input type="hidden" id="tempImageSrc" />
+                <span>
+                    <input type="file" name="uploadFile" id="uploadFile">
+                    浏览
+
+                </span>
+            </td>
+        </tr>
+        <tr>
+
+            <td colspan="3" style="text-align:center;">
+                <button class="btn-bg" onclick="btnOK();">确定</button>
+                <button class="btn-bd" onclick="layer.close(l);">取消</button>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="area-modal" id="vn">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">请输入应急处置卡名称！</h4>
+        <button class="btn bg-3669e1 c-fff" style="width:100px;margin-top:15px;" onclick="layer.close(v);">确认</button>
+    </div>
+</div>
+<div class="area-modal" id="vf">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">请上传附件！</h4>
+        <button class="btn bg-3669e1 c-fff" style="width:100px;margin-top:15px;" onclick="layer.close(v);">确认</button>
+    </div>
+</div>
+
+<div class="area-modal" id="up">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">请上传BMP,GIF,JPG,PNG,JPEG格式的图片文件！</h4>
+        <button class="btn bg-3669e1 c-fff" style="width:100px;margin-top:15px;" onclick="layer.close(vimg);">确认</button>
+    </div>
+</div>
+
+<div class="area-modal" id="vdel">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">删除后将无法恢复，请确认！</h4>
+        <button class="btn bg-3669e1 c-fff" style="width:100px;margin-top:15px;" onclick="delOK();">确认</button>
+        <button class="btn bg-3669e1 c-fff" style="width:100px;margin-top:15px;" onclick="window.location.href = '@Url.Action("Index")';">取消</button>
+    </div>
+</div>

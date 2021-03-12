@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_OrderForm.cshtml";
+}
+
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+<script>
+    var num = request("num");
+    $(function () {
+        if (num) {
+            var data = top.frames.QuestionList[num];
+            $("#topictype").text(data.topictype);
+            $("#topictitle").text(data.topictitle);
+            var answer = "";
+            var addStr = "";
+            if (data.topictype != "判断题") {
+                for (var i = 0; i < data.TheAnswer.length; i++) {
+                    if (data.TheAnswer[i].istrue) {
+                        answer += data.TheAnswer[i].answer + " ";
+                    }
+                    addStr += " <tr><td class='formValue' style='font-size:15px'>" + data.TheAnswer[i].answer + " ." + data.TheAnswer[i].description + "</td></tr>";
+                }
+            } else {
+                if (data.istrue == "true") {
+                    answer = "正确";
+                }
+                else {
+                    answer = "错误";
+                }
+            }
+            var fileStr = "";
+            var filename = data.filename.split(';');
+            for (var i = 0; i < filename.length; i++) {
+                fileStr += "<tr><td class='formValue' style='font-size:15px'>" + filename[i] + "</td></tr>";
+            }
+            $("#filetoStr").after(fileStr);
+            $("#answerStr").text(answer);
+            $("#answer").after(addStr);
+            $("#description").text(data.description);
+
+        }
+    });
+</script>
+
+<div style="margin-left: 10px; margin-top: 20px; margin-right: 30px;">
+    <table id="from1" class="form">
+        <tr>
+            <td class="formValue"><span id="topictype" style="font-size:20px;font-weight:bold"></span></td>
+        </tr>
+        <tr id="answer">
+            <td class="formValue"><span id="topictitle" style="font-size:15px;"></span></td>
+        </tr>
+
+        <tr>
+            <td class="formValue" style="font-size:20px;font-weight:bold">答案：<span id="answerStr" style="font-size:20px;font-weight:bold"></span></td>
+        </tr>
+        <tr>
+            <td class="formValue" style="font-size:20px;font-weight:bold">试题解析：</td>
+        </tr>
+        <tr>
+            <td class="formValue" style="font-size:15px;"><span id="description" style="font-size:15px;"></span></td>
+        </tr>
+        <tr id="filetoStr">
+            <td class="formValue" style="font-size:20px;font-weight:bold">关联材料：</td>
+        </tr>
+
+    </table>
+
+</div>

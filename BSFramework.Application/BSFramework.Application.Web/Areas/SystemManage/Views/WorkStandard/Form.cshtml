@@ -1,0 +1,132 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+@*<link href="~/content/scripts/plugins/webuploader/webuploader.css" rel="stylesheet" />*@
+<link href="~/Content/scripts/plugins/webuploader/webuploader-demo.css" rel="stylesheet" />
+<link href="~/Content/scripts/plugins/image-view/viewer.css" rel="stylesheet" />
+<link href="~/content/scripts/plugins/webuploader/webuploader.css" rel="stylesheet" />
+<script type="text/javascript" src="~/content/scripts/plugins/webuploader/webuploader.min.js"></script>
+<script type="text/javascript" src="~/content/scripts/business/fileupload.js"></script>
+<script src="~/Content/scripts/plugins/image-view/viewer.js"></script>
+<style type="text/css">
+    .file {
+        position: relative;
+        display: inline-block;
+        overflow: hidden;
+        text-decoration: none;
+        text-indent: 0;
+        cursor: pointer !important;
+    }
+
+        .file input {
+            position: absolute;
+            font-size: 100px;
+            right: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer !important;
+        }
+
+        .file:hover {
+            text-decoration: none;
+            cursor: pointer !important;
+        }
+</style>
+
+<script>
+    var keyValue = request('keyValue');
+    var mode = request('mode');
+    $(function () {
+        initControl();
+    });
+
+    //初始化控件
+    function initControl() {
+        $("#ModuleId").ComboBoxTree({
+            url: "../../SystemManage/IndexManage/GetMenuList?platform=1",//手机APP是2
+            description: "==请选择==",
+            height: "300px",
+            allowSearch: false
+        });
+
+        keyValue = keyValue.length == 0 ? '@Guid.NewGuid().ToString()' : keyValue;
+        file_upload.init({
+            keyValue: keyValue, multiple: true, extensions: 'jpg,gif,bmp,png', isImage: false, el: '#uploader'
+        });
+        var isDel = true;
+        file_upload.bindFiles(isDel, true, keyValue, "uploader", true);
+
+        //获取表单
+        if (!!keyValue) {
+            $.SetForm({
+                    url: '/..@Url.Action("GetFormJson")' ,
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#form1").formDeserialize(data);
+                }
+            })
+        }
+
+    }
+    //保存表单;
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var postData = $("#form1").formSerialize(keyValue);
+        postData["ModuleName"] = $("#ModuleId").ComboBoxTreeGetText();
+        $.SaveForm({
+            url: '/..@Url.Action("SaveForm")' +'?keyValue=' + keyValue,
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<div style="margin-top: 20px; margin-right: 30px;">
+    <table class="form">
+        <tr>
+            <td class="formTitle">功能模块<font face="宋体" style="color:red;">*</font></td>
+            <td class="formValue">
+                <div id="ModuleId" type="selectTree" class="ui-select ui-select-focus" isvalid="yes" checkexpession="NotNull"></div>
+                <input type="hidden" id="ModuleName" name="ModuleName" />
+                <input type="hidden" id="CreateTime" name="CreateTime" />
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">说明</td>
+            <td class="formValue">
+                <textarea id="Content" name="Content" class="form-control" rows="5"></textarea>
+            </td>
+        </tr>
+        <tr style="color:red;">
+
+            <td class="formTitle">图片</td>
+            <td class="formValue" align="center">
+                <div id="uploader" class="uploader" style="border:1px solid #ccc; margin-top:10px; min-height:200px; margin-bottom:10px;">
+                    <div class="queueList">
+                        <div id="dndArea" class="placeholder">
+                            <div class="filePicker" style="margin-left:25px; margin-top:10px;"></div>
+                        </div>
+                    </div>
+                    <div class="statusBar" style="display:none;">
+                        <div class="progress">
+                            <span class="text">0%</span>
+                            <span class="percentage"></span>
+                        </div>
+                        <div class="info"></div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle"></td>
+            <td class="formValue" align="center">
+                提示：班组用户可在安卓终端查看工作标准，其他用户可通过管理平台查看
+                </td>
+        </tr>
+    </table>
+</div>

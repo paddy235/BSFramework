@@ -1,0 +1,143 @@
+﻿
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_OrderForm.cshtml";
+}
+
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<script src="~/Content/scripts/business/common.js"></script>
+<script src="~/Content/scripts/jquery/jquery.serializeJSON.min.js"></script>
+<script src="~/Content/scripts/jquery/jquery.url.js"></script>
+@Html.Partial("UserSelect")
+<script>
+    var keyvalue = request('keyvalue');
+    $(
+        function () {
+            if (keyvalue) {
+                    $.ajax({
+                        url: "@Url.Action("getEntity")?keyvalue=" + keyvalue,
+                        type: "get",
+                        dataType: "json",
+                        async: false,
+                        success: function (data) {
+                            $("#form1").formDeserialize(data);
+                            $("#cycleShow").val(data.cycleDataStr);
+                        }
+                });
+
+                $("#id").val(keyvalue);
+                $("#userLabel").text("编辑人");
+                $("#timeLable").text("编辑时间");
+            } else {
+                $("#userLabel").text("添加人");
+                $("#timeLable").text("添加时间");
+            }
+        }
+    )
+
+    function fn$select() {
+        selectUser(jQuery('#DutyDepartmentId').val(), 'single', function (data) {
+            jQuery('#dutyuserid').val(data.UserId);
+            jQuery('#dutyuser').val(data.RealName);
+        }, '省级,厂级,部门');
+    }
+
+
+    function selectCycle() {
+        var url = "";
+
+            var cycle = $("#cycle").val();
+            var cycledate = $("#cycledate").val();
+            var isweek = $("#isweek").val();
+            var islastday = $("#islastday").val();
+            var isend = $("#isend").val();
+            url = '/..@Url.Action("Cycle")?cycle=' + cycle + "&cycledate=" + cycledate + "&isweek=" + isweek + "&islastday=" + islastday + "&isend=" + isend;
+
+
+          var   options = { winObjects: window.document.body }
+
+         dialogOpen({
+            id: "SelectCycle",
+             title: "选择周期",
+             url: url,
+            width: ($(top.window).width() - 800) + "px",
+            height: "600px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick(options);
+            }
+        });
+    }
+
+    function AcceptClick() {
+          if (!$('#form1').Validform()) {
+            return false;
+        }
+        var content = $("#content").val();
+        if (!content) {
+            dialogMsg('请填写内容！', -1);
+            return;
+        }
+        var cycleShow = $("#cycleShow").val();
+        if (!cycleShow) {
+            dialogMsg('请选择周期！', -1);
+            return;
+        }
+        var DutyUser = $("#dutyuser").val();
+        if (!DutyUser) {
+            dialogMsg('请选择责任人！', -1);
+            return;
+        }
+        var json = jQuery('#form1').serializeJSON();
+        json["content"] = content;
+        $.SaveForm({
+            url: '@Url.Action("SaveForm")' + "/",
+            param: json,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+
+</script>
+
+<div style="margin-left: 10px; margin-top: 20px; margin-right: 30px;">
+    <table id="from1" class="form">
+
+        <tr>
+            <th class="formTitle">工作任务<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <textarea id="content" class="form-control" style="height:80px" maxlength="500" checkexpession="NotNull"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">周期<font face="宋体">*</font></th>
+            <td class="formValue">
+                <input class="form-control" id="cycleShow" onclick="selectCycle()" onfocus="this.blur()" type="text" value="" checkexpession="NotNull" />
+                <input id="cycle" name="cycle" type="hidden" value="" />
+                <input id="cycledate" name="cycledate" type="hidden" value="" />
+                <input id="isweek" name="isweek" type="hidden" value="" />
+                <input id="islastday" name="islastday" type="hidden" value="" />
+                <input id="isend" name="isend" type="hidden" value="" />
+                <input id="id" name="id" type="hidden" value="" />
+            </td>
+            <th class="formTitle">责任人<font face="宋体">*</font></th>
+            <td class="formValue">
+                <input id="dutyuserid" name="dutyuserid" type="hidden" value="" />
+                <input class="form-control" id="dutyuser" name="dutyuser" onclick="fn$select()" onfocus="this.blur()" type="text" value="" checkexpession="NotNull" />
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle"><label id="userLabel"></label></th>
+            <td class="formValue">
+                <input class="form-control" readonly="readonly" value="@ViewBag.user" />
+            </td>
+            <th class="formTitle"><label id="timeLable"></label></th>
+            <td class="formValue">
+                <input class="form-control" readonly="readonly" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+            </td>
+        </tr>
+
+    </table>
+</div>

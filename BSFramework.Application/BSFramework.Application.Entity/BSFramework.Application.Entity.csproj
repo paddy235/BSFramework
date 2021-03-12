@@ -1,0 +1,378 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C10920FE-8C74-4993-A7F4-1DA189DA842C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BSFramework.Application.Entity</RootNamespace>
+    <AssemblyName>BSFramework.Application.Entity</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\Debug\BSFramework.Application.Entity.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Activity\ActivityActionEntity.cs" />
+    <Compile Include="Activity\ActivityStatiticsEntity.cs" />
+    <Compile Include="Activity\ActivitySubjectEntity.cs" />
+    <Compile Include="Activity\ActivitySupplyEntity.cs" />
+    <Compile Include="Activity\EvaluateStepsEntity.cs" />
+    <Compile Include="Activity\EvaluateTodoEntity.cs" />
+    <Compile Include="Activity\HumanDangerTrainingEntity.cs" />
+    <Compile Include="Activity\HumanDangerEntity.cs" />
+    <Compile Include="Activity\DangerCategoryEntity.cs" />
+    <Compile Include="Activity\ReportEntity.cs" />
+    <Compile Include="Activity\SafetydayMaterialEntity.cs" />
+    <Compile Include="Activity\SafetydayReadEntity.cs" />
+    <Compile Include="Activity\ActivityEvaluateEntity.cs" />
+    <Compile Include="Activity\ActivityCategoryEntity.cs" />
+    <Compile Include="Activity\ActivityEntity.cs" />
+    <Compile Include="Activity\ActivityRecordEntity.cs" />
+    <Compile Include="Activity\ActivityPersonEntity.cs" />
+    <Compile Include="Activity\DangerEntity.cs" />
+    <Compile Include="Activity\ScreensaverEntity.cs" />
+    <Compile Include="Activity\StatisticsNumModel.cs" />
+    <Compile Include="Activity\StatisticsEntity.cs" />
+    <Compile Include="Activity\MeasuresEntity.cs" />
+    <Compile Include="Activity\OrderinfoEntity.cs" />
+    <Compile Include="Activity\SafetydayEntity.cs" />
+    <Compile Include="Activity\SupplyPeopleEntity.cs" />
+    <Compile Include="AppVersionManage\AppVersionEntity.cs" />
+    <Compile Include="AttendManage\AttendEntity.cs" />
+    <Compile Include="AttendManage\SetAttendEntity.cs" />
+    <Compile Include="AuthorizeManage\ModuleFormEntity.cs" />
+    <Compile Include="AuthorizeManage\ModuleFormInstanceEntity.cs" />
+    <Compile Include="AuthorizeManage\ViewModel\AuthorizeUrlModel.cs" />
+    <Compile Include="BaseEntity.cs" />
+    <Compile Include="BaseManage\AccountEntity.cs" />
+    <Compile Include="AuthorizeManage\AndroidmenuEntity.cs" />
+    <Compile Include="BaseManage\ItemEntity.cs" />
+    <Compile Include="BaseManage\PersonDoshboardEntity.cs" />
+    <Compile Include="BaseManage\UserFaceEntity.cs" />
+    <Compile Include="BaseManage\UserInfoEntity.cs" />
+    <Compile Include="BudgetAbout\CostRecordEntity.cs" />
+    <Compile Include="BudgetAbout\BudgetEntity.cs" />
+    <Compile Include="CarcOrCardManage\CCardEntity.cs" />
+    <Compile Include="CarcOrCardManage\CarcEntity.cs" />
+    <Compile Include="CarcOrCardManage\CDangerousEntity.cs" />
+    <Compile Include="CarcOrCardManage\CMeasureEntity.cs" />
+    <Compile Include="CertificateManage\CertificateEntity.cs" />
+    <Compile Include="CertificateManage\UserCertificateEntity.cs" />
+    <Compile Include="Activity\CultureWallInfoEntity.cs" />
+    <Compile Include="CustomerManage\CashBalanceEntity.cs" />
+    <Compile Include="CustomerManage\ChanceEntity.cs" />
+    <Compile Include="CustomerManage\ExpensesEntity.cs" />
+    <Compile Include="CustomerManage\InvoiceEntity.cs" />
+    <Compile Include="CustomerManage\ReceivableEntity.cs" />
+    <Compile Include="CustomerManage\TrailRecordEntity.cs" />
+    <Compile Include="CustomerManage\CustomerContactEntity.cs" />
+    <Compile Include="CustomerManage\CustomerEntity.cs" />
+    <Compile Include="CustomerManage\OrderEntity.cs" />
+    <Compile Include="CustomerManage\OrderEntryEntity.cs" />
+    <Compile Include="CustomerManage\ViewModel\ReceivableReportModel.cs" />
+    <Compile Include="CustomParameterManage\CustomColsEntity.cs" />
+    <Compile Include="CustomParameterManage\CustomParameterEntity.cs" />
+    <Compile Include="CustomParameterManage\CustomTemplateEntity.cs" />
+    <Compile Include="DeviceInspection\DeviceInspectionItemJobEntity.cs" />
+    <Compile Include="DeviceInspection\DeviceInspectionJobEntity.cs" />
+    <Compile Include="DeviceInspection\InspectionRecordEntity.cs" />
+    <Compile Include="DeviceInspection\DeviceInspectionEntity.cs" />
+    <Compile Include="DeviceInspection\DeviceInspectionItemEntity.cs" />
+    <Compile Include="DeviceInspection\ItemResultEntity.cs" />
+    <Compile Include="DeptCycleTaskManage\DeptCycleTaskEntity.cs" />
+    <Compile Include="DeptCycleTaskManage\DeptWorkCycleTaskEntity.cs" />
+    <Compile Include="DrugManage\DrugGlassWareEntity.cs" />
+    <Compile Include="DrugManage\DrugEntity.cs" />
+    <Compile Include="DrugManage\DrugInventoryEntity.cs" />
+    <Compile Include="DrugManage\DrugOutEntity.cs" />
+    <Compile Include="DrugManage\DrugStockEntity.cs" />
+    <Compile Include="DrugManage\DrugStockOutEntity.cs" />
+    <Compile Include="DrugManage\GlassEntity.cs" />
+    <Compile Include="DrugManage\GlassStockEntity.cs" />
+    <Compile Include="DrugManage\InstrumentBDEntity.cs" />
+    <Compile Include="DrugManage\InstrumentCheckEntity.cs" />
+    <Compile Include="DrugManage\InstrumentEntity.cs" />
+    <Compile Include="EducationManage\EdActivitySupplyEntity.cs" />
+    <Compile Include="EducationManage\EdActivityRecordEntity.cs" />
+    <Compile Include="EducationManage\EdActivityPersonEntity.cs" />
+    <Compile Include="EducationManage\EdActivityEntity.cs" />
+    <Compile Include="EducationManage\EduInventoryEntity.cs" />
+    <Compile Include="EducationManage\EduPlanEntity.cs" />
+    <Compile Include="EducationManage\EduPlanInfoEntity.cs" />
+    <Compile Include="EducationManage\EduPlanVerifyEntity.cs" />
+    <Compile Include="EducationManage\TestQuestionsEntity.cs" />
+    <Compile Include="EducationManage\EduCommentTagEntity.cs" />
+    <Compile Include="EducationManage\EduAnswerEntity.cs" />
+    <Compile Include="EducationManage\EduAppraiseEntity.cs" />
+    <Compile Include="EducationManage\EduBaseInfoEntity.cs" />
+    <Compile Include="EducationManage\EduBookEntity.cs" />
+    <Compile Include="EducationManage\EduMessageEntity.cs" />
+    <Compile Include="EmergencyManage\EmergencyCardTypeEntity.cs" />
+    <Compile Include="EmergencyManage\EmergencyEntity.cs" />
+    <Compile Include="EmergencyManage\EmergencyPersonEntity.cs" />
+    <Compile Include="EmergencyManage\EmergencyReportEntity.cs" />
+    <Compile Include="EmergencyManage\EmergencyReportSteps.cs" />
+    <Compile Include="EmergencyManage\EmergencyStepsEntity.cs" />
+    <Compile Include="EmergencyManage\EmergencyWorkEntity.cs" />
+    <Compile Include="Empower\DepartEntity.cs" />
+    <Compile Include="Empower\DepartTypeEntity.cs" />
+    <Compile Include="Empower\EmpowerEntity.cs" />
+    <Compile Include="Empower\ModelEntity.cs" />
+    <Compile Include="EvaluateAbout\DesignationEntity.cs" />
+    <Compile Include="EvaluateAbout\EvaluateDeptEntity.cs" />
+    <Compile Include="EvaluateAbout\EvaluateGroupEntity.cs" />
+    <Compile Include="EvaluateAbout\EvaluateGroupTitleEntity.cs" />
+    <Compile Include="EvaluateAbout\EvaluateItemEntity.cs" />
+    <Compile Include="EvaluateAbout\EvaluateMarksRecordsEntity.cs" />
+    <Compile Include="EvaluateAbout\EvaluateReviseEntity.cs" />
+    <Compile Include="EvaluateAbout\EvaluateScopeEntity.cs" />
+    <Compile Include="EvaluateAbout\EvaluateSetEntity.cs" />
+    <Compile Include="EvaluateAbout\WeightSetEntity.cs" />
+    <Compile Include="ExperienceManage\CommentEntity.cs" />
+    <Compile Include="ExperienceManage\QuestionEntity.cs" />
+    <Compile Include="FlowManage\WFDelegateRecordEntity.cs" />
+    <Compile Include="FlowManage\WFDelegateRuleEntity.cs" />
+    <Compile Include="FlowManage\WFDelegateRuleSchemeInfoEntity.cs" />
+    <Compile Include="FlowManage\WFProcessInstanceEntity.cs" />
+    <Compile Include="FlowManage\WFProcessOperationHistoryEntity.cs" />
+    <Compile Include="FlowManage\WFProcessSchemeEntity.cs" />
+    <Compile Include="FlowManage\WFProcessTransitionHistoryEntity.cs" />
+    <Compile Include="FlowManage\WFSchemeInfoAuthorizeEntity.cs" />
+    <Compile Include="FlowManage\WFSchemeInfoEntity.cs" />
+    <Compile Include="FlowManage\WFSchemeContentEntity.cs" />
+    <Compile Include="FlowManage\WFFrmMainEntity.cs" />
+    <Compile Include="HuamDanger\TaskDeptModel.cs" />
+    <Compile Include="InnovationManage\AdviceAuditEntity.cs" />
+    <Compile Include="InnovationManage\AdviceEntity.cs" />
+    <Compile Include="InnovationManage\QcActivityEntity.cs" />
+    <Compile Include="InnovationManage\WorkInnovationAuditEntity.cs" />
+    <Compile Include="InnovationManage\WorkInnovationEntity.cs" />
+    <Compile Include="KeyBoxManage\KeyboxEntity.cs" />
+    <Compile Include="KeyBoxManage\KeyUseEntity.cs" />
+    <Compile Include="LllegalManage\LllegalAcceptEntity.cs" />
+    <Compile Include="LllegalManage\LllegalEntity.cs" />
+    <Compile Include="LllegalManage\LllegalRefromEntity.cs" />
+    <Compile Include="MisManage\TicketEntity.cs" />
+    <Compile Include="MisManage\FaultEntity.cs" />
+    <Compile Include="OndutyManage\FaceAttendanceTimeEntity.cs" />
+    <Compile Include="OndutyManage\FaceAttendanceEntity.cs" />
+    <Compile Include="OndutyManage\OndutyMeetEntity.cs" />
+    <Compile Include="OndutyManage\OndutyMeetOnoffEntity.cs" />
+    <Compile Include="OndutyManage\OndutyRecordEntity.cs" />
+    <Compile Include="OndutyManage\OndutyEntity.cs" />
+    <Compile Include="PeopleManage\DutyDangerEntity.cs" />
+    <Compile Include="PeopleManage\LoginInfo.cs" />
+    <Compile Include="PeopleManage\PeopleDutyEntity.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PeopleManage\PeopleDutyTypeEntity.cs" />
+    <Compile Include="PeopleManage\PeopleEntity.cs" />
+    <Compile Include="PeopleManage\DutyEntity.cs" />
+    <Compile Include="PerformanceManage\PerformanceEntity.cs" />
+    <Compile Include="PerformanceManage\PerformanceMethodSecondEntity.cs" />
+    <Compile Include="PerformanceManage\PerformancePersonSecondEntity.cs" />
+    <Compile Include="PerformanceManage\PerformanceSecondEntity.cs" />
+    <Compile Include="PerformanceManage\PerformancesetupEntity.cs" />
+    <Compile Include="PerformanceManage\PerformancesetupSecondEntity.cs" />
+    <Compile Include="PerformanceManage\PerformancetitleEntity.cs" />
+    <Compile Include="PerformanceManage\PerformancetitleSecondEntity.cs" />
+    <Compile Include="PerformanceManage\PerformanceupEntity.cs" />
+    <Compile Include="PerformanceManage\PerformanceupSecondEntity.cs" />
+    <Compile Include="PerformanceManage\ViewModel\PerformanceModel.cs" />
+    <Compile Include="ProducingCheck\CheckTemplateEntity.cs" />
+    <Compile Include="ProducingCheck\CheckCategoryEntity.cs" />
+    <Compile Include="PublicInfoManage\NewFileInfoEntity.cs" />
+    <Compile Include="PublicInfoManage\PackageEntity.cs" />
+    <Compile Include="PublicInfoManage\ScheduleEntity.cs" />
+    <Compile Include="PublicInfoManage\ViewMode\IndexModel.cs" />
+    <Compile Include="PublicInfoManage\ViewMode\KeyValue.cs" />
+    <Compile Include="PublicInfoManage\ViewMode\NnoticeModel.cs" />
+    <Compile Include="PushInfoManage\PushInfoEntity.cs" />
+    <Compile Include="PushInfoManage\PushPersonEntity.cs" />
+    <Compile Include="QuestionManage\HistoryAnswerEntity.cs" />
+    <Compile Include="QuestionManage\HistoryQuestionEntity.cs" />
+    <Compile Include="QuestionManage\HistoryUserAnswerEntity.cs" />
+    <Compile Include="QuestionManage\QuestionBankEntity.cs" />
+    <Compile Include="QuestionManage\TheAnswerEntity.cs" />
+    <Compile Include="QuestionManage\TheTitleEntity.cs" />
+    <Compile Include="ReportManage\RptTempEntity.cs" />
+    <Compile Include="SafeProduceManage\OnLocaleEntity.cs" />
+    <Compile Include="SafeProduceManage\SafeProduceEntity.cs" />
+    <Compile Include="SafetyScore\AccountRuleEntity.cs" />
+    <Compile Include="SafetyScore\SafetyScoreEntity.cs" />
+    <Compile Include="SevenSManage\SevenSEntity.cs" />
+    <Compile Include="SevenSManage\SevenSOfficeAuditEntity.cs" />
+    <Compile Include="SevenSManage\SevenSOfficeEntity.cs" />
+    <Compile Include="SevenSManage\SevenSPictureCycleEntity.cs" />
+    <Compile Include="SevenSManage\SevenSPictureEntity.cs" />
+    <Compile Include="SevenSManage\SevensPictureEvaluationEntity.cs" />
+    <Compile Include="SevenSManage\SevenSPictureSetEntity.cs" />
+    <Compile Include="SevenSManage\SevenSPlanTimeEntity.cs" />
+    <Compile Include="SevenSManage\SevenSTypeEntity.cs" />
+    <Compile Include="SweepManage\SweepEntity.cs" />
+    <Compile Include="SweepManage\SweepItemEntity.cs" />
+    <Compile Include="SystemManage\DistrictPersonEntity.cs" />
+    <Compile Include="SystemManage\CodeRuleEntity.cs" />
+    <Compile Include="SystemManage\CodeRuleFormatEntity.cs" />
+    <Compile Include="SystemManage\CodeRuleSeedEntity.cs" />
+    <Compile Include="PublicInfoManage\FileInfoEntity.cs" />
+    <Compile Include="PublicInfoManage\FileFolderEntity.cs" />
+    <Compile Include="PublicInfoManage\EmailAddresseeEntity.cs" />
+    <Compile Include="PublicInfoManage\EmailCategoryEntity.cs" />
+    <Compile Include="PublicInfoManage\EmailContentEntity.cs" />
+    <Compile Include="MessageManage\IMGroupModel.cs" />
+    <Compile Include="MessageManage\IMReadModel.cs" />
+    <Compile Include="MessageManage\IMReadNumModel.cs" />
+    <Compile Include="MessageManage\IMUserModel.cs" />
+    <Compile Include="MessageManage\IMContentEntity.cs" />
+    <Compile Include="MessageManage\IMGroupEntity.cs" />
+    <Compile Include="MessageManage\IMReadEntity.cs" />
+    <Compile Include="MessageManage\IMUserGroupEntity.cs" />
+    <Compile Include="AuthorizeManage\AuthorizeEntity.cs" />
+    <Compile Include="BaseManage\UserRelationEntity.cs" />
+    <Compile Include="AuthorizeManage\AuthorizeDataEntity.cs" />
+    <Compile Include="PublicInfoManage\NewsEntity.cs" />
+    <Compile Include="SystemManage\DataBaseBackupEntity.cs" />
+    <Compile Include="SystemManage\DataBaseTableFieldEntity.cs" />
+    <Compile Include="SystemManage\DataBaseLinkEntity.cs" />
+    <Compile Include="AuthorizeManage\FilterIPEntity.cs" />
+    <Compile Include="AuthorizeManage\FilterTimeEntity.cs" />
+    <Compile Include="SystemManage\AreaEntity.cs" />
+    <Compile Include="AuthorizeManage\ModuleEntity.cs" />
+    <Compile Include="AuthorizeManage\ModuleButtonEntity.cs" />
+    <Compile Include="AuthorizeManage\ModuleColumnEntity.cs" />
+    <Compile Include="BaseManage\UserEntity.cs" />
+    <Compile Include="BaseManage\DepartmentEntity.cs" />
+    <Compile Include="BaseManage\OrganizeEntity.cs" />
+    <Compile Include="BaseManage\RoleEntity.cs" />
+    <Compile Include="SystemManage\DataItemEntity.cs" />
+    <Compile Include="SystemManage\DataItemDetailEntity.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SystemManage\DataSetEntity.cs" />
+    <Compile Include="SystemManage\IndexAssocationEntity.cs" />
+    <Compile Include="SystemManage\IndexManageEntity.cs" />
+    <Compile Include="SystemManage\LogEntity.cs" />
+    <Compile Include="SystemManage\AppPackageEntity.cs" />
+    <Compile Include="SystemManage\FeedbackEntity.cs" />
+    <Compile Include="SystemManage\MessageEntity.cs" />
+    <Compile Include="SystemManage\TerminalDataSetEntity.cs" />
+    <Compile Include="SystemManage\ViewModel\DataItemModel.cs" />
+    <Compile Include="SystemManage\ViewModel\MenuConfigModel.cs" />
+    <Compile Include="SystemManage\ViewModel\MenuModel.cs" />
+    <Compile Include="SystemManage\WorkStandardEntity.cs" />
+    <Compile Include="TaskManage\UnSigninEntity.cs" />
+    <Compile Include="ToolManage\ToolBorrowEntity.cs" />
+    <Compile Include="ToolManage\ToolCheckEntity.cs" />
+    <Compile Include="ToolManage\ToolInfoEntity.cs" />
+    <Compile Include="ToolManage\ToolInventoryEntity.cs" />
+    <Compile Include="ToolManage\ToolNumberEntity.cs" />
+    <Compile Include="ToolManage\ToolRepairEntity.cs" />
+    <Compile Include="ToolManage\ToolTypeEntity.cs" />
+    <Compile Include="UserInfoModel.cs" />
+    <Compile Include="WebApp\appHomeIndexModel.cs" />
+    <Compile Include="WebApp\appUserInfoModel.cs" />
+    <Compile Include="WebApp\MedicalEntity.cs" />
+    <Compile Include="WebApp\UserEduncationFileModel.cs" />
+    <Compile Include="WebApp\UserExperiencEntity.cs" />
+    <Compile Include="WebApp\UserWorkAllocationEntity.cs" />
+    <Compile Include="WebApp\UserWorkStateEntity.cs" />
+    <Compile Include="WeChatManage\WeChatAppEntity.cs" />
+    <Compile Include="WeChatManage\WeChatDeptRelationEntity.cs" />
+    <Compile Include="WeChatManage\WeChatAppMenuEntity.cs" />
+    <Compile Include="WeChatManage\WeChatUserRelationEntity.cs" />
+    <Compile Include="SetManage\MeasureSetEntity.cs" />
+    <Compile Include="SetManage\RiskFactorSetEntity.cs" />
+    <Compile Include="WorkMeeting\DistrictSignInEntity.cs" />
+    <Compile Include="WorkMeeting\DistrictJobEntity.cs" />
+    <Compile Include="WorkMeeting\DangerAnalysisEntity.cs" />
+    <Compile Include="WorkMeeting\DepartmentTaskEntity.cs" />
+    <Compile Include="WorkMeeting\DepartmentPublishEntity.cs" />
+    <Compile Include="WorkMeeting\JobEvaluateEntity.cs" />
+    <Compile Include="WorkMeeting\MeetingQuestionEntity.cs" />
+    <Compile Include="WorkMeeting\MeetingRecordEntity.cs" />
+    <Compile Include="WorkMeeting\MeetSubjectEntity.cs" />
+    <Compile Include="WorkMeeting\UserSignSettingEntity.cs" />
+    <Compile Include="WorkMeeting\DangerHiddenEntity.cs" />
+    <Compile Include="WorkMeeting\SafetyHazardEntity.cs" />
+    <Compile Include="WorkMeeting\ViewModel\KeyValue.cs" />
+    <Compile Include="WorkMeeting\WorkGroupSetEntity.cs" />
+    <Compile Include="WorkMeeting\WorkMeetingNoteEntity.cs" />
+    <Compile Include="WorkMeeting\WorkOrderEntity.cs" />
+    <Compile Include="WorkMeeting\WorkSettingEntity.cs" />
+    <Compile Include="WorkMeeting\AttendanceEntity.cs" />
+    <Compile Include="WorkMeeting\DangerTemplateEntity.cs" />
+    <Compile Include="EvaluateAbout\EvaluateCategoryItemEntity.cs" />
+    <Compile Include="EvaluateAbout\EvaluateCategoryEntity.cs" />
+    <Compile Include="WorkMeeting\JobTemplateEntity.cs" />
+    <Compile Include="WorkMeeting\JobUserEntity.cs" />
+    <Compile Include="WorkMeeting\MeetingJobEntity.cs" />
+    <Compile Include="WorkMeeting\MeetingSigninEntity.cs" />
+    <Compile Include="EvaluateAbout\EvaluateEntity.cs" />
+    <Compile Include="WorkMeeting\CultureTemplateEntity.cs" />
+    <Compile Include="WorkMeeting\WorkmeetingEntity.cs" />
+    <Compile Include="WorkMeeting\WorkSetTypeEntity.cs" />
+    <Compile Include="WorkMeeting\WorkTimeSortEntity.cs" />
+    <Compile Include="WorkPlan\WorkPlanContentEntity.cs" />
+    <Compile Include="WorkPlan\WorkPlanEntity.cs" />
+    <Compile Include="YearWorkPlanManage\YearWorkPlanEntity.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\BSFramework.Util\BSFramework.Util\BSFramework.Util.csproj">
+      <Project>{07AA2566-D0E5-47AF-A17D-3B1C6AEE598D}</Project>
+      <Name>BSFramework.Util</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BSFramework.Application.Code\BSFramework.Application.Code.csproj">
+      <Project>{9b10db87-130c-41d3-8687-1fac877db74a}</Project>
+      <Name>BSFramework.Application.Code</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

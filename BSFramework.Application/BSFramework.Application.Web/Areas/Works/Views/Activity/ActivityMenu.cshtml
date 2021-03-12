@@ -1,0 +1,318 @@
+﻿<script src="~/Content/scripts/jquery/jquery.url.js"></script>
+
+<script>
+    jQuery(function () {
+        LoadActivity();
+    });
+    var module = "";
+    function LoadActivity() {
+     // jQuery.getUrlArgs('module');
+        var Url = document.location.href;
+        if (Url.indexOf("activity") >= 0 || Url.indexOf("Activity") >= 0) {
+            module = "activity";
+        } else {
+            module = "education";
+            $("#edplan").css("display", "block");
+        }
+        $.ajax({
+            url: "@Url.Action("GetActivityMenu", "Activity", new { area = "Works" })?module=" + (module || ''),
+            type: "post",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.length > 0) {
+                    var addHtml = SetHtml(data);
+                    $("#activityHtml").append(addHtml);
+                }
+
+
+            }
+        });
+    }
+    function GetPic(code) {
+                  //教育培训	education
+                    //安全技术培训	education_edutrain
+                    //技术讲课	education_teach
+                    //事故预想	education_expect
+                    //反事故演习	education_drill
+                    //技术问答	education_qaa
+                    //考问讲解  education_qa
+                    //安全学习日  education_safeday
+
+                    //班组活动	activity
+                    //安全日活动	activity_safeday
+                    //政治学习	activity_study
+                    //民主管理会	activity_manage
+                    //班务会	activity_meet
+                    //上级精神宣贯	activity_superior
+        //ACS 班组活动自定义菜单
+        var html = '';
+        @*switch (code) {
+            case "education_teach":
+              html += '<img src="@Url.Content("~/Content/styles/static/images/educate/jsjk.png")" alt="" style="cursor:pointer;">';
+              break;
+              case "ACT.PO":
+              html += '<img src="@Url.Content("~/Content/styles/static/images/educate/jsjk.png")" alt="" style="cursor:pointer;">';
+              break;
+              case "ACT.DE":
+              html += '<img src="@Url.Content("~/Content/styles/static/images/educate/jsjk.png")" alt="" style="cursor:pointer;">';
+              break;
+              case "ACT.CW":
+              html += '<img src="@Url.Content("~/Content/styles/static/images/educate/jsjk.png")" alt="" style="cursor:pointer;">';
+              break;
+              case "ACT.SI":
+              html += '<img src="@Url.Content("~/Content/styles/static/images/educate/jsjk.png")" alt="" style="cursor:pointer;">';
+              break;
+            default:
+                  html += '<img src="@Url.Content("~/Content/styles/static/images/educate/jsjk.png")" alt="" style="cursor:pointer;">';
+              break;
+        }*@
+        var i = code;
+        if (module =="education") {
+            i++;
+        }
+        var getNum = 0;
+        if (i>=5) {
+            getNum = i % 5;
+        } else {
+            getNum = i;
+        }
+        var htmlPic = new Array('<img src="@Url.Content("~/Content/styles/static/images/educate/1.png")" alt="" style="cursor:pointer;">',
+            '<img src="@Url.Content("~/Content/styles/static/images/educate/2.png")" alt="" style="cursor:pointer;">',
+            '<img src="@Url.Content("~/Content/styles/static/images/educate/3.png")" alt="" style="cursor:pointer;">',
+            '<img src="@Url.Content("~/Content/styles/static/images/educate/4.png")" alt="" style="cursor:pointer;">',
+            '<img src="@Url.Content("~/Content/styles/static/images/educate/5.png")" alt="" style="cursor:pointer;">');
+
+       
+
+        return htmlPic[getNum];
+    }
+    //教育培训
+    function SetEDU(data, i) {
+         var html = "";
+         html += '<div class="pull-left item">';
+         var urlSet = "";
+        if (data.ActivityId != null)
+         {
+              urlSet = "@Url.Action("SkillAnswer", "Education", new { area = "Works" })?id=" + data.ActivityId;
+
+         }
+         else
+         {
+            urlSet = "@Url.Action("Appoint", "Education", new { area = "Works" })?category=" + data.ActivityCategoryId;
+         }
+            html += '<a href="' + urlSet + '">';
+        //html += GetPic(data.ShowHtml);
+        html += GetPic(i);
+            html += '</a>';
+        html += '<div class="btn-group" style="left:0;cursor:pointer;" onclick="fn$goto(this);" data-href="' + urlSet + '">';
+
+        if (data.State == 1) {
+            html += '  <div style="text-align:right;margin-right:20px;margin-bottom:10px; color:red;font-family:Verdana" ;> 预约中</div>';
+        }
+        else if (data.State == 2) {
+            html += '  <div style="text-align:right;margin-right:20px;margin-bottom:10px; color:red;font-family:Verdana" ;> 进行中</div>';
+        }
+        else if (data.State == 3) {
+            html += '  <div style="text-align:right;margin-right:20px;margin-bottom:10px; color:red;font-family:Verdana" ;> 已预约</div>';
+        }
+
+                    html += '<div style="color:white;font-size:50px;margin-bottom:10px;letter-spacing:5px;">' + data.ActivityCategory + '</div>';
+                    //html += '<a href="' + urlSet + '" javascript:;"">';
+                    //html += '通知';
+                    //if (data.Total>0) {
+
+                    //    html += '<span class="my-mark">' + data.Total + '</span>';
+                    //}
+                    //html += ' </a>';
+                    @*html += '@Html.ActionLink("历史记录", "List", "Education", new { page = 1, pagesize = 12, category = "1", area = "Works" }, new { @class = "record" })';*@
+            html += '<a   class="record"  href="@Url.Action("List", "Education", new { page = 1, pagesize = 12, area = "Works" })&category=' + data.ActivityCategoryId + '" >历史记录</a>';
+                    html += '</div></div >';
+                    return html;
+    }
+    //班组活动
+    function SetACT(data,i) {
+         var html = "";
+            html += '<div class="pull-left item"  @Html.Action("GetActivityCode", "Activity", new { area = "Works" })?name=' + data.ActivityCategory+'>';
+         var urlSet = "";
+            if (data.State>0)
+         {
+                urlSet =  "@Url.Action("Go", "Activity", new { area = "Works" })?category="+encodeURI(data.ActivityCategory);
+
+         }
+         else
+         {
+              urlSet =  "@Url.Action("New", "Activity", new { area = "Works" })?category="+encodeURI(data.ActivityCategory);
+         }
+            html += '<a href="' + urlSet + '">';
+       html += GetPic(i);
+            html += '</a>';
+        html += '<div class="btn-group" style="left:0;cursor:pointer;" onclick="fn$goto(this);" data-href="' + urlSet + '">';
+             if (data.State == 1)
+                                            {
+                 html += '  <div style="text-align:right;margin-right:20px;margin-bottom:10px; color:red;font-family:Verdana" ;> 预约中</div>';
+                                            }
+             else if (data.State == 2)
+                                            {
+                 html += '  <div style="text-align:right;margin-right:20px;margin-bottom:10px; color:red;font-family:Verdana" ;> 进行中</div>';
+                                            }
+             else if (data.State == 3)
+                                            {
+                 html += '  <div style="text-align:right;margin-right:20px;margin-bottom:10px; color:red;font-family:Verdana" ;> 已预约</div>';
+                                            }
+
+        if (data.ActivityCategory.length>16) {
+            html += '<div style="color:white;font-size:28px;margin-bottom:10px;letter-spacing:5px;">' + data.ActivityCategory + '</div>';
+
+        } else if (data.ActivityCategory.length > 8) {
+            html += '<div style="color:white;font-size:35px;margin-bottom:10px;letter-spacing:5px;">' + data.ActivityCategory + '</div>';
+
+        } else {
+            html += '<div style="color:white;font-size:50px;margin-bottom:10px;letter-spacing:5px;">' + data.ActivityCategory + '</div>';
+        }
+
+       html += '<a    href="@Url.Action("ListSafetyday", "Activity", new { page = 1, pagesize = 50, area = "Works" })&category=' + encodeURI(data.ActivityCategory) + '" >';
+                    html += '通知';
+                    if (data.Total>0) {
+
+                        html += '<span class="my-mark">' + data.Total + '</span>';
+                    }
+                    html += ' </a>';
+        html += '<a   class="record"  href="@Url.Action("List", "Activity", new { page = 1, pagesize = 12, area = "Works" })&category=' + encodeURI(data.ActivityCategory) + '" >历史记录</a>';
+
+                    html += '</div></div >';
+                    return html;
+    }
+    //自定义班组活动
+    function SetACS(data, i) {
+         var html = "";
+            html += '<div class="pull-left item"  @Html.Action("GetActivityCode", "Activity", new { area = "Works" })?name=' + data.ActivityCategory+'>';
+         var urlSet = "";
+            if (data.State>0)
+         {
+                urlSet =  "@Url.Action("Go", "Activity", new { area = "Works" })?category="+encodeURI(data.ActivityCategory);
+
+         }
+         else
+         {
+              urlSet =  "@Url.Action("New", "Activity", new { area = "Works" })?category="+encodeURI(data.ActivityCategory);
+         }
+            html += '<a href="' + urlSet + '">';
+        html += GetPic(i);
+            html += '</a>';
+        html += '<div class="btn-group" style="left:0;cursor:pointer;" onclick="fn$goto(this);" data-href="' + urlSet + '">';
+             if (data.State == 1)
+                                            {
+                 html += '  <div style="text-align:right;margin-right:20px;margin-bottom:10px; color:red;font-family:Verdana" ;> 预约中</div>';
+                                            }
+             else if (data.State == 2)
+                                            {
+                 html += '  <div style="text-align:right;margin-right:20px;margin-bottom:10px; color:red;font-family:Verdana" ;> 进行中</div>';
+                                            }
+             else if (data.State == 3)
+                                            {
+                 html += '  <div style="text-align:right;margin-right:20px;margin-bottom:10px; color:red;font-family:Verdana" ;> 已预约</div>';
+                                            }
+
+                    html += '<div style="color:white;font-size:50px;margin-bottom:10px;letter-spacing:5px;">' + data.ActivityCategory + '</div>';
+
+
+        html += '<a   class="record"  href="@Url.Action("List", "Activity", new { page = 1, pagesize = 12, area = "Works" })&category=' + encodeURI(data.ActivityCategory) + '" >历史记录</a>';
+
+                    html += '</div></div >';
+                    return html;
+    }
+    //安全学习日
+    function SetEA(data, i) {
+         var html = "";
+            html += '<div class="pull-left item"  @Html.Action("GetActivityCode", "EdActivity", new { area= "Works" })?name=' + data.ActivityCategory+'>';
+         var urlSet = "";
+            if (data.State>0)
+         {
+                urlSet =  "@Url.Action("Go", "EdActivity", new { area = "Works" })?category="+encodeURI(data.ActivityCategory);
+
+         }
+         else
+         {
+              urlSet =  "@Url.Action("New", "EdActivity", new { area = "Works" })?category="+encodeURI(data.ActivityCategory);
+         }
+            html += '<a href="' + urlSet + '">';
+        html += GetPic(i);
+            html += '</a>';
+        html += '<div class="btn-group" style="left:0;cursor:pointer;" onclick="fn$goto(this);" data-href="' + urlSet + '">';
+             if (data.State == 1)
+                                            {
+                 html += '  <div style="text-align:right;margin-right:20px;margin-bottom:10px; color:red;font-family:Verdana" ;> 预约中</div>';
+                                            }
+             else if (data.State == 2)
+                                            {
+                 html += '  <div style="text-align:right;margin-right:20px;margin-bottom:10px; color:red;font-family:Verdana" ;> 进行中</div>';
+                                            }
+             else if (data.State == 3)
+                                            {
+                 html += '  <div style="text-align:right;margin-right:20px;margin-bottom:10px; color:red;font-family:Verdana" ;> 已预约</div>';
+                                            }
+
+                    html += '<div style="color:white;font-size:50px;margin-bottom:10px;letter-spacing:5px;">' + data.ActivityCategory + '</div>';
+
+       html += '<a    href="@Url.Action("ListSafetyday", "EdActivity", new { page = 1, pagesize = 50, area = "Works" })&category=' + encodeURI(data.ActivityCategory) + '" >';
+                    html += '通知';
+                    if (data.Total>0) {
+
+                        html += '<span class="my-mark">' + data.Total + '</span>';
+                    }
+                    html += ' </a>';
+        html += '<a   class="record"  href="@Url.Action("List", "EdActivity", new { page = 1, pagesize = 12, area = "Works" })&category=' + encodeURI(data.ActivityCategory) + '" >历史记录</a>';
+
+                    html += '</div></div >';
+                    return html;
+    }
+    function SetHtml(data) {
+           var addHtml = "";
+           for (var i = 0; i < data.length; i++) {
+               if (data[i].ShowHtml.indexOf("activity") >= 0) {
+                   var SetACTHtml=SetACT(data[i],i);
+                   addHtml += SetACTHtml;
+               }
+               if (data[i].ShowHtml.indexOf("ACS") >= 0) {
+                   var SetACSHtml = SetACS(data[i], i);
+                   addHtml += SetACSHtml;
+               }
+               if (data[i].ShowHtml.indexOf("education") >= 0) {
+                   var SetEDUHtml = SetEDU(data[i], i);
+                   addHtml += SetEDUHtml;
+               }
+               if (data[i].ShowHtml.indexOf("EA") >= 0) {
+                   var SetEAHtml = SetEA(data[i], i);
+                   addHtml += SetEAHtml;
+               }
+
+
+
+            }
+
+        return addHtml;
+
+    }
+
+
+</script>
+
+<div>
+    <div class=" mg-auto activity-list" style="width:1600px">
+        <div class="clearfix activity-list-list" style="" id="activityHtml">
+            <div class="pull-left item" id="edplan" style="display:none">
+                <a id="" href="@Url.Action("IndexEduPlanWeb", "Education", new { area = "Works" ,page=1,pagesize=12 })">
+                    <img src="@Url.Content("~/Content/styles/static/images/educate/1.png")" alt="" style="cursor:pointer;">
+
+                    <div class="btn-group" style="left:0;cursor:pointer;">
+                        <div style="color:white;font-size:50px;margin-bottom:10px;letter-spacing:5px;">培训计划</div>
+                        <br />
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+

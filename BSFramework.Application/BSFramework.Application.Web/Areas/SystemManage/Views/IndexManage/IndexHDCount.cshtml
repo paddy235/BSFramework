@@ -1,0 +1,142 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="~/Content/styles/static/js/rem.js"></script>
+    <link href="~/Content/styles/static/css/indexmanage.css" rel="stylesheet" />
+    <link href="~/Content/styles/framework-ui.css" rel="stylesheet" />
+    <!-- jQuery 2.1.4 -->
+    <script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/plugins/echarts/echarts.min.js")"></script>
+    <style>
+        .select_width {
+            width: 4rem;
+            height: 1rem;
+            line-height: 1rem;
+            border-radius: 0.15rem;
+            margin-right: 0.1rem;
+        }
+    </style>
+    <script>
+          $(function () {
+            getData(1);
+          })
+
+        function goData(obj) {
+            var type = $(obj).val();
+            getData(type);
+        }
+        function getData(type) {
+            var colorList = ['#00afff', '#bf2caf', '#ffb01b', '#5264ff', '#13f2a3'];
+           $.ajax({
+               url: "@Url.Action("GetIndexHDCount", "IndexManage", new { area = "SystemManage" })?type=" + type,
+            type: "post",
+            dataType: "json",
+            async: false,
+               success: function (data) {
+                   $("#tabledata").html("");
+                   var setData = new Array();
+                   var html = "<tr>"; var addhtml = "";
+                   var i = 0;
+                   for (var item in data) {
+                       var oneData = {};
+                       var html = "<div> <span style='background:" + colorList[i] + "'></span>";
+                       html += item + "<span>|";
+                       html += data[item] + "次</span> </div>";
+                       oneData.name = item;
+                       oneData.value = data[item];
+                       setData.push(oneData);
+                       addhtml += html;
+                       i++;
+                   }
+                   $("#tabledata").append(addhtml);
+                   chartData(setData)
+            }
+           });
+
+
+        }
+        function chartData(setData) {
+            let option2 = {
+                title: {
+                    text: "",
+                    textStyle: {
+                        fontSize: 14
+                    }
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{b}: {c} 次({d}%)',
+
+                },
+                series: [
+                    {
+                        name: '',
+                        type: 'pie',
+                        radius: ['50%', '80%'],
+                        // center:['50%','50%'],
+                        avoidLabelOverlap: false,
+                        label: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                fontSize: '14',
+                                fontWeight: 'bold'
+                            }
+                        },
+                        labelLine: {
+                            show: false
+                        }, itemStyle: {
+                            normal: {
+                                color: function (params) {
+                                    var colorList = ['#00afff', '#bf2caf', '#ffb01b', '#5264ff', '#13f2a3'];
+                                    return colorList[params.dataIndex]
+                                }
+                            }
+                        },
+                        data: setData
+                        //data: [
+                        //    { value: 234, name: '受控风险数量' },
+                        //    { value: 234, name: '不受控风险数量' }
+                        //]
+                    }
+                ]
+            };
+
+        var chart2 = echarts.init(document.getElementById('chart2'));
+            chart2.setOption(option2);
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <div class="item_title">
+            <a style="cursor:pointer;" onclick="top.openTab('','@Url.Action("Index2", "HumanDanger", new {area = "Works" })','人身风险预控台账')">
+                <h2 style="float: left;">人身风险预控</h2>
+            </a>
+            <div style="float:right;">
+                @*<select class="select_width">
+                        <option value="value">全部</option>
+                    </select>*@
+
+                <select class="select_width" id="SelectYear" onchange="goData(this);">
+                    <option value="1">月度</option>
+                    <option value="2">季度</option>
+                    <option value="3">年度</option>
+                </select>
+            </div>
+        </div>
+        <div class="content chart2_content" style=" width: 100%;">
+            <div id="chart2" style="width:60%;min-height:300px;"></div>
+            <div class="finish" id="tabledata">
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

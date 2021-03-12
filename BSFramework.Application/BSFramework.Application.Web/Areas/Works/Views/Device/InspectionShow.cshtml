@@ -1,0 +1,143 @@
+﻿@using BSFramework.Application.Entity.DeviceInspection;
+@model DeviceInspectionEntity
+@{
+    ViewBag.Title = "InspectionShow";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@System.Web.Optimization.Styles.Render("~/Content/scripts/plugins/jqgrid/css")
+@System.Web.Optimization.Scripts.Render("~/Content/scripts/plugins/jqgrid/js")
+@System.Web.Optimization.Scripts.Render("~/Content/scripts/business/Common.js")
+<script>
+    var keyValue = request('keyValue');
+    var action = request('action');
+    var localdata = JSON.parse("@Html.Raw(ViewBag.Items)");
+    $(function () {
+        initControl();
+        GetGrid();
+    });
+    /**初始化控件 */
+    function initControl() {
+        ////获取表单
+        //if (!!keyValue) {
+        //    $.SetForm({
+        //        url: "../../SystemManage/DataItem/GetFormJson",
+        //        param: { keyValue: keyValue },
+        //        success: function (data) {
+        //            $("#form1").formDeserialize(data);
+        //        }
+        //    });
+        //} else {
+        //    //$("#ParentId").ComboBoxTreeSetValue(parentId);
+        //}
+    }
+    /** 保存表单 */
+    //保存表单
+    function AcceptClick(IsCommit) {
+        dialogClose();
+    }
+
+    //加载表格
+    function GetGrid() {
+        var $gridTable = $('#gridTable');
+        var height = $(top.window).height() - 520;
+        height = height < 200 ? 200 : height;
+        $gridTable.jqGrid({
+            data: localdata,
+            rowNum: localdata.length,
+            datatype: 'local',
+            height: height + "px",
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'Id', hidden: true },
+                {
+                    label: '操作', name: 'Oper', width: 100, align: 'center',
+                },
+                {
+                    label: '检查项目', name: 'ItemName', width: 200, align: 'center'
+                },
+                {
+                    label: '方法', name: 'Method', width: 400, align: 'center'
+                },
+                {
+                    label: '标准', name: 'Standard', width: 200, align: 'center'
+                }
+            ],
+            viewrecords: true,
+            sortname: 'CreateDate',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true
+
+        });
+    }
+
+   /**动态新增风险及措施 */
+    function Add(obj) {
+        tCode = ""; tName = ""; tContent = "";
+        var rowId = $("#gridTable").jqGrid('getRowData').length;
+
+        $("#gridTable").addRowData(rowId, { id: newGuid(), ItemName: "", Method: '', Standard: "" });
+    }
+
+    /**删除数据行 */
+    function del(id, obj) {
+        var jqTable = $("#gridTable");
+        var idx = dialogConfirm("确认删除吗？", function (isSure) {
+            if (isSure) {
+                jqTable.delRowData(jqTable.getGridParam('selrow'));
+                top.layer.close(idx);
+            } else {
+                top.layer.close(idx);
+            }
+        });
+    }
+
+    //验证：项目值、项目名 不能重复
+    function OverrideExistField(id, url) {
+        $.ExistField(id, url, { keyValue: keyValue });
+    }
+</script>
+<div style="margin-top: 20px; margin-right: 30px;">
+    <table class="form">
+        <tr>
+            <th class="formTitle">检查表名称<font face="宋体">*</font></th>
+            <td class="formValue">
+                <input id="InspectionName" name="InspectionName" type="text" class="form-control" readonly="readonly" value="@Model.InspectionName" />
+            </td>
+            <th class="formTitle">设备系统<font face="宋体">*</font></th>
+            <td class="formValue">
+                <input id="DeviceSystem" name="DeviceSystem" type="text" class="form-control" readonly="readonly" value="@Model.DeviceSystem" />
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">班组<font face="宋体">*</font></th>
+            <td class="formValue">
+                <div class="input-group">
+                    <input id="DeptName" name="DeptName" type="text" class="form-control" readonly="readonly" value="@Model.DeptName" />
+                    <span class="input-group-addon"  title="选择班组" style="cursor:pointer;">...</span>
+                </div>
+            </td>
+            <td class="formTitle">提交人</td>
+            <td class="formValue">
+                <input id="CreateUserName" name="CreateUserName" type="text" class="form-control" readonly="readonly" value="@Model.CreateUserName" />
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">提交时间</td>
+            <td class="formValue">
+                <input id="CreateDate" name="CreateDate" type="text" class="form-control" readonly="readonly" value="@Html.Raw(Model.CreateDate.HasValue ?  Model.CreateDate.Value.ToString("yyyy-MM-dd HH:mm:ss") : "")" />
+            </td>
+        </tr>
+    </table>
+    <div class="center-Panel" style="padding-left:9px;">
+        <div class="panel-Title">设备巡检台账</div>
+        <div class="gridPanel">
+            <table id="gridTable"></table>
+            <div id="gridPager"></div>
+        </div>
+    </div>
+</div>
+
+

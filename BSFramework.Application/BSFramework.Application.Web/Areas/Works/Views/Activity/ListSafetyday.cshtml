@@ -1,0 +1,343 @@
+﻿@model IEnumerable<BSFramework.Application.Entity.Activity.SafetydayEntity>
+
+@{
+    ViewBag.Title = "ListSafetyday";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/plugins/layui/css/layui.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/person.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/app.css")" />
+<script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="~/Content/scripts/utils/framework-ui.js"></script>
+
+<script>
+    var category = '@ViewBag.category';
+    var safetyState = '@ViewBag.safetyState';
+    var politicsState = '@ViewBag.politicsState';
+    $(function () {
+        jQuery('#grid').on('click', '.my-checkbox', function () {
+            if (jQuery(this).hasClass('actives')) {
+                jQuery(this).removeClass('actives');
+                jQuery(this).next().val('False')
+            } else {
+                jQuery(this).addClass('actives');
+                jQuery(this).next().val('True')
+            }
+        });
+    });
+    function butEstablish() {
+        if (category == "安全日活动") {
+            if (safetyState == "Ready") {
+                layer.alert("已存在状态为“预约中”的安全日活动");
+                return false;
+            } else if (safetyState == "already") {
+                layer.alert("已存在状态为“已预约”的安全日活动");
+                return false;
+            } else if (safetyState == "Study") {
+                layer.alert("已存在状态为“进行中”的安全日活动");
+                return false;
+            } else {
+                var isSelect = 0;
+                var ids = "";
+                jQuery('#grid').find('.my-checkbox').each(function (i, item) {
+                    if (item.className == "my-checkbox actives") {
+                        isSelect = 1;
+                        ids += item.id + ",";
+                    }
+                })
+                if (isSelect == 0) {
+                    layer.alert("未选择材料");
+                    return false;
+                };
+                location.href = "@Url.Action("NewSafetyday")?category=" + encodeURI(encodeURI(category)) + "&id=" + ids;
+            }
+        } else if (category == "政治学习") {
+            if (politicsState == "Ready") {
+                layer.alert("已存在状态为“预约中”的政治学习");
+                return false;
+            } else if (safetyState == "already") {
+                layer.alert("已存在状态为“已预约”的政治学习");
+                return false;
+            } else if (politicsState == "Study") {
+                layer.alert("已存在状态为“进行中”的政治学习");
+                return false;
+            } else {
+                var isSelect = 0;
+                var ids = "";
+                jQuery('#grid').find('.my-checkbox').each(function (i, item) {
+                    if (item.className == "my-checkbox actives") {
+                        isSelect = 1;
+                        ids += item.id + ",";
+                    }
+                })
+                if (isSelect == 0) {
+                    layer.alert("未选择材料");
+                    return false;
+                };
+                location.href = "@Url.Action("New")?category=" + encodeURI(encodeURI(category)) + "&id=" + ids;
+            }
+        }
+        else if (category == "上级精神宣贯") {
+            if (politicsState == "Ready") {
+                layer.alert("已存在状态为“预约中”的上级精神宣贯");
+                return false;
+            } else if (safetyState == "already") {
+                layer.alert("已存在状态为“已预约”的上级精神宣贯");
+                return false;
+            } else if (politicsState == "Study") {
+                layer.alert("已存在状态为“进行中”的上级精神宣贯");
+                return false;
+            } else {
+                var isSelect = 0;
+                var ids = "";
+                jQuery('#grid').find('.my-checkbox').each(function (i, item) {
+                    if (item.className == "my-checkbox actives") {
+                        isSelect = 1;
+                        ids += item.id + ",";
+                    }
+                })
+                if (isSelect == 0) {
+                    layer.alert("未选择材料");
+                    return false;
+                };
+                location.href = "@Url.Action("New")?category=" + encodeURI(encodeURI(category)) + "&id=" + ids;
+            }
+        }
+    }
+    function btn_add(id, name) {
+        if (name == "安全日活动") {
+            layer.open({
+                id: 'Show',
+                title: '安全日活动通知',
+                type: 2,
+                area: ['800px', '600px'],
+                btn: ["创建活动", "关闭"],
+                yes: function (iframeId) {
+                    if (safetyState == "Ready") {
+                        layer.alert("已存在状态为“预约中”的安全日活动");
+                        return false;
+                    } else if (safetyState == "already") {
+                        layer.alert("已存在状态为“已预约”的安全日活动");
+                        return false;
+                    }
+                    else if (safetyState == "Study") {
+                        layer.alert("已存在状态为“进行中”的安全日活动");
+                        return false;
+                    } else {
+                        top.location.href = "@Url.Action("NewSafetyday")?id=" + id + "&category=" + encodeURI(encodeURI(name));
+                    }
+                },
+                end: function (index, layero) {
+                    location.reload();
+                },
+                cancel: function (index, layero) {
+                    location.reload();
+                },
+                content: '@Url.Action("DetailSafetyday")?keyValue=' + id
+            })
+        } else if (name == "政治学习") {
+            layer.open({
+                id: 'Show',
+                title: '政治学习通知',
+                type: 2,
+                area: ['800px', '600px'],
+                btn: ["创建活动", "关闭"],
+                yes: function (iframeId) {;
+                    if (politicsState == "Ready") {
+                        layer.alert("已存在状态为“预约中”的政治学习");
+                        return false;
+                    } else if (safetyState == "already") {
+                        layer.alert("已存在状态为“已预约”的政治学习");
+                        return false;
+                    } else if (politicsState == "Study") {
+                        layer.alert("已存在状态为“进行中”的政治学习");
+                        return false;
+                    } else {
+                        top.location.href = "@Url.Action("New")?id=" + id + "&category=" + encodeURI(encodeURI(name));
+                    }
+                },
+                end: function (index, layero) {
+                    location.reload();
+                },
+                cancel: function (index, layero) {
+                    location.reload();
+                },
+                content: '@Url.Action("DetailSafetyday")?keyValue=' + id
+            })
+        }
+        else if (name == "上级精神宣贯") {
+            layer.open({
+                id: 'Show',
+                title: '上级精神宣贯通知',
+                type: 2,
+                area: ['800px', '600px'],
+                btn: ["创建活动", "关闭"],
+                yes: function (iframeId) {;
+                    if (politicsState == "Ready") {
+                        layer.alert("已存在状态为“预约中”的上级精神宣贯");
+                        return false;
+                    } else if (safetyState == "already") {
+                        layer.alert("已存在状态为“已预约”的上级精神宣贯");
+                        return false;
+                    } else if (politicsState == "Study") {
+                        layer.alert("已存在状态为“进行中”的上级精神宣贯");
+                        return false;
+                    } else {
+                        top.location.href = "@Url.Action("New")?id=" + id + "&category=" + encodeURI(encodeURI(name));
+                    }
+                },
+                end: function (index, layero) {
+                    location.reload();
+                },
+                cancel: function (index, layero) {
+                    location.reload();
+                },
+                content: '@Url.Action("DetailSafetyday")?keyValue=' + id
+            })
+        }
+    }
+</script>
+
+<div class="main-content">
+    <div class="container-fluid">
+        @using (Html.BeginForm("ListSafetyday", "Activity", new { page = 1, pagesize = 50 }, FormMethod.Post))
+        {
+            @Html.Hidden("pId")
+            <div>
+                <div class="title clearfix">
+                    @if (ViewBag.category == "安全日活动")
+                    {
+                        <a class="pull-left" href="@Url.Action("Index", "Activity", new { area = "Works" })">
+                            <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+                            安全日活动通知
+                        </a>
+                    }
+                    else if (ViewBag.category == " 政治学习")
+                    {
+                        <a class="pull-left" href="@Url.Action("Index", "Activity", new { area = "Works" })">
+                            <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+                            政治学习通知
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="pull-left" href="@Url.Action("Index", "Activity", new { area = "Works" })">
+                            <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+                            上级精神宣贯通知
+                        </a>
+                    }
+
+                </div>
+            </div>
+            <div class="bg-e3ebfd pd-10 my-body">
+
+                <div class="bg-fff">
+                    <div class="pull-right" style="margin-top:5px;">
+                        <button class="my-btn bg-ffb319 lh-36 h-36 w-140" style="font-weight: normal;" id="showModal" type="button" onclick="butEstablish()">
+                            <img src="@Url.Content("~/Content/styles/static/images/activity-icon-1.png")" alt="">
+                            创建活动
+                        </button>
+                        &nbsp;&nbsp;
+                        @*<a id="btnIdCardImport" href="javascript:;" class="f-18 c-0d0d0d">
+                                <img src="~/Content/styles/static/images/add-icon.png" alt="">
+                                &nbsp;
+                                刷身份证添加
+                            </a>*@
+                        &nbsp;&nbsp;
+                        @*<a href="javascript:;" class="f-18 c-0d0d0d mg-l-20">
+                                <img src="~/Content/styles/static/images/add-icon-1.png" alt="">
+                                &nbsp;
+                                批量添加
+                            </a>*@
+                    </div>
+                    <div class="body">
+                        <table class="table text-center table-striped no-mg vertical" id="grid">
+                            <thead>
+                                <tr>
+                                    <th width="5%" class="bg-fff">选择</th>
+                                    <th width="5%" class="bg-fff">序号</th>
+                                    <th width="59%" class="bg-fff">活动主题</th>
+                                    @*<th width="52%" class="bg-fff">活动说明</th>*@
+                                    <th width="15%" class="bg-fff">推送人</th>
+                                    <th width="11%" class="bg-fff">推送日期</th>
+                                    <th width="5%" class="bg-fff">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.Count(); i++)
+                                {
+                                    int n = ((int)ViewBag.current - 1) * 12 + i + 1;
+                                    string id = @Model.ToList()[i].Id;
+                                    string activitytype = @Model.ToList()[i].ActivityType;
+                                    <tr style="height:50px;">
+                                        <td width="5%"><span id="@Model.ToList()[i].Id" class="my-checkbox"></span></td>
+                                        <td width="5%">@n</td>
+                                        @if (@Model.ToList()[i].state == 0)
+                                        {
+                                            <td width="59%" style="color:red;">@Model.ToList()[i].Subject</td>
+                                        }
+                                        else
+                                        {
+                                            <td width="59%">@Model.ToList()[i].Subject</td>
+                                        }
+                                        @*<td width="52%">@Model.ToList()[i].Explain</td>*@
+                                        <td width="15%">@Model.ToList()[i].CreateUserName</td>
+                                        <td width="11%">@Model.ToList()[i].CreateDate</td>
+                                        <td width="5%">
+                                            <a id="@Model.ToList()[i].Id" name="@Model.ToList()[i].ActivityType" href="#" onclick="btn_add(this.id,this.name)">查看</a>
+                                            @if (@Model.ToList()[i].ActivityType == "安全日活动")
+                                            {
+                                                @*<a id="@Model.ToList()[i].Id" name="@Model.ToList()[i].activitytype" href="@Url.Action("NewSafetyday", new { category = activitytype, id = id })" style="margin-left:10px;">活动预约</a>*@
+                                            }
+                                            else
+                                            {
+                                                @*<a id="@Model.ToList()[i].Id" name="@Model.ToList()[i].activitytype" href="@Url.Action("NewSafetyday", new { category = activitytype, id = id })" style="margin-left:10px;">开始活动</a>*@
+                                            }
+
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+        }
+        <footer class="main-footer">
+            武汉博晟安全技术股份有限公司   版权所有
+        </footer>
+    </div>
+
+</div>
+<div class="modal fade launch-modal" id="modal3" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">友好提示</h4>
+            </div>
+            <div class="modal-body">
+                <div class="text-center c-0d0d0d f-18 pd-t-20 pd-b-20">
+                    即将删除该数据，请确认！
+                </div>
+                <div class="text-center mg-t-20 mg-b-20">
+                    @*@Html.ActionLink("确认", "List", new { id = "", page = 1, pagesize = 5 })*@
+                    <label id="lbid" style="visibility:hidden"></label>
+                    <button onclick="dele();" type="submit" class="my-btn mg-r-15 bg-3669e1">确认</button>
+                    <button class="my-btn bd" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,53 @@
+﻿@model BSFramework.Application.Entity.WorkPlan.WorkPlanContentEntity
+@using BSFramework.Application.Entity.PublicInfoManage
+@{
+    ViewBag.Title = "FormContent";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.url.js")"></script>
+<script>
+   
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+
+        var json = jQuery('#form1').serializeJSON();
+        $.SaveForm({
+            url: '@Url.Action("SaveFormContent")',
+            param: json,
+            loading: "正在保存数据...",
+            success: function () {
+                debugger;
+                var iframeId = jQuery.getUrlArgs('iframeId');
+                top.frames[iframeId].jQuery("#grid").trigger("reloadGrid");
+            },
+        })
+    }
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style=" padding-right: 30px;">
+            @Html.HiddenFor(x => x.CreateDate)
+            @Html.HiddenFor(x => x.CreateUserId)
+            @Html.HiddenFor(x => x.CreateUser)
+            @Html.HiddenFor(x => x.ID)
+            @Html.HiddenFor(x=>x.PlanId)
+            <table class="form">
+                <tr>
+                    <td class="formTitle">工作内容<font face="宋体">*</font></td>
+                    <td class="formValue" >
+                        @Html.TextAreaFor(x => x.WorkContent, new { @class = "form-control", @style = "height:120px;", maxlength = 200 })
+                    </td>
+                    </tr>
+                <tr>
+                    <td class="formTitle">备注</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Remark, new { @class = "form-control", maxlength = 200 })
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

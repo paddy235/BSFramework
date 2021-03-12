@@ -1,0 +1,679 @@
+﻿@using BSFramework.Application.Entity.BaseManage
+@model BSFramework.Entity.WorkMeeting.JobTemplateEntity
+@{ ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_LayoutEmpty.cshtml"; }
+
+<!--框架必需start-->
+<script src="~/Content/scripts/jquery/jquery-1.10.2.min.js"></script>
+<link href="~/Content/styles/font-awesome.min.css" rel="stylesheet" />
+<link href="~/Content/scripts/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jquery-ui/jquery-ui.min.js"></script>
+<!--框架必需end-->
+<!--bootstrap组件start-->
+<link href="~/Content/scripts/bootstrap/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/scripts/bootstrap/bootstrap.extension.css" rel="stylesheet" />
+<script src="~/Content/scripts/bootstrap/bootstrap.min.js"></script>
+<!--bootstrap组件end-->
+<script src="~/Content/scripts/plugins/datepicker/WdatePicker.js"></script>
+@System.Web.Optimization.Styles.Render("~/Content/scripts/plugins/jqgrid/css",
+    "~/Content/scripts/plugins/tree/css",
+    "~/Content/scripts/plugins/datetime/css",
+    "~/Content/scripts/plugins/wizard/css",
+            "~/Content/styles/framework-ui.css")
+@System.Web.Optimization.Scripts.Render("~/Content/scripts/plugins/jqgrid/js",
+    "~/Content/scripts/plugins/tree/js",
+    "~/Content/scripts/plugins/validator/js",
+            "~/Content/scripts/plugins/datepicker/js",
+    "~/Content/scripts/plugins/wizard/js",
+    "~/Content/scripts/utils/js",
+    "~/Content/scripts/plugins/printTable/js")
+<style type="text/css">
+    .form-control[readonly]{background-color:transparent;}
+    .container{margin-top:20px;}
+    textarea{resize:none;height:110px !important;}
+    .plan_must{color: #fd7949;}
+    input[type="text"]{height:50px;}
+    .row{margin-bottom:15px;}
+    .col-sm-2 label{line-height:50px;margin-bottom:0;}
+    .select_people,.select_people_two,.select_work,.select_jobtype,.select_isexplain,.select_isend,.select_isweek,.select_islastday,.select_kyt,.select_cycle,.select_cycle_type{background:url('@Url.Content("~/Content/styles/static/images/select_icon.png")') no-repeat 95% 16px;}
+    .sign.modal .my-nav li {border-bottom: 1px solid #cad3df;line-height: 50px;padding-left: 66px;font-size: 16px;color: #374757;}
+    .radio{padding-left:30px;}
+    .select_month label.col-sm-1{padding:15px 0;width:10%;}
+    .select_month label span,.select_week label span{border:1px solid #b0b8c1;display:inline-block;height:19px;width:19px;position:relative;top:4px;margin-right:7px;}
+    .select_month label span.selected,.select_week label span.selected{border-color:#3669e1;background:url('@Url.Content("~/Content/styles/static/images/checked_icon.png")') no-repeat center center;}
+    .checkbox-inline+.checkbox-inline{margin-left:0;}
+    .select_week label.col-sm-1{padding:10px 0;width:14%;}
+    .select_month,.select_week{display:none;}
+    .submit{display:inline-block;width:130px;height:40px;line-height:40px;text-align:center;color:#fff;border:none;font-size:16px;border-radius:4px;float:right;background:#3669e1;}
+    .my-nav{max-height:500px;overflow-y:auto;}
+
+
+    .select_month_first label.col-sm-1{padding:10px 0;width:15%;}
+    .select_month_first label span,.select_week label span{border:1px solid #b0b8c1;display:inline-block;height:19px;width:19px;position:relative;top:4px;margin-right:7px;}
+    .select_month_first label span.selected,.select_week label span.selected{border-color:#3669e1;background:url('@Url.Content("~/Content/styles/static/images/checked_icon.png")') no-repeat center center;}
+    .select_month_first{display:none;}
+    .select_type{display:none;}
+    .select_month_two label.col-sm-1{padding:10px 0;width:15%;}
+    .select_month_two label span,.select_week label span{border:1px solid #b0b8c1;display:inline-block;height:19px;width:19px;position:relative;top:4px;margin-right:7px;}
+    .select_month_two label span.selected,.select_week label span.selected{border-color:#3669e1;background:url('@Url.Content("~/Content/styles/static/images/checked_icon.png")') no-repeat center center;}
+    .select_month_two,.select_choose_two{display:none;}
+
+</style>
+@using (Html.BeginForm("Edit", "BaseData", FormMethod.Post))
+{
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2">
+            <label>工作任务<span class="plan_must">*</span></label>
+        </div>
+        <div class="col-sm-4">
+            @*<textarea class="form-control" placeholder="请输入设备内容"></textarea>*@
+            @Html.TextAreaFor(x => x.JobContent, new { @class = "form-control", placeholder = "请输入工作任务", maxlength = "200" })
+        </div>
+
+        <div class="col-sm-2">
+            <label>周期展示<span class="plan_must">*</span></label>
+        </div>
+        <div class="col-sm-4">
+            <input id="cycleShow" type="text" class="form-control " onclick="selectCycle()" readonly>
+        </div>
+
+
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            <label>作业人<span class="plan_must">*</span></label>
+        </div>
+        <div class="col-sm-10">
+            @*<input type="text" class="form-control select_people" placeholder="请选择作业人">*@
+            @Html.TextBoxFor(x => x.JobPerson, new { @class = "form-control select_people", @readonly = "readonly", placeholder = "请选择作业人" })
+            @Html.HiddenFor(x => x.JobPersonId)
+        </div>
+        <div class="col-sm-2" style="display:none">
+            <label></label>
+        </div>
+        <div class="col-sm-4" style="display:none">
+            @Html.TextBoxFor(x => x.otherperson, new { @class = "form-control select_people_two", placeholder = "请选择作业人,非必选" })
+            @Html.HiddenFor(x => x.otherpersonid)
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-sm-2">
+            <label>任务类型<span class="plan_must">*</span></label>
+        </div>
+        <div class="col-sm-4">
+            @Html.TextBoxFor(x => x.jobplantype, new { @class = "form-control select_jobtype", placeholder = "请选择任务类型" })
+            @Html.HiddenFor(x => x.jobplantypeid)
+            @Html.HiddenFor(x => x.isworkgroup)
+        </div>
+        <div class="col-sm-2">
+            <label>风险等级<span class="plan_must">*</span></label>
+        </div>
+        <div class="col-sm-4">
+            @Html.DropDownListFor(x => x.RiskLevel, new List<SelectListItem>() {
+               new SelectListItem() {  Text="重大风险",Value="重大风险"} ,
+               new SelectListItem() {  Text="较大风险",Value="较大风险"} ,
+               new SelectListItem() {  Text="一般风险",Value="一般风险"} ,
+               new SelectListItem() {  Text="低风险",Value="低风险"} ,
+           }, new { @class = "form-control", placeholder = "请选择风险等级", style = "height:50px;" })
+        </div>
+        <div style="display:none">
+            <div class="col-sm-2">
+                <label>计划时间</label>
+            </div>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" name="JobTime" id="JobTime" value="@Html.Raw(ViewBag.JobTime)" onclick="this.blur();" placeholder="请选择时间">
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-sm-2">
+            <label>设备</label>
+        </div>
+        <div class="col-sm-4">
+            @*<input type="text" class="form-control" placeholder="请输入设备">*@
+            @Html.TextBoxFor(x => x.Device, new { @class = "form-control", placeholder = "请输入设备" })
+        </div>
+        <div class="col-sm-2">
+            <label>危险预知训练</label>
+        </div>
+        <div class="col-sm-4">
+            <input type="text" class="form-control select_kyt" id="kyt" name="kyt" placeholder="请选择" />
+            @Html.HiddenFor(x => x.EnableTraining)
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-2">
+            <label>主要危险因素</label>
+        </div>
+        <div class="col-sm-10">
+            @*<textarea class="form-control" placeholder="请输入危险因素"></textarea>*@
+            @Html.TextAreaFor(x => x.Dangerous, new { @class = "form-control", placeholder = "请输入危险因素", maxlength = "200" })
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-2">
+            <label>防范措施</label>
+        </div>
+        <div class="col-sm-10">
+            @*<textarea class="form-control" placeholder="请输入防范措施"></textarea>*@
+            @Html.TextAreaFor(x => x.Measure, new { @class = "form-control", placeholder = "请输入防范措施", maxlength = "200" })
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            <label>工作标准</label>
+        </div>
+        <div class="col-sm-10">
+            @Html.TextAreaFor(x => x.jobstandard, new { @class = "form-control", placeholder = "请输入工作标准", maxlength = "200" })
+        </div>
+    </div>
+    <!--<div class="row">
+        <div class="col-sm-2">
+            <label>班次</label>
+        </div>
+        <div class="col-sm-4">
+            @Html.TextBoxFor(x => x.worksetname, new { @class = "form-control select_work", placeholder = "请选择" })-->
+    @*@Html.TextBoxFor(x => x.JobPerson, new { @class = "form-control select_people", placeholder = "请选择作业人" })*@
+    <!--@Html.HiddenFor(x => x.worksetid)
+    </div>-->
+    @*<div class="col-sm-2">
+            <label>三讲一落实</label>
+        </div>
+        <div class="col-sm-4">
+            <input type="text" class="form-control select_isexplain" id="isexplainText" name="isexplainText" placeholder="请选择" />
+            @Html.HiddenFor(x => x.isexplain)
+        </div>*@
+    <!--</div>-->
+
+
+    @Html.HiddenFor(x => x.CycleDate)
+    @Html.HiddenFor(x => x.Cycle)
+    @Html.HiddenFor(x => x.isend)
+    @Html.HiddenFor(x => x.islastday)
+    @Html.HiddenFor(x => x.isweek)
+    @Html.HiddenFor(x => x.worksetname)
+    <div><button type="submit" class="submit" onclick="if (!fn$submit()) return false;">提交</button></div>
+</div>}
+
+
+<!--选择作业人弹出窗-->
+<div class="modal fade sign" id="selectPeople" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">选择作业人员</h4>
+            </div>
+            <div class="modal-body" style="padding-top:0;">
+
+                @{ var users = ViewData["users"] as List<UserEntity>; }
+                @*<ul class="nav my-nav">
+                                            @if (users != null)
+                                            {
+                                                foreach (var item in users)
+                                                {
+                                    <li id="@item.UserId">@Html.Raw(item.RealName) <span class="my-radio"></span></li>
+                    }
+                            }
+                                        </ul>*@
+
+                <table class="table" style="text-align:center;">
+                    <tr>
+                        <td style="width:40%;">班组成员</td>
+                        <td style="width:30%;">工作负责人</td>
+                        <td style="width:30%;">工作班成员</td>
+                    </tr>
+                    @{if (users != null)
+                        {
+
+                            for (int i = 0; i < users.Count; i++)
+                            {
+            <tr data-userid="@Html.Raw(users[i].UserId)" data-username="@Html.Raw(users[i].RealName)">
+                <td>@Html.Raw(users[i].RealName)</td>
+                <td><span class="my-ck ischecker" data-role="ischecker"></span></td>
+                <td><span class="my-ck isdoperson" data-role="isdoperson"></span></td>
+            </tr>
+}
+    } }
+                </table>
+
+            </div>
+            @*<div class="text-center mg-t-10">
+                    <button class="btn bg-3669e1 c-fff" style="width:200px;" data-dismiss="modal">确定</button>
+                </div>*@
+        </div>
+    </div>
+</div>
+
+<!--选择作业人弹出窗-->
+<div class="modal fade sign" id="selectPeopleTwo" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">选择作业人员</h4>
+            </div>
+            <div class="modal-body" style="padding-top:0;">
+                <div>
+                    <ul class="nav my-nav">
+                        @if (users != null)
+                        {
+                            foreach (var item in users)
+                            {
+            <li id="@item.UserId">@Html.Raw(item.RealName) <span class="my-radio"></span></li>
+}
+    }
+                    </ul>
+                </div>
+                <div class="text-center mg-t-10">
+                    <button class="btn bg-3669e1 c-fff" style="width:200px;" data-dismiss="modal">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade sign" id="selectJobtype" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">选择任务类型</h4>
+            </div>
+            <div class="modal-body" style="padding-top:0;">
+                @{ var jobtype = ViewData["jobtype"] as List<SelectListItem>; }
+                <ul class="nav my-nav">
+                    @if (jobtype != null)
+                    {
+                        foreach (var item in jobtype)
+                        {
+        <li data-dismiss="modal" id="@item.Value">@item.Text</li>
+}
+}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!--选择是否KYT弹出窗-->
+<div class="modal fade sign" id="selectKyt" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">危险预知训练</h4>
+            </div>
+            <div class="modal-body" style="padding-top:0;">
+                @*<div class="radio">
+                        <label><input type="radio" value="是" name="Kyt" data-dismiss="modal" />是</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" value="否" name="Kyt" data-dismiss="modal" />否</label>
+                    </div>*@
+                <ul class="nav my-nav">
+                    <li data-dismiss="modal">是</li>
+                    <li data-dismiss="modal">否</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--选择是否KYT弹出窗-->
+<div class="modal fade sign" id="selectisexplain" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">选择是否</h4>
+            </div>
+            <div class="modal-body" style="padding-top:0;">
+                @*<div class="radio">
+                        <label><input type="radio" value="是" name="Kyt" data-dismiss="modal" />是</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" value="否" name="Kyt" data-dismiss="modal" />否</label>
+                    </div>*@
+                <ul class="nav my-nav">
+                    <li data-dismiss="modal">是</li>
+                    <li data-dismiss="modal">否</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+<script>
+    $(function () {
+        jQuery('body').css('overflow-y', 'auto');
+
+        jQuery('#selectPeople tr span.my-ck').click(function () {
+            var names="",ids="";
+
+            if (jQuery(this).hasClass('on')) {
+                jQuery(this).removeClass('on');
+
+            } else {
+                if (jQuery(this).hasClass('ischecker')) {
+                    jQuery('.ischecker').removeClass('on');
+                }
+                jQuery(this).parent().parent().find('.my-ck').removeClass('on');
+                jQuery(this).addClass('on');
+
+            }
+            jQuery('#selectPeople tr span.my-ck.ischecker.on').each(function (i, o) {
+                var thisids = jQuery(this).parent().parent()[0].dataset.userid;
+                var thisname = jQuery(this).parent().parent()[0].dataset.username;
+
+                names = names + thisname + ",";
+                ids = ids + thisids + ",";
+            });
+            jQuery('#selectPeople tr span.my-ck.isdoperson.on').each(function (i, o) {
+                var thisids = jQuery(this).parent().parent()[0].dataset.userid;
+                var thisname = jQuery(this).parent().parent()[0].dataset.username;
+
+                names = names + thisname + ",";
+                ids = ids + thisids + ",";
+            });
+          jQuery('#JobPerson').val(names.replace(/,$/, ''));
+          jQuery('#JobPersonId').val(ids.replace(/,$/, ''))
+        });
+
+        var userids = jQuery('#JobPersonId').val();
+        var ary_userid = userids.split(',');
+        var num = 0;
+        jQuery('#selectPeople tr').each(function (i, o) {
+
+            if (jQuery.inArray(this.dataset.userid, ary_userid) >= 0) {
+
+                if (num == 0) {
+                    jQuery(this).find('span.my-ck.ischecker').addClass('on');
+                    num++;
+                } else {
+                    jQuery(this).find('span.my-ck.isdoperson').addClass('on');
+                }
+
+            }
+        });
+        $('.select_people').click(function () {
+            jQuery('#selectPeople tr span.my-ck').removeClass('on');
+            var userids = jQuery('#JobPersonId').val();
+            var ary_userid = userids.split(',');
+            var num = 0;
+            jQuery('#selectPeople tr').each(function (i, o) {
+
+                if (jQuery.inArray(this.dataset.userid, ary_userid) >= 0) {
+
+                    if (num==0) {
+                        jQuery(this).find('span.my-ck.ischecker').addClass('on');
+                        num++;
+                    } else {
+                        jQuery(this).find('span.my-ck.isdoperson').addClass('on');
+                    }
+
+                }
+            });
+            //userids = jQuery('#otherpersonid').val();
+            //ary_userid = userids.split(',');
+            //jQuery('#selectPeople .my-nav li').each(function () {
+            //    if (jQuery.inArray(jQuery(this).attr('id'), ary_userid) >= 0) {
+            //        jQuery(this).find('span').addClass('on');
+            //        jQuery(this).find('span').addClass('check');
+
+            //    }
+            //});
+
+            $('#selectPeople').modal();
+        });
+
+
+        $('.select_people_two').click(function () {
+            jQuery('#selectPeople .my-nav li span').removeClass('on');
+            var userids = jQuery('#JobPersonId').val();
+            var ary_userid = userids.split(',');
+            jQuery('#selectPeople .my-nav li').each(function () {
+                if (jQuery.inArray(jQuery(this).attr('id'), ary_userid) >= 0) jQuery(this).find('span').addClass('on');
+            });
+            jQuery('#selectPeopleTwo .my-nav li span').removeClass('on');
+            jQuery('#selectPeopleTwo .my-nav li').each(function () {
+                if (jQuery.inArray(jQuery(this).attr('id'), ary_userid) >= 0) {
+                    jQuery(this).find('span').addClass('on');
+                    jQuery(this).find('span').addClass('check');
+                }
+            });
+            if (jQuery('#selectPeople li span.on').size() == 0) {
+                layer.msg("请先选择前一节点作业人！");
+                return false;
+            }
+
+            userids = jQuery('#otherpersonid').val();
+            ary_userid = userids.split(',');
+            jQuery('#selectPeopleTwo .my-nav li').each(function () {
+                if (jQuery.inArray(jQuery(this).attr('id'), ary_userid) >= 0) {
+                    jQuery(this).find('span').addClass('on');
+
+                }
+            });
+            $('#selectPeopleTwo').modal();
+        });
+        $('.select_kyt').click(function () {
+            $('#selectKyt').modal();
+        });
+        $('.select_jobtype').click(function () {
+            $('#selectJobtype').modal();
+        });
+
+
+        $('.select_isexplain').click(function () {
+            $('#selectisexplain').modal();
+        });
+
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#JobTime',
+                type: 'time',
+                range: true,
+                format: 'HH:mm'
+            });
+        });
+
+        var show = jQuery('#Cycle').val();
+        show += jQuery("#CycleDate").val().replace(';','').replace(',', '、');
+        show += jQuery("#worksetname").val();
+        jQuery("#cycleShow").val(show);
+        if (jQuery('#isexplain').val() == 'True') {
+            jQuery('#isexplain').prev().val('是');
+        } else {
+            jQuery('#isexplain').prev().val('否');
+        }
+
+
+        if (jQuery('#EnableTraining').val() == 'True') {
+            jQuery('#EnableTraining').prev().val('是');
+        } else {
+            jQuery('#EnableTraining').prev().val('否');
+        }
+
+
+
+        //jQuery('#selectPeople li span').click(function () {
+        //    //if (jQuery('#selectPeople li span.on').size() == 1) {
+        //    //    if (!jQuery(this).hasClass('on')) {
+        //    //        if (jQuery('#selectPeople li span.check').size() != 1) {
+        //    //            layer.msg("只能选择一人！");
+        //    //            return false;
+        //    //        }
+        //    //    }
+        //    //}
+        //    //if (jQuery('#selectPeople li span.on').size() == 2) {
+
+        //    //    if (!jQuery(this).hasClass('on')) {
+        //    //        if (!jQuery(this).hasClass('check')) {
+        //    //            layer.msg("只能选择一人！");
+        //    //            return false;
+        //    //        }
+        //    //    }
+        //    //}
+        //    var names = jQuery('#JobPerson').val();
+        //    var ids = jQuery('#JobPersonId').val();
+        //    var thisname = jQuery(this).parent().text().trim();
+        //    var thisids = jQuery(this).parent().attr('id');
+        //    if (!jQuery(this).hasClass('check')) {
+        //        if (jQuery(this).hasClass('on')) {
+        //            jQuery(this).removeClass('on');
+        //            names = names.replace(',' + thisname, "").replace(thisname + ",", "").replace(thisname, "");
+        //            ids = ids.replace(',' + thisids, "").replace(thisids + ",", "").replace(thisids, "");;
+        //        }
+        //        else {
+        //            if (names.length > 0) {
+        //                names = names + ',' + jQuery(this).parent().text().trim();
+        //                ids = ids + ',' + jQuery(this).parent().attr('id');
+        //            } else {
+        //                names = jQuery(this).parent().text().trim();
+        //                ids = jQuery(this).parent().attr('id');
+        //            }
+
+        //            jQuery(this).addClass('on');
+        //        }
+        //    }
+
+        //    //jQuery('#selectPeople li span.on').each(function (i, o) {
+        //    //    if (!jQuery(this).hasClass('check')) {
+        //    //        names += jQuery(this).parent().text().trim() + ',';
+        //    //        ids += jQuery(this).parent().attr('id') + ',';
+        //    //    }
+        //    //});
+
+        //    jQuery('#JobPerson').val(names.replace(/,$/, ''));
+        //    jQuery('#JobPersonId').val(ids.replace(/,$/, ''));
+        //});
+        jQuery('#selectPeopleTwo li span').click(function () {
+            if (jQuery('#selectPeopleTwo li span.on').size() == 2) {
+                if (!jQuery(this).hasClass('on')) {
+                    layer.msg("只能选择一人！");
+                    return false;
+                }
+            }
+            if (!jQuery(this).hasClass('check')) {
+                if (jQuery(this).hasClass('on'))
+                    jQuery(this).removeClass('on');
+                else
+                    jQuery(this).addClass('on');
+            }
+            var names = '';
+            var ids = '';
+            jQuery('#selectPeopleTwo li span.on').each(function (i, o) {
+                if (!jQuery(this).hasClass('check')) {
+                    names += jQuery(this).parent().text().trim() + ',';
+                    ids += jQuery(this).parent().attr('id') + ',';
+                }
+            });
+
+            jQuery('#otherperson').val(names.replace(/,$/, ''));
+            jQuery('#otherpersonid').val(ids.replace(/,$/, ''));
+        });
+        jQuery('#selectKyt li').click(function () {
+            jQuery('#kyt').val(jQuery(this).text().trim());
+            jQuery('#EnableTraining').val(jQuery(this).text().trim() == '是' ? 'True' : 'False');
+        });
+
+
+        jQuery('#selectisexplain li').click(function () {
+            jQuery('#isexplainText').val(jQuery(this).text().trim());
+            jQuery('#isexplain').val(jQuery(this).text().trim() == '是' ? 'True' : 'False');
+        });
+
+
+        jQuery('#selectJobtype li').click(function () {
+            jQuery('#jobplantype').val(jQuery(this).text().trim());
+            jQuery('#jobplantypeid').val(jQuery(this).attr('id').trim());
+        });
+
+
+    });
+
+
+    function selectCycle() {
+        var url = "";
+
+         var cycle = $("#Cycle").val();
+        var cycledate = $("#CycleDate").val();
+            var isweek = $("#isweek").val();
+        var islastday = $("#islastday").val();
+        var isend = $("#isend").val();
+        var worksetname = $("#worksetname").val();
+        url = '/..@Url.Action("Cycle")?cycle=' + cycle + "&cycledate=" + cycledate + "&isweek=" + isweek + "&islastday=" + islastday + "&isend=" + isend + "&worksetname=" + worksetname;
+
+
+          var   options = { winObjects: window.document.body }
+
+         dialogOpen({
+            id: "DoSelectCycle",
+             title: "选择周期",
+             url: url,
+            width: ($(top.window).width() - 800) + "px",
+            height: "600px",
+             callBack: function (iframeId) {
+                 top.document.getElementsByTagName("iframe")[1].contentWindow.AcceptClick(options);
+
+            }
+        });
+    }
+
+
+    function fn$submit() {
+
+        if (!jQuery('#JobContent').val().trim()) {
+            layer.msg("请输入工作任务！");
+            return false;
+        }
+
+        if (!jQuery('#cycleShow').val().trim()) {
+            layer.msg("请选择周期！");
+            return false;
+        }
+        if (!jQuery('#JobPerson').val().trim()) {
+            layer.msg("请选择工作人员！");
+            return false;
+        }
+        var ck = true;
+
+        jQuery('#selectPeople tr span.my-ck.ischecker.on').each(function (i, o) {
+            ck = false;
+        });
+        if (ck) {
+          layer.msg("请在作人员中，选择工作负责人员！");
+          return false;
+        }
+        if (!jQuery('#jobplantype').val().trim()) {
+            layer.msg("请选择任务类型！");
+            return false;
+        }
+        return true;
+    }
+
+    @Html.Raw(ViewBag.callback);
+
+</script>

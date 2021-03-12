@@ -1,0 +1,202 @@
+﻿@model BSFramework.Application.Entity.WorkPlan.WorkPlanEntity
+@using BSFramework.Application.Entity.PublicInfoManage
+@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/datepicker/WdatePicker.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script type="text/javascript" src="~/content/scripts/business/common.js"></script>
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<script>
+    var id = '@ViewBag.planid';
+    $(function () {
+        loadgrid();
+    });
+    
+    function loadgrid() {
+        jQuery('#grid').jqGrid({
+            colModel: [
+                { label: '主键', name: 'id', hidden: true },
+                {
+                    label: '操作', name: '', width: 180, align: 'center',sortable: false,
+                    formatter: function (cellvaue, options, rowObject) {
+                        return "<a style='text-decoration:none;' href=\"javascript:editnew('" + rowObject.ID + "')\" title=\"\">编辑</a><a style='text-decoration:none;' href=\"javascript:delnew('" + rowObject.ID + "')\" title=\"\">删除</a>";
+                        
+                    }
+                },
+                { label: '工作内容', name: 'WorkContent', width: 480, align: 'center', sortable: false },
+                { label: '备注', name: 'Remark', width: 200, align: 'center', sortable: false }
+            ],
+            height: 350,
+            autowidth: true,
+            url: '@Url.Action("GetPlanContent")?keyValue=' + id,
+            datatype: "json",
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 10,
+            rownumbers: true,
+            pager: "#gridPager",
+            gridComplete: function () {
+            }
+        });
+    }
+    function valid() {
+        var start = $("#StartDate").val();
+        var end = $("#EndDate").val();
+        if (start == "" || end == "") {
+            dialogMsg('请选择计划时间！', 0);
+            return false;
+        } else
+        {
+            if (new Date(end) < new Date(start))
+            {
+                dialogMsg('结束时间不能小于开始时间！', 0);
+                return false;
+            }
+        }
+        var name = $("#UseDeptName").val();
+        if (name == "") {
+            dialogMsg('请选择适用班组！', 0);
+            return false;
+        }
+        var count = jQuery('#grid').jqGrid('getRowData').length;
+        if (count < 1) {
+            dialogMsg('工作内容不能为空！', 0);
+            return false;
+        }
+        return true;
+    }
+    function AcceptClick() {
+        if (!valid()) {
+            return false;
+        }
+        var json = jQuery('#form1').serializeJSON();
+        $.SaveForm({
+            url: '@Url.Action("SaveForm")',
+            param: json,
+            loading: "数据提交中...",
+            success: function (data) {
+                if (data.success) {
+                    $.currentIframe().$("#gridTable").trigger("reloadGrid");
+                } else {
+
+                }
+            }
+        });
+    }
+
+    //新增
+    function add() {
+        var height = "300px";
+        
+        dialogOpen({
+            id: "FormContent",
+            title: '新增工作内容',
+            url: '/../@Url.Action("FormContent")?keyValue=' + id + "&iframeId=" + jQuery(self.frameElement).attr('id'),
+            width: "500px",
+            height: height,
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+
+    };
+    function editnew(pid) {
+        var height = "300px";
+
+        dialogOpen({
+            id: "FormContent",
+            title: '编辑工作内容',
+            url: '/../@Url.Action("FormContent")?keyValue=' + pid + "&iframeId=" + jQuery(self.frameElement).attr('id'),
+            width: "500px",
+            height: height,
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+
+    };
+    function delnew(id) {
+
+        $.RemoveForm({
+            url: '/../@Url.Action("DeleteContent")/',
+            param: { keyValue: id },
+            success: function (data) {
+                $("#grid").resetSelection();
+                $("#grid").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style=" padding-right: 30px;">
+            @Html.HiddenFor(x => x.CreateDate)
+            @Html.HiddenFor(x => x.CreateUserId)
+            @Html.HiddenFor(x => x.CreateUser)
+            @Html.HiddenFor(x => x.ID)
+            <table class="form">
+                <tr>
+                    <td class="formTitle">计划类型<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @{
+                            if (ViewBag.type == "edit") 
+                            {
+                                @Html.TextBoxFor(x => x.PlanType, new {  @readonly = "readonly" })
+                            }
+                            if (ViewBag.type == "add")
+                            {
+                                @Html.DropDownListFor(x => x.PlanType, new SelectList(new string[] { "月工作计划","周工作计划" }))
+                            }
+                        }
+                        
+                    </td>
+                    <td class="formTitle">计划时间<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.StartDate, new { @class = "form-control", @onfocus = "WdatePicker();", @style = "width:150px;float:left;", Value = Model.StartDate.ToString("yyyy-MM-dd") })
+                        <span style="float:left;margin-left:5px;margin-right:5px;">--</span>
+                        @Html.TextBoxFor(x => x.EndDate, new { @class = "form-control", @onfocus = "WdatePicker();", @style = "width:150px;float:left;", Value = Model.EndDate.ToString("yyyy-MM-dd") })
+                    </td>
+                </tr>
+                @{
+                    if (ViewBag.type=="add") 
+                    {
+                        <tr>
+                    <td class="formTitle" style="width:90px;">适用部门</td>
+                    <td class="formValue" colspan="3">
+                        <div class="input-group" style="width:100%;" onclick="selectDept('/../@Url.Action("SelectBZ", "Department", new { area = "BaseManage" })', '@ViewBag.deptid', 1, 0, '选择班组', this.parentNode, 'UseDeptName,UseDeptId,UseDeptCode')">
+                            @*<input id="UseDept" name="UseDept" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" onfocus="this.blur();" />*@
+                            <textarea id="UseDeptName" name="UseDeptName" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" rows="5" onfocus="this.blur();"></textarea>
+                            <span class="input-group-addon" title="选择班组" style="cursor:pointer;">...</span>
+                            <input id="UseDeptId" type="hidden" name="UseDeptId" />
+                            <input id="UseDeptCode" type="hidden" name="UseDeptCode" />
+                        </div>
+                    </td>
+                </tr>
+                    }
+                }
+                
+                <tr><td colspan="4"><hr /></td></tr>
+                <tr>
+                    <td colspan="4">
+                        <div class="f-18 f-w c-0d0d0d"><a id="lr-edit" class="btn btn-default" onclick="add();"><i class="fa fa-plus"></i>&nbsp;新增</a></div>
+                        <div class="pd-20 bg-fff bd-t-e3ebfd">
+                            <div class="f-16 c-4a4e50 lh-36 pd-b-20" style="word-break:break-all;height:auto;min-height:110px;padding-top:10px;padding-left:10px;">
+                                <div class="gridPanel">
+                                    <table id="grid"></table>
+                                    <div id="gridPager"></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,244 @@
+﻿
+@{
+    ViewBag.Title = "班前一题开展次数统计";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group a.btn {
+            margin-top: 4px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+    .form-group {
+        margin-bottom: 0px;
+    }
+</style>
+<script src="@Url.Content("~/Content/scripts/plugins/datepicker/WdatePicker.js")"></script>
+<script src="~/Content/scripts/plugins/highcharts/highcharts.js"></script>
+<script>
+    $(function () {
+        $("#btn_Search").click(function () {
+            GetData();
+        })
+        $("#btn_SearchAll").click(function () {
+            var date = new Date();
+            var year = date.getFullYear();
+            var month = date.getMonth() + 1;
+            var day = date.getDate();
+            var startTime = year + "-" + month + '-1';
+            var endTime = year + "-" + month + '-' + day;
+            $("#startTime").val(startTime);
+            $("#endTime").val(endTime);
+            GetData();
+        })
+        GetData();
+    })
+    /**
+     * 获取数据
+     * */
+    function GetData() {
+        $.ajax({
+            url: "@Url.Action("GetQuestionData")",
+            type: "POST",
+            dataType:"json",
+            data: { startTime: $("#startTime").val(), endTime: $("#endTime").val() },
+            success: function (data) {
+                if (data.type == 1) {
+                    var categories = [];//条形图的X轴部门数据
+                    var series = [{ name: "班前一题", data: [] }];//条形图Y轴数据
+                    if (!!data.resultdata || data.resultdata.length > 0) {
+                        $.each(data.resultdata, function (index, value) {
+                            categories.push(value.DeptName);
+                            series[0].data.push(value.RecordCount);//安全行为
+                        })
+                    }
+                    LoadBar(categories, series);
+                    LoadGrid(data.resultdata);
+                } else {
+                    dialogMsg("查询失败：" + data.message, 2);
+                }
+
+            },
+            error: function (error) { console.log(error); layer.msg("网络错误"); }
+        })
+    }
+
+
+    /**
+ * 各部门行为对比图
+ * @@param {Array<string>} categories 部门数据
+ * @@param {Array<number>} series 学习率
+ */
+    function LoadBar(categories, series) {
+        $('#div_Bar').highcharts({
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '班前一题开展次数统计'
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                type: 'category',
+                categories: categories,
+                title: {
+                    text: null
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '单位（次）',
+                    align: 'high'
+                },
+                labels: {
+                    overflow: 'justify'
+                }
+            },
+            tooltip: {
+                valueSuffix: ' 次'
+            },
+            plotOptions: {
+                column: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: - 40,
+                y: 100,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+                shadow: true
+            },
+            credits: {
+                enabled: false
+            },
+            series: series,
+            exporting: {
+                enabled: false
+            },
+        })
+    }
+
+    /**
+    * 加载表格
+    * @@param {Array} rows 数据源
+    */
+    function LoadGrid(rows) {
+        var $gridTable = $('#gridTable');
+        var height = $(top.window).height() - 200;
+        height = height < 100 ? 100 : height;
+        $gridTable.jqGrid({
+            data: rows,
+            datatype: "local",
+            height: height + "px",
+            autowidth: true,
+            colModel: [
+                { label: '班组', name: 'DeptName', index:"DeptName",width: 400, align: 'center', sortable: false  },
+                { label: '开展班会次数', name: 'MeetingCount', index: "MeetingCount", width: 400, align: 'center', sortable: false  },
+                { label: '班前一题开展次数', name: 'RecordCount', index: "RecordCount", width: 400, align: 'center', sortable: false },
+                {
+                    label: '班前一题开展率', name: 'Point', index: "Point", width: 400, align: 'center', sortable: true, formatter: function (cellvalue, options, rowObject) {
+                        return rowObject.Point + "%";
+                    }
+                }
+            ],
+            viewrecords: true,
+            rowNum: rows.length,
+            sortname: 'CreateDate',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true
+        });
+        $gridTable.clearGridData();
+        $gridTable.setGridParam({ data: rows }).trigger("reloadGrid");
+    }
+</script>
+
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title">班前一题开展次数统计</div>
+            <!-- title start-->
+            <div class="titlePanel">
+                <div class="title-search">
+                    <div class="form-inline">
+                        <div id="contorl1" class="form-group">
+                            <label for="from">日期</label>
+                            <input type="text" class="form-control" id="startTime" onfocus="WdatePicker();" value="@Html.Raw(new DateTime(DateTime.Now.Year,DateTime.Now.Month,1).ToString("yyyy-M-d"))" readonly="readonly">
+                            - <input type="text" class="form-control" id="endTime" onfocus="WdatePicker();" value="@DateTime.Now.ToString("yyyy-M-d")" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                    <a id="btn_SearchAll" class="btn btn-primary"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                </div>
+                <div class="toolbar">
+                    <div class="btn-group">
+
+                    </div>
+                </div>
+            </div>
+            <!-- title end -->
+            <div class="portal-panel" style="margin-left: -20px; margin-right: -20px;">
+                <div id="div_Behaviour_Pie" class="panel panel-default">
+                    <div class="panel-heading">
+                        <strong>&nbsp;&nbsp;统计图表</strong>
+                        <span class="tools pull-right">
+
+                        </span>
+                    </div>
+                    <div class="panel-body">
+                        <!--安全行为与风险行为占比 start-->
+                        <div id="div_Bar"></div>
+                        <!--安全行为与风险行为占比 end-->
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <strong>&nbsp;&nbsp;开展次数统计</strong>
+                        <span class="tools pull-right">
+                        </span>
+                    </div>
+                    <div class="panel-body">
+                        <table id="gridTable"></table>
+                        <div id="gridPager"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

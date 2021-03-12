@@ -1,0 +1,154 @@
+﻿@model BSFramework.Application.Entity.SevenSManage.SevenSOfficeAuditEntity
+@{
+    ViewBag.Title = "IndexShow";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+
+<style>
+    .images-container {
+        min-height: 120px;
+    }
+
+        .images-container li {
+            list-style: none;
+            float: left;
+            padding: 0px 5px;
+        }
+
+    .yinpin li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+
+    table {
+        font-size: 18px;
+    }
+
+    .items li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+</style>
+<div style="margin-left: 10px; margin-right: 10px;overflow-y:hidden;">
+    <div class="tab-content" style="padding-top: 15px; ">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right:30px;">
+            <table class="form">
+                <tr style="height:38px;">
+                    <td class="formTitle">审核结论</td>
+                    <td class="formValue">
+
+                        <input type="radio" value="审核通过" name="Result" /><label>审核通过</label>
+
+                        <input type="radio" value="审核不通过" name="Result" /><label>审核不通过</label>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">审核意见</td>
+                    <td class="formValue">
+                        <textarea class="form-control" maxlength="200" style="width:550px" id="opinion"></textarea>
+                    </td>
+                <tr>
+                    <td class="formTitle">下一级审核人</td>
+                    <td class="formValue">
+                        <input class="form-control" style="width:550px" placeholder="点击选择人员、单选" id="username" readonly="readonly" onclick="fn$select();" />
+                        <input hidden="hidden" id="userid" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">审核人</td>
+                    <td class="formValue">
+                        <input class="form-control" readonly="readonly" value="@Model.username" />
+                    </td>
+                    <td class="formTitle">审核时间</td>
+                    <td class="formValue">
+                        <input class="form-control" readonly="readonly" id="time" value="@ViewBag.time" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    jQuery(function () {
+        if (@ViewBag.sort==6) {
+            $("#username").attr("disabled","disabled")
+        }
+    })
+    function AcceptClick(callback) {
+        var auditid = '@Model.auditid';
+        var state = jQuery('input[name="Result"]:checked').val();
+        if (state==undefined) {
+            dialogMsg('请选择审核结论！', 0);
+            return;
+        }
+        var username = $('#username').val();
+        var userid = $('#userid').val();
+        var opinion = $('#opinion').val();
+        var time = $("#time").val();
+        var officeid = '@Model.officeid';
+        var data = {
+            auditid: auditid,
+            state: state,
+            opinion: opinion,
+            submintdate: time,
+            sort: @Model.sort,
+            userid: userid,
+            username: username,
+            officeid: officeid
+        }
+
+        $.ajax({
+            url: '@Url.Action("saveAudit")',
+            type: "get",
+            dataType: "json",
+            data:data,
+            success: function (Resultdata) {
+                if (Resultdata.success) {
+                    callback()
+                    dialogClose();
+                }else {
+                    dialogMsg('保存失败！', 0);
+                }
+            }
+        });
+        @*$.SaveForm({
+            url: '@Url.Action("saveAudit")',
+            param: data,
+            loading: "数据提交中...",
+            success: function (Resultdata) {
+                if (Resultdata.success) {
+                    dialogClose();
+                }else {
+                    dialogMsg('保存失败！', 0);
+                }
+
+            }
+        });*@
+    }
+
+
+    function fn$select() {
+        dialogOpen({
+            id: "SelectUser",
+            title: "选择人员",
+            url: '/..@Url.Action("SelectShow")?keyvalue= @ViewBag.userid&sort='+@ViewBag.sort,
+            width: "300px",
+            height: "500px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick(fn$selectover1);
+            }
+        });
+    }
+    function fn$selectover1(node) {
+        if (node) {
+            $('#username').val(node.text);
+            $('#userid').val(node.value);
+        }
+    }
+
+</script>

@@ -1,0 +1,208 @@
+﻿@{
+    ViewBag.Title = "Index4";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<script>
+    var _parentId = "";
+    var _isOrg = "";
+    var userId = top.currUserId; //当前用户Id
+    var deptCode = top.currUserDeptCode;//当前用户所属部门Code
+    var orgCode = top.currUserOrgCode;//当前用户所属机构Code
+    var departmentId = "0";
+    //加载组织机构树
+    function GetTree() {
+        var $grid = $("#gridTable");
+        var item = {
+            height: $(window).height() - 50,
+            url: "../../BaseManage/User/GetDeptTreeJson",
+            onnodeclick: function (item) {
+                _parentId = item.EnCode;
+                _isOrg = item.Sort;
+                var queryJson = {
+                    code: _parentId
+                };
+                $grid.jqGrid('setGridParam', {
+                    postData: queryJson, page: 1
+                }).trigger('reloadGrid');
+            }
+        };
+        //初始化
+        $("#itemTree").treeview(item);
+    }
+    $(function () {
+        InitialPage();
+        GetTree();
+        GetGrid();
+    });
+    //初始化页面
+    function InitialPage() {
+        $('#layout').layout({
+            applyDemoStyles: false,
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+        //resize重设(表格、树形)宽高
+        //$(window).resize(function (e) {
+        //    window.setTimeout(function () {
+        //        $('#gridTable').setGridWidth(($('.gridPanel').width()));
+        //        $("#gridTable").setGridHeight($(window).height() - 136.5);
+        //    }, 200);
+        //    e.stopPropagation();
+        //});
+    }
+    function GetGrid() {
+        var selectedRowIndex = 0;
+        var $grid = $("#gridTable");
+        $grid.jqGrid({
+            url: '@Url.Action("GetActivityNew")',
+            datatype: "json",
+            autowidth: true,
+            multiselect: false,
+            colModel: [
+                { label: '主键', name: 'ID', hidden: true },
+                { label: '', name: 'Remark', hidden: true },
+                {
+                    label: '操作', name: '', index: '', width: 80, align: 'center', sortable: false,
+                    formatter: function (cellvaue, options, rowObject) {
+                        return "<a style='' href=\"javascript:detailnew('" + rowObject.ID + "','" + rowObject.Remark + "','" + rowObject.Type + "')\" title=\"\">查看</a>"
+                    }
+                },
+                {
+                    label: '状态', name: '', index: '', width: 200, align: 'center', sortable: false,
+                    formatter: function (cellvaue, options, rowObject) {
+                        return "<label style='color:red'  title=\"\">未评价</label>"
+                    }
+                }, {
+                    label: '台账类型', name: 'Type', index: 'Type', width: 200, align: 'center', sortable: false
+                }, {
+                    label: '题目', name: 'Theme', index: 'Theme', width: 200, align: 'center', sortable: false
+                }, {
+                    label: '班组', name: 'BZName', index: 'BZName', width: 200, align: 'center', sortable: false,
+                }, {
+                    label: '日期', name: 'Date', index: 'Date', width: 200, align: 'center', formatter: 'date', sortable: false, formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                }
+
+            ],
+            height: $(window).height()-170,
+            viewrecords: true,
+            rowNum: 20,
+            rowList: [20, 50, 100],
+            pager: "#gridPager",
+            sortname: 'Date',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            onSelectRow: function () {
+                selectedRowIndex = $grid.getGridParam('selrow');
+            },
+            gridComplete: function () {
+                $grid.setSelection(selectedRowIndex, false);
+            }
+
+        });
+        $("#btn_Search").click(function () {
+            var queryJson = {
+                code: _parentId
+            };
+            $grid.jqGrid('setGridParam', {
+                postData: queryJson, page: 1
+            }).trigger('reloadGrid');
+        });
+        $("#refresh").click(function () {
+
+            var queryJson = {
+                code: _parentId
+            };
+            $grid.jqGrid('setGridParam', {
+                postData: queryJson, page: 1
+            }).trigger('reloadGrid');
+        });
+
+    }
+    function detailnew(id,remark,type)
+    {
+        if (remark == "1") {
+            var dlg = dialogOpen({
+                id: 'Form',
+                title: '查看班组活动详情',
+                url: '/..@Url.Action("Form", "Activity")?id=' + id,
+                //width: ($(window).width() - 100) + 'px',
+                //height: ($(top.window).height() - 80) + "px",
+                width: "1200px",
+                height: "900px",
+                btn: ["关闭"],
+                callBack: function (iframeId) {
+                    top.layer.close(dlg);
+                },
+                end: function () {
+
+                }
+            })
+        }
+        else if (remark == "2")
+        {
+           var  url = '/../@Url.Action("Detail2")/' + id
+            dialogOpen({
+                id: "Detail",
+                title: '查看培训信息',
+                url: url,
+                width: "1000px",
+                height: "900px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        } else if (remark == "3")
+        {
+            dialogOpen({
+                id: "Form",
+                title: '危险预知训练详情',
+                url: '/..@Url.Action("Detail2","Danger")/' + id,
+                width: "1200px",
+                height: "900px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                    //$.currentIframe().$("#gridTable").trigger("reloadGrid");
+                }
+            });
+        }
+    }
+    
+
+</script>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                <div class="col-md-10">
+                    组织机构
+                </div>
+                <div class="col-md-2 text-right" style="padding-right:8px;">
+                    <i class="fa fa-arrow-left" onclick="setBar(this)" style="cursor:pointer;" title="展开/收起"></i>
+                </div>
+            </div>
+            <div id="itemTree"></div>
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title">未评价台账</div>
+            <div class="titlePanel">
+                <div class="title-search">
+                </div>
+                <div class="toolbar">
+                    <div class="btn-group">
+                        <a id="refresh" class="btn btn-default"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+                    </div>
+                    @*<script>$('.toolbar').authorizeButton()</script>*@
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="gridTable"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>

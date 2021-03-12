@@ -1,0 +1,271 @@
+﻿
+@{
+    ViewBag.Title = "CardDetail";
+    Layout = "~/Views/Shared/_OrderForm.cshtml";
+}
+
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<script src="~/Content/scripts/business/common.js"></script>
+<script src="~/Content/scripts/jquery/jquery.serializeJSON.min.js"></script>
+<script src="~/Content/scripts/jquery/jquery.url.js"></script>
+<style>
+    .form .formTitle {
+        width: 120px;
+    }
+</style>
+<script>
+    var keyvalue = request('keyvalue');
+    var mode = request('mode');
+    var deptid = request('deptid');
+    var userid = '@ViewBag.userid'
+    var CDangerousList = new Array();
+    jQuery(function () {
+        if (keyvalue) {
+                    $.ajax({
+                    url: "@Url.Action("getCEntity")?keyvalue=" + keyvalue,
+                    type: "get",
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                           if (data) {
+                               $("#form1").formDeserialize(data);
+
+                                   deptid = data.DeptId;
+
+
+                                   for (var i = 0; i < data.CDangerousList.length; i++) {
+                                       JsonBack(data.CDangerousList[i]);
+                                   }
+                                }
+
+                            }
+           });
+
+                if (mode=="edit") {
+
+                } else {
+                    $("input").attr("disabled", "disabled");
+                    $("span").attr("disabled", "disabled");
+                    $("textarea").attr("disabled", "disabled");
+                    $("#add").css("display", "none");
+                    $("#editTr").css("display", "none");
+                }
+         }
+
+    });
+    function sel1() {
+        var jobname = $("#DutyName").val();
+        selectRole(userid, deptid, jobname, 1, 2, window.document.body, 'DutyName,DutyId');
+
+    }
+   /// <summary>
+    /// 选择角色
+    /// </summary>
+    ///<param name="deptId">查询条件，根据mode的值查询方式会不同</param>
+    /// <param name="checkMode">单选或多选，0:单选，1:多选</param>
+    /// <param name="mode">查询模式，0:获取机构ID为Ids下所有的部门(即OrganizeId=Ids)，1:获取部门ParentId为Ids下所有部门(即ParentId=Ids)，2:获取部门的parentId在Ids中的部门(即ParentId in(Ids))，3:获取部门Id在Ids中的部门(即DepartmentId in(Ids))</param>
+    ///<param name="winObject">窗体中需要查找domId的对象，一般可写成window.document.body或this.parentNode</param>
+    ///<param name="domId">接收返回值的dom节点的ID，多个用逗号分隔，顺序依次为用户名称,用户账号，用户Id（多选用逗号分隔）</param>
+    function selectRole(userid, deptid, jobname, checkMode, mode, winObject, domId) {
+        return dialogOpen({
+            id: "Role",
+            title: "选择岗位",
+            url: '/..@Url.Action("SelectJob", "Activity")?deptId=' + deptid + "&userid=" + userid + "&checkMode=" + checkMode + "&mode=" + mode + "&jobname=" + jobname,
+            width: "250px",
+            height: "500px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick(winObject, domId);
+            }
+        });
+    }
+
+    function fn$addForm() {
+        dialogOpen({
+            id: 'addForm',
+            title: '风险辨识',
+            url: '/..@Url.Action("DangerList")',
+            width: '800px',
+            height:'500px',
+            callBack: function (iframeId) {
+            top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    function editTr(o) {
+        dialogOpen({
+            id: 'addForm',
+            title: '风险辨识',
+            url: '/..@Url.Action("DangerList")?num='+o,
+            width: '800px',
+            height:'500px',
+            callBack: function (iframeId) {
+            top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+    function delTr(num) {
+        CDangerousList.splice(num, 1);
+        JsonBack("", "");
+    }
+    //.splice()
+    function JsonBack(json, num) {
+        if (json && num) {
+            CDangerousList[num] = json;
+        }else
+        if (json) {
+            CDangerousList.push(json);
+        }
+        $("#table_FormSet").html("");
+        var html = "";
+        for (var i = 0; i < CDangerousList.length; i++) {
+            if (mode == "edit" || mode == "edit") {
+                if (CDangerousList[i].MeasureStr) {
+                    html += "<tr><td>" + (i + 1) + "</td><td><a class='c-orange' onclick='editTr(" + i + ");' style='color:orange;cursor:pointer;'>修改</a><a class='c-orange' onclick='delTr(" + i + ");' style='color:orange;cursor:pointer;'>删除</a></td><td>" + CDangerousList[i].DangerName + "</td><td>" + CDangerousList[i].DangerSource + "</td><td style='word-wrap:break-word;word-break:break-all'>" + CDangerousList[i].MeasureStr + "</td></tr>";
+
+                } else {
+                    var MeasureStr = "";
+                    for (var n = 0; n < CDangerousList[i].Measure.length; n++) {
+                        MeasureStr += CDangerousList[i].Measure[n].Measure + "<br/>"
+                    }
+                    html += "<tr><td>" + (i + 1) + "</td><td><a class='c-orange' onclick='editTr(" + i + ");' style='color:orange;cursor:pointer;'>修改</a><a class='c-orange' onclick='delTr(" + i + ");' style='color:orange;cursor:pointer;'>删除</a></td><td>" + CDangerousList[i].DangerName + "</td><td>" + CDangerousList[i].DangerSource + "</td><td style='word-wrap:break-word;word-break:break-all'>" + MeasureStr + "</td></tr>";
+
+                }
+            } else {
+                if (CDangerousList[i].MeasureStr) {
+                    html += "<tr><td>" + (i + 1) + "</td><td>" + CDangerousList[i].DangerName + "</td><td>" + CDangerousList[i].DangerSource + "</td><td style='word-wrap:break-word;word-break:break-all'>" + CDangerousList[i].MeasureStr + "</td></tr>";
+
+                } else {
+                    var MeasureStr = "";
+                    for (var n = 0; n < CDangerousList[i].Measure.length; n++) {
+                        MeasureStr += CDangerousList[i].Measure[n].Measure + "<br/>"
+                    }
+                    html += "<tr><td>" + (i + 1) + "</td><td>" + CDangerousList[i].DangerName + "</td><td>" + CDangerousList[i].DangerSource + "</td><td style='word-wrap:break-word;word-break:break-all'>" + MeasureStr + "</td></tr>";
+
+                }
+            }
+
+           // html += "<tr><td>" + (i + 1) + "</td><td>" + MeasureList[i].DangerName + "</td><td>" + MeasureList[i].DangerSource + "</td><td style='text-overflow:ellipsis;white-space:nowrap;overflow:hidden'>" + MeasureList[i].Measure +"</td></tr>";
+
+        }
+        $("#table_FormSet").append(html);
+    }
+    function AcceptClick() {
+          if (!$('#form1').Validform()) {
+            return false;
+        }
+        var WorkName = $("#WorkName").val();
+        if (!WorkName) {
+            dialogMsg('请填写任务名称！', -1);
+            return;
+        }
+        var DutyName = $("#DutyName").val();
+        //if (!DutyName) {
+        //    dialogMsg('请选择岗位！', -1);
+        //    return;
+        //}
+
+        var WorkArea = $("#WorkArea").val();
+        //if (!WorkArea) {
+        //    dialogMsg('请填写作业区域！', -1);
+        //    return;
+        //}
+
+        var MainOperation = $("#MainOperation").val();
+        if (!MainOperation) {
+            dialogMsg('请填写主要操作步骤！', -1);
+            return;
+        }
+        if (CDangerousList.length==0) {
+            dialogMsg('请填写风险辨识！', -1);
+            return;
+        }
+        var json = jQuery('#form1').serializeJSON();
+        json["Id"] = $("#Id").val();
+        json["WorkName"] = WorkName;
+        json["DeptId"] = deptid;
+        json["DutyName"] = DutyName;
+        json["DutyId"] = $("#DutyId").val();
+        json["WorkArea"] = WorkArea;
+        json["MainOperation"] = MainOperation;
+        json["CDangerousList"] = CDangerousList;
+
+        $.SaveForm({
+            url: '@Url.Action("CSaveForm")',
+            param: json,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+
+</script>
+
+<div style="margin-left: 10px; margin-top: 20px; margin-right: 30px;">
+    <table id="from1" class="form">
+
+        <tr>
+            <th class="formTitle">任务名称<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <input class="form-control" id="WorkName" type="text" value="" checkexpession="NotNull" />
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">岗位<font face="宋体">*</font></th>
+            <td class="formValue">
+                <input id="DutyName" type="text" class="form-control" placeholder="请选择岗位" isvalid="yes" checkexpession="NotNull" readonly onclick="sel1();" />
+                <input type="hidden" id="DutyId" />
+                <input type="hidden" id="Id" />
+                <span class="input-button" onclick="sel1();" title="选取图标">...</span>
+            </td>
+            <th class="formTitle">作业区域</th>
+            <td class="formValue">
+                <input class="form-control" id="WorkArea" type="text" value="" checkexpession="NotNull" />
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">主要操作步骤<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <textarea id="MainOperation" class="form-control" style="height:80px" maxlength="500" checkexpession="NotNull"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <div class="panel panel-default" style="text-align:center">
+                    <div class="panel-heading">
+                        <strong>&nbsp;&nbsp;风险辨识<font face="宋体" style="color:red">*</font></strong>
+                        <span class="tools pull-right">
+                            <a id="add" class="btn btn-default" style="padding: 2px 5px;" onclick="fn$addForm()"><i class="fa fa-plus"></i>&nbsp;新增</a>&nbsp;&nbsp;&nbsp;<a class="fa fa-chevron-down" title="展开/收起"></a>
+                        </span>
+                    </div>
+                    <div class="panel-body">
+                        <table class="form" style="border-collapse:separate;border-spacing:0px 10px;table-layout:fixed">
+                            <colgroup>
+                                <col style="width:50px;" />
+                                <col style="width:80px;" />
+                                <col style="width:80px;" />
+                                <col style="width:150px;" />
+                                <col style="width:150px;" />
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th class="bg-fff">序号</th>
+                                    <th class="bg-fff" id="editTr">操作</th>
+                                    <th class="bg-fff">危险名称</th>
+                                    <th class="bg-fff">风险描述</th>
+                                    <th class="bg-fff">采取的控制措施</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table_FormSet">
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+    </table>
+</div>

@@ -1,0 +1,81 @@
+﻿@model BSFramework.Application.Entity.WorkPlan.WorkPlanEntity
+@using BSFramework.Application.Entity.PublicInfoManage
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/datepicker/WdatePicker.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script type="text/javascript" src="~/content/scripts/business/common.js"></script>
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<script>
+    var id = '@ViewBag.planid';
+    $(function () {
+        loadgrid();
+    });
+    
+    function loadgrid() {
+        jQuery('#grid').jqGrid({
+            colModel: [
+                { label: '工作内容', name: 'WorkContent', width: 360, align: 'center', sortable: false },
+                { label: '备注', name: 'Remark', align: 'center', sortable: false },
+                { label: '完成情况', name: 'IsFinished', align: 'center', sortable: false },
+            ],
+            height: 350,
+            autowidth: true,
+            url: '@Url.Action("GetPlanContent")?keyValue=' + id,
+            datatype: "json",
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 10,
+            rownumbers: true,
+            pager: "#gridPager",
+            gridComplete: function () {
+            }
+        });
+    }
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style=" padding-right: 30px;">
+            @Html.HiddenFor(x => x.CreateDate)
+            @Html.HiddenFor(x => x.CreateUserId)
+            @Html.HiddenFor(x => x.CreateUser)
+            @Html.HiddenFor(x => x.ID)
+            <table class="form">
+                <tr>
+                    <td class="formTitle">计划类型<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.PlanType, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">计划时间<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.StartDate, new { @class = "form-control", @readonly = "readonly", @style = "width:150px;float:left;", Value = Model.StartDate.ToString("yyyy-MM-dd") })
+                        <span style="float:left;margin-left:5px;margin-right:5px;">--</span>
+                        @Html.TextBoxFor(x => x.EndDate, new { @class = "form-control", @readonly = "readonly", @style = "width:150px;float:left;", Value = Model.EndDate.ToString("yyyy-MM-dd") })
+                    </td>
+                </tr>
+                <tr><td colspan="4"><hr /></td></tr>
+                <tr>
+                    <td colspan="4">
+                        @*<div class="f-18 f-w c-0d0d0d"><a id="lr-edit" class="btn btn-default" onclick="btn_evaluate()"><i class="fa fa-plus"></i>&nbsp;新增</a></div>*@
+                        <div class="pd-20 bg-fff bd-t-e3ebfd">
+                            <div class="f-16 c-4a4e50 lh-36 pd-b-20" style="word-break:break-all;height:auto;min-height:110px;padding-top:0px;padding-left:10px;">
+                                <div class="gridPanel">
+                                    <table id="grid"></table>
+                                    <div id="gridPager"></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,568 @@
+﻿@model BSFramework.Application.Entity.LllegalManage.LllegalEntity
+@{
+    ViewBag.Title = "Approve";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/app.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")">
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+<script>
+    $(function () {
+        $("#dvreson").hide();
+
+        var json = {
+            "data": [
+                @foreach (var item in Model.Files)
+        {
+                      @Html.Raw(string.Format("{{ \"src\" : \"{0}\"}},", @Url.Action("DownloadFile", "ResourceFile", new { keyValue = item.FileId, area = "PublicInfoManage" })));
+        }
+            ]
+        }
+        $('.images-container').delegate('li', 'click', function () {
+            json.start = jQuery(this).index();
+            layer.photos({
+                photos: json,
+                anim: 5
+            })
+        });
+        if ('@ViewBag.Show' == 'y') {
+            //弹窗提示是否继续核准
+            $('#modal6').modal('show');
+        }
+        jQuery('.sf').Validform({
+            tiptype: 3
+        });
+        $('.main-content').niceScroll({
+            autohidemode: false
+        });
+
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#ApproveDate',
+                type: 'date'
+            });
+        })
+
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#ReformDate',
+                type: 'date'
+            });
+        })
+    });
+    //选择核准结果
+    function chr(val) {
+        $("#Result").val(val);
+        if (val == "1") {
+            $("#dvreson").show();
+            $("#ReformDate").val(null);
+        } else {
+            $("#dvreson").hide();
+        }
+    }
+    function ck() {
+
+        var v = $("#Result").val();
+        var res = $('#ApproveReason').val();
+        var per = $("#ReformPeople").val();
+
+        var redate = $('#ReformDate').val();
+        var appdate = $('#ApproveDate').val();
+        if (v == "")  //没有选择审核是否通过
+        {
+            $('#modal15').modal('show');
+            return false;
+        }
+        else {
+            if (v == "0")  //审核通过
+            {
+                if (per == "") {
+                    $('#modal19').modal('show');
+                    return false;
+                }
+                if (redate == "") {
+                    $('#modal20').modal('show');
+                    return false;
+                }
+                else {
+                    var rd = new Date(redate);
+                    var ad = new Date(appdate);
+                    if (rd < ad) {
+                        $('#modal21').modal('show');
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+    }
+    //取消按钮
+    function retlist() {
+        window.location.href = '@Url.Action("Index")';
+    }
+
+    function goto() {
+        $.ajax({
+            url: '@Url.Action("Next")',
+            type: 'post',
+            data: {},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.resultdata.next == "") {
+                    window.location.href = '@Url.Action("Index")';
+                } else {
+                    $('#modal6').modal('hide');
+                }
+            }
+        });
+
+    }
+    var l;
+    function seluser() {
+        l = layer.open({
+            type: 1,
+            title: '选择整改人',
+            content: $('#m4'),
+            area: ['300px', '500px']
+        })
+    }
+    function sel(obj) {
+        $('#ReformPeople').val(obj.name);
+        $('#ReformPeopleId').val(obj.id);
+        layer.close(l);
+    }
+</script>
+<!-- Content Wrapper. Contains page content -->
+<style type="text/css">
+    select {
+        width: 150px;
+        height: 40px;
+    }
+
+        select option {
+            text-align: center;
+            font-size: 18px;
+        }
+
+    .my-input {
+        padding: 10px;
+    }
+
+        .my-input input[type="text"] {
+            position: relative;
+            z-index: 100;
+            background: none;
+        }
+
+    #m4 ul li {
+        width: 250px;
+        list-style: none;
+        font-size: 20px;
+        line-height: 45px;
+        padding-right: 20px;
+    }
+</style>
+<div class="main-content">
+    <div class="container-fluid">
+        @using (Html.BeginForm("sub", "Lllegal", FormMethod.Post, new { @class = "sf", enctype = "multipart/form-data" }))
+        {
+            @Html.HiddenFor(x => x.LllegalTeamId);
+            @Html.HiddenFor(x => x.ApprovePersonId);
+            @Html.HiddenFor(x => x.ID);
+            @Html.Hidden("Result");
+            <div class="mg-b-10">
+                <div class="" style="overflow: hidden;">
+                    <div class="pull-left title">
+                        <a href="@Url.Action("Index")">
+                            <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+                            违章核准
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-e3ebfd pd-10 peccancy-form">
+                <div class="bg-fff">
+                    <div class="bd-2b-e3ebfd content">
+                        <div class="head" style="overflow: hidden;">
+                            <div class="sub-title pull-left">
+                                违章信息：
+                            </div>
+                            <div class="pull-right">
+                                <a href="@Url.Action("ASPExWord", new { id = Model.ID })" style="line-height: 50px;color:#0d0d0d;font-size:16px;">
+                                    <img src="@Url.Content("~/Content/styles/static/images/icon-18.png")" alt="">&nbsp;
+                                    导出
+                                </a>
+                            </div>
+                        </div>
+                        <div class="">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>违章编号</label>
+                                    <div>
+                                        @Html.TextBoxFor(x => x.LllegalNumber, new { @readonly = "readonly", @class = " block" })
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>违章单位/部门</label>
+                                    <div>
+                                        @Html.TextBoxFor(x => x.LllegalDepart, new { @readonly = "readonly", @class = " block" })
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>违章班组</label>
+                                    <div>
+                                        @Html.TextBoxFor(x => x.LllegalTeam, new { @readonly = "readonly", @class = " block" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>违章类型</label>
+                                    <div>
+                                        @Html.TextBoxFor(x => x.LllegalType, new { @readonly = "readonly", @class = " block" })
+                                        @*@Html.DropDownListFor(x => x.LllegalType, new SelectList(new string[] { "作业违章", "装置违章", "管理违章" }), null, new { @class = "block my-select" })*@
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>违章时间</label>
+                                    <div>
+                                        @Html.TextBox("A", Model.LllegalTime.ToString("yyyy-MM-dd"), new { @readonly = "readonly", @class = " block" })
+                                        <img style="" src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>记录人</label>
+                                    <div>
+                                        @Html.TextBoxFor(x => x.RegisterPerson, new { @readonly = "readonly", @class = " block" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>违章等级</label>
+                                    <div>
+                                        @Html.TextBoxFor(x => x.LllegalLevel, new { @readonly = "readonly", @class = " block" })
+                                        @*@Html.DropDownListFor(x => x.LllegalLevel, new SelectList(new string[] { "严重违章", "较严重违章", "一般违章" }), null, new { @class = "block my-select" })*@
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <label>违章人员</label>
+                                    <div>
+                                        @Html.TextBoxFor(x => x.LllegalPerson, new { @readonly = "readonly", @class = " block" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>违章地点</label>
+                                    <div>
+                                        @Html.TextBoxFor(x => x.LllegalAddress, new { @readonly = "readonly", @class = " block" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>违章描述</label>
+                                    <div>
+                                        @Html.TextBoxFor(x => x.LllegalDescribe, new { @readonly = "readonly", @class = " block" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pd-20 bg-fff bd-2t-e3ebfd photo">
+                                <div class="mg-b-10">
+                                    <div class="f-18 f-w c-0d0d0d">违章图片</div>
+                                </div>
+                                <div class="clearfix" id="zhaopian">
+                                    <ul class="images-container">
+                                        @for (int i = 0; i < Model.Files.Count; i++)
+                                        {
+                                            <li><img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = Model.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;"></li>
+                                        }
+                                        @*<li><img src="@Url.Content("~/Content/styles/static/images/temp/temp-26.png")" alt=""></li>
+                                            <li><img src="@Url.Content("~/Content/styles/static/images/temp/temp-27.png")" alt=""></li>
+                                            <li><img src="@Url.Content("~/Content/styles/static/images/temp/temp-28.png")" alt=""></li>*@
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+
+                <div class="bg-fff">
+                    <div class="content">
+                        <div class="head" style="overflow: auto;">
+                            <div class="sub-title pull-left">
+                                违章核准：
+                            </div>
+                        </div>
+                        <div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>核准结果</label>
+                                    <div>
+                                        <label class="my-radio" style="margin-right:30px;" onclick="chr('0');">
+                                            @if (Model.ApproveResult == "0")
+                                            {
+                                                <input type="radio" name="yes" checked="checked">
+                                            }
+                                            else
+                                            {
+                                                <input type="radio" name="yes">
+                                            }
+                                            <span class="icon"></span>
+                                            核准通过
+                                        </label>
+                                        <label class="my-radio" onclick="chr('1');">
+                                            @if (Model.ApproveResult == "1")
+                                            {
+                                                <input type="radio" name="yes" checked="checked">
+                                            }
+                                            else
+                                            {
+                                                <input type="radio" name="yes">
+
+                                            }
+                                            <span class="icon"></span>
+                                            核准不通过
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-8" id="dvreson">
+                                    <label style="width:140px;">不予核准原因</label>
+                                    <div style="margin-left:140px;">
+                                        @Html.TextBoxFor(x => x.ApproveReason, new { })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>核准人</label>
+                                    <div>
+                                        @Html.TextBoxFor(x => x.ApprovePerson, new { @readonly = "readonly", @class = " block " })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label>核准时间</label>
+                                    <div>
+                                        @if (Model.ApproveDate != null)
+                                        {
+                                            @Html.TextBox("ApproveDate", Model.ApproveDate.Value.ToString("yyyy-MM-dd"), new { @readonly = "readonly", @class = " block " })
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBox("ApproveDate", DateTime.Now.ToString("yyyy-MM-dd"), new { @readonly = "readonly", @class = " block " })
+                                        }
+                                        <img style="" src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>整改人</label>
+                                    <div>
+                                        <div>
+                                            @Html.TextBoxFor(x => x.ReformPeople, new { placeholder = "请选择整改人", @readonly = "readonly", onclick = "seluser();", @class = " block " })
+                                            @Html.TextBoxFor(x => x.ReformPeopleId, new { @type = "hidden", @class = " block " })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label>整改期限</label>
+                                    <div>
+                                        @if (Model.ReformDate != null)
+                                        {
+                                            @Html.TextBox("ReformDate", Model.ReformDate.Value.ToString("yyyy-MM-dd"), new { @readonly = "readonly", @class = " block " })
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBox("ReformDate", "", new { @readonly = "readonly", @class = " block " })
+                                        }
+                                        <img style="" src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>考核金额</label>
+                                <div>
+                                    <div>
+
+                                        @Html.TextBoxFor(x => x.AssessMoney, new { placeholder = "请输入考核金额如200" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align:right;height:50px;width:100%">
+                            <div>
+                                @*<button type="submit" class="my-btn bg-3669e1">提交</button>*@
+                                <input type="submit" class="my-btn bg-3669e1" value="提交" onclick="if(ck()==false) return false;" />&nbsp;&nbsp;&nbsp;
+                                <button class="my-btn bg-3669e1" onclick="retlist(); return false;" style="background-color:gray;">取消</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+    <footer class="main-footer">
+        武汉博晟安全技术股份有限公司   版权所有
+    </footer>
+</div>
+<script>
+    $(function () {
+        $("#AssessMoney").keyup(function () {
+            if (this.value.length == 1) { this.value = this.value.replace(/[^1-9]/g, '') } else { this.value = this.value.replace(/\D/g, '') }
+        });
+        $("#AssessMoney").afterpaste(function () {
+            if (this.value.length == 1) { this.value = this.value.replace(/[^1-9]/g, '') } else { this.value = this.value.replace(/\D/g, '') }
+        });
+    });
+</script>
+<div class="m4" id="m4" style="overflow-y:auto;">
+    @{
+        var users = (IList<BSFramework.Application.Entity.BaseManage.UserEntity>)ViewData["users"];
+    }
+    <div style="text-align:center;overflow-x:hidden;">
+        <ul style="margin-top:20px;">
+            @for (int i = 0; i < users.Count; i++)
+            {
+                <li>
+                    <a href="#" id="@Html.Raw(users[i].UserId)" name="@Html.Raw(users[i].RealName)" onclick="sel(this);">@Html.Raw(users[i].RealName)</a>
+                </li>
+            }
+        </ul>
+    </div>
+
+</div>
+
+<div class="modal fade launch-modal" id="modal6" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content" style="height:200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">违章核准</h4>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>操作成功，是否继续核准下一条？</h4>
+            </div>
+            <div class="text-center mg-t-10" style="margin-top:10px;">
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" onclick="goto(); return false;">确定</button>
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" onclick="retlist(); return false;">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade launch-modal" id="modal15" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content" style="height:200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">验证</h4>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>请选择审核是否通过！</h4>
+            </div>
+            <div class="text-center mg-t-10" style="margin-top:10px;">
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" data-dismiss="modal">确定</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade launch-modal" id="modal18" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content" style="height:200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">验证</h4>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>请填写不予审核原因！</h4>
+            </div>
+            <div class="text-center mg-t-10" style="margin-top:10px;">
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" data-dismiss="modal">确定</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade launch-modal" id="modal19" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content" style="height:200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">验证</h4>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>请选择整改人！</h4>
+            </div>
+            <div class="text-center mg-t-10" style="margin-top:10px;">
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" data-dismiss="modal">确定</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade launch-modal" id="modal20" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content" style="height:200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">验证</h4>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>请选择整改期限！</h4>
+            </div>
+            <div class="text-center mg-t-10" style="margin-top:10px;">
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" data-dismiss="modal">确定</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade launch-modal" id="modal21" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content" style="height:200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">验证</h4>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>整改期限不能小于核准时间！</h4>
+            </div>
+            <div class="text-center mg-t-10" style="margin-top:10px;">
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" data-dismiss="modal">确定</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.content-wrapper -->

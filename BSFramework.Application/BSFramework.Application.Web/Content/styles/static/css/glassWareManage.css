@@ -1,0 +1,72 @@
+.title{
+		padding-left: 0;
+	}
+	.title li{
+		list-style: none;
+		border:1px solid #3668e1;
+		font-size:24px ;
+		padding: 10px 20px;
+		font-weight: 800;
+		color:#3668e1;
+		float:left;
+		border-left: 0;
+	}
+	.title li:first-child{
+		border-left:1px solid #3668e1;
+	}
+	.title .select{
+		background:#3668e1;
+		color:#fff;
+	}
+	.my-body{
+		background: #f5f8ff;
+		height: 940px;
+	}
+	.item-wrap{
+		float: left;
+		background: #f5f8ff;
+		margin-bottom: 46px;
+	}
+
+	.tools-list-two{
+		padding: 50px 40px;
+		
+		justify-content: space-around;
+		flex-wrap: wrap;
+	}
+	.item-wrap dl{
+		padding-top: 30px;
+		height: 244px;
+		background: #fff;
+		
+	}
+	.item-wrap dl dt{
+		font-size: 16px;
+	}
+	.item-wrap dl img{
+		height: 128px;
+		margin-top:22px;
+	}
+	
+		.tools-list > div {
+			width:11%;
+			margin-right: 1.7%;
+		}
+		.tools-list div:nth-of-type(8n) {
+			margin-right: 0;
+		}
+	.tools-list > div  > p{
+		/*width:100%;
+		display: flex;
+		margin: 0;
+		justify-content: space-between;*/
+	}
+	
+	.add-current dl{
+		background: url('../images/tools/photo-add.png')no-repeat #fff;
+		background-size:100% 100%;
+	}
+	.item-wrap button{
+		width:48%;
+	}
+	.item-wrap button:last-child{background:#86a9fb;}

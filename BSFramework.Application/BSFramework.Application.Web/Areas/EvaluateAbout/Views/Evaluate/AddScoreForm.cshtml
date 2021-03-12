@@ -1,0 +1,64 @@
+﻿@using BSFramework.Application.Entity.EvaluateAbout;
+@{
+    ViewBag.Title = "AddScoreForm";
+    Layout = "~/Views/Shared/_Form.cshtml";
+    EvaluateMarksRecordsEntity entity = Model;
+}
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script>
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var score = $("#Score").val();
+        //var reg = /^-?\d*$/;//正整数或者负整数
+        var reg = /^\d+(\.\d{0,2})?$/;//正整数或者负整数
+        if (!reg.test(score)) {
+            dialogAlert("分数请输入正数,如果是小数只能精确到小数点后两位", -1);
+            return false;
+        }
+        var json = jQuery('#form1').serializeJSON();
+        json = $.extend(json, { Score: $("#Score").val(), Cause: $("#Cause").val() });
+        $.SaveForm({
+            url: '@Url.Action("AddScoreForm",new { type=Request["type"]})',
+            param: json,
+            loading: "正在保存数据...",
+            success: function () {
+                top.window.frames["dafen"].reload();
+            }
+        })
+    }
+</script>
+<div>
+    @Html.Hidden("Id", entity.Id)
+    @Html.Hidden("EvaluateItemId", entity.EvaluateItemId)
+    <table class="form">
+        <colgroup>
+            <col style="width:0px" />
+            <col />
+            <col style="width:0px" />
+            <col />
+        </colgroup>
+        <tr>
+            <td class="formTitle"></td>
+            <td class="formValue" style="width:100%;">
+                <input type="radio" name="scoretype" value="0" @Html.Raw(entity.Score >=0 ? "checked=\"checked\"" : "" ) style="vertical-align:sub" />&nbsp;加分&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="scoretype" value="1" style="vertical-align:sub" @Html.Raw(entity.Score < 0 ? "checked=\"checked\"" : "" ) />&nbsp;减分
+            </td>
+        </tr>
+ 
+        <tr>
+            <td class="formTitle"><font face="宋体">*</font>分数</td>
+            <td class="formValue" style="width:100%;">
+                <input id="Score" type="text" class="form-control"  placeholder="请输入正数,"  isvalid="yes"  checkexpession="Double" maxlength="8" value="@Math.Abs(entity.Score)" />
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle"><font face="宋体">*</font>原因</td>
+            <td class="formValue">
+                <textarea id="Cause" class="form-control" isvalid="yes"  checkexpession="NotNull" maxlength="250" rows="5" style="width:100%;">@entity.Cause</textarea>
+            </td>
+        </tr>
+    </table>
+    </div>
+
+

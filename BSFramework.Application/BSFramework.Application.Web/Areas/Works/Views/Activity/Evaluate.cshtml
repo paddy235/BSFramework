@@ -1,0 +1,148 @@
+﻿@model BSFramework.Application.Entity.Activity.ActivityEvaluateEntity
+
+@{
+    ViewBag.Title = "班组活动评价";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<script src="~/Content/scripts/business/Common.js" type="text/javascript"></script>
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.url.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/layui/layui.all.js")"></script>
+
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/layui/layui.all.js")"></script>
+
+<script>
+    var userName = '@ViewBag.userName';
+
+    var userId = '@ViewBag.userId';
+    var id = '@ViewBag.Id';
+    var iframeId = '@ViewBag.iframeId';
+    $(function () {
+        //var score = jQuery("#score").val();
+        //if (score == 10) {
+        //    score = 0;
+        //}
+        getScore(0);
+        jQuery("#EvaluateUser").val(userName);
+        jQuery("#Activityid").val(id);
+        jQuery("#EvaluateId").val(userId);
+    })
+
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+
+        var json = jQuery('#form1').serializeJSON();
+        $.SaveForm({
+            url: '@Url.Action("SaveEvaluate")?category=' + jQuery.getUrlArgs('category'),
+            param: json,
+            loading: "正在保存数据...",
+            success: function () {
+                var iframeId = jQuery.getUrlArgs('iframeId');
+           
+                if (iframeId==null) {
+                    window.parent.fn$refresh();
+                } else {
+                    top.jQuery('#' + iframeId).get(0).contentWindow.fn$refresh();
+
+                }
+            },
+        })
+    }
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right:50px;">
+            @Html.HiddenFor(x => x.Activityid, new { @class = "form-control", @readonly = "readonly" })
+            @Html.HiddenFor(x => x.EvaluateId, new { @class = "form-control", @readonly = "readonly" })
+            <table class="form" style="table-layout: auto;">
+                <tr>
+                    <th class="formTitle" valign="middle">评分</th>
+                    <td class="formValue" colspan="3">
+                        <p class="right" style="border: 0;width:50%;margin-left: 5%;">
+                            <strong></strong>
+                            <div class="score_div">
+                                <i><img onclick="getScore(1)" name="score" src="@Url.Content("~/Content/images/start_full.png")"><span style="display:none">1</span></i>
+                                <i><img onclick="getScore(2)" name="score" src="@Url.Content("~/Content/images/start_full.png")"><span style="display:none">2</span></i>
+                                <i><img onclick="getScore(3)" name="score" src="@Url.Content("~/Content/images/start_full.png")"><span style="display:none">3</span></i>
+                                <i><img onclick="getScore(4)" name="score" src="@Url.Content("~/Content/images/start_full.png")"><span style="display:none">4</span></i>
+                                <i><img onclick="getScore(5)" name="score" src="@Url.Content("~/Content/images/start_full.png")"><span style="display:none">5</span></i>
+                                <span class="score_span" id="txtScore">0分</span>
+                                @Html.HiddenFor(x => x.Score, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle" valign="middle">点评</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.EvaluateContent, new { @class = "form-control", @style = "height:120px;", maxlength = 100 })
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle" valign="middle">评价人</th>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.EvaluateUser, new { @class = "form-control", disabled = "disabled", @readonly = "readonly" })
+                    </td>
+                    <th class="formTitle" valign="middle">评价时间</th>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.EvaluateDate, new { @class = "form-control", disabled = "disabled", @onfocus = "WdatePicker();", Value = @DateTime.Now.ToString("yyyy-MM-dd HH:mm") })
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="ExpandInfo" class="tab-pane">
+            <div class="app_layout app_preview" style="border-top: 1px solid #ccc;" id="frmpreview"></div>
+        </div>
+    </div>
+</div>
+<div id="audio-warp" style="height:36px;width:460px;display: none;">
+    <audio id="audio" autoplay></audio>
+</div>
+@*<script src="@Url.Content("~/Content/scripts/plugins/qrcode/qrcode.min.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/bootstrap/js/bootstrap.min.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/plugins/audiojs/audio.min.js")"></script>*@
+<script>
+    function play(obj) {
+        var url = $(obj).data('url');
+        $('#audio').attr('src', url);
+        audiojs.events.ready(function () {
+            audiojs.createAll();
+        })
+        layer.open({
+            type: 1,
+            area: ['460px', '36px'],
+            content: $('#audio-warp '),
+            title: false,
+            end: function () {
+                $('#audio-warp').html('<audio id="audio" autoplay></audio>').css('display', 'none');
+            }
+        });
+    }
+    function getScore(i) {
+        var j = 1;
+        myscore = i;
+        jQuery("#txtScore").text(i + "分");
+        jQuery("#Score").val(i);
+        jQuery("#Score").text(i);
+        jQuery("img[name='score']").each(function () {
+            if (j <= i) {
+                this.src = "@Url.Content("~/Content/images/start_full.png")";
+            } else {
+                this.src = "@Url.Content("~/Content/images/start_empty.png")";
+            }
+            j = j + 1;
+        });
+    }
+</script>
+

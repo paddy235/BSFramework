@@ -1,0 +1,130 @@
+﻿@model BSFramework.Entity.WorkMeeting.JobDangerousEntity
+@{
+    ViewBag.Title = "Edit";
+    Layout = "../Shared/_LayoutEdit.cshtml";
+}
+<link href="~/Content/layui/css/layui.css" rel="stylesheet" />
+<link href="~/Content/jquery-autocompleter/css/main.css" rel="stylesheet" />
+<style>
+    .autocompleterpanel {
+        margin-top: -26px;
+        margin-left: 15px;
+        width: 533px;
+    }
+</style>
+@section scripts {
+    <script src="~/Content/layui/layui.all.js"></script>
+    <script src="~/Content/jquery-autocompleter/js/jquery.autocompleter.js"></script>
+    <script>
+        jQuery(function () {
+            jQuery('#danger').autocompleter({
+                source: '@Url.Action("FindDanger")',
+                empty: false,
+                cache: false,
+                customLabel: 'Content',
+                customValue: 'Content',
+                customClass: ['autocompleterpanel'],
+                callback: function (value, index, selected) {
+                    jQuery('#form > div:gt(0)').remove();
+                    jQuery.each(selected.measures, function (i, o) {
+                        jQuery('#form').append('\
+     <div class="form-group">\
+        <label for="measure1" class="col-sm-2 control-label">防范措施</label>\
+        <div class="col-sm-9">\
+            <input type="text" class="form-control" value="' + o.Content + '" maxlength="200">\
+        </div>\
+        <div class="col-sm-1">\
+            <a href="javascript:void(0);" onclick="fn$delete(this);">删除</a>\
+        </div>\
+    </div>'
+                        )
+                    });
+                }
+            })
+        });
+
+        function fn$save() {
+            parent.layer.msg("保存中……", { icon: 16, time: 0, shade: 0.1 });
+
+            var formdata = {};
+            formdata.Danger = jQuery('#form > div:first input:text').val();
+            formdata.JobId = jQuery('#JobId').val();
+            formdata.Measures = [];
+            jQuery('#form > div:gt(0)').each(function (i, o) {
+                formdata.Measures.push(jQuery(o).find('input:text').val());
+            });
+
+            jQuery.ajax({
+                url: '/..@Url.Action("Edit")',
+                contentType: 'application/json',
+                type: 'POST',
+                data: JSON.stringify(formdata),
+                success: function (data) {
+                    parent.layer.close(parent.layer.getFrameIndex(window.name));
+                    parent.location.reload();
+                },
+                complete: function () {
+                    parent.layer.close(parent.layer.index);
+                }
+            });
+        }
+
+        function fn$delete(el) {
+            jQuery(el).parent().parent().remove();
+        }
+
+        function fn$add() {
+            jQuery('#form').append('\
+     <div class="form-group">\
+        <label class="col-sm-2 control-label">防范措施</label>\
+        <div class="col-sm-9">\
+            <input type="text" class="form-control" maxlength="200">\
+        </div>\
+        <div class="col-sm-1">\
+            <a href="javascript:void(0);" onclick="fn$delete(this);">删除</a>\
+        </div>\
+    </div>'
+            );
+        }
+    </script>
+}
+@Html.HiddenFor(x => x.JobId)
+<div class="form-horizontal" style="padding-top:10px;" id="form">
+    <div class="form-group">
+        <label for="danger" class="col-sm-2 control-label">风险点</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" id="danger" name="danger" value="@Model.Content" maxlength="200" />
+        </div>
+        <div class="col-sm-1">
+            <a href="javascript:void(0);" onclick="fn$add();">新增</a>
+        </div>
+    </div>
+    @if (Model.MeasureList == null || Model.MeasureList.Count == 0)
+    {
+        <div class="form-group">
+            <label class="col-sm-2 control-label">防范措施</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" maxlength="200">
+            </div>
+            <div class="col-sm-1">
+                <a href="javascript:void(0);" onclick="fn$delete(this);">删除</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        foreach (var item in Model.MeasureList)
+        {
+            <div class="form-group">
+                <label class="col-sm-2 control-label">防范措施</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" value="@item.Content" maxlength="200">
+                </div>
+                <div class="col-sm-1">
+                    <a href="javascript:void(0);" onclick="fn$delete(this);">删除</a>
+                </div>
+            </div>
+        }
+    }
+
+</div>

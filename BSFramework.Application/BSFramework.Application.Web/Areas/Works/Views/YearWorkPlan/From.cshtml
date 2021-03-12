@@ -1,0 +1,193 @@
+﻿@{
+    ViewBag.Title = "EvaluateForm";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<style type="text/css">
+    /*table tr {
+        line-height: 60px;
+    }*/
+</style>
+<script>
+    var keyValue = request('keyValue');
+    var mode = request('mode');
+    $(function () {
+        initControl();
+    })
+    //初始化控件
+    function initControl() {
+
+        //$("input[name=isdept]").change(function () {
+        //    $("#deptname").val("");
+        //    $("#deptid").val("");
+        //    var isdept = $(this).val();
+        //    if (isdept == "0") {
+        //        $("input[name=ckradio]").each(function (i, o) {
+        //            $(o).attr("disabled", false);
+        //        });
+        //    } else {
+
+        //        $("input[name=ckradio]").each(function (i, o) {
+        //            $(o).attr("disabled", "disabled");
+        //            if (i == 0) {
+        //                $(o).prop("checked", true);
+        //            } else {
+        //                $(o).prop("checked", "");
+        //            }
+        //        });
+        //    }
+        //});
+        //获取表单
+        if (!!keyValue) {
+            $("#history").css("display", "");
+
+            $.SetForm({
+                url: "/..@Url.Action("getEntity")",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    var sss = JSON.stringify(data);
+                    $("#form1").formDeserialize(data);
+                    var html = "";
+                    for (var i = 0; i < data.historyEntity.length; i++) {
+                        var lastprogress = "";
+                        if (data.historyEntity[i].lastprogress) {
+                            lastprogress = data.historyEntity[i].lastprogress;
+                        }
+                        var remark = "";
+                        if (data.historyEntity[i].remark) {
+                            remark = data.historyEntity[i].remark;
+                        }
+
+                        html += "<tr> <th class='formTitle'></th><td>" + data.historyEntity[i].MODIFYDATE.substr(0, 10) + "&nbsp;&nbsp进度" + lastprogress + "-" + data.historyEntity[i].progress + "&nbsp;&nbsp;" + data.historyEntity[i].MODIFYUSERNAME + "</td><th class='formTitle'></th><td></td></tr>";
+                        var list = data.historyEntity[i].editstr.split('&');
+                        for (var j = 0; j < list.length; j++) {
+                            html += "<tr><th class='formTitle'></th><td colspan='3'>" + list[j] + "</td></tr>";
+                        }
+                        html += "<tr><th class='formTitle'></th><td colspan='3'>进度说明：" + remark + "</td></tr>";
+                        html += "<tr><th class='formTitle'></th><td colspan='3'>&nbsp&nbsp</td></tr>";
+                    }
+                   $("#history").after(html);
+                }
+            });
+
+            if (mode == "view") {
+                $("textarea").each(function (i, o) {
+                    $(o).attr("disabled", "disabled");
+
+                });
+                $("select").each(function (i, o) {
+                    $(o).attr("disabled", "disabled");
+
+                });
+                $("input").each(function (i, o) {
+                    $(o).attr("disabled", "disabled");
+
+                });
+            } else {
+                $("#remark").val("");
+        }
+        }
+    }
+
+
+    //保存表单
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var d1 = jQuery('#planstart').val(), d2 = jQuery('#planend').val();
+        if (!d1) {
+            dialogMsg("开始时间不能为空", 0);
+            return false;
+        }
+        if (!d2) {
+            dialogMsg("结束时间不能为空", 0);
+            return false;
+        }
+        var date1 = new Date(d1), date2 = new Date(d2), d = new Date();
+
+
+        if (date1 < new Date(d.getFullYear(), d.getMonth(), d.getDate())) {
+            dialogMsg("开始时间不能小于当前时间", 0);
+            return false;
+        }
+        if (date2 < date1) {
+            dialogMsg("结束时间不能小于作业开始时间", 0);
+            return false;
+        }
+        var postData = $("#form1").formSerialize();
+
+        //postData["isprofessional"] = isprofessional == "1";
+
+        $.SaveForm({
+            url: "/..@Url.Action("SaveFrom")",
+            param: { id: keyValue, model: JSON.stringify(postData) },
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#grid").resetSelection();
+                $.currentIframe().$("#grid").trigger("reloadGrid");
+            }
+        })
+    }
+
+
+
+</script>
+<div style="margin-left: 10px; margin-top: 20px; margin-right: 30px;">
+    <table id="from1" class="form">
+
+
+        <tr>
+            <th class="formTitle">工作任务<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <input id="plan" type="text" class="form-control" placeholder="请输入名称" isvalid="yes" maxlength="100" checkexpession="NotNull" />
+                <input id="id" type="text" class="form-control" isvalid="yes" style="display:none" />
+                <input id="bookmark" type="text" class="form-control" isvalid="yes" style="display:none" />
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">计划时间<font face="宋体">*</font></th>
+            <td class="formValue">
+                <input id="planstart" readonly type="text" class="form-control input-wdatepicker" checkexpession="NotNull" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" />
+
+            </td>
+            <th class="formTitle"></th>
+            <td class="formValue">
+                <input id="planend" readonly type="text" class="form-control input-wdatepicker" checkexpession="NotNull" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" />
+
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">完成进度</th>
+            <td class="formValue">
+                <select id="progress" class="form-control">
+                    <option value="0">0%</option>
+                    <option value="10">10%</option>
+                    <option value="20">20%</option>
+                    <option value="30">30%</option>
+                    <option value="40">40%</option>
+                    <option value="50">50%</option>
+                    <option value="60">60%</option>
+                    <option value="70">70%</option>
+                    <option value="80">80%</option>
+                    <option value="90">90%</option>
+                    <option value="100">100%</option>
+                </select>
+            </td>
+            <th class="formTitle"></th>
+            <td class="formValue"></td>
+        </tr>
+        <tr>
+            <th class="formTitle">进度说明</th>
+            <td class="formValue" colspan="3">
+                <textarea id="remark" class="form-control" style="height:80px" maxlength="500"></textarea>
+            </td>
+
+        </tr>
+        <tr id="history" style="display:none">
+            <th class="formTitle"><br /><br />历史记录</th>
+            <td colspan="3"></td>
+        </tr>
+
+    </table>
+
+</div>

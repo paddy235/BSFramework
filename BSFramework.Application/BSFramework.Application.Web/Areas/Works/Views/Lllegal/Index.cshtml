@@ -1,0 +1,267 @@
+﻿@model IEnumerable<BSFramework.Application.Web.Areas.Works.Models.DateNumEntity>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")">
+<script src="@Url.Content("~/Content/scripts/base.js")"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script>
+    $(function () {
+        //获取菜单(菜单控制)
+        InitMenu(undefined, $("div"));
+
+        $('#table').delegate('td', 'click', function () {
+            var id = $(this).data("id");
+            var h = 300;
+            var winH = $(window).height();
+            if (h < winH - 100) {
+                h = winH - 100
+            }
+            if (h > 500) {
+                h = 500;
+            }
+            var currentDate = id.split('-');
+            console.log(currentDate);
+            var year = currentDate[0];
+            var month = currentDate[1];
+            var day = currentDate[2];
+            $.ajax({
+                url: 'Lllegal/ListToJson',
+                async: true,
+                method: 'post',
+                data: { year: year, month: month, day: day },
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    $("#dv_modal > div").html('');
+                    //渲染弹出层
+                    if (data && data.length > 0) {
+                        for (var i = 0; i < data.length; i++) {
+                            var obj = data[i];
+                            var html = '';
+                            html += '<dl style="margin-bottom:0;" onclick="toDetail(\'' + obj.id + '\')">';
+                            html += '<dt>';
+                            html += '<dt>';
+                            html += obj.flowstate
+                            html += '</dt>';
+                            html += '<dd>' + obj.lllegalperson + '</dd>';
+                            html += '<dd>' + obj.lllegaldescribe + '</dd>';
+                            html += '</dl>';
+                            $("#dv_modal > div").append(html);
+                        }
+                        layer.open({
+                            type: 1,
+                            title: '查看',
+                            area: ['500px', h + 'px'],
+                            content: $('#dv_modal')
+                        });
+                    }
+                }
+            });
+
+        });
+
+        jQuery('#year').change(function () {
+            jQuery('form').submit();
+        });
+
+        jQuery('#month').change(function () {
+            jQuery('form').submit();
+        });
+    });
+
+    function toDetail(id) {
+        window.location.href = '@Url.Action("Detail")' + '/' + id;
+    }
+
+    function fn$prev() {
+        var crt = jQuery('#month').val();
+        if (crt == '1') {
+            jQuery('#month').val('12');
+        } else {
+            var chg = parseInt(crt) - 1;
+            jQuery('#month').val(chg);
+        }
+        jQuery('#month').change();
+    }
+
+    function fn$next() {
+        var crt = jQuery('#month').val();
+        if (crt == '12') {
+            jQuery('#month').val('1');
+        } else {
+            var chg = parseInt(crt) + 1;
+            jQuery('#month').val(chg);
+        }
+        jQuery('#month').change();
+    }
+</script>
+<!-- Content Wrapper. Contains page content -->
+<div class="main-content">
+    <div class="container-fluid">
+        @using (Html.BeginForm("Index", "Lllegal"))
+        {
+            <div>
+                <div class="" style="overflow: hidden;">
+                    <div class="pull-left title">
+                        <a href="javascript:;">
+                            违章管理
+                        </a>
+                    </div>
+                    <div style="display:@((ViewData["HaveOrder"].ToString())=="0"?"block":"none")" class="pull-right lh-40">
+                        <a href="@Url.Action("index3")">
+                            <img src="@Url.Content("~/Content/styles/static/images/index_29.png")" style="margin-top:-2px;" alt="">
+                            班组排班
+                        </a>
+                    </div>
+                    <div class="pull-right lh-40" code="lllegal_standingbook">
+                        <a href="@Url.Action("List", new { page = 1, pagesize = 15 })">
+                            <img src="@Url.Content("~/Content/styles/static/images/index_29.png")" style="margin-top:-2px;" alt="">
+                            更多台账
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-e3ebfd pd-10 my-body">
+                <div class="bg-fff peccancy-index">
+                    <div>
+                        <div class="text-center header" style="margin-bottom:10px;">
+                            <span class="my-select">
+                                @Html.DropDownList("year")
+                                <span class="icon"></span>
+                            </span>
+                            <span class="my-select-group">
+                                <a href="javascript:fn$prev();">左箭头</a>
+                                <span class="my-select">
+                                    @Html.DropDownList("month")
+                                    <span class="icon"></span>
+                                </span>
+                                <a href="javascript:fn$next();">右箭头</a>
+                            </span>
+                            &nbsp;
+                            <a class="my-btn bd-2-3669e1 c-3669e1" href="@Url.Action("Index")">
+                                回到今天
+                            </a>
+                        </div>
+                        <table id="table" class="table text-center table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>一</th>
+                                    <th>二</th>
+                                    <th>三</th>
+                                    <th>四</th>
+                                    <th>五</th>
+                                    <th>六</th>
+                                    <th>日</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < 6; i++)
+                                {
+                                    <tr>
+                                        <td class="@(((DateTime)ViewData["date"]).AddDays(i * 7 + 1) == DateTime.Today ? "current" : "")" data-id="@Html.Raw(((DateTime)ViewData["date"]).AddDays(i * 7 + 1).ToString("yyyy-MM-dd"))">
+                                            <div>
+                                                <div class="day @(((DateTime)ViewData["date"]).AddDays(i * 7 + 1).Month == (int)ViewData["currentmonth"] ? "" : "c-gray")">@(((DateTime)ViewData["date"]).AddDays(i * 7 + 1).Day)</div>
+                                                <div class="info">
+                                                    @if (Model.FirstOrDefault(x => x.dates == ((DateTime)ViewData["date"]).AddDays(i * 7 + 1).Day) != null && ((DateTime)ViewData["date"]).AddDays(i * 7 + 1).Month == Convert.ToInt32(ViewData["currentmonth"].ToString()))
+                                                    {
+                                                        <p>待处理 @Model.First(x => x.dates == ((DateTime)ViewData["date"]).AddDays(i * 7 + 1).Day).dcls 条</p>
+                                                        <p>违章 @Model.First(x => x.dates == ((DateTime)ViewData["date"]).AddDays(i * 7 + 1).Day).alls 条</p>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="@(((DateTime)ViewData["date"]).AddDays(i * 7 + 2) == DateTime.Today ? "current" : "")" data-id="@Html.Raw(((DateTime)ViewData["date"]).AddDays(i * 7 + 2).ToString("yyyy-MM-dd"))">
+                                            <div>
+                                                <div class="day @(((DateTime)ViewData["date"]).AddDays(i * 7 + 2).Month == (int)ViewData["currentmonth"] ? "" : "c-gray")">@(((DateTime)ViewData["date"]).AddDays(i * 7 + 2).Day)</div>
+                                                <div class="info">
+                                                    @if (Model.FirstOrDefault(x => x.dates == ((DateTime)ViewData["date"]).AddDays(i * 7 + 2).Day) != null && ((DateTime)ViewData["date"]).AddDays(i * 7 + 1).Month == Convert.ToInt32(ViewData["currentmonth"].ToString()))
+                                                    {
+                                                        <p>待处理 @Model.First(x => x.dates == ((DateTime)ViewData["date"]).AddDays(i * 7 + 2).Day).dcls 条</p>
+                                                        <p>违章 @Model.First(x => x.dates == ((DateTime)ViewData["date"]).AddDays(i * 7 + 2).Day).alls 条</p>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="@(((DateTime)ViewData["date"]).AddDays(i * 7 + 3) == DateTime.Today ? "current" : "")" data-id="@Html.Raw(((DateTime)ViewData["date"]).AddDays(i * 7 + 3).ToString("yyyy-MM-dd"))">
+                                            <div>
+                                                <div class="day @(((DateTime)ViewData["date"]).AddDays(i * 7 + 3).Month == (int)ViewData["currentmonth"] ? "" : "c-gray")">@(((DateTime)ViewData["date"]).AddDays(i * 7 + 3).Day)</div>
+                                                <div class="info">
+                                                    @if (Model.FirstOrDefault(x => x.dates == ((DateTime)ViewData["date"]).AddDays(i * 7 + 3).Day) != null && ((DateTime)ViewData["date"]).AddDays(i * 7 + 1).Month == Convert.ToInt32(ViewData["currentmonth"].ToString()))
+                                                    {
+                                                        <p>待处理 @Model.First(x => x.dates == ((DateTime)ViewData["date"]).AddDays(i * 7 + 3).Day).dcls 条</p>
+                                                        <p>违章 @Model.First(x => x.dates == ((DateTime)ViewData["date"]).AddDays(i * 7 + 3).Day).alls 条</p>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="@(((DateTime)ViewData["date"]).AddDays(i * 7 + 4) == DateTime.Today ? "current" : "")" data-id="@Html.Raw(((DateTime)ViewData["date"]).AddDays(i * 7 + 4).ToString("yyyy-MM-dd"))">
+                                            <div>
+                                                <div class="day @(((DateTime)ViewData["date"]).AddDays(i * 7 + 4).Month == (int)ViewData["currentmonth"] ? "" : "c-gray")">@(((DateTime)ViewData["date"]).AddDays(i * 7 + 4).Day)</div>
+                                                <div class="info">
+                                                    @if (Model.FirstOrDefault(x => x.dates == ((DateTime)ViewData["date"]).AddDays(i * 7 + 4).Day) != null && ((DateTime)ViewData["date"]).AddDays(i * 7 + 1).Month == Convert.ToInt32(ViewData["currentmonth"].ToString()))
+                                                    {
+                                                        <p>待处理 @Model.First(x => x.dates == ((DateTime)ViewData["date"]).AddDays(i * 7 + 4).Day).dcls 条</p>
+                                                        <p>违章 @Model.First(x => x.dates == ((DateTime)ViewData["date"]).AddDays(i * 7 + 4).Day).alls 条</p>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="@(((DateTime)ViewData["date"]).AddDays(i * 7 + 5) == DateTime.Today ? "current" : "")" data-id="@Html.Raw(((DateTime)ViewData["date"]).AddDays(i * 7 + 5).ToString("yyyy-MM-dd"))">
+                                            <div>
+                                                <div class="day @(((DateTime)ViewData["date"]).AddDays(i * 7 + 5).Month == (int)ViewData["currentmonth"] ? "" : "c-gray")">@(((DateTime)ViewData["date"]).AddDays(i * 7 + 5).Day)</div>
+                                                <div class="info">
+                                                    @if (Model.FirstOrDefault(x => x.dates == ((DateTime)ViewData["date"]).AddDays(i * 7 + 5).Day) != null && ((DateTime)ViewData["date"]).AddDays(i * 7 + 1).Month == Convert.ToInt32(ViewData["currentmonth"].ToString()))
+                                                    {
+                                                        <p>待处理 @Model.First(x => x.dates == ((DateTime)ViewData["date"]).AddDays(i * 7 + 5).Day).dcls 条</p>
+                                                        <p>违章 @Model.First(x => x.dates == ((DateTime)ViewData["date"]).AddDays(i * 7 + 5).Day).alls 条</p>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="@(((DateTime)ViewData["date"]).AddDays(i * 7 + 6) == DateTime.Today ? "current" : "")" data-id="@Html.Raw(((DateTime)ViewData["date"]).AddDays(i * 7 + 6).ToString("yyyy-MM-dd"))">
+                                            <div>
+                                                <div class="day @(((DateTime)ViewData["date"]).AddDays(i * 7 + 6).Month == (int)ViewData["currentmonth"] ? "" : "c-gray")">@(((DateTime)ViewData["date"]).AddDays(i * 7 + 6).Day)</div>
+                                                <div class="info">
+                                                    @if (Model.FirstOrDefault(x => x.dates == ((DateTime)ViewData["date"]).AddDays(i * 7 + 6).Day) != null && ((DateTime)ViewData["date"]).AddDays(i * 7 + 1).Month == Convert.ToInt32(ViewData["currentmonth"].ToString()))
+                                                    {
+                                                        <p>待处理 @Model.First(x => x.dates == ((DateTime)ViewData["date"]).AddDays(i * 7 + 6).Day).dcls 条</p>
+                                                        <p>违章 @Model.First(x => x.dates == ((DateTime)ViewData["date"]).AddDays(i * 7 + 6).Day).alls 条</p>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="@(((DateTime)ViewData["date"]).AddDays(i * 7 + 7) == DateTime.Today ? "current" : "")" data-id="@Html.Raw(((DateTime)ViewData["date"]).AddDays(i * 7 + 7).ToString("yyyy-MM-dd"))">
+                                            <div>
+                                                <div class="day @(((DateTime)ViewData["date"]).AddDays(i * 7 + 7).Month == (int)ViewData["currentmonth"] ? "" : "c-gray")">@(((DateTime)ViewData["date"]).AddDays(i * 7 + 7).Day)</div>
+                                                <div class="info">
+                                                    @if (Model.FirstOrDefault(x => x.dates == ((DateTime)ViewData["date"]).AddDays(i * 7 + 7).Day) != null && ((DateTime)ViewData["date"]).AddDays(i * 7 + 1).Month == Convert.ToInt32(ViewData["currentmonth"].ToString()))
+                                                    {
+                                                        <p>待处理 @Model.First(x => x.dates == ((DateTime)ViewData["date"]).AddDays(i * 7 + 7).Day).dcls 条</p>
+                                                        <p>违章 @Model.First(x => x.dates == ((DateTime)ViewData["date"]).AddDays(i * 7 + 7).Day).alls 条</p>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <footer class="main-footer">
+                武汉博晟安全技术股份有限公司   版权所有
+            </footer>
+        }
+    </div>
+</div>
+<div class="peccancy-index-modal" id="dv_modal">
+    <div>
+    </div>
+</div>
+
+
+

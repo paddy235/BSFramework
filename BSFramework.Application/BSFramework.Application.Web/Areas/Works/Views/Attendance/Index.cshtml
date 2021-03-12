@@ -1,0 +1,341 @@
+﻿@model IEnumerable<BSFramework.Entity.WorkMeeting.AttendanceEntity>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/styles/static/css/manage.css")" />
+
+<script>
+    $(function () {
+        $('.main-sidebar,.main-content').niceScroll({
+            autohidemode: false
+        });
+        $('.table-today tr').hover(function () {
+            $(this).addClass('hover');
+        }, function () {
+            $(this).removeClass('hover');
+        });
+        $('.table-today tr').click(function () {
+            $(this).toggleClass('actives');
+        })
+        $('.user>.dropdown-menu').css({
+            left: $('.user').innerWidth() - $('.user>.dropdown-menu').width() - 65
+        })
+
+        jQuery('#year').change(fn$redirect);
+        jQuery('#month').change(fn$redirect);
+
+        //var year = jQuery('#year').val();
+        //var month = jQuery('#month').val();
+        //var date1 = new Date(parseInt(year), parseInt(month) - 1, 1); var date2 = new Date(parseInt(year), parseInt(month) - 1, 1);
+        //date2.setMonth(date2.getMonth() + 1);
+        //date2.setMinutes(date2.getMinutes() - 1);
+
+        //jQuery.getJSON('@Url.Action("GetAttendanceData2")', { from: date1.toLocaleDateString(), to: date2.toLocaleDateString() }, function (data) { });
+    });
+
+    function fn$redirect() {
+        var year = jQuery('#year').val();
+        var month = jQuery('#month').val();
+        window.location.href = '@Url.Action("Index", "Attendance")' + '?year=' + year + '&month=' + month;
+    }
+
+    function fn$prev(e) {
+        if (jQuery(e).next().val() <= 1) return;
+
+        jQuery(e).next().val(parseInt(jQuery(e).next().val()) - 1);
+        fn$redirect();
+    }
+
+    function fn$next(e) {
+        if (jQuery(e).prev().val() >= 12) return;
+
+        jQuery(e).prev().val(parseInt(jQuery(e).prev().val()) + 1);
+        fn$redirect();
+    }
+
+    function fn$goto(id) {
+        var year = jQuery('#year').val();
+        var month = jQuery('#month').val();
+        window.location.href = '@Url.Action("Detail")/' + id + '?year=' + year + '&month=' + month;
+    }
+
+    function fn$export() {
+        var year = jQuery('#year').val();
+        var month = jQuery('#month').val();
+        window.location.href = '@Url.Action("Export")?year=' + year + '&month=' + month;
+    }
+</script>
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="clearfix my-title">
+                    <div class="pull-left">
+                        考勤管理
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="manage">
+
+            <p class="top" style="position: relative;">
+
+                @Html.DropDownList("year", ViewData["year"] as List<SelectListItem>, new { style = "width:100px;font-size:22px;padding:5px;" })
+                <span style="border:1px solid #b0b8c1;border-right: 0;cursor:pointer;" onclick="fn$prev(this);"><</span>
+                @Html.DropDownList("month", ViewData["month"] as List<SelectListItem>, new { style = "width:100px;font-size:22px;padding:5px;" })
+                <span style="border:1px solid #b0b8c1;border-left: 0;cursor:pointer;" onclick="fn$next(this);">></span>
+                <span style="position:absolute;right:20px;font-size:14px;width:100px;cursor:pointer;">
+                    <a href="@Url.Action("Duty")">
+                        <img src="@Url.Content("~/Content/styles/static/images/duty2.png")" style="margin-top:-2px;" alt="">
+                        值班
+                    </a>
+                </span>
+                @*<span style="position:absolute;right:120px;font-size:14px;width:100px;cursor:pointer;">
+                    <a href="@Url.Action("index3")">
+                        <img src="@Url.Content("~/Content/styles/static/images/paiban.png")" style="margin-top:-2px;" alt="">
+                        班组排班
+                    </a>
+                </span>*@
+                <span style="position:absolute;right:220px;width:100px;cursor:pointer;" onclick="fn$export();">
+                    <span style="font-size:16px">
+                        <img src="@Url.Content("~/Content/styles/static/images/daochu.png")" />
+                        导出
+                    </span>
+                </span>
+            </p>
+            <ul class="manage-content">
+                @foreach (var item in Model)
+                {
+                    <li>
+                        <div class="left" style="cursor:pointer;" onclick="fn$goto('@Html.Raw(item.UserId)');"></div>
+                        <div class="right">
+                            <div>
+                                <p>@Html.Raw(item.UserName)</p>
+                                <p>实际出勤：@Html.Raw(item.Chuqin) 天</p>
+                            </div>
+                            <dl>
+                                <dt>调休：@Html.Raw(item.Tiaoxiu) 天</dt>
+                                <dt>公休：@Html.Raw(item.Gongxiu) 天</dt>
+                                <dt>病假：@Html.Raw(item.Bingjia) 天</dt>
+                                <dt>事假：@Html.Raw(item.Shijia) 天</dt>
+                                <dt>出差：@Html.Raw(item.Chuchai) 天</dt>
+                                <dt>其他：@Html.Raw(item.Qita) 天</dt>
+                            </dl>
+                        </div>
+                    </li>
+                                    }
+                @*<li>
+                        <div class="left"></div>
+                        <div class="right">
+                            <div>
+                                <p>小米</p>
+                                <p>实际出勤：24天</p>
+                            </div>
+                            <dl>
+                                <dt class="relax">调休：1天</dt>
+                                <dt class="relax">公休：1天</dt>
+                                <dt>病假：1天</dt>
+                                <dt>事假：1天</dt>
+                                <dt>出差：1天</dt>
+                                <dt>其他：1天</dt>
+                            </dl>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="left"></div>
+                        <div class="right">
+                            <div>
+                                <p>小米</p>
+                                <p>实际出勤：24天</p>
+                            </div>
+                            <dl>
+                                <dt class="relax">调休：1天</dt>
+                                <dt class="relax">公休：1天</dt>
+                                <dt>病假：1天</dt>
+                                <dt>事假：1天</dt>
+                                <dt>出差：1天</dt>
+                                <dt>其他：1天</dt>
+                            </dl>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="left"></div>
+                        <div class="right">
+                            <div>
+                                <p>小米</p>
+                                <p>实际出勤：24天</p>
+                            </div>
+                            <dl>
+                                <dt class="relax">调休：1天</dt>
+                                <dt class="relax">公休：1天</dt>
+                                <dt>病假：1天</dt>
+                                <dt>事假：1天</dt>
+                                <dt>出差：1天</dt>
+                                <dt>其他：1天</dt>
+                            </dl>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="left"></div>
+                        <div class="right">
+                            <div>
+                                <p>小米</p>
+                                <p>实际出勤：24天</p>
+                            </div>
+                            <dl>
+                                <dt class="relax">调休：1天</dt>
+                                <dt class="relax">公休：1天</dt>
+                                <dt>病假：1天</dt>
+                                <dt>事假：1天</dt>
+                                <dt>出差：1天</dt>
+                                <dt>其他：1天</dt>
+                            </dl>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="left"></div>
+                        <div class="right">
+                            <div>
+                                <p>小米</p>
+                                <p>实际出勤：24天</p>
+                            </div>
+                            <dl>
+                                <dt class="relax">调休：1天</dt>
+                                <dt class="relax">公休：1天</dt>
+                                <dt>病假：1天</dt>
+                                <dt>事假：1天</dt>
+                                <dt>出差：1天</dt>
+                                <dt>其他：1天</dt>
+                            </dl>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="left"></div>
+                        <div class="right">
+                            <div>
+                                <p>小米</p>
+                                <p>实际出勤：24天</p>
+                            </div>
+                            <dl>
+                                <dt class="relax">调休：1天</dt>
+                                <dt class="relax">公休：1天</dt>
+                                <dt>病假：1天</dt>
+                                <dt>事假：1天</dt>
+                                <dt>出差：1天</dt>
+                                <dt>其他：1天</dt>
+                            </dl>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="left"></div>
+                        <div class="right">
+                            <div>
+                                <p>小米</p>
+                                <p>实际出勤：24天</p>
+                            </div>
+                            <dl>
+                                <dt class="relax">调休：1天</dt>
+                                <dt class="relax">公休：1天</dt>
+                                <dt>病假：1天</dt>
+                                <dt>事假：1天</dt>
+                                <dt>出差：1天</dt>
+                                <dt>其他：1天</dt>
+                            </dl>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="left"></div>
+                        <div class="right">
+                            <div>
+                                <p>小米</p>
+                                <p>实际出勤：24天</p>
+                            </div>
+                            <dl>
+                                <dt class="relax">调休：1天</dt>
+                                <dt class="relax">公休：1天</dt>
+                                <dt>病假：1天</dt>
+                                <dt>事假：1天</dt>
+                                <dt>出差：1天</dt>
+                                <dt>其他：1天</dt>
+                            </dl>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="left"></div>
+                        <div class="right">
+                            <div>
+                                <p>小米</p>
+                                <p>实际出勤：24天</p>
+                            </div>
+                            <dl>
+                                <dt class="relax">调休：1天</dt>
+                                <dt class="relax">公休：1天</dt>
+                                <dt>病假：1天</dt>
+                                <dt>事假：1天</dt>
+                                <dt>出差：1天</dt>
+                                <dt>其他：1天</dt>
+                            </dl>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="left"></div>
+                        <div class="right">
+                            <div>
+                                <p>小米</p>
+                                <p>实际出勤：24天</p>
+                            </div>
+                            <dl>
+                                <dt class="relax">调休：1天</dt>
+                                <dt class="relax">公休：1天</dt>
+                                <dt>病假：1天</dt>
+                                <dt>事假：1天</dt>
+                                <dt>出差：1天</dt>
+                                <dt>其他：1天</dt>
+                            </dl>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="left"></div>
+                        <div class="right">
+                            <div>
+                                <p>小米</p>
+                                <p>实际出勤：24天</p>
+                            </div>
+                            <dl>
+                                <dt class="relax">调休：1天</dt>
+                                <dt class="relax">公休：1天</dt>
+                                <dt>病假：1天</dt>
+                                <dt>事假：1天</dt>
+                                <dt>出差：1天</dt>
+                                <dt>其他：1天</dt>
+                            </dl>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="left"></div>
+                        <div class="right">
+                            <div>
+                                <p>小米</p>
+                                <p>实际出勤：24天</p>
+                            </div>
+                            <dl>
+                                <dt class="relax">调休：1天</dt>
+                                <dt class="relax">公休：1天</dt>
+                                <dt>病假：1天</dt>
+                                <dt>事假：1天</dt>
+                                <dt>出差：1天</dt>
+                                <dt>其他：1天</dt>
+                            </dl>
+                        </div>
+                    </li>*@
+            </ul>
+        </div>
+        <footer class="main-footer">
+            武汉博晟安全技术股份有限公司   版权所有
+        </footer>
+    </div>
+</div>

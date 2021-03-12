@@ -1,0 +1,214 @@
+﻿@{
+    ViewBag.Title = "Index1";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group a.btn {
+            margin-top: 4px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+</style>
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+<script type="text/javascript">
+    var selectedRowIndex;
+    jQuery(function () {
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#grid').setGridWidth(($('.gridPanel').width()));
+                $("#grid").setGridHeight($(window).height() - 140);
+            }, 200);
+            e.stopPropagation();
+        });
+        jQuery('#grid').jqGrid({
+            autowidth: true,
+            colModel: [
+                    { label: 'EmergencyId', name: 'EmergencyId', hidden: true },
+                    { label: '应急预案名称', name: 'Name', width: 200, align: 'center', sortable: false },
+                    { label: '应急预案类型', name: 'EmergencyType', width: 200, align: 'center', sortable: false },
+                    { label: '编制部门', name: 'ToCompileDept', width: 200, align: 'center', sortable: false },
+                    { label: '编制人', name: 'ToCompileUser', width: 600, align: 'center', sortable: false },
+                    { label: '编制时间', name: 'ToCompileDate', index: 'ToCompileDate', width: 180, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' } },
+                    { label: 'AttachmentId', name: 'AttachmentId', hidden: true },
+                    {
+                        label: '应急预案', name: 'Attachment', width: 130, align: 'center', sortable: false,
+                        formatter: function (cellvalue, options, rowObject) {
+                            return "<a style='color:blue;' href=\"javascript:Download('" + rowObject.AttachmentId + "')\" title=\"" + cellvalue + "\">" + cellvalue + "</a>"
+                        }
+                    },
+                    { label: '演练方案名称', name: 'RehearseName', width: 200, align: 'center', sortable: false },
+                    { label: '修订人', name: 'MODIFYUSERNAME', width: 200, align: 'center', sortable: false },
+                    {
+                        label: '修订时间', name: 'MODIFYDATE', index: 'MODIFYDATE', width: 180, align: 'center', sortable: false, formatter: 'date',
+                        formatter: function (cellvalue, options, rowObject) {
+                            if (formatDate(cellvalue, 'yyyy-MM-dd') < formatDate("1900-01-01", 'yyyy-MM-dd')) {
+                                return "";
+                            } else {
+                                return formatDate(cellvalue, 'yyyy-MM-dd');
+                            }
+
+                        },
+                        formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                    },
+            ],
+            height: $(window).height() - 140,
+            url: '@Url.Action("GetData")?date=' + new Date().getTime(),
+            datatype: "json",
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 20,
+            rownumbers: true,
+            pager: "#gridPager",
+            gridComplete: function () {
+                //var gridid = this.id;
+                //$("#" + this.id).setSelection(selectedRowIndex, false);
+                var rows = $("#" + this.id).jqGrid("getRowData");//获取当前页记录行数据
+                //查询用户对该模块的数据操作权限
+                $(rows).each(function (i, item) {
+                    //alert(item.MODIFYDATE);
+                    jQuery('#MODIFYDATE').val("");
+                });
+            }
+        });
+        $("#btn_Search").click(function () {
+            var obj = {
+                ToCompileDeptIdSearch: jQuery('#ToCompileDeptIdSearch').val(),
+                EmergencyTypeSearch: jQuery('#EmergencyTypeSearch').val(),
+            };
+            jQuery('#grid').jqGrid('setGridParam', {
+                postData: obj, page: 1
+            }).trigger('reloadGrid');
+        });
+    });
+    //新增
+    function btn_add() {
+        dialogOpen({
+            id: 'Form1',
+            title: '添加应急预案',
+            url: '/..@Url.Action("Form1")',
+            width: '800px',
+            height: '600px',
+            callBack: function (iframeId) {
+                top.frames[iframeId].AcceptClick();
+            }
+        });
+    }
+
+    //编辑
+    function btn_edit() {
+        var keyValue = $("#grid").jqGridRowValue("EmergencyId");
+        if (checkedRow(keyValue)) {
+            dialogOpen({
+                id: "Form1",
+                title: '修改应急预案',
+                url: '/..@Url.Action("Form1")?keyValue=' + keyValue,
+                width: "1000px",
+                height: "600px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        }
+    }
+    function btn_Import() {
+        dialogOpen({
+            id: 'Formimport',
+            title: '导入',
+            url: '/..@Url.Action("Import")',
+            width: '680px',
+            height: '415px',
+            callBack: function (iframeId) {
+                //top.frames[iframeId].AcceptClick();
+            }
+        });
+
+        @*layer.open({
+            area: ['680px', '415px'],
+            title: '数据导入',
+            type: 2,
+            content: '@Url.Action("Import")'
+        });*@
+    }
+    //删除
+    function btn_delete() {
+        var keyValue = $('#grid').jqGridRowValue('EmergencyId');
+        if (checkedRow(keyValue)) {
+            $.RemoveForm({
+                url: '../../Works/Emergency/DelEmergency',
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $('#grid').trigger('reloadGrid');
+                }
+            })
+        } else {
+            dialogMsg('请选择需要删除的记录！', 0);
+        }
+    }
+
+    function Download(fileId) {
+        $.download("../../Works/Emergency/DownloadFile", "keyValue=" + fileId, 'post');
+    }
+    function detail(id) {
+        var keyValue = $('#grid').jqGridRowValue('EmergencyId');
+        if (checkedRow(keyValue)) {
+            var dlg = dialogOpen({
+                id: 'detail',
+                title: '看看详情',
+                url: '/..@Url.Action("Detail1")?keyValue=' + keyValue,
+                width: '800px',
+                height: '600px',
+                btn: ["关闭"],
+                callBack: function (iframeId) {
+                    top.layer.close(dlg);
+                }
+            })
+        }
+    }
+</script>
+<div class="titlePanel">
+    <div class="title-search">
+        <div class="form-inline">
+            <div class="form-group">
+                <label for="ToCompileDeptIdSearch">编制部门</label>
+                @Html.DropDownList("ToCompileDeptIdSearch", ViewData["Depart"] as IEnumerable<SelectListItem>, new { @class = "form-control", style = "width:200px" })
+            </div>
+            <div class="form-group">
+                <label for="EmergencyTypeSearch">应急预案类型</label>
+                @Html.DropDownList("EmergencyTypeSearch", ViewData["EmergencyType"] as IEnumerable<SelectListItem>, new { @class = "form-control", style = "width:200px" })
+            </div>
+            <div class="form-group">
+                <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+            </div>
+        </div>
+    </div>
+    <div class="toolbar">
+        <div class="btn-group">
+            <a id="lr-replace" class="btn btn-default" onclick="detail()"><i class="fa fa-refresh"></i>&nbsp;详细</a>
+            <a id="lr-add" class="btn btn-default" onclick="btn_add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+            <a id="lr-edit" class="btn btn-default" onclick="btn_edit()"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+            <a id="lr-delete" class="btn btn-default" onclick="btn_delete()"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+            <a id="lr-edit" class="btn btn-default" onclick="btn_Import()"><i class="fa fa-pencil-square-o"></i>&nbsp;导入</a>
+        </div>
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="grid"></table>
+    <div id="gridPager"></div>
+</div>
+

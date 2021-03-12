@@ -1,0 +1,457 @@
+﻿@model BSFramework.Application.Entity.EmergencyManage.EmergencyWorkEntity
+
+@{
+    ViewBag.Title = "drillProgramme";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+    .final li {
+        align-items: flex-start;
+    }
+
+        .final li > div {
+            height: auto;
+            min-height: 180px;
+            line-height: 30px;
+            border-color: #e3ebfd;
+            font-size: 16px;
+        }
+
+    .appoint h1 {
+        font-size: 16px;
+    }
+
+    .submit_div {
+        width: 95%;
+        margin: 20px 0 30px;
+    }
+
+    .final li > div.file_div {
+        position: relative;
+        border: none;
+        border-bottom: 2px solid #e3ebfd;
+        min-height: 0;
+    }
+
+    .add_span {
+        display: inline-block;
+        height: 30px;
+        width: 30px;
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        margin-top: -15px;
+        cursor: pointer;
+    }
+</style>
+<style type="text/css">
+    .appoint {
+        width: 95%;
+        display: flex;
+        flex-wrap: wrap;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .appoint li {
+            width: 33%;
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            line-height: 36px;
+            margin-top: 20px;
+        }
+
+        .appoint h1 {
+            width: 23%;
+            font-size: 20px;
+            color: #000000;
+            font-weight: 700;
+        }
+
+        .appoint input, .appoint select {
+            width: 60%;
+            border: 0;
+            font-size: 16px;
+            border-bottom: 1px solid #e3ebfd;
+        }
+
+    .final li {
+        width: 100%;
+    }
+
+    .final h1 {
+        width: 7.5%;
+    }
+
+    .final input {
+        width: 86%;
+    }
+
+    .final li:last-child {
+        align-items: flex-start;
+    }
+
+        .final li:last-child h1 {
+            margin: 0;
+        }
+
+    .final li > div {
+        width: 86%;
+        border: 2px solid #3669e1;
+        min-height: 184px;
+        padding: 20px;
+        line-height: 50px;
+        font-size: 20px;
+    }
+
+    .clearAll {
+        width: 6%;
+        line-height: 50px;
+        text-align: center;
+        border: 2px solid #3669e1;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+    }
+
+    .meeting {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .tit {
+        display: flex;
+        justify-content: space-between;
+        font-size: 20px;
+        line-height: 40px;
+        margin-bottom: 12px;
+        font-weight: 700;
+        color: #000000;
+    }
+
+        .tit img {
+            width: 30px;
+            height: 30px;
+        }
+
+    .meeting li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        width: 40%;
+        color: #3669e1;
+        height: 52px;
+    }
+</style>
+<!-- Content Wrapper. Contains page content -->
+<div class="main-content details">
+    <div class="container-fluid">
+        <div class="clearfix mg-b-10">
+            <div class="title" style="display: flex;justify-content: space-between;">
+                <a href="@Url.Action("drillPlan")">
+                    <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+                    演练方案
+                </a>
+            </div>
+        </div>
+        <div class="bg-e3ebfd pd-10 warp">
+            <div>
+                <div class="body">
+                    <div class="pd-20 bg-fff ">
+                        <ul class="appoint">
+                            <li>
+                                <h1>应急预案名称</h1>
+                                @Html.TextBoxFor(x => x.Name, new { @readonly = "readonly", nullmsg = "不能为空", datatype = "*", placeholder = "请填写应急预案名称" })
+                            </li>
+                            <li>
+                                <h1>应急预案类型</h1>
+                                @Html.TextBoxFor(x => x.EmergencyType, new { @readonly = "readonly", nullmsg = "不能为空", datatype = "*", placeholder = "请填写应急预案类型" })
+                            </li>
+                            <li>
+
+                            </li>
+                            <li>
+                                <h1>编制人</h1>
+                                @Html.TextBoxFor(x => x.ToCompileUser, new { @readonly = "readonly", nullmsg = "不能为空", datatype = "*", placeholder = "请选择编制人" })
+
+                            </li>
+                            <li>
+                                <h1>编制部门</h1>
+                                @Html.TextBoxFor(x => x.ToCompileDept, new { @readonly = "readonly", nullmsg = "不能为空", datatype = "*", placeholder = "请填写编制部门" })
+
+                            </li>
+                            <li>
+                                <h1>编制时间</h1>
+                                @Html.TextBoxFor(x => x.ToCompileDate, new { Value = @DateTime.Now.ToString("yyyy-MM-dd"), @readonly = "readonly", nullmsg = "不能为空", datatype = "*", placeholder = "请填写编制时间" })
+                            </li>
+                        </ul>
+                        <ul class="appoint final">
+                            <li>
+                                <h1>应急预案附件</h1>
+
+                                    @{
+                                        if (!string.IsNullOrEmpty(Model.Attachment))
+                                        {
+                                            var nameSplit = Model.Attachment.Split('/');
+                                            int count = nameSplit.Count();
+                                            <input value="@nameSplit[count - 1]" readonly="readonly" onclick="Download('@Model.AttachmentId')" />
+                                        }
+                                        else
+                                        {
+
+                                            <input value="" readonly="readonly"  />
+                                        }
+
+                                    }
+
+                            </li>
+                            <li>
+                                <h1>演练目的</h1>
+                                <div>
+                                    @Model.Purpose
+                                </div>
+                            </li>
+                        </ul>
+                        <ul class="appoint">
+                            <li>
+                                <h1>演练名称</h1>
+                                @Html.TextBoxFor(x => x.RehearseName, new { @readonly = "readonly",nullmsg = "不能为空", datatype = "*", placeholder = "请填写演练名称" })
+                            </li>
+                            <li>
+                                <h1>演练方式</h1>
+                                @Html.TextBoxFor(x => x.RehearseType, new { @readonly = "readonly",nullmsg = "不能为空", datatype = "*", placeholder = "" })
+                            </li>
+                            <li>
+                                <h1>演练时间</h1>
+                                @{
+                                if (Model.RehearseDate < DateTime.Parse("2000-01-01"))
+                                {
+                                <input type="text" placeholder="" id="RehearseDate" readonly="readonly" />
+                                }
+                                else
+                                {
+                                @Html.TextBoxFor(x => x.RehearseDate, new { @readonly = "readonly", Value = @DateTime.Now.ToString("yyyy-MM-dd"), nullmsg = "不能为空", datatype = "*", placeholder = "请选择演练时间" })
+                                }
+                                }
+                            </li>
+
+                            <li>
+                                <h1>演练地点</h1>
+                                @Html.TextBoxFor(x => x.RehearsePlace, new { @readonly = "readonly",nullmsg = "不能为空", datatype = "*", placeholder = "" })
+
+                            </li>
+                        </ul>
+                        <ul class="appoint final">
+                            <li>
+                                <h1>情景模拟</h1>
+                                <div>
+                                    @Model.RehearseScenario
+                                </div>
+                            </li>
+                            <li>
+                                <h1>实施步骤</h1>
+                                <div>
+                                    @{
+                                        var list = ViewBag.list as List<BSFramework.Application.Entity.EmergencyManage.EmergencyStepsEntity>
+                                            ;
+                                        <ul>
+                                            @foreach (var item in list)
+                                            {
+                                            <li><span>@(item.EmergencySort + 1).@item.EmergencyContext</span></li>
+                                            }
+                                        </ul>
+                                    }
+                                </div>
+                            </li>
+                            <li>
+                                <h1>演练要点</h1>
+                                <div>
+                                    @Model.MainPoints
+                                </div>
+                            </li>
+                        </ul>
+                        @*<div class="submit_div">
+                            <p class="clearfix" style="width: 93.5%;"><button class="my-btn bg-fff pull-right" style="border: 2px solid #3669e1;color: #3669e1;">确认</button></p>
+                        </div>*@
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="main-footer">
+        武汉博晟安全技术股份有限公司   版权所有
+    </footer>
+</div>
+<!-- /.content-wrapper -->
+<div class="sign addr" style="display:none;" id="myrehearsetype">
+    <ul class="nav my-nav" style="text-align:center;">
+        @{
+
+        var get = ViewBag.rehearsetype;
+        foreach (var item in get)
+        {
+        <li data-id="@Html.Raw(item.Value)">@Html.Raw(item.Text)</li>
+        }
+
+        }
+    </ul>
+</div>
+
+<div class="sign addr" style="display:none;" id="myemergencytype">
+    <ul class="nav my-nav" style="text-align:center;">
+        @{
+
+        var getType = ViewBag.emergencytype;
+        foreach (var item in get)
+        {
+        <li data-id="@Html.Raw(item.Value)">@Html.Raw(item.Text)</li>
+        }
+
+        }
+    </ul>
+</div>
+
+<div class="sign" style="display:none;" id="mypeople">
+    <ul class="nav my-nav">
+        @{
+        var userlist = ViewBag.userlist;
+        foreach (var item in userlist)
+        {
+        <li data-id="@Html.Raw(item.Value)">@Html.Raw(item.Text)</li>
+        }
+        }
+    </ul>
+</div>
+
+
+<div class="sign addr" style="display:none;" id="myplace">
+    <ul class="nav my-nav" style="text-align:center;">
+        <li class="on">班组办公室</li>
+        <li>班组学习室</li>
+        <li>会议室一</li>
+        <li>其他</li>
+    </ul>
+</div>
+
+
+
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/launch-activity.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/app.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/before.css")" />
+<script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/base.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/utils/js")"></script>
+<script>
+    $(function () {
+        $('.main-sidebar,.main-content').niceScroll({
+            autohidemode: false
+        });
+        $('.table-today tr').hover(function () {
+            $(this).addClass('hover');
+        }, function () {
+            $(this).removeClass('hover');
+        });
+        $('.table-today tr').click(function () {
+            $(this).toggleClass('actives');
+        })
+        console.log($('.user').innerWidth())
+        $('.user>.dropdown-menu').css({
+            left: $('.user').innerWidth() - $('.user>.dropdown-menu').width() - 65
+        });
+        $('.list-item').hover(function () {
+            $(this).children('div').stop().animate({
+                top: 0
+            }, 500);
+        }, function () {
+            $(this).children('div').stop().animate({
+                top: '194px'
+            }, 500);
+        })
+    })
+    function Download(fileId) {
+        $.download("../../Works/Emergency/DownloadFile", "keyValue=" + fileId, 'post');
+    }
+    jQuery('#emergencyplace').click(function () {
+        var size = jQuery('#myplace li').size();
+        var h = 56 * (size + 1) + 10;
+        var winH = $(window).height();
+        if (h > winH - 100) {
+            h = winH - 100
+        }
+
+        layer.open({
+            area: ['300px', h + 'px'],
+            title: '活动地点',
+            type: 1,
+            content: $('#myplace')
+        });
+    });
+
+    jQuery('#myplace li').click(function () {
+        jQuery('#myplace li').removeClass('on');
+        jQuery(this).addClass('on');
+        jQuery('#emergencyplace').val(jQuery(this).text());
+        layer.closeAll()
+    });
+
+    jQuery('#rehearsetype').click(function () {
+        var size = jQuery('#myrehearsetype li').size();
+        var h = 56 * (size + 1) + 10;
+        var winH = $(window).height();
+        if (h > winH - 100) {
+            h = winH - 100
+        }
+
+        layer.open({
+            area: ['300px', h + 'px'],
+            title: '演练形式',
+            type: 1,
+            content: $('#myrehearsetype')
+        });
+    });
+
+    jQuery('#myrehearsetype li').click(function () {
+        jQuery('#myrehearsetype li').removeClass('on');
+        jQuery(this).addClass('on');
+        jQuery('#rehearsetype').val(jQuery(this).text());
+        layer.closeAll()
+    });
+
+    jQuery('#ToCompileUser1').click(function () {
+        item = jQuery(this).prev().attr('id');
+
+        jQuery('#mypeople li').removeClass('on');
+        if (jQuery(this).val()) {
+            jQuery('#mypeople [data-id="' + jQuery('#' + item).val() + '"]').addClass('on');
+        }
+
+        var size = jQuery('#mypeople li').size();
+        var h = 56 * (size + 1) + 10;
+        var winH = $(window).height();
+        if (h > winH - 100) {
+            h = winH - 100
+        }
+
+        layer.open({
+            area: ['300px', h + 'px'],
+            title: '选择主持人',
+            type: 1,
+            content: $('#mypeople')
+        });
+    });
+    jQuery('#mypeople li').click(function () {
+        jQuery('#mypeople li').removeClass('on');
+        jQuery(this).addClass('on');
+        jQuery('#' + item).val(jQuery(this).data('id'));
+        jQuery('#' + item).next().val(jQuery(this).text());
+        layer.closeAll();
+    });
+</script>

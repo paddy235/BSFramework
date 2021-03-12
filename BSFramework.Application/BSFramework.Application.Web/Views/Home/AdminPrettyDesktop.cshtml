@@ -1,0 +1,265 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>我的桌面</title>
+    <link href="~/Content/scripts/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/styles/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/adminPretty/css/Desktop.css?v=n7JXQ4xswzhb5j1Us4vK1iTam3dPuogno9uz8b_LfjI1" rel="stylesheet" />
+    <script src="~/Content/scripts/jquery/jquery-1.10.2.min.js"></script>
+    <script src="~/Content/scripts/plugins/echarts/echarts.min.js"></script>
+    <script src="~/Content/adminPretty/Desktop.js"></script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="~/content/scripts/bootstrap/html5shiv.js"></script>
+        <script src="~/content/scripts/bootstrap/respond.min.js"></script>
+        <script src="~/content/scripts/bootstrap/jquery.placeholder.min.js"></script>
+        <script src="~/content/scripts/bootstrap/json2.js" type="text/javascript"></script>
+    <![endif]-->
+    @System.Web.Optimization.Scripts.Render("~/Content/scripts/plugins/jqgrid/js",
+    "~/Content/scripts/plugins/tree/js",
+    "~/Content/scripts/plugins/validator/js",
+            "~/Content/scripts/plugins/datepicker/js",
+    "~/Content/scripts/utils/js")
+
+</head>
+<script>
+    $(function () {
+        $.ajax({
+            url: '@Url.Action("GetNewData", "Lllegal", new { area = "Works" })',
+            type: 'post',
+            data: {},
+            success: function (data) {
+                var rows = data.rows;
+                bindChart(rows);
+            }
+        });
+        var dv = document.getElementById("dvwork");
+        $.ajax({
+            url: '@Url.Action("GetWorks", "Lllegal", new { area = "Works" })',
+            type: 'post',
+            data: {},
+            success: function (data) {
+                var rows = data.rows;
+                var array = eval('(' + rows + ')');
+                var name = new Array();
+                var count = new Array();
+                var html = "";
+                var n = 0;
+                for (var i in array) {
+                    // if (n == 0) {
+                    html += "<div class='row' style='line-height: 67px;width:50%;float:left; background:rgba(245, 245, 245, 0.52);margin-bottom:15px;padding:0px 15px;border-left:solid 6px #7b93e0;'>";
+                    //} else if (n == 1) {
+                    //    html += "<div class='row' style='line-height: 67px;width:50%;float:left; background:rgba(245, 245, 245, 0.52);margin-bottom:15px;padding:0px 15px;border-left:solid 6px #59debc;'>";
+                    //} else if (n == 2) {
+                    //    html += "<div class='row' style='line-height: 67px;width:50%;float:left; background:rgba(245, 245, 245, 0.52);margin-bottom:15px;padding:0px 15px;border-left:solid 6px #F2B459;'>";
+                    //} else if (n == 3) {
+                    //    html += "<div class='row' style='line-height: 67px;width:50%;float:left; background:rgba(245, 245, 245, 0.52);margin-bottom:15px;padding:0px 15px;border-left:solid 6px #f06995;'>";
+                    //}
+                    html += "<a href='#' class='col-md-4' style='text-decoration: none;color:#999999;font-size:16px;padding-left:20px;width:120px;'>" + array[i].category + "</a>";
+                    html += " <label style='color:#999999;font-size:14px;padding-right:20px; float:right'>" + array[i].value + "</label>";
+                    html += "</div>";
+                    n = n + 1;
+                }
+                dv.innerHTML = html;
+            }
+        });
+
+    });
+
+    function detail(e) {
+        var id = jQuery(e).data('id');
+        //if (checkedRow(keyValue)) {
+        dialogOpen({
+            id: "Detail",
+            title: '查看公告',
+            url: '/PublicInfoManage/Notice/Detail?keyValue=' + id,
+            width: "1000px",
+            height: "600px",
+            btn:null,
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+        //}
+    }
+
+    function more() {
+        dialogOpen({
+            id: "More",
+            title: '本月任务完成数',
+            url: '/BaseManage/DepartMent/More',
+            width: "800px",
+            height: "700px",
+            btn: null
+        });
+    }
+    function more1() {
+        dialogOpen({
+            id: "MoreOverView",
+            title: '班会任务完成率',
+            url: '/BaseManage/DepartMent/MoreOverView',
+            width: "800px",
+            height: "700px",
+            btn: null
+        });
+    }
+</script>
+<body style="margin: 0px;padding:0px; padding:10px;overflow:hidden;">
+    <div>
+        <div class="row">
+            <div class="col-sm-7 col-md-9  block leftblock" style="height:810px;">
+                <div class="row subblock" style="height:500px;width:100%;">
+                    <div class="content" id="mainChart"></div>
+                </div>
+                <div class="row subblock" style="width:100%;">
+                    <div class="col-sm-7 subblock" style="height:320px;">
+                        <div class="content" style="height:320px;">
+                            <div class="title">
+
+                                <table style="width:100%;">
+                                    <tr>
+                                        <td>班会任务完成率</td>
+                                        <td style="text-align:right;"><a href="#" onclick="more1();">更多</a></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div>
+                                @{Html.RenderAction("OverView", "WorkMeeting", new { area = "Works" });}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5 subblock">
+                        <div class="content" style="margin-left:10px; height:320px;">
+                            <div class="title">
+                                <table style="width:100%;">
+                                    <tr>
+                                        <td>本月任务完成数</td>
+                                        <td style="text-align:right;"><a href="#" onclick="more();">更多</a></td>
+                                    </tr>
+                                </table>
+
+                            </div>
+                            <div style="padding:18px 25px;" id="dvwork">
+                                @*<div class="row" style="line-height: 61px; background:rgba(245, 245, 245, 0.52);margin-bottom:15px;padding:0px 15px;border-left:solid 6px #7b93e0;">
+                                        <a href="#" class="col-md-4" style="text-decoration: none;color:#999999;font-size:16px;padding:0px;">李好运</a>
+                                        <label style="color:#999999;font-size:14px;padding:0px;">市场部</label>
+                                        <label style="float: right;color:#999999;">13657797712</label>
+                                    </div>
+                                    <div class="row" style="line-height: 61px; background:rgba(245, 245, 245, 0.52);margin-bottom:15px;padding:0px 15px;border-left:solid 6px #59debc;">
+                                        <a href="#" class="col-md-4" style="text-decoration: none;color:#999999;font-size:16px;padding:0px;">余万三</a>
+                                        <label style="color:#999999;font-size:14px;">营销部</label>
+                                        <label style="float: right;color:#999999;">18088008866</label>
+                                    </div>
+                                    <div class="row" style="line-height: 61px; background:rgba(245, 245, 245, 0.52);margin-bottom:15px;padding:0px 15px;border-left:solid 6px #F2B459;">
+                                        <a href="#" class="col-md-4" style="text-decoration: none;color:#999999;font-size:16px;padding:0px;">刘百万</a>
+                                        <label style="color:#999999;font-size:14px;">客服部</label>
+                                        <label style="float: right;color:#999999;">15939979966</label>
+                                    </div>
+                                    <div class="row" style="line-height: 61px; background:rgba(245, 245, 245, 0.52);margin-bottom:15px;padding:0px 15px;border-left:solid 6px #f06995;">
+                                        <a href="#" class="col-md-4" style="text-decoration: none;color:#999999;font-size:16px;padding:0px;">陈小二</a>
+                                        <label style="color:#999999;font-size:14px;padding:0px;">软件部</label>
+                                        <label style="float: right;color:#999999;">18655566688</label>
+                                    </div>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-5 col-md-3  block rightblock">
+                <div class="row subblock" style="height:430px;padding:0px;margin-bottom:10px;">
+                    <div class="content">
+                        <div class="title">
+                            通知公告
+                        </div>
+                        <div style="padding:15px 25px;height:360px;overflow:auto;">
+                            @{Html.RenderAction("CurrentNotice", "Notice", new { area = "PublicInfoManage" });}
+
+
+                            @*<div class="row" style="line-height: 39px; border-bottom: 1px solid #F1F1F1;">
+                                    <a class="col-md-7" href="#" style="text-decoration: none;color:#999999;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0px;">学习国家能源局综合司《关于做好今冬明春电力迎峰度冬工作的通知》</a>
+                                    <label style="float: right;color:#999999;">2016-06-25</label>
+                                </div>
+                                <div class="row" style="line-height: 39px; border-bottom: 1px solid #F1F1F1;">
+                                    <a class="col-md-7" href="#" style="text-decoration: none;color:#999999;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0px;">学习国家能源局综合司《关于做好今冬明春电力迎峰度冬工作的通知》</a>
+                                    <label style="float: right;color:#999999;">2016-04-01</label>
+                                </div>
+                                <div class="row" style="line-height: 39px; border-bottom: 1px solid #F1F1F1;">
+                                    <a class="col-md-7" href="#" style="text-decoration: none;color:#999999;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0px;">学习国家能源局综合司《关于做好今冬明春电力迎峰度冬工作的通知》</a>
+                                    <label style="float: right;color:#999999;">2016-09-11</label>
+                                </div>
+                                <div class="row" style="line-height: 39px; border-bottom: 1px solid #F1F1F1;">
+                                    <a class="col-md-7" href="#" style="text-decoration: none;color:#999999;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0px;">学习国家能源局综合司《关于做好今冬明春电力迎峰度冬工作的通知》</a>
+                                    <label style="float: right;color:#999999;">2016-02-19</label>
+                                </div>
+                                <div class="row" style="line-height: 39px; border-bottom: 1px solid #F1F1F1;">
+                                    <a class="col-md-7" href="#" style="text-decoration: none;color:#999999;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0px;">学习国家能源局综合司《关于做好今冬明春电力迎峰度冬工作的通知》</a>
+                                    <label style="float: right;color:#999999;">2016-02-26</label>
+                                </div>*@
+                        </div>
+
+                    </div>
+                    @*<div class="content" id="echart2">
+                        </div>*@
+                </div>
+                <div class="row subblock" style="height:380px;padding:0px;">
+                    <div class="content">
+                        <div class="title">
+                            待办任务
+                        </div>
+                        <div style="padding:15px 25px;">
+                            @*<div class="row" style="line-height: 39px; border-bottom: 1px solid #F1F1F1;">
+                                    <a class="col-md-7" href="#" style="text-decoration: none;color:#999999;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0px;">[审批]&nbsp;&nbsp;&nbsp;李好运的报销申请</a>
+                                    <label style="float: right;color:#999999;">2016-06-25</label>
+                                </div>
+                                <div class="row" style="line-height: 39px; border-bottom: 1px solid #F1F1F1;">
+                                    <a class="col-md-7" href="#" style="text-decoration: none;color:#999999;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0px;">[审批]&nbsp;&nbsp;&nbsp;长明的请假单</a>
+                                    <label style="float: right;color:#999999;">2016-04-01</label>
+                                </div>
+                                <div class="row" style="line-height: 39px; border-bottom: 1px solid #F1F1F1;">
+                                    <a class="col-md-7" href="#" style="text-decoration: none;color:#999999;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0px;">[审批]&nbsp;&nbsp;&nbsp;苏七饼的调休申请单</a>
+                                    <label style="float: right;color:#999999;">2016-09-11</label>
+                                </div>*@
+                            <div class="row" style="line-height: 39px; border-bottom: 1px solid #F1F1F1;">
+                                <a class="col-md-7" href="#" style="text-decoration: none;color:#999999;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0px;">[工作]&nbsp;&nbsp;&nbsp;联系宋卡公司支付尾款</a>
+                                <label style="float: right;color:#999999;">2016-02-19</label>
+                            </div>
+                            <div class="row" style="line-height: 39px; border-bottom: 1px solid #F1F1F1;">
+                                <a class="col-md-7" href="#" style="text-decoration: none;color:#999999;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0px;">[审批]&nbsp;&nbsp;&nbsp;刘昊的借支申请单</a>
+                                <label style="float: right;color:#999999;">2016-02-26</label>
+                            </div>
+                            <div class="row" style="line-height: 39px; border-bottom: 1px solid #F1F1F1;">
+                                <a class="col-md-7" href="#" style="text-decoration: none;color:#999999;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0px;">[审批]&nbsp;&nbsp;&nbsp;刘百万的请假申请单</a>
+                                <label style="float: right;color:#999999;">2016-02-16</label>
+                            </div>
+                            <div class="row" style="line-height: 39px; border-bottom: 1px solid #F1F1F1;">
+                                <a class="col-md-7" href="#" style="text-decoration: none;color:#999999;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0px;">[工作]&nbsp;&nbsp;&nbsp;陈小二去长春进行培训</a>
+                                <label style="float: right;color:#999999;">2016-02-10</label>
+                            </div>
+                            <div class="row" style="line-height: 39px; border-bottom: 1px solid #F1F1F1;">
+                                <a class="col-md-7" href="#" style="text-decoration: none;color:#999999;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0px;">[审核]&nbsp;&nbsp;&nbsp;余万三的报销申请单</a>
+                                <label style="float: right;color:#999999;">2016-02-10</label>
+                            </div>
+                            <div class="row" style="line-height: 39px; border-bottom: 1px solid #F1F1F1;">
+                                <a class="col-md-7" href="#" style="text-decoration: none;color:#999999;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0px;">[审核]&nbsp;&nbsp;&nbsp;东方长明转正申请</a>
+                                <label style="float: right;color:#999999;">2016-02-10</label>
+                            </div>
+                            <div class="row" style="line-height: 40px; border-bottom: 1px solid #F1F1F1;">
+                                <a class="col-md-7" href="#" style="text-decoration: none;color:#999999;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0px;">[工作]&nbsp;&nbsp;&nbsp;刘百万去广东实地考察</a>
+                                <label style="float: right;color:#999999;">2016-02-10</label>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+

@@ -1,0 +1,256 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<style type="text/css">
+    #chart {
+        height: 400px;
+        margin-top: 60px;
+        width: 100%;
+        background-color: white;
+    }
+</style>
+<script src="~/Content/scripts/business/Common.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.url.js")"></script>
+<link rel="stylesheet" href="~/Content/styles/static/css/index.css">
+<link rel="stylesheet" href="~/Content/styles/static/css/extend.css">
+<link rel="stylesheet" href="~/Content/styles/static/css/launch-activity.css" />
+<link rel="stylesheet" href="~/Content/styles/static/css/before.css" />
+<script src="~/Content/scripts/validator/Validform.min.js"></script>
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+<script src="~/Content/scripts/nicescroll/nicescroll.min.js"></script>
+<script src="~/Content/scripts/base.js"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/audiojs/audio.min.js")"></script>
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+
+<script src="@Url.Content("~/Content/scripts/plugins/echarts/echarts.min.js")"></script>
+<script src="@Url.Content("~/Content/bootstrap/js/bootstrap.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<script>
+    var deptID = '@ViewBag.deptID';
+    var deptName = '@ViewBag.deptName';
+    jQuery(function () {
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#grid').setGridWidth(($('.gridPanel').width()));
+                $("#grid").setGridHeight($(window).height() - 140);
+            }, 200);
+            e.stopPropagation();
+        });
+        JsTime();
+        var StrTime = $("#StartTime").val();
+        jQuery('#grid').jqGrid({
+            colModel: [
+                { label: '单位名称', name: 'GroupName', align: 'center', sortable: false },
+                { label: '安全日活动次数', name: 'Safety', align: 'center', sortable: false },
+                { label: '民主生活会次数', name: 'Democratic', align: 'center', sortable: false },
+                { label: '政治学习次数', name: 'Politics', align: 'center', sortable: false },
+                { label: '班务会次数', name: 'team', align: 'center', sortable: false },
+                { label: '其他活动次数', name: 'Elseactivity', align: 'center', sortable: false },
+            ],
+            height: $(window).height() - 470,
+            autowidth: true,
+            url: '@Url.Action("GetDataStatistics")?date=' + new Date().getTime(),
+            postData: { deptid: deptID },
+            datatype: "json",
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 10,
+            rownumbers: true,
+            pager: "#gridPager",
+            gridComplete: function () {
+            }
+        });
+        TimeSelect();
+        searchCheck();
+    });
+    function JsTime() {
+        //初始化时间
+        var myJsTime = "@BSFramework.Util.Time.GetToday()";
+        var strTime = myJsTime.split('-');
+        $("#StartTime").val(strTime[0] + "-" + strTime[1]);
+        var Time = $("#StartTime").val();
+        $("#StartStr").val(Time);
+        jQuery('#GroupName').val(deptName);
+        jQuery('#GroupId').val(deptID);
+    }
+    function fn$select() {
+        var select = 'single';
+        showModa('/..@Url.Action("DeptSelect", "Department", new { area = "BaseManage" })', '选择单位', '300px', '600px', { select: select, category: '省级,厂级,部门,班组', id: '@ViewBag.deptID' }, fn$selectover);
+    }
+    function Reset() {
+        var myJsTime = "@BSFramework.Util.Time.GetToday()";
+        var strTime = myJsTime.split('-');
+        $("#StartTime").val(strTime[0] + "-" + strTime[1]);
+        var Time = $("#StartTime").val();
+        $("#StartStr").val(Time);
+        jQuery('#GroupName').val(deptName);
+        jQuery('#GroupId').val(deptID);
+        searchCheck();
+    }
+    function fn$selectover(nodes) {
+        if (nodes) {
+            if (jQuery.type(nodes) == 'array') {
+                var str = '';
+                jQuery.each(nodes, function (i, o) {
+                    str += o.text + '|'
+                });
+                jQuery('#GroupId').val(str.replace(/\|$/, ''));
+            } else {
+                jQuery('#GroupName').val(nodes.text);
+                jQuery('#GroupId').val(nodes.value);
+            }
+        }
+    }
+</script>
+<div class="titlePanel">
+    <div class="title-search">
+        <table class="form">
+            <tr>
+                <th class="formTitle">选择单位</th>
+                <td class="formValue">
+                    <input id="GroupName" readonly type="text" class="form-control" placeholder="请选择单位" onfocus="this.blur()" onclick="fn$select();">
+                    <input id="GroupId" type="hidden">
+
+                </td>
+                <th class="formTitle">选择时间</th>
+                <td class="formValue">
+                    <input id="StartStr" type="hidden">
+                    <input id="StartTime" readonly type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt:'yyyy-MM'})">
+                </td>
+                <td style="padding-left: 5px;">
+                    <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                    <a id="btn_Reset" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;重置</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="chart"></div>
+    <div class="gridPanel">
+        <table id="grid"></table>
+        <div id="gridPager"></div>
+    </div>
+    <script>
+        jQuery(function () {
+            $("#btn_Search").click(function () {
+                TimeSelect();
+                searchCheck();
+            });
+            $("#btn_Reset").click(function () {
+                Reset();
+            });
+        });
+        $('.safe-main li').map(function (idx, item) {
+            $(item).niceScroll()
+        })
+        $('.safe-nav li').click(function () {
+            var index = $(this).index()
+            $(this).addClass('active').siblings().removeClass('active')
+            $('.safe-main li').eq(index).show().siblings().hide()
+        })
+        $("#btn").click(function () {
+            searchCheck();
+        });
+        function TimeSelect() {
+            var myJsTime = "@BSFramework.Util.Time.GetToday()";
+            var year = myJsTime.split('-')[0];
+            var start = parseInt(year) - 2;
+            var end = parseInt(year) + 1;
+            var _html = '';
+            for (var i = start; i < end; i++) {
+                if (i == year) {
+                    _html += '<option value="' + i + '" selected="selecteed" >' + i + '</option>';
+
+                } else {
+                    _html += '<option value="' + i + '">' + i + '</option>';
+                }
+
+            }
+            $("#safetyTime").append(_html);
+        }
+        function searchCheck() {
+            var SumTime = $("#StartTime").val();
+            var deptid = $("#GroupId").val();
+            var obj = {
+                SumTime: SumTime,
+                deptid: deptid,
+            };
+            jQuery('#grid').jqGrid('setGridParam', {
+                postData: obj, page: 1
+            }).trigger('reloadGrid');
+
+            var hidangerSumType = $("#safetyType").find("option:selected").text();
+            ajaxGetStatisticsChart(SumTime, hidangerSumType, deptid);
+        }
+        function ajaxGetStatisticsChart(StrTime, ctype, deptid) {
+            $.ajax({
+                url: '/..@Url.Action("GetStatisticsChart")?date=' + new Date().getTime() + '&StrTime=' + StrTime + '&ctype=' + ctype + "&deptid=" + deptid,
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (result) {
+                    var GetStatisticsChartData = result;
+                    GetStatisticsChartfun(GetStatisticsChartData);
+                }
+            });
+        }
+
+        function GetStatisticsChartfun(GetHtNumReadjustChartData) {
+            //var data = GetHtNumReadjustChartData;
+            var objChart = document.getElementById('data');
+            var dataChart = GetHtNumReadjustChartData.data;
+            var sumJson = GetHtNumReadjustChartData.sumJson;
+            var titleColorChart = ['#fda11c'];
+            var colorColorChart = ['#1fe7d1', '#ffe82a', '#ff8062', '#749eff', '#ffa960'];
+            function count(obj, color, data, arr, titleColor) {
+                var Chart4 = echarts.init(document.getElementById('chart'));
+
+                var option = {
+                    title: {
+                        text: '活动次数统计',
+                        x: 'center',
+                    },
+                    legend: {
+                        x: 'center',
+                        y: 'bottom',
+                        data: data
+
+                    },
+                    series: [{
+                        type: 'pie',
+                        radius: ['0', '70%'],
+                        hoverAnimation: true,
+                        color: color,
+                        label: {
+                            normal: {
+                                show: true,
+                                formatter: '{b}:{c}',
+                                color: '#858585',
+                            }
+                        },
+                        labelLine: {
+                            normal: {
+                                show: false,
+                                length: 15,
+                                length2: 10,
+                                lineStyle: {
+                                    color: '#858585'
+                                }
+                            }
+                        },
+                        data: arr
+                    }]
+                }
+                Chart4.setOption(option);
+            }
+            count(objChart, colorColorChart, dataChart, sumJson, titleColorChart);
+        }
+
+    </script>
+
+
+
+

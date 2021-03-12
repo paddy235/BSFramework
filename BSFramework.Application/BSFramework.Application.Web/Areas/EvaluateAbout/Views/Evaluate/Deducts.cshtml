@@ -1,0 +1,97 @@
+﻿@{
+    ViewBag.Title = "Deducts";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+</style>
+<script>
+    $(function ()
+    {
+        GetGrid();
+    });
+
+    function GetGrid() {
+        var selectedRowIndex = 0;
+        var $grid = $("#gridTable");
+        $grid.jqGrid({
+            height: $(window).height() - 80,
+            url: '@Url.Action("GetDeducts")?id='+'@ViewBag.id',
+            datatype: "json",
+            autowidth: true,
+            colModel: [
+                {
+                    label: '要素', name: 'Category', index: 'Category', width: 300, sortable: false, align: 'center'
+                },
+                { label: '考评内容', name: 'ItemContent', index: 'ItemContent', width: 600, sortable: false, align: 'center' },
+                { label: '扣分班组', name: 'GroupNames', index: 'GroupNames', width: 600, sortable: false, align: 'center' },
+                //{
+                //    label: '标准分', name: 'Score', index: 'Score', width: 200, sortable: false, align: 'center',
+                //    cellattr: function (rowid, value, rowobj, colModel, arrobj) {
+
+                //        return 'id=\'Score' + rowid + "\'";
+                //    }
+                //},
+                {
+                    label: '扣分次数', name: 'Times', index: 'Times', width: 100, sortable: true, align: 'center'
+                },
+                {
+                    label: '扣分频率', name: 'Percent', index: 'Percent', width: 100, sortable: true, align: 'center',
+                    formatter: function (cellvalue, options, rowObject) {
+                        return cellvalue + "%";
+                    }
+                }
+            ],
+            rowNum: 10000,
+            viewrecords: true,
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            gridComplete: function ()
+            {
+                //var gridName = "gridTable";
+                //Merger(gridName, 'Score');
+            }
+
+        });
+        function Merger(gridName, CellName)
+        {
+            var mya = $("#" + gridName + "").getDataIDs();
+            var length = mya.length;
+            for (var i = 0; i < length; i++)
+            {
+                var before = $("#" + gridName + "").jqGrid('getRowData', mya[i]);
+                var rowSpanTaxCount = 1;
+                for (j = i + 1; j <= length; j++)
+                {
+
+                    var end = $("#" + gridName + "").jqGrid('getRowData', mya[j]);
+                    if (before["DeptId"]== end["DeptId"]) {
+                        rowSpanTaxCount++;
+                        $("#" + gridName + "").setCell(mya[j], CellName, '', { display: 'none' });
+                    } else
+                    {
+                        rowSpanTaxCount = 1;
+                        break;
+                    }
+                    $("#" + CellName + "" + mya[i] + "").attr("rowspan", rowSpanTaxCount);
+                }
+            }
+        }
+    }
+</script>
+<div class="gridPanel" id="dvgrid" style="">
+    <table id="gridTable"></table>
+</div>

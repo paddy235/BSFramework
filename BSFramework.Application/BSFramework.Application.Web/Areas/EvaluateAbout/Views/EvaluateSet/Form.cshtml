@@ -1,0 +1,115 @@
+﻿@{;
+    ViewBag.Title = "表单页面";
+    Layout = "~/Views/Shared/_Form.cshtml"; }
+
+<script type="text/javascript" src="~/content/scripts/business/common.js"></script>
+@Html.Partial("DepartmentSelect")
+<script>
+    var keyValue = request('keyValue');
+
+
+
+
+    $(function () {
+        initControl();
+    });
+
+
+
+    //初始化控件
+    function initControl() {
+        //获取表单
+        if (!!keyValue) {
+            $.SetForm({
+                url: "../../EvaluateAbout/EvaluateSet/GetFormJson",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#form1").formDeserialize(data.formData);
+                    if (data.formData.IsFiring == 0) {
+                        document.getElementById("IsFiringN").checked = true;
+                    }
+
+                }
+            })
+        }
+    }
+    function selectDept() {
+        selectDepartment('multiple', '班组', function (nodes) {
+            if (nodes) {
+                var deptid = '';
+                var deptname = '';
+                jQuery.each(nodes, function (i, o) {
+                    deptid += o.value;
+                    deptname += o.text;
+                })
+                jQuery('#DeptId').val(deptid.replace(/,$/, ''));
+                jQuery('#DeptName').val(deptname.replace(/,$/, ''));
+            }
+
+        });
+    }
+
+    //保存表单;
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var postData = $("#form1").formSerialize(keyValue);
+        postData["IsFiring"] = 1;
+        if (document.getElementById("IsFiringN").checked) {
+            postData["IsFiring"] = 0;
+        }
+
+        $.SaveForm({
+            url: "../../EvaluateAbout/EvaluateSet/SaveForm?keyValue=" + keyValue,
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        });
+    }
+
+
+
+
+
+</script>
+<div style="margin-top: 20px; margin-right: 30px;">
+    <table class="form">
+
+        <tr>
+            <td class="formTitle">分类名称<font face="宋体">*</font></td>
+            <td class="formValue">
+                <input id="ClassName" type="text" isvalid="yes" checkexpession="NotNull" class="form-control" placeholder="请输入分类名称" />
+            </td>
+        </tr>
+
+        <tr>
+            <td class="formTitle">适用班组<font face="宋体">*</font></td>
+            <td class="formValue">
+                <div class="input-group">
+                    <textarea id="DeptName" name="DeptName" type="text" class="form-control" readonly="readonly" isvalid="yes" checkexpession="NotNull" rows="5"></textarea>
+                    <span class="input-group-addon" onclick="selectDept()" title="选择班组" style="cursor:pointer;">...</span>
+                    <input id="DeptId" name="DeptId" type="hidden" />
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">是否启动</td>
+            <td class="formValue Gender">
+                <input type="radio" value="1" id="IsFiringY" name="Gender" checked="checked" />&nbsp;<label for="man">是</label>&nbsp;&nbsp;&nbsp;
+                <input type="radio" value="0" id="IsFiringN" name="Gender" />&nbsp;<label for="woman">否</label>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="formTitle">备注</td>
+            <td class="formValue">
+                <textarea id="Remark" class="form-control" maxlength="1024" rows="5"></textarea>
+            </td>
+        </tr>
+
+
+    </table>
+</div>

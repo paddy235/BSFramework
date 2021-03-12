@@ -1,0 +1,206 @@
+﻿@model BSFramework.Application.Entity.SetManage.RiskFactorSetEntity
+@using BSFramework.Application.Entity.SetManage
+@{ ViewBag.Title = "Form";
+                Layout = "~/Views/Shared/_FlowForm.cshtml"; }
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/datepicker/WdatePicker.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script type="text/javascript" src="~/content/scripts/business/common.js"></script>
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<script src="~/Content/scripts/utils/framework-form.js"></script>
+@Html.Partial("DepartmentSelect")
+<script>
+    var deptid = '@ViewBag.deptid';
+    var deptcode = '@ViewBag.deptcode';
+    var keyValue = '@ViewBag.keyValue';
+
+    var measures = [];
+    var measureids = [];
+    function addMeasure() {
+        var html = '';
+        html += '<dl>';
+        html += '  <dt>';
+        html += '        <textarea  name="Measure" rows="3" class="form-control" isvalid="yes" checkexpession="NotNull" maxlength="500" data-id=""></textarea>';
+        html += '    </dt>';
+        html += '    <dd>';
+        html += '        <a href="#" onclick="delMeasure(this)">删除</a>';
+        html += '    </dd>';
+        html += '</dl>';
+
+        $("#dv_measure").append(html);
+    }
+
+    function delMeasure(obj) {
+        var el = $(obj).parent().parent().find("textarea").get(0);
+        var id = $(el).data("id");
+        if (id) {
+            measureids.push(id);
+        }
+        $(obj).parent().parent().remove();
+    }
+
+function selectdept() {
+        selectDepartment('multiple', '班组', function (nodes) {
+            if (nodes) {
+                var deptid = '';
+                var deptname = '';
+                jQuery.each(nodes, function (i, o) {
+                    deptid += o.value;
+                    deptname += o.text;
+                })
+                jQuery('#DeptId').val(deptid.replace(/,$/, ''));
+                jQuery('#DeptName').val(deptname.replace(/,$/, ''));
+            }
+
+        });
+    }
+    function AcceptClick() {
+        var riskFactor = $("#RiskFactor").val();
+        if (!riskFactor) {
+            dialogMsg('请填写危险因素！', 0);
+            return;
+        }
+        var msg = "";
+        $('textarea[name=Measure]').each(function (i, e) {
+            if (!$(this).val()) {
+                msg = "第" + (i + 1) + "条防范措施必填";
+            }
+        });
+        if ($('textarea[name=Measure]').length == 0) {
+            if (keyValue.length > 0) {
+                dialogConfirm("防范措施为空时，将会删除危险因素，确认此操作吗？", function (action) {
+                    if (action) {
+                        subForm();
+                    }
+                });
+            } else {
+                dialogMsg("防范措施项为空", 0);
+            }
+        } else {
+            if (msg.length > 0) {
+                dialogMsg(msg, 0);
+            } else {
+                subForm();
+            }
+        }
+    }
+
+    function subForm() {
+        var measures = [];
+        $('textarea[name=Measure]').each(function (i, e) {
+            measures.push({
+                id: $(this).data("id"),
+                content: $(this).val()
+            });
+        });
+        var postData = {
+            id: keyValue,
+            deptid: $('#DeptId').val(),
+            content: $("#RiskFactor").val(),
+            deptname: $('#DeptName').val(),
+            measures: measures,
+            measureids: measureids
+        }
+        $.SaveForm({
+            url: '@Url.Action("SaveForm")',
+            param: { jsonData: JSON.stringify(postData) },
+            loading: "数据提交中...",
+            success: function (data) {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        });
+    }
+
+
+</script>
+<style>
+    .measure-item dl {
+        display: flex;
+        margin-bottom: 5px;
+    }
+
+        .measure-item dl dt {
+            width: 100%
+        }
+
+        .measure-item dl dd {
+            width: 100px;
+            text-align: center;
+            display: inline;
+            line-height: 58px;
+        }
+
+            .measure-item dl dd a {
+                color: #0094ff
+            }
+</style>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <table class="form">
+            <tr>
+                <td class="formTitle">适用部门<font face="宋体">*</font></td>
+                <td class="formValue">
+                    <div id="DeptNameTree" style="border: 1px solid #ccc;border-top:none; max-height:300px; display:none;"></div>
+                    <textarea id="DeptName" readonly="readonly" class="form-control" rows="3" onclick="selectDept()">@Model.DeptName</textarea>
+                    <input id="DeptId" type="hidden" value="@Model.DeptId" />
+                </td>
+            </tr>
+            <tr>
+                <td class="formTitle">危险因素<font face="宋体">*</font></td>
+                <td class="formValue">
+                    <input id="RiskFactor" name="RiskFactor" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" maxlength="200" value="@Html.Raw(Model != null ? Model.Content : "")" />
+                </td>
+            </tr>
+            <tr>
+                <td class="formTitle" valign="top" style="padding-top:10px">
+                    防范措施<font face="宋体">*</font>
+                    <br />
+                    <br />
+                    <a href="#" onclick="addMeasure()" style="color:#0094ff">新增</a>
+                </td>
+                <td class="formValue">
+                    <div id="dv_measure" class="measure-item">
+                        @{ if (Model == null)
+                                        {
+                            <dl>
+                                <dt>
+                                    <textarea name="Measure" rows="3" class="form-control" isvalid="yes" checkexpession="NotNull" maxlength="500" data-id=""></textarea>
+                                </dt>
+                                <dd>
+                                    <a href="#" onclick="delMeasure(this)">删除</a>
+                                </dd>
+                            </dl> }
+                                        else
+                                        {
+                                            if (Model.measures != null && Model.measures.Count > 0)
+                                            {
+                                                for (int i = 0; i < Model.measures.Count; i++)
+                                                {
+                            <dl>
+                                <dt>
+                                    <textarea name="Measure" rows="3" class="form-control" isvalid="yes" checkexpession="NotNull" maxlength="500" data-id="@Model.measures[i].ID" data-sort="@Model.measures[i].Sort">@Model.measures[i].Content</textarea>
+                                </dt>
+                                <dd>
+                                    <a href="#" onclick="delMeasure(this)">删除</a>
+                                </dd>
+                            </dl> }
+                                            }
+                                            else
+                                            {
+                            <dl>
+                                <dt>
+                                    <textarea name="Measure" rows="3" class="form-control" isvalid="yes" checkexpession="NotNull" maxlength="500" data-id=""></textarea>
+                                </dt>
+                                <dd>
+                                    <a href="#" onclick="delMeasure(this)">删除</a>
+                                </dd>
+                            </dl> }
+                                        } }
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

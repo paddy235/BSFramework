@@ -1,0 +1,133 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script>
+
+    $(function () {
+
+        //$('.main-sidebar,.main-content').niceScroll({
+        //    autohidemode: false
+        //});
+        //$('.table-today tr').hover(function () {
+        //    $(this).addClass('hover');
+        //}, function () {
+        //    $(this).removeClass('hover');
+        //});
+        //$('.table-today tr').click(function () {
+        //    $(this).toggleClass('actives');
+        //});
+        $('.user>.dropdown-menu').css({
+            left: $('.user').innerWidth() - $('.user>.dropdown-menu').width() - 65
+        })
+    });
+</script>
+
+<!-- Left side column. contains the logo and sidebar -->
+<!-- Content Wrapper. Contains page content -->
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="clearfix my-title">
+                    <a href="@Url.Action("List", "WorkMeeting", new { page = "1", pagesize = "12", area="Works"})">
+                        <div class="pull-left">今日工作</div>
+                        <div class="pull-right"><img src="@Url.Content("~/Content/styles/static/images/icon-12.png")" alt="">班组日志</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-9">
+                @{Html.RenderAction("ViewJobs", "WorkMeeting", new { area = "Works" });}
+            </div>
+            <div class="col-md-3">
+                <div class="box-content notice">
+                    <div class="header">
+                        <img src="@Url.Content("~/Content/styles/static/images/icon-13.png")" alt="" style="vertical-align: middle;margin-right:10px;">通知公告
+                        @*<div class="pull-right right">
+                            <button><i class="fa fa-angle-left"></i></button>
+                            &nbsp;&nbsp;
+                            <button><i class="fa fa-angle-right"></i></button>
+                        </div>*@
+                    </div>
+                    <div class="body" style="height:340px;overflow:auto;">
+                        <div>
+                            <ul class="nav">
+                                @{Html.RenderAction("CurrentNotice2", "Notice", new { area = "PublicInfoManage" });}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-content target">
+                    <div class="header">
+                        指标
+                    </div>
+                    <div class="body">
+                        <div>
+                            <ul class="nav nav-last">
+                                <li class="clearfix">
+                                    <div class="pull-left">
+                                        <img src="@Url.Content("~/Content/styles/static/images/icon-1.png")" alt="">
+                                        安全教育培训
+                                    </div>
+                                    <div class="pull-right">10学时</div>
+                                </li>
+                                <li class="clearfix">
+                                    <div class="pull-left">
+                                        <img src="@Url.Content("~/Content/styles/static/images/icon-2.png")" alt="">
+                                        两票合格率
+                                    </div>
+                                    <div class="pull-right">100%</div>
+                                </li>
+                                <li class="clearfix">
+                                    <div class="pull-left">
+                                        <img src="@Url.Content("~/Content/styles/static/images/icon-3.png")" alt="">
+                                        应急演练
+                                    </div>
+                                    <div class="pull-right">3次</div>
+                                </li>
+                                <li class="clearfix">
+                                    <div class="pull-left">
+                                        <img src="@Url.Content("~/Content/styles/static/images/icon-4.png")" alt="">
+                                        安全积分
+                                    </div>
+                                    <div class="pull-right">20分</div>
+                                </li>
+                                <li class="clearfix">
+                                    <div class="pull-left">
+                                        <img src="@Url.Content("~/Content/styles/static/images/icon-3.png")" alt="">
+                                        本班排名
+                                    </div>
+                                    <div class="pull-right">7/30</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row">
+                <div class="col-md-9 left">
+                    <div class="pull-left" style="padding-right:10px;">
+                        <a href="@Url.Action("Index", "Emergency" , new { area="Works" })"> <img src="@Url.Content("~/Content/styles/static/images/footer-1.png")" alt=""></a>
+                    </div>
+                    <div class="pull-right" style="padding-left:10px;">
+                        <img src="@Url.Content("~/Content/styles/static/images/footer-2.png")" alt="">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <img src="@Url.Content("~/Content/styles/static/images/footer-3.png")" alt="">
+                </div>
+
+            </div>
+        </div>
+        <footer class="main-footer">
+            武汉博晟安全技术股份有限公司   版权所有
+        </footer>
+    </div>
+</div>
+<!-- /.content-wrapper -->

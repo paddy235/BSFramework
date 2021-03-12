@@ -1,0 +1,162 @@
+﻿@{
+    ViewBag.Title = "IndexEvaluatePartView";
+    Layout = null;
+}
+<script src="~/Content/scripts/jquery/jquery-2.0.3.min.js"></script>
+<script src="~/Content/scripts/plugins/echarts/echarts.min.js"></script>
+<link href="~/Content/styles/framework-ui.css" rel="stylesheet" />
+<script src="~/Content/styles/static/js/rem.js"></script>
+<link href="~/Content/styles/static/css/indexmanage.css" rel="stylesheet" />
+<script>
+    var deptid = "@ViewBag.deptid";
+    var lines = [
+        {
+            value: [100, 200, 300, 1, 230, 399, 200, 100],
+            name: "实时状况",
+            itemStyle: {
+                normal: {
+                    color: '#13acff',
+                    label: {
+                        show: true,
+                        position: 'top',
+                        textStyle: {
+                            color: '#fa475a'
+                        }
+                    }
+                }
+            },
+            symbolSize: 10,
+            symbol: 'image:@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/red.png")',
+        },
+        {
+            value: [10, 20, 30, 1, 23, 39, 200, 140],
+            name: "班组最高分",
+            itemStyle: {
+                normal: {
+                    color: '#fbe769',
+                    label: {
+                        show: true,
+                        position: 'top',
+                        textStyle: {
+                            color: '#fbe769'
+                        }
+                    }
+                }
+            },
+            symbolSize: 10,
+            symbol: 'image:@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/yellow.png")',
+            symbolRotate: 100
+        },
+        {
+            value: [10, 207, 30, 1, 20, 99, 20, 10],
+            name: "同比对标",
+            itemStyle: {
+                normal: {
+                    color: '#aca3f9',
+                    label: {
+                        show: true,
+                        position: 'top',
+                        textStyle: {
+                            color: '#aca3f9'
+                        }
+                    }
+                }
+            },
+            symbolSize: 10,
+            symbol: 'image:@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/purple.png")',
+            symbolRotate: -10
+        },
+        {
+            value: [10, 200, 300, 1, 20, 319, 599, 800],
+            name: "环比对标",
+
+            itemStyle: {
+                normal: {
+                    color: '#44fefe',
+                    label: {
+                        show: true,
+                        position: 'top',
+                        textStyle: {
+                            color: '#44fefe'
+                        }
+                    }
+                }
+            },
+            symbolSize: 10,
+            symbol: 'image:@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/green.png")',
+            symbolRotate: -10,
+            icon: "triangle"
+        },
+    ];
+    $(function () {
+
+
+        var chart1 = echarts.init(document.getElementById('chart'));
+        chart1.showLoading();
+        jQuery.post('@Url.Action("GetEvaluateJson", "Evaluate", new { area = "EvaluateAbout"})', { deptid: deptid }, function (data) {
+            chart1.hideLoading();
+                if (!data || data.length == 0) {
+                    jQuery('#chart').empty();
+                    jQuery('#chart').append('<span>no data</span>');
+                    return;
+                }
+
+                var linemax = 0;
+            jQuery.each(data, function (i, o) {
+                if (!!o.data) {
+                    jQuery.each(o.data, function (j, p) {
+                        var ss = parseFloat(p.Score); linemax = ss > linemax ? ss : linemax;
+                    });
+                }
+            });
+
+                var categories = [], values = [];
+                jQuery.each(data[0].data, function () {
+                    categories.push({ name: this.Category, max: linemax });
+                });
+
+                jQuery.each(data, function (i) {
+                    if (!this.data) return;
+                    item = { name: this.name, value: [], itemStyle: lines[i].itemStyle, symbolSize: lines[i].symbolSize, symbol: lines[i].symbol, symbolRotate: lines[i].symbolRotate, icon: lines[i].icon };
+                    jQuery.each(this.data, function () {
+                        item.value.push(Math.round(this.Score*100)/100);
+                    });
+                    values.push(item);
+                });
+            chart1.setOption({
+
+            tooltip: {},
+                legend: {
+                    show: false
+                //data: ["实时状况", "班组最高分", "同比对标", "环比对标" ]
+            },
+                    radar: {
+                        name: {
+                            textStyle: {
+                                color: '#999',
+                                backgroundColor: '#fff',
+                                borderRadius: 3,
+                              padding:[3,5]
+                            }
+                        },
+                        indicator: categories
+                    },
+                series: {
+                        name: "",
+                        type: "radar",
+                        data: values
+                    }
+                });
+            }, 'json');
+    })
+</script>
+<div>
+    <div class="item_title">
+        <h2>班组考评</h2>
+    </div>
+    <div class="content chart2_content">
+        <div id="chart" onclick="javascript:top.openTab('','@Url.Action("Index8")','班组考评')" style="width:100%; min-height:320px;"></div>
+    </div>
+</div>
+
+

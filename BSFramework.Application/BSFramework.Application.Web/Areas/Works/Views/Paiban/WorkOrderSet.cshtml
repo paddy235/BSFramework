@@ -1,0 +1,453 @@
+﻿@{
+    ViewBag.Title = "WorkOrderSet";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<!--jqgrid表格组件start-->
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<!--表格组件end-->
+<script type="text/javascript">
+    var useType = request('useType');
+    var type;
+    $(function () {
+        buttonJson = new Array();
+        initialPage();
+        buttonOperation();
+        getGridButton();
+        // getGroupGridView();
+        //getGridView();
+    })
+    //初始化页面
+    function initialPage() {
+        //加载导向
+        $('#wizard').wizard().on('change', function (e, data) {
+            var $finish = $("#btn_finish");
+            var $next = $("#btn_next");
+            var $last = $("#btn_last");
+
+            //下一页 1到2  2到3
+            if (data.direction == "next") {
+                var num = jQuery('#gridTable-button tr').length;
+                var texts = $("#WorksetId").attr('data-text');
+
+                if (texts == "常白班") {
+
+                    if (data.step == 1) {
+                        $finish.removeAttr('disabled');
+                        $next.attr('disabled', 'disabled');
+                    }
+                    jQuery('#gridTable-button-group').html('');
+                } else
+                    if (num > 0) {
+                        for (var i = 0; i < num; i++) {
+                            $divCss = $("#WorksettingId" + i);
+                            var ckvalue = $divCss.attr('data-value');
+                            var cktext = $divCss.attr('data-text');
+                            if (!ckvalue &&cktext!="休息") {
+                                dialogMsg('请设置好班次！', 0); return false;
+
+                            }
+                        }
+                        if (data.step == 1) {
+                            $finish.removeAttr('disabled');
+                            $next.attr('disabled', 'disabled');
+                        }
+                        jQuery('#gridTable-button-group').html('');
+                    } else {
+                        dialogMsg('请设置好班次！', 0); return false;
+                    }
+
+
+            }
+            //点击菜单按钮
+            if (data.direction == "stepclicked") {
+                if (data.step == 1) {
+                    $finish.attr('disabled', 'disabled');
+                    $next.removeAttr('disabled', 'disabled');
+                }
+            }
+
+            //上一页
+            if (data.direction == "previous") {
+                if (data.step == 2) {
+                    buttonJson = new Array();
+                    $finish.attr('disabled', 'disabled');
+                    $next.removeAttr('disabled', 'disabled');
+                }
+
+            }
+        });
+        initControl();
+    }
+    //初始化控件
+    function initControl() {
+
+        $("#WorksetId").ComboBoxTree({
+            url: "@Url.Action("GetUseTreeJson")",
+            description: "==请选择==",
+            height: "260px",
+            allowSearch: false
+        });
+        var myJsTime = "@BSFramework.Util.Time.GetToday()";
+        var strTime = myJsTime.split('-');
+        $("#startTime").val(strTime[0] + "-" + strTime[1] + "-" + strTime[2]);
+    }
+
+    //初始化禁用完成
+    function buttonOperation() {
+        var $last = $("#btn_last");
+        var $next = $("#btn_next");
+        var $finish = $("#btn_finish");
+        $next.removeAttr('disabled');
+        $finish.attr('disabled', 'disabled');
+        $finish.click(function () {
+            AcceptClick();
+        })
+    }
+    //保存表单
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var GroupJsonval = GroupJson();
+        var setJsonval = setJson();
+        if (GroupJsonval.length < 1) {
+            dialogMsg('请检查班组是否设置完成！', 0);
+            return false;
+        }
+        var postData = $("#form1").formSerialize();
+        var workSet = $("#WorksetId").attr('data-value');
+        var workSetName = $("#WorksetId").attr('data-text');
+        postData["GroupJson"] = JSON.stringify(GroupJsonval);
+        postData["setJson"] = JSON.stringify(setJsonval);
+        postData["workSet"] = workSet;
+        postData["workSetName"] = workSetName;
+        $.SaveForm({
+            url: '/..@Url.Action("WorkSetSave")',
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+
+
+    //处理Json
+    function ButtonListToListTreeJson(buttonJson, addJson, delJson) {
+
+
+
+        var texts = $("#WorksetId").attr('data-text');
+        //DepartmentId
+        var $grid = $("#gridTable-button-group");
+        var $selectTable = jQuery('#gridTable-button tr');
+
+        if (texts == "常白班") {
+            for (var i = 0; i < addJson.length; i++) {
+                $grid.append("<tr class='grid-row' id='" + addJson[i].FullName + "'>" +
+                    "<td>" + addJson[i].FullName + "<input value='" + addJson[i].DepartmentId + "' hidden='hidden' ></td>" +
+                    "<td> "
+                   + "</td></tr>")
+                buttonJson.push(addJson[i]);
+            }
+        } else {
+            var selectoption = "";
+            for (var i = 0; i < $selectTable.length; i++) {
+                selectoption += "<option value='" + i + "'>";
+                selectoption += jQuery($selectTable[i]).find("td")[0].innerHTML + $("#WorksettingId" + i).attr('data-text') + "</option>";
+
+            }
+            for (var i = 0; i < addJson.length; i++) {
+
+
+                $grid.append("<tr class='grid-row' id='" + addJson[i].FullName + "'>" +
+                             "<td>" + addJson[i].FullName + "<input value='" + addJson[i].DepartmentId + "' hidden='hidden' ></td>" +
+                             "<td> <select id='groupset" + i + "'  class='form-control input-profile' isvalid='yes' checkexpession='NotNull style='width:100px'>"
+                             + "<option value=''>请选择</option>" + selectoption
+                            + "</select></td></tr>")
+                buttonJson.push(addJson[i]);
+            }
+
+        }
+
+
+        for (var i = 0; i < delJson.length; i++) {
+            var ck = $("#" + delJson[i].FullName);
+            if (ck.length > 0) {
+                ck.remove();
+                var num = -1;
+                $.each(buttonJson, function (ii) {
+                    if (buttonJson[ii].DepartmentId == delJson[i].DepartmentId) {
+                        num = ii;
+                    }
+                });
+                buttonJson.splice(num, 1);
+            }
+
+        }
+
+    }
+    function setJson() {
+        var newArr = new Array();
+        var num = jQuery('#gridTable-button tr').length;
+        for (var i = 0; i < num; i++) {
+            $divCss = $("#WorksettingId" + i);
+            var one = {};
+            one.text = $divCss.attr("data-text");
+            one.value = $divCss.attr("data-value");
+            one.sort = i;
+            newArr.push(one)
+        }
+        return newArr;
+    }
+    function GroupJson() {
+        var newArr = new Array();
+        var texts = $("#WorksetId").attr('data-text');
+        for (var i = 0; i < buttonJson.length; i++) {
+            $trCss = $("#" + buttonJson[i].FullName);
+            var one = {};
+            one.FullName = buttonJson[i].FullName;
+            one.DepartmentId = buttonJson[i].DepartmentId;
+            $selectCss = $trCss.find("select")[0];
+            if (texts != "常白班") {
+                var ck = $($selectCss).find("option:selected");
+                if (ck.val() == "") {
+                    return newArr;
+                }
+                one.selectValue = ck.val();
+
+            }
+
+            newArr.push(one)
+        }
+        return newArr;
+    }
+    /*系统按钮being==================================*/
+    function getArrDifference(arr1, arr2) {
+        let newArr = new Array();
+        if (arr2.length == 0) {
+
+            return arr1;
+        }
+        for (let i = 0; i < arr2.length; i++) {
+            var ck = true;
+            for (let j = 0; j < arr1.length; j++) {
+                if (arr1[j].DepartmentId == arr2[i].DepartmentId) {
+                    ck = false;
+                    break;
+                }
+            }
+            if (ck) {
+                newArr.push(arr2[i]);
+            }
+        }
+        return newArr;
+    }
+    function getArrEqual(arr1, arr2) {
+        let newArr = new Array();
+        if (arr2.length == 0) {
+            return newArr;
+        }
+        for (let i = 0; i < arr2.length; i++) {
+            for (let j = 0; j < arr1.length; j++) {
+                if (arr1[j].DepartmentId == arr2[i].DepartmentId) {
+                    newArr.push(arr1[j]);
+                }
+            }
+        }
+        return newArr;
+    }
+
+    /*系统按钮being==================================*/
+    var buttonJson = "";
+    function getGridButton() {
+        var $grid = $("#gridTable-button");
+        $("#WorksetId").change(function () {
+            var values = $("#WorksetId").attr('data-value');
+            var texts = $("#WorksetId").attr('data-text');
+            if (texts == "常白班") {
+                jQuery('#gridTable-button').html('');
+            }
+            if (values) {
+                var num = jQuery('#gridTable-button tr').length + 1;
+                for (var i = 0; i < num; i++) {
+                    $divCss = $("#WorksettingId" + i);
+                    $divCss.removeAttr("data-text");
+                    $divCss.removeAttr("data-value");
+                    $divCss.ComboBoxTree({
+                        url: '/..@Url.Action("GetWorksetting")?worktype=' + values,
+                        description: "==请选择==",
+                        height: "260px",
+                        allowSearch: false
+                    });
+                    if ($divCss.find("div").length > 0) {
+                        $divCss.find("div")[0].innerHTML = "==请选择==";
+                    }
+
+                }
+
+
+            } else {
+                dialogMsg('请检查班次设置是否正确！', 0);
+            }
+
+
+        })
+
+
+
+        $("#group-add-button").click(function () {
+            var DeparList = "";
+            var isBool = true;
+
+            $.each(buttonJson, function (i) {
+                DeparList = DeparList + "," + buttonJson[i].DepartmentId;
+            });
+            dialogOpen({
+                id: "ButtonForm",
+                title: '添加按钮',
+                url: "/..@Url.Action("WorkGroup")?DeparList=" + DeparList,
+                width: "450px",
+                height: "300px",
+                callBack: function (iframeId) {
+                    top.frames[iframeId].AcceptClick(function (dataJson) {
+
+                        var comJson = getArrEqual(dataJson, buttonJson);
+                        var addjson = getArrDifference(comJson, dataJson);
+                        var deljson = getArrDifference(comJson, buttonJson);
+
+                        $.each(addjson, function (i) {
+                            $.ajax({
+                                url: '/..@Url.Action("WorkGroupData")?DepId=' + addjson[i].DepartmentId,
+                                type: "get",
+                                dataType: "json",
+                                async: false,
+                                success: function (data) {
+                                    if (data.rows.length == 0) {
+                                  
+                                    } else {
+                                        var adddata = getArrDifference(addjson, data.rows);
+                                        $.each(adddata, function (ii) {
+                                            addjson.push(adddata[ii]);
+                                        });
+                                       
+                                    }
+                                }
+                            });
+
+                        });
+
+                        ButtonListToListTreeJson(buttonJson, addjson, deljson);
+                    });
+                }
+            });
+
+        });
+
+        $("#add-button").click(function () {
+            var texts = $("#WorksetId").attr('data-text');
+            if (texts == "常白班") {
+                dialogMsg('设置为常白班请点击下一步！', 0);
+                return;
+            }
+            var values = $("#WorksetId").attr('data-value');
+            if (values) {
+                var num = jQuery('#gridTable-button tr').length;
+                jQuery('#gridTable-button').append("<tr class='grid-row'>" +
+                          "<td>周期内第" + (num + 1) + "天</td>" +
+                          "<td> <div id='WorksettingId" + num + "' type='selectTree' class='ui-select' style='width:100px'></div></td></tr>")
+
+                $("#WorksettingId" + num).ComboBoxTree({
+                    url: '/..@Url.Action("GetWorksetting")?worktype=' + values,
+                    description: "==请选择==",
+                    height: "260px",
+                    allowSearch: false
+                });
+            } else {
+                dialogMsg('请检查班次设置是否正确！', 0);
+            }
+
+        });
+        $("#delete-button").click(function () {
+            var texts = $("#WorksetId").attr('data-text');
+            if (texts == "常白班") {
+                dialogMsg('设置为常白班请点击下一步！', 0);
+                return;
+            }
+            var num = jQuery('#gridTable-button tr').length - 1;
+            $divCss = $("#WorksettingId" + num);
+            $divCss.parent().parent().remove();
+        });
+
+
+    }
+    /*系统按钮end====================================*/
+
+    /*系统视图being==================================*/
+    var columnJson = "";
+    function getGridView() {
+
+    }
+    /*系统视图end====================================*/
+</script>
+<div class="widget-body">
+    <div id="wizard" class="wizard" data-target="#wizard-steps" style="border-left: none; border-top: none; border-right: none;">
+        <ul class="steps">
+            <li data-target="#step-1" class="active"><span class="step">1</span>班次设置<span class="chevron"></span></li>
+            <li data-target="#step-2"><span class="step">2</span>班组设置<span class="chevron"></span></li>
+            @*<li data-target="#step-3"><span class="step">3</span>班次设置<span class="chevron"></span></li*@>
+        </ul>
+    </div>
+    <div class="step-content" id="wizard-steps" style="border-left: none; border-bottom: none; border-right: none;">
+        <div class="step-pane active" id="step-1" style="margin-left: 0px; margin-top: 15px; margin-right: 30px;position:relative">
+
+            <div style="height: 40px; line-height: 33px; text-align: left;position:absolute;left:3%">
+                <div class="btn-group">
+                    <table class="form">
+                        <tr>
+                            <th class="formTitle">班制选择</th>
+                            <td class="formValue">
+                                <div id="WorksetId" type="selectTree" class="ui-select" style="width:150px">
+                                </div>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+            <div style="height: 40px; line-height: 33px; text-align: right;position:absolute;left:80%">
+                <div class="btn-group">
+                    <a id="add-button" class="btn btn-default"><i class="fa fa-plus"></i>&nbsp;新增</a>
+                    <a id="delete-button" class="btn btn-default"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+
+                </div>
+            </div>
+            <div style="position:absolute;left:13%;padding-top:50px;z-index:-100">
+                <div style="overflow-y:auto;height:400px;width:500px;border:dashed 3px;padding-top:10px"><table id="gridTable-button" style="margin:auto"></table></div>
+            </div>
+
+        </div>
+        <div class="step-pane" id="step-2" style="margin: 5px;">
+            <div style="height: 40px; line-height: 33px; text-align: left;position:absolute;left:3%">
+                今日排班设置
+            </div>
+            <div style="height: 40px; line-height: 33px; text-align: right;position:absolute;left:80%">
+                <div class="btn-group">
+                    <a id="group-add-button" class="btn btn-default"><i class="fa fa-plus"></i>&nbsp;新增</a>
+                </div>
+            </div>
+            <div style="position:absolute;left:13%;padding-top:50px;z-index:-100">
+                <div style="overflow-y:auto;height:400px;width:500px;border:dashed 3px;padding-top:10px"><table id="gridTable-button-group" style="margin:auto"></table></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="form-button" id="wizard-actions">
+    <a id="btn_last" disabled class="btn btn-default btn-prev">上一步</a>
+    <a id="btn_next" class="btn btn-default btn-next">下一步</a>
+    <a id="btn_finish" class="btn btn-success">完成</a>
+    <a id="btn_close" class="btn btn-danger" onclick="top.layer.close($.currentIframe().window.idx);">关闭</a>
+</div>

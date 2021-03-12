@@ -1,0 +1,304 @@
+﻿@model BSFramework.Application.Entity.InnovationManage.WorkInnovationEntity
+@{
+    ViewBag.Title = "IndexDetail";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<link href="~/content/scripts/plugins/webuploader/webuploader.css" rel="stylesheet" />
+<link href="~/content/scripts/plugins/webuploader/webuploader-demo.css" rel="stylesheet" />
+<script type="text/javascript" src="~/content/scripts/business/common.js"></script>
+<script type="text/javascript" src="~/content/scripts/plugins/webuploader/webuploader.min.js"></script>
+
+<div style="margin-top: 20px; margin-right: 30px;">
+
+    <table class="form">
+        <tr>
+            <td class="formTitle">提案名称</td>
+            <td class="formValue" colspan="3">
+                <input id="name" class="form-control" value="@Model.name" readonly="readonly" />
+
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">现状</td>
+            <td class="formValue" colspan="3">
+                <textarea type="text" class="form-control" id="statusquo" readonly="readonly">@Model.statusquo</textarea>
+            </td>
+        </tr>
+        <tr>
+            <td class="formValue">现状图片</td>
+            <td class="formValue" colspan="3">
+                <div id="uploader1" style="border:2px dashed gray; margin-top:10px; height:300px;overflow-y:auto">
+                    <div class="queueList">
+                        <div id="dndArea" class="placeholder">
+                            <div id="filePicker1" style="margin-left:25px; margin-top:10px;">
+                                @{
+                                    foreach (var file in Model.statusquoPhoto)
+                                    {
+                                        <div class="row" style="margin:10px;">
+                                            <div class="col-sm-6">@file.FileName</div><div class="col-sm-2"><a href="../../ResourceFile/DownloadFile?keyValue=-1&filename=@file.FileName&recId=@file.RecId" target="_blank" style="cursor:pointer" title="下载文件"><i class="fa fa-download"></i></a></div>
+                                            <img style="width:100px;height:100px" src="@Url.Content(file.FilePath)" />
+                                        </div>
+                                    }
+
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="statusBar" style="display:none;">
+                        <div class="progress">
+                            <span class="text">0%</span>
+                            <span class="percentage"></span>
+                        </div>
+                        <div class="info"></div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">创意提案</td>
+            <td class="formValue" colspan="3">
+
+                <textarea type="text" class="form-control" id="proposed" readonly="readonly" >@Model.proposed</textarea>
+
+            </td>
+        </tr>
+        <tr>
+            <td class="formValue">创意图片</td>
+            <td class="formValue" colspan="3">
+                <div id="uploader1" style="border:2px dashed gray; margin-top:10px; height:300px;overflow-y:auto">
+                    <div class="queueList">
+                        <div id="dndArea" class="placeholder">
+                            <div id="filePicker1" style="margin-left:25px; margin-top:10px;">
+                                @{
+                                    foreach (var file in Model.proposedPhoto)
+                                    {
+                                        <div class="row" style="margin:10px;">
+                                            <div class="col-sm-6">@file.FileName</div><div class="col-sm-2"><a href="../../ResourceFile/DownloadFile?keyValue=-1&filename=@file.FileName&recId=@file.RecId" target="_blank" style="cursor:pointer" title="下载文件"><i class="fa fa-download"></i></a></div>
+                                            <img style="width:100px;height:100px" src="@Url.Content(file.FilePath)" />
+                                        </div>
+                                    }
+
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="statusBar" style="display:none;">
+                        <div class="progress">
+                            <span class="text">0%</span>
+                            <span class="percentage"></span>
+                        </div>
+                        <div class="info"></div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="formValue">附件</td>
+            <td class="formValue" colspan="3">
+                <div id="uploader1" style="border:2px dashed gray; margin-top:10px; height:300px;overflow-y:auto">
+                    <div class="queueList">
+                        <div id="dndArea" class="placeholder">
+                            <div id="filePicker1" style="margin-left:25px; margin-top:10px;">
+                                @{
+                                    foreach (var file in Model.proposedFile)
+                                    {
+                                        <div class="row" style="margin:10px;">
+                                            <div class="col-sm-6">@file.FileName</div><div class="col-sm-2"><a href="../../ResourceFile/DownloadFile?keyValue=-1&filename=@file.FileName&recId=@file.RecId" target="_blank" style="cursor:pointer" title="下载文件"><i class="fa fa-download"></i></a></div>
+
+                                        </div>
+                                    }
+
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="statusBar" style="display:none;">
+                        <div class="progress">
+                            <span class="text">0%</span>
+                            <span class="percentage"></span>
+                        </div>
+                        <div class="info"></div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">上报人</td>
+            <td class="formValue">
+                <input type="text" class="form-control" id="reportuser" readonly="readonly" value="@Model.reportuser">
+            </td>
+            <td class="formTitle">上报时间</td>
+            <td class="formValue">
+                <input type="text" class="form-control" id="reporttime" readonly="readonly" value="@Model.reporttime.ToString("yyyy-MM-dd")">
+            </td>
+        </tr>
+
+
+        <tr>
+            <td class="formTitle">所属部门</td>
+            <td class="formValue" colspan="3">
+                <input type="text" class="form-control" id="deptname" readonly="readonly" value="@Model.deptname">
+            </td>
+
+        </tr>
+
+
+    </table>
+
+    <div style="border-top:1px solid #e3ebfd;width:100%;border-bottom:1px solid #e3ebfd;margin-top:20px">
+        审核信息
+
+    </div>
+    <div style="margin-top: 20px; margin-right: 30px;margin-bottom:30px">
+        <table class="form">
+            @{
+                foreach (var item in Model.audit)
+                {
+                    <tr>
+                        <td class="formTitle">审核结论：</td>
+                        <td class="formValue" colspan="3">
+                            @item.state
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="formTitle">意见：</td>
+                        <td class="formValue" colspan="3" style="height:20px">
+                            <div> @item.opinion</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="formTitle">审核人：</td>
+                        <td class="formValue">
+                            @item.username
+                        </td>
+                        <td class="formTitle">审核时间：</td>
+
+                        @if (item.submintdate.HasValue)
+                        {
+                            <td class="formValue">
+                                @item.submintdate.Value.ToString("yyyy年MM月dd日")
+                            </td>
+                        }
+                        else
+                        {
+
+                            <td class="formValue"></td>
+                        }
+
+
+                    </tr>
+
+                }
+
+            }
+        </table>
+    </div>
+    <div id="audit" style="border-top:1px solid #e3ebfd;width:100%;border-bottom:1px solid #e3ebfd;margin-top: 20px; margin-right: 30px;margin-bottom:30px;display:none">
+        <table class="form">
+            <tr>
+                <td class="formTitle" style="width:120px">审核结论</td>
+                <td class="formValue" colspan="3">
+                    <input type="radio" value="审核通过" name="Result" /><label>审核通过</label>
+
+                    <input type="radio" value="审核不通过" name="Result" /><label>审核不通过</label>
+                    <input type="radio" value="退回" name="Result" /><label>退回</label>
+
+                </td>
+            </tr>
+            <tr>
+                <td class="formTitle">审核意见</td>
+                <td class="formValue" colspan="3">
+
+                    <textarea class="form-control" maxlength="200" style="width:550px" id="opinion"></textarea>
+
+                </td>
+            </tr>
+            <tr id="person" style="display:none">
+                <td class="formTitle">下一级审核人</td>
+                <td class="formValue">
+                    <input class="form-control" style="width:550px" placeholder="点击选择人员、单选" id="username" readonly="readonly" onclick="fn$select();" value="@ViewBag.username" />
+                    <input hidden="hidden" id="userid" value="@ViewBag.userid" />
+                </td>
+            </tr>
+            <tr>
+                <td class="formTitle"></td>
+
+                <td class="formValue" colspan="3">
+                    <a id="btn_Submission" class="btn btn-success " onclick="sub()"><i class="fa fa-check-circle"></i>&nbsp;提交审核</a>
+
+                </td>
+
+            </tr>
+        </table>
+    </div>
+</div>
+<script>
+    jQuery(function () {
+        if ('@ViewBag.ck' == "True") {
+            //$("#audit").css('display', 'block')
+            $("#audit").css('display', 'block')
+        }
+        if ('@ViewBag.person' == "True") {
+            $("#person").css('display', 'block')
+
+        }
+    });
+    function fn$select() {
+        dialogOpen({
+            id: "SelectUser",
+            title: "选择人员",
+            url: '/..@Url.Action("SelectShow")',
+            width: "300px",
+            height: "500px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick(fn$selectover1);
+            }
+        });
+    }
+    function fn$selectover1(node) {
+        if (node) {
+            $('#username').val(node.text);
+            $('#userid').val(node.value);
+        }
+    }
+
+    function sub() {
+        var state = jQuery('input[name="Result"]:checked').val();
+        if (state == undefined) {
+            dialogMsg('请选择审核结论！', 0);
+            return;
+        }
+        if ('@ViewBag.person' == "True") {
+            if ($('#userid').val() == '' || $('#userid').val() == undefined) {
+                dialogMsg('请选择下级审核人！', 0);
+                return;
+            }
+        }
+        var username = $('#username').val();
+        var userid = $('#userid').val();
+        var opinion = $('#opinion').val();
+        var auditid = '@ViewBag.auditid';
+        var entity = {
+            auditid: auditid,
+            userid: userid,
+            username: username,
+            state:state,
+            opinion: opinion,
+            innovationid:'@Model.innovationid'
+        }
+        $.ajax({
+            url: '@Url.Action("saveAudit")',
+            type: "get",
+            dataType: "json",
+            data: entity,
+            success: function (Resultdata) {
+                if (Resultdata.success) {
+                    location.reload();
+
+                } else {
+                    dialogMsg('保存失败！', 0);
+                }
+            }
+        });
+    }
+</script>

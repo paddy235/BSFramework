@@ -1,0 +1,299 @@
+﻿@{ ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml"; }
+
+<script src="~/Content/scripts/plugins/AdminPrettyDesktopFirst/js/LoadData.js"></script>
+<script>
+    var deptId = "@ViewBag.deptid";
+    $(function () {
+
+        InitialPage();
+
+        GetGrid();
+    });
+
+    //初始化页面
+    function InitialPage() {
+        $('#layout').layout({
+            west: {
+                size: 300
+            },
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $("#departments").height($(window).height() - 50);
+                $("#gridTable").setGridHeight($(window).height() - 170);
+            }, 200);
+            e.stopPropagation();
+        });
+        $("#departments").height($(window).height() - 50);
+
+    }
+
+
+    //加载表格
+    function GetGrid() {
+        var queryJson = {
+            subjectstate: "",
+            year: "",
+            name: "",
+            deptid: deptId,
+        }
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            url: '/..@Url.Action("GetPageListJson")',
+            datatype: "json",
+            height: $(window).height() - 170,
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'qcid', hidden: true },
+                  { label: '组长id', name: 'groupbossid', hidden: true },
+                {
+                    label: '操作', name: 'action', width: 135, align: 'center', sortable: false
+                },
+                { label: '部门', name: 'deptname', index: 'deptname', width: 350, align: 'center' },
+                { label: '课题小组名称', name: 'groupname', index: 'groupname', width: 200, align: 'center' },
+                { label: '课题小组编号', name: 'groupcode', index: 'groupcode', width: 200, align: 'center' },
+                { label: '课题名称', name: 'subjectname', index: 'subjectname', width: 200, align: 'center' },
+                { label: '活动状态', name: 'subjectstate', index: 'subjectstate', width: 200, align: 'center' },
+                { label: '课题编号', name: 'subjectcode', index: 'subjectcode', width: 200, align: 'center' },
+                {
+                    label: '上报时间', name: 'subjecttime', index: 'subjecttime', width: 200, align: 'center', sortable: false
+                    ,
+                    formatter: function (cellvalue, options, rowObject) {
+                        return formatDate(cellvalue, 'yyyy-MM-dd');
+                    },
+                    formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                }
+            ],
+            viewrecords: true,
+            rowNum: 30,
+            // rowList: [30, 50, 100],
+            pager: "#gridPager",
+            //sortname: 'createdate',
+            //sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: true,
+            postData: { queryJson: JSON.stringify(queryJson) },
+
+            gridview: true,
+            gridComplete: function () {
+                var gridid = this.id;
+                $("#" + this.id).setSelection(selectedRowIndex, false);
+                var rows = $("#" + this.id).jqGrid("getRowData");//获取当前页记录行数据
+                //查询用户对该模块的数据操作权限
+                $(rows).each(function (i, item) {
+                    var html = "";
+                    var userId = '@ViewBag.userId';
+                    var DeptCk = '@ViewBag.DeptCk';
+                    html += "<a href=\"javascript:show('" + item.qcid + "')\" title=\"查看\">查看</a>";
+                    if (item.groupbossid == userId || DeptCk=="True") {
+                        if (item.subjectstate!="已完结") {
+                            html += "<a href=\"javascript:edit('" + item.qcid + "')\" title=\"编辑\">编辑</a>";
+
+                        }
+                    }
+                    if (DeptCk=="True") {
+                        html += "<a href=\"javascript:del('" + item.qcid + "')\" title=\"删除\">删除</a>";
+                    }
+                    $("td[aria-describedby='" + gridid + "_action']").eq(i).html(html);
+
+                });
+            }
+            //,
+            //loadError: function (xhr, status, error) {
+            //    top.location.href = "../../Login/Index?Login_Error=1";
+            //}
+        });
+        //$gridTable.authorizeColModel()
+        //查询事件
+        $("#btn_Search").click(function () {
+            var $gridTable = $('#gridTable');
+            var queryJson = {
+                subjectstate: $("#subjectstate").find("option:selected").val(),
+                year: $("#year").val(),
+                name: $("#name").val(),
+                deptid: deptId,
+            }
+            $gridTable.jqGrid('setGridParam', {
+                postData: { queryJson: JSON.stringify(queryJson) }, page: 1
+            }).trigger('reloadGrid');
+        });
+        //查询事件
+        $("#btn_Clear").click(function () {
+            $("#subjectstate").val("");
+            $("#year").val("");
+            $("#name").val("");
+            $('#btn_Search').trigger("click");
+        });
+
+        //查询回车
+        $('#txt_Keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+
+        $("#btn_Add").click(function () {
+            dialogOpen({
+                id: "Add",
+                title: '新增QC活动',
+                width: "1000px",
+                url: '/../@Url.Action("IndexAdd")',
+                height: "750px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+
+            })
+        });
+
+    }
+    function onNodeSelected(item) {
+        deptId = item.id;
+
+        $('#btn_Search').trigger("click");
+    }
+
+
+
+    function edit(id) {
+        dialogOpen({
+            id: "edit",
+            title: '编辑QC活动',
+            width: "1000px",
+            url: '/../@Url.Action("IndexEdit")?keyValue=' + id,
+            height: "750px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+
+        })
+    }
+    function del(id) {
+        if (id) {
+            $.RemoveForm({
+                url: "/../@Url.Action("delEntity")",
+                param: { keyValue: id },
+                success: function (data) {
+                    $("#gridTable").trigger("reloadGrid");
+                }
+            })
+        }
+
+    }
+
+    //查看
+    function show(id) {
+        var keyValue = id;
+
+        var dlg = dialogOpen({
+            id: "Detail",
+            title: '查看',
+            url: '/../@Url.Action("IndexDetail")?keyValue=' + keyValue,
+            width: "1000px",
+            height: "750px",
+            btn: ['关闭'],
+            callBack: function (iframeId) {
+                top.layer.close(dlg);
+            }
+        });
+
+    }
+
+    function ref() {
+        var $gridTable = $('#gridTable');
+        var queryJson = {
+            subjectstate: $("#subjectstate").val(),
+            year: $("#year").val(),
+            name: $("#name").val(),
+            deptid: deptId,
+        }
+        $gridTable.jqGrid('setGridParam', {
+            postData: { queryJson: JSON.stringify(queryJson) }, page: 1
+        }).trigger('reloadGrid');
+    }
+
+</script>
+
+
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                <div class="col-md-10">
+                    组织机构
+                </div>
+                <div class="col-md-2 text-right" style="padding-right:8px;">
+                    <i class="fa fa-arrow-left" onclick="setBar(this)" style="cursor:pointer;" title="展开/收起"></i>
+                </div>
+            </div>
+            @Html.Partial("~/Areas/BaseManage/Views/Department/Tree.cshtml")
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title">
+                QC活动
+            </div>
+            <div class="titlePanel">
+                <div class="title-search">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label for="team">日期</label>
+                            <input type="text" class="form-control" id="year" onfocus="WdatePicker({ dateFmt: 'yyyy' });" readonly="readonly">
+                        </div>
+                        <div class="form-group">
+                            <label for="team">活动状态</label>
+                            <select id="subjectstate">
+                                <option value="" selected="selected">全部</option>
+                                <option value="进行中">进行中</option>
+                                <option value="已完结">已完结</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="team"></label>
+                            <input type="text" class="form-control" id="name" placeholder="建议标题关键字检索">
+                        </div>
+                        <div class="form-group">
+                            <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                        </div>
+                      
+                        <div class="form-group">
+                            <a id="btn_Clear" class="btn btn-primary"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="toolbar">
+                    <div class="btn-group">
+                        <a id="btn_Add" class="btn btn-primary"><i class="fa  fa-plus"></i>&nbsp;新增</a>
+                    </div>
+                    <script>
+ @if (!BSFramework.Application.Code.OperatorProvider.Provider.Current().IsSystem)
+                {
+                    @Html.Raw("AuthiruzeBtn($('.toolbar'), $('#grid'));");//操作按钮权限控制
+                }
+                    </script>
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="gridTable"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+

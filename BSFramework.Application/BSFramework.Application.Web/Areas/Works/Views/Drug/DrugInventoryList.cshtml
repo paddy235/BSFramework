@@ -1,0 +1,286 @@
+﻿@{
+    ViewBag.Title = "DrugInventoryList";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group a.btn {
+            margin-top: 4px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+    a {
+        text-decoration: none;
+    }
+</style>
+<script>
+    var selectedRowIndex;
+
+    jQuery(function () {
+        //$(window).resize(function (e) {
+        //    window.setTimeout(function () {
+        //        $('#grid').setGridWidth(($('.gridPanel').width()));
+        //        $("#grid").setGridHeight($(window).height() - 140);
+        //    }, 200);
+        //    e.stopPropagation();
+        //});
+
+        var $gridTable = $('#grid');
+        jQuery('#grid').jqGrid({
+            autowidth: true,
+            multiselect:true,
+            colModel: [
+                { label: '主键', name: 'ID', hidden: true, align: 'center' },
+                {
+                    label: '操作', name: '', index: '', width: 200, align: 'center',
+                    formatter: function (cellvaue, options, rowObject) {
+                        return "<a style='text-decoration:none;' href=\"javascript:detailnew('" + rowObject.Id + "')\" title=\"\" >查看</a><a style='text-decoration:none;' href=\"javascript:editnew('" + rowObject.Id + "')\" title=\"\">修改</a><a style='text-decoration:none;' href=\"javascript:delnew('" + rowObject.Id + "')\" title=\"\">删除</a>"
+                    }
+                },
+                {
+                    label: '药品名称', name: 'DrugName', index: 'DrugName', width: 350, align: 'center'
+                },
+                { label: '英文名', name: 'EnglishName', index: 'EnglishName', width: 350, align: 'center' },
+                { label: 'CAS NO.', name: 'CASNO', index: 'CASNO', width: 350, align: 'center' },
+                {
+                    label: '相关文件', name: '', index: '', width: 380, align: 'center',sortable:false,
+                    formatter: function (cellvaue, options, rowObject) {
+                        var html = "";
+                        if (rowObject.msds != "")
+                        {
+                            html += "<a style='text-decoration:none;color:blue;' href=\"javascript:msds('" + rowObject.Id + "') \" title=\"\" target=\"_blank\">MSDS</a>";
+                        }
+                        if (rowObject.video != "")
+                        {
+                            html += "<a style='text-decoration:none;color:blue;' href=\"javascript:video('" + rowObject.Id + "')\" title=\"\" target=\"_blank\">操作视频</a>";
+                        }
+                        return html;
+                    }
+                }
+            ],
+            height: $(window).height() - 130,
+            url: '@Url.Action("GetDrugInventoryData")',
+            datatype: "json",
+            viewrecords: true,
+            rowNum: 30,
+            // rowList: [30, 50, 100],
+            pager: "#gridPager",
+            sortname: 'CreateDate',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            onSelectRow: function (rowid) {
+                selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            }
+
+        });
+        //查询事件
+        $("#btn_Search").click(function () {
+         
+            var queryJson = {
+                keyword: $("#txt_Keyword").val()
+            }
+
+            $gridTable.jqGrid('setGridParam', {
+                postData: { queryJson: JSON.stringify(queryJson) }, page: 1
+            }).trigger('reloadGrid');
+        });
+        $("#btn_SearchAll").click(function () {
+           
+            $("#txt_Keyword").val('');
+            $('#btn_Search').trigger("click");
+        });
+        $("#refresh").click(function () {
+
+            $("#txt_Keyword").val('');
+            $('#btn_Search').trigger("click");
+        });
+        //查询回车
+        $('#txt_Keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+    });
+    function exp() {
+        var ids = $('#grid').jqGrid('getGridParam', 'selarrrow');
+        if (ids.length < 1)
+        {
+            alert('请选择要导出的药品！');
+            return;
+        }
+        var idstr = '';
+        ids.forEach(function (value, i)
+        {
+            idstr += value + ',';
+        })
+        @*$.ajax({
+            url: '@Url.Action("expword")',
+            type: 'post',
+            data: { ids: idstr },
+            loading: "数据提交中...",
+            success: function (data) {
+
+            }
+        });*@
+        window.location.href = '@Url.Action("expword")?ids=' + idstr+'&type=0';
+    }
+    function imp() {
+        dialogOpen({
+            id: "Form",
+            title: '新增',
+            url: '/../@Url.Action("ImportNew")/?type=1',
+            width: "800px",
+            height: "500px",
+            btn: null
+        });
+    }
+    //新增
+    function add() {
+        var height = "950px";
+        dialogOpen({
+            id: "Form",
+            title: '新增',
+            url: '/../@Url.Action("Form")',
+            width: "1000px",
+            height: height,
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+
+    };
+    function msds(id)
+    {
+        dialogOpen({
+            id: "Detail",
+            title: '查看详情',
+            url: '/../@Url.Action("MSDS")/' + id,
+            width: "1300px",
+            height: "900px",
+            btn: null
+        });
+    }
+    function video(id)
+    {
+        dialogOpen({
+            id: "Detail",
+            title: '查看详情',
+            url: '/../@Url.Action("Video")/' + id,
+            width: "1050px",
+            height: "720px",
+            btn: null
+        });
+    }
+    function detailnew(id) {
+        var height = "950px";
+        dialogOpen({
+            id: "Detail",
+            title: '查看详情',
+            url: '/../@Url.Action("Detail")/' + id,
+            width: "1000px",
+            height: height,
+            btn: null
+        });
+
+    }
+    
+    function editnew(id) {
+        var height = "950px";
+        dialogOpen({
+            id: "Form",
+            title: '编辑',
+            url: '/../@Url.Action("Form")/' + id,
+            width: "1000px",
+            height: height,
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick1();
+            }
+        });
+
+    }
+    //删除
+    function del() {
+        var keyValue = $("#grid").jqGridRowValue("JobId");
+        if (keyValue) {
+            $.RemoveForm({
+                url: '/../@Url.Action("DeleteOne")/',
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#grid").resetSelection();
+                    $("#grid").trigger("reloadGrid");
+                }
+            })
+        } else {
+            dialogMsg('请选择数据！', 0);
+        }
+    }
+    function delnew(id) {
+
+        $.RemoveForm({
+            url: '/../@Url.Action("DeleteOne")/',
+            param: { keyValue: id },
+            success: function (data) {
+                $("#grid").resetSelection();
+                $("#grid").trigger("reloadGrid");
+            }
+        })
+    }
+    function editlist(id) {
+        dialogOpen({
+            id: "Form",
+            title: '编辑',
+            url: '/../@Url.Action("EditList")/' + id,
+            width: "1600px",
+            height: "800px",
+            btn: null
+        });
+    }
+
+</script>
+
+<div class="titlePanel">
+    <div class="title-search">
+        <table>
+            <tr>
+                <td style="padding-left: 2px;">
+                    <input id="txt_Keyword" type="text" class="form-control" placeholder="请输入药品名称/CAS号等关键字" style="width: 350px;" />
+                </td>
+                <td style="padding-left: 5px;">
+                    <a id="btn_Search" class="btn btn-primary" style="line-height:15px;"><i class="fa fa-search"></i>&nbsp;查询</a>
+                    <a id="btn_SearchAll" class="btn btn-primary" style="line-height:15px;">&nbsp;全部</a>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+    <div class="toolbar">
+        <div class="btn-group">
+            <a id="refresh" class="btn btn-default"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+            <a id="add" class="btn btn-default" onclick="add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+            <a id="exp" class="btn btn-default" onclick="exp()"><i class="fa fa-download"></i>&nbsp;导出二维码</a>
+            <a id="exp" class="btn btn-default" onclick="imp()"><i class="fa fa-upload"></i>&nbsp;导入</a>
+        </div>
+        @*<script>$('.toolbar').authorizeButton()</script>*@
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="grid"></table>
+    <div id="gridPager"></div>
+</div>
+

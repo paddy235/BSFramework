@@ -1,0 +1,227 @@
+﻿@model Bst.Fx.SchedulerEntities.SchedulerTaskEntity
+
+@{
+    ViewBag.Title = "考评标准";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<link href="@Url.Content("~/Content/scripts/plugins/bootstrap-select/bootstrap-select.min.css")" rel="stylesheet" />
+<link href="@Url.Content("~/Content/scripts/plugins/jqgrid/jqgrid.css")" rel="stylesheet" />
+<script src="~/Content/scripts/business/Common.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.url.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/bootstrap-select/bootstrap-select.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jqgrid/grid.locale-cn.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jqgrid/jqgrid.js")"></script>
+<script>
+    jQuery(function () {
+        jQuery('#everymonth').change(function () {
+            if (jQuery(this).is(':checked')) jQuery('input[name="monthsofyear"]').prop('checked', true);
+        });
+
+        jQuery('#Category').change(function () {
+            if (jQuery(this).val() == '天') {
+                jQuery('#month1').hide();
+                jQuery('#month2').hide();
+                jQuery('#week').hide();
+            } else if (jQuery(this).val() == '月') {
+                jQuery('#month1').show();
+                jQuery('#month2').show();
+                jQuery('#week').hide();
+            } else if (jQuery(this).val() == '周') {
+                jQuery('#month1').hide();
+                jQuery('#month2').hide();
+                jQuery('#week').show();
+            }
+        });
+
+        if (jQuery('#Category').val() == '天') {
+            jQuery('#month1').hide();
+            jQuery('#month2').hide();
+            jQuery('#week').hide();
+        } else if (jQuery('#Category').val() == '月') {
+            jQuery('#month1').show();
+            jQuery('#month2').show();
+            jQuery('#week').hide();
+            var ary = JSON.parse(jQuery('#value2').val());
+            jQuery.each(ary, function (i, o) {
+                jQuery('input[name="daysofmonth"][value="' + o + '"]').prop('checked', true);
+            });
+
+            var ary2 = JSON.parse(jQuery('#value3').val());
+            jQuery.each(ary2, function (i, o) {
+                jQuery('input[name="monthsofyear"][value="' + o + '"]').prop('checked', true);
+            });
+        } else if (jQuery('#Category').val() == '周') {
+            jQuery('#month1').hide();
+            jQuery('#month2').hide();
+            jQuery('#week').show();
+            var ary = JSON.parse(jQuery('#value1').val());
+            jQuery.each(ary, function (i, o) {
+                jQuery('input[name="dayofweek"][value="' + o + '"]').prop('checked', true);
+            });
+        }
+    });
+
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var json = jQuery('#form1').serializeJSON();
+
+        if (json.Category == "周") {
+            var checked = jQuery('input[name="dayofweek"]:checked');
+            if (checked.size() == 0) {
+                dialogAlert("请选择周", -1);
+                return false;
+            } else {
+                var ary = [];
+                checked.each(function (i, o) {
+                    ary.push(jQuery(o).val());
+                });
+                json.dayofweek = ary;
+            }
+        } else if (json.Category == "月") {
+            var checked2 = jQuery('input[name="monthsofyear"]:checked');
+            if (checked2.size() == 0) {
+                dialogAlert("月", -1);
+                return false;
+            } else {
+                var ary = [];
+                checked2.each(function (i, o) {
+                    ary.push(jQuery(o).val());
+                });
+                json.monthsofyear = ary;
+            }
+
+            var checked = jQuery('input[name="daysofmonth"]:checked');
+            if (checked.size() == 0) {
+                dialogAlert("请选择日期", -1);
+                return false;
+            } else {
+                var ary = [];
+                checked.each(function (i, o) {
+                    ary.push(jQuery(o).val());
+                });
+                json.daysofmonth = ary;
+            }
+        }
+
+        //Loading(true, '正在处理数据...');
+        jQuery.ajax({
+            contentType: 'application/json',
+            type: 'POST',
+            url: '@Url.Action("Edit")',
+            data: JSON.stringify(json),
+            success: function (data) {
+                if (data.type == "3") {
+                    dialogAlert(data.message, -1);
+                } else {
+                    Loading(false);
+                    dialogMsg(data.message, 1);
+                    $.currentIframe().fn$query();
+                    dialogClose();
+                }
+            },
+            complete: function () {
+                Loading(false);
+            }
+        })
+
+    }
+
+</script>
+
+<div style="margin:10px">
+    <table class="form">
+        <tr>
+            <td class="formTitle" style="width:120px;">执行计划<font face="宋体">*</font></td>
+            <td class="formValue">
+                @Html.TextBoxFor(x => x.TaskName, new { @class = "form-control", placeholder = "请输入工作任务", isvalid = "yes", checkexpession = "NotNull", maxlength = 200, @readonly="readonly" })
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">执行时间<font face="宋体">*</font></td>
+            <td class="formValue">
+                @Html.TextBoxFor(x => x.ExecuteTime, "{0:yyyy-MM-dd HH:mm:ss}", new { @class = "form-control", placeholder = "请选择执行时间", isvalid = "yes", checkexpession = "NotNull", onfocus = "WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});", style = "width:200px;" })
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">周期</td>
+            <td class="formValue">
+                @Html.DropDownListFor(x => x.Category, ViewData["years"] as List<SelectListItem>, new { @class = "form-control", style = "width:200px" })
+                <input type="hidden" id="value1" value="@Html.Raw(ViewBag.value1)" />
+                <input type="hidden" id="value2" value="@Html.Raw(ViewBag.value2)" />
+                <input type="hidden" id="value3" value="@Html.Raw(ViewBag.value3)" />
+            </td>
+        </tr>
+        <tr id="month1" style="display:none;">
+            <td class="formTitle" rowspan="2">按月</td>
+            <td class="formValue">
+                <label for="everymonth" class="checkbox-inline"><input type="checkbox" id="everymonth" name="everymonth" value="everymonth" class="checkbox" /> 每月</label>
+                <label for="jan" class="checkbox-inline"><input type="checkbox" name="monthsofyear" value="0" id="jan" /> 1月</label>
+                <label for="feb" class="checkbox-inline"><input type="checkbox" name="monthsofyear" value="1" id="feb" /> 2月</label>
+                <label for="mar" class="checkbox-inline"><input type="checkbox" name="monthsofyear" value="2" id="mar" /> 3月</label>
+                <label for="apr" class="checkbox-inline"><input type="checkbox" name="monthsofyear" value="3" id="apr" /> 4月</label>
+                <label for="may" class="checkbox-inline"><input type="checkbox" name="monthsofyear" value="4" id="may" /> 5月</label>
+                <label for="jun" class="checkbox-inline"><input type="checkbox" name="monthsofyear" value="5" id="jun" /> 6月</label>
+                <label for="jul" class="checkbox-inline"><input type="checkbox" name="monthsofyear" value="6" id="jul" /> 7月</label>
+                <label for="aug" class="checkbox-inline"><input type="checkbox" name="monthsofyear" value="7" id="aug" /> 8月</label>
+                <label for="sep" class="checkbox-inline"><input type="checkbox" name="monthsofyear" value="8" id="sep" /> 9月</label>
+                <label for="oct" class="checkbox-inline"><input type="checkbox" name="monthsofyear" value="9" id="oct" /> 10月</label>
+                <label for="nov" class="checkbox-inline"><input type="checkbox" name="monthsofyear" value="10" id="nov" /> 11月</label>
+                <label for="dec" class="checkbox-inline"><input type="checkbox" name="monthsofyear" value="11" id="dec" /> 12月</label>
+            </td>
+        </tr>
+        <tr id="month2" style="display:none;">
+            <td class="formValue">
+                <label for="1" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="0" id="1" /> 1</label>
+                <label for="2" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="1" id="2" /> 2</label>
+                <label for="3" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="2" id="3" /> 3</label>
+                <label for="4" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="3" id="4" /> 4</label>
+                <label for="5" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="4" id="5" /> 5</label>
+                <label for="6" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="5" id="6" /> 6</label>
+                <label for="7" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="6" id="7" /> 7</label>
+                <label for="8" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="7" id="8" /> 8</label>
+                <label for="9" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="8" id="9" /> 9</label>
+                <label for="10" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="9" id="10" /> 10</label>
+                <label for="11" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="10" id="11" /> 11</label>
+                <label for="12" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="11" id="12" /> 12</label>
+                <label for="13" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="12" id="13" /> 13</label>
+                <label for="14" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="13" id="14" /> 14</label>
+                <label for="15" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="14" id="15" /> 15</label>
+                <label for="16" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="15" id="16" /> 16</label>
+                <br />
+                <label for="17" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="16" id="17" /> 17</label>
+                <label for="18" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="17" id="18" /> 18</label>
+                <label for="19" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="18" id="19" /> 19</label>
+                <label for="20" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="19" id="20" /> 20</label>
+                <label for="21" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="20" id="21" /> 21</label>
+                <label for="22" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="21" id="22" /> 22</label>
+                <label for="23" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="22" id="23" /> 23</label>
+                <label for="24" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="23" id="24" /> 24</label>
+                <label for="25" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="24" id="25" /> 25</label>
+                <label for="26" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="25" id="26" /> 26</label>
+                <label for="27" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="26" id="27" /> 27</label>
+                <label for="28" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="27" id="28" /> 28</label>
+                <label for="29" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="28" id="29" /> 29</label>
+                <label for="30" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="29" id="30" /> 30</label>
+                <label for="31" class="checkbox-inline"><input type="checkbox" name="daysofmonth" value="30" id="31" /> 31</label>
+            </td>
+        </tr>
+        <tr id="week" style="display:none;">
+            <td class="formTitle" rowspan="1">按周</td>
+            <td class="formValue">
+                <label for="sun" class="checkbox-inline"><input type="checkbox" name="dayofweek" value="0" id="sun" /> 周日</label>
+                <label for="mon" class="checkbox-inline"><input type="checkbox" name="dayofweek" value="1" id="mon" /> 周一</label>
+                <label for="tue" class="checkbox-inline"><input type="checkbox" name="dayofweek" value="2" id="tue" /> 周二</label>
+                <label for="wed" class="checkbox-inline"><input type="checkbox" name="dayofweek" value="3" id="wed" /> 周三</label>
+                <label for="thu" class="checkbox-inline"><input type="checkbox" name="dayofweek" value="4" id="thu" /> 周四</label>
+                <label for="fri" class="checkbox-inline"><input type="checkbox" name="dayofweek" value="5" id="fri" /> 周五</label>
+                <label for="sat" class="checkbox-inline"><input type="checkbox" name="dayofweek" value="6" id="sat" /> 周六</label>
+            </td>
+        </tr>
+    </table>
+</div>

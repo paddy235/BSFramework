@@ -1,0 +1,173 @@
+﻿@{
+    ViewBag.Title = "Form2";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+<style type="text/css">
+    /*table tr {
+        line-height: 60px;
+    }*/
+</style>
+<script>
+    var TimeStr = request("TimeStr");
+    var Star ;
+    var End;
+    $(function () {
+        initControl();
+    })
+    function initControl() {
+        //if (TimeStr.indexOf("休息")>=0) {
+        //    $("#StartTime").val("08:30");
+        //    $("#EndTime").val("17:30");
+        //} else {
+        //    Star = TimeStr.split('(')[1].split(')')[0].split('-')[0];
+        //    End = TimeStr.split('(')[1].split(')')[0].split('-')[1];
+        //    $("#StartTime").val(Star);
+        //    $("#EndTime").val(End);
+        //}
+
+        $("#WorksettingId").ComboBoxTree({
+            url: '/..@Url.Action("GetWorksettingbyOrder")?orderid=' + '@ViewData["WorkOrderId"]',
+            description: "==请选择==",
+            height: "200px",
+            allowSearch: false
+        });
+        var context = '@ViewData["context"]';
+        var ck = context.split('(');
+        if (ck.length > 1) {
+            context = ck[1].replace(")","");
+        } else {
+            context = ck[0];
+        }
+        $(".bbit-tree-node-text").each(function (i, dom) {
+            var text = $(dom).text();
+            if (text == context) {
+                $(dom).trigger("click")
+            }
+        })
+    }
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var postData = $("#form1").formSerialize();
+        var text = $("#WorksettingId").attr('data-text');
+        var workSetting = $("#WorksettingId").attr('data-value');
+        if (!workSetting && text != "休息") {
+            dialogMsg('请选择班次！', 0); return false;
+
+        }
+        postData["WorkOrderId"] = "@ViewData["WorkOrderId"]";
+        postData["UpTime"] = "@ViewData["UpTime"]";
+        postData["worksetting"] = workSetting;
+        //postData["EndSpan"] = $("#EndTime").val();
+        //postData["StartSpan"] = $("#StartTime").val();
+        $.SaveForm({
+            url: "@Url.Action("WorkSetSaveOneDay")",
+            loading: "正在保存数据...",
+            param: postData,
+            success: function () {
+                $.currentIframe().$("#gridTable").resetSelection();
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+
+    }
+    function LabelWorkTime(start, end) {
+        var StartSplit = start.split(':');
+        var EndSplit = end.split(':');
+        var startNum = parseInt(StartSplit[0]);
+        var endNum = parseInt(EndSplit[0]);
+        if (startNum <= endNum) {
+            $("#dayTime").text("");
+        } else {
+            $("#dayTime").text("次日");
+        }
+    }
+
+    function checkTime() {
+        var EndTime = $("#EndTime").val();
+        var StartTime = $("#StartTime").val();
+        var r = /^((20|21|22|23|[0-1]\d)\:[0-5][0-9])/;
+        var startBool = r.test(StartTime);
+        var endBool = r.test(EndTime);
+        if (!startBool) {
+            dialogMsg('请注意时间格式！如：18:01,05:01', 0);
+            if (TimeStr.indexOf("休息") >= 0) {
+                $("#StartTime").val("08:30");
+
+            } else {
+                Star = TimeStr.split('(')[1].split(')')[0].split('-')[0];
+                End = TimeStr.split('(')[1].split(')')[0].split('-')[1];
+                $("#StartTime").val(Star);
+
+            }
+        }
+        if (!endBool) {
+            dialogMsg('请注意时间格式！如：18:01,05:01', 0);
+            if (TimeStr.indexOf("休息") >= 0) {
+
+                $("#EndTime").val("17:30");
+            } else {
+                Star = TimeStr.split('(')[1].split(')')[0].split('-')[0];
+                End = TimeStr.split('(')[1].split(')')[0].split('-')[1];
+                $("#EndTime").val(End);
+            }
+        }
+        if (startBool && endBool) {
+            var StartSplit = StartTime.split(':');
+            var EndSplit = EndTime.split(':');
+            var StartJsTime = new Date(2001, 01, 02, StartSplit[0], StartSplit[1]);
+            var EndJsTime;
+            var startNum = parseInt(StartSplit[0]);
+            var endNum = parseInt(EndSplit[0]);
+            if (startNum > endNum) {
+                EndJsTime = new Date(2001, 01, 03, EndSplit[0], EndSplit[1])
+                $("#dayTime").text("次日");
+            } else {
+                EndJsTime = new Date(2001, 01, 02, EndSplit[0], EndSplit[1])
+                $("#dayTime").text("");
+            }
+
+        }
+    }
+
+
+</script>
+<div style="margin-left: 10px; margin-top: 20px; margin-right: 30px;">
+    <table class="form">
+        <tr>
+
+            <th class="formTitle">班次选择</th>
+            <td class="formValue">
+                <div id="WorksettingId" type="selectTree" class="ui-select">
+                </div>
+            </td>
+            @*<th class="formTitle">原时间：</th>
+
+            <td class="formValue">
+                <div>
+                    @ViewData["TimeStr"] <input id="WorkId" type="hidden" />
+                    <input id="TimeSpan" type="hidden" />
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">上班：<font face="宋体">*</font></th>
+            <td class="formValue">
+                <div>
+                    <input id="StartTime" type="text" class="form-control" onblur="checkTime()" />
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">下班：<font face="宋体">*</font></th>
+            <td class="formValue">
+                <div>
+                    <input id="EndTime" type="text" class="form-control" onblur="checkTime()" />
+                </div>
+            </td>
+            <td class="formValue"><label id="dayTime"></label></td>
+        </tr>*@
+    </table>
+</div>

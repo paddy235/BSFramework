@@ -1,0 +1,136 @@
+﻿@model BSFramework.Application.Entity.PublicInfoManage.NewsEntity
+@{
+    ViewBag.Title = "NewDetail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")" />
+
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/layui/layui.all.js")"></script>
+@*<script src="@Url.Content("~/Content/bootstrap/js/bootstrap.min.js")"></script>*@
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<script>
+    $(function () {
+
+    })
+
+
+</script>
+<style type="text/css">
+    .tools-list::-webkit-scrollbar {
+        width: 12px;
+        height: 1px;
+    }
+
+    .tools-list::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        background: #E3EBFD;
+    }
+
+    .tools-list::-webkit-scrollbar-track {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        background: #EDEDED;
+    }
+</style>
+@using (Html.BeginForm("NewDetail", "Notice", FormMethod.Post))
+{
+    <div class="main-content" style="max-height:930px;overflow-y:auto;">
+        <div class="container-fluid">
+            <div class="mg-b-10">
+                <div class="" style="overflow: hidden;">
+                    <div class="pull-left title">
+                        <a href="javascript:void(0);" onclick="window.history.back();">
+                            <img src="~/Content/styles/static/images/arrow-back-icon.png" alt="">
+                            通知公告详情
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="pd-10 my-body">
+                <div style="padding:10px 120px;">
+                    <div style="text-align:center;font-size:30px;font-weight:bold;">@Model.FullHead</div>
+                    <table style="width:100%; color:gray;">
+                        <tr>
+                            <td style="width:50%; text-align:right;padding-right:10px;"><h3>@(Model.NoticeDept)</h3></td>
+                            <td style="width:50%;padding-left:10px;"><h3>@Model.ReleaseTime.Value.ToString("yyyy-MM-dd")</h3></td>
+                        </tr>
+                    </table>
+                    <textarea style="width:100%;height:500px;font-size:22px;border:0px;outline:none;" readonly="readonly">@Model.NewsContent</textarea>
+                    <div style="margin-top:10px;margin-bottom:10px;font-size:30px;font-weight:bold;">
+                        附件：
+                    </div>
+                    <div>
+                        <ul style="padding-left:0px;line-height:40px;">
+                            @{
+                                var lls = (IList<BSFramework.Application.Entity.PublicInfoManage.FileInfoEntity>)ViewData["files"];
+                                if (lls.Count() > 0)
+                                {
+                                    for (int i = 0; i < lls.Count(); i++)
+                                    {
+                                        <li style="font-size:18px;list-style:none;">
+                                            <label>材料 @Html.Raw(i + 1) </label>
+                                            <a href="@Url.Action("DownloadFile", "ResourceFile", new { keyValue =lls[i].FileId, area = "PublicInfoManage" })" target="_blank" style="cursor:pointer;color:blue;text-decoration:underline;margin-left:15px;" title="下载文件">@lls[i].FileName</a>
+                                        </li>
+
+                                    }
+                                }
+                            }
+                        </ul>
+                    </div>
+                    @*
+                                                <ul>
+                            @{
+                                var lls = (IList<BSFramework.Application.Entity.PublicInfoManage.FileInfoEntity>)ViewData["files"];
+                                if (lls.Count() > 0)
+                                {
+
+                                    <label style="padding-left:50px;font-size:22px;">附件</label>
+                                    <br />
+                                    <br />
+
+                                        @for (int i = 0; i < lls.Count(); i++)
+                                        {
+                                            <li style="font-size:18px;list-style:none;">
+                                                <label>材料 @Html.Raw(i + 1) </label>
+                                                <a href="@Url.Action("DownloadFile", "ResourceFile", new { keyValue =lls[i].FileId, area = "PublicInfoManage" })" target="_blank" style="cursor:pointer;color:blue;text-decoration:underline;margin-left:15px;" title="下载文件">@lls[i].FileName</a>
+                                            </li>
+
+                                        }
+                                    </ol>
+                                }
+                            }
+                        </ul>
+
+
+
+                            <div style="text-align:left;height:100%;">
+                                <table style="border:0px;width:100%;height:100%;position:relative;bottom:0px;">
+                                    <tr>
+                                        <td style="width:400px;">
+
+                                        </td>
+                                        <td style="width:30%;text-align:right;"></td>
+                                    </tr>
+                                </table>
+
+
+                            </div>*@
+                </div>
+            </div>
+
+            <footer class="main-footer">
+                武汉博晟安全技术股份有限公司   版权所有
+            </footer>
+
+        </div>
+    </div>
+                                }

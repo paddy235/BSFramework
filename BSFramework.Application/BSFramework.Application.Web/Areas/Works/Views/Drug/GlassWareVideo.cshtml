@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewBag.Title = "GlassWareVideo";
+    Layout = "~/Views/Shared/_FlowIndex.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/video.min.css")">
+<script src="@Url.Content("~/Content/scripts/plugins/video/js/video.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/video/js/videojs-contrib-hls.min.js")"></script>
+<div>
+    <h3 class="currentVideo">@ViewData["glasswarename"].ToString()（当前播放）</h3>
+    <div style="background: #000000;height: 650px;">
+        <video id="my-video" style="width:100%;height:100%;"
+               class="video-js vjs-default-skin vjs-big-play-centered"
+               controls preload="auto" width="100%" height="100%"
+               data-setup="{'techOrder':['html5', 'flash', 'other supported tech']}">
+            <source src="@Url.Content(ViewBag.path)" type="video/mp4">
+        </video>
+    </div>
+</div>

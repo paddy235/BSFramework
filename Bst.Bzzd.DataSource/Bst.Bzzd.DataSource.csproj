@@ -1,0 +1,340 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0404B662-9130-473B-B472-2BCCB4D9A93A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Bst.Bzzd.DataSource</RootNamespace>
+    <AssemblyName>Bst.Bzzd.DataSource</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.10.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.10.9\lib\net452\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data.Entity.EF6, Version=6.10.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.Entity.6.10.9\lib\net452\MySql.Data.Entity.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="Oracle.ManagedDataAccess, Version=4.122.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <HintPath>..\packages\Oracle.ManagedDataAccess.12.2.1100\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="Oracle.ManagedDataAccess.EntityFramework, Version=6.122.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <HintPath>..\packages\Oracle.ManagedDataAccess.EntityFramework.12.2.1100\lib\net45\Oracle.ManagedDataAccess.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DataContext.cs" />
+    <Compile Include="Entities\Budget.cs" />
+    <Compile Include="Entities\CostRecord.cs" />
+    <Compile Include="Entities\CultureWall.cs" />
+    <Compile Include="Entities\DangerCategory.cs" />
+    <Compile Include="Entities\DangerMeasure.cs" />
+    <Compile Include="Entities\HumanDanger.cs" />
+    <Compile Include="Entities\HumanDangerTraining.cs" />
+    <Compile Include="Entities\Warning.cs" />
+    <Compile Include="Entities\Message.cs" />
+    <Compile Include="Entities\MessageConfig.cs" />
+    <Compile Include="Entities\Report.cs" />
+    <Compile Include="Entities\ReportSetting.cs" />
+    <Compile Include="Entities\Scheduler.cs" />
+    <Compile Include="Entities\WarningConfig.cs" />
+    <Compile Include="Migrations\201812070906568_Init.cs" />
+    <Compile Include="Migrations\201812070906568_Init.designer.cs">
+      <DependentUpon>201812070906568_Init.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201812100625364_ModifyReportAddTasks.cs" />
+    <Compile Include="Migrations\201812100625364_ModifyReportAddTasks.designer.cs">
+      <DependentUpon>201812100625364_ModifyReportAddTasks.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201812110838575_ModifyReportRemoveCantdo.cs" />
+    <Compile Include="Migrations\201812110838575_ModifyReportRemoveCantdo.designer.cs">
+      <DependentUpon>201812110838575_ModifyReportRemoveCantdo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201812120846597_AddReportSetting.cs" />
+    <Compile Include="Migrations\201812120846597_AddReportSetting.designer.cs">
+      <DependentUpon>201812120846597_AddReportSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201812120923077_ModifyReportSetting.cs" />
+    <Compile Include="Migrations\201812120923077_ModifyReportSetting.designer.cs">
+      <DependentUpon>201812120923077_ModifyReportSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201812131028552_ModifyReport.cs" />
+    <Compile Include="Migrations\201812131028552_ModifyReport.designer.cs">
+      <DependentUpon>201812131028552_ModifyReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201812170918211_ModifyReportAddComments.cs" />
+    <Compile Include="Migrations\201812170918211_ModifyReportAddComments.designer.cs">
+      <DependentUpon>201812170918211_ModifyReportAddComments.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201812191043286_AddCultureWall.cs" />
+    <Compile Include="Migrations\201812191043286_AddCultureWall.designer.cs">
+      <DependentUpon>201812191043286_AddCultureWall.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201812260051275_ModifyReportAddCantdo.cs" />
+    <Compile Include="Migrations\201812260051275_ModifyReportAddCantdo.designer.cs">
+      <DependentUpon>201812260051275_ModifyReportAddCantdo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201812270316177_ModifyCultureWall1.cs" />
+    <Compile Include="Migrations\201812270316177_ModifyCultureWall1.designer.cs">
+      <DependentUpon>201812270316177_ModifyCultureWall1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201903070312447_AddBudget.cs" />
+    <Compile Include="Migrations\201903070312447_AddBudget.designer.cs">
+      <DependentUpon>201903070312447_AddBudget.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201903090353171_AddCostRecord.cs" />
+    <Compile Include="Migrations\201903090353171_AddCostRecord.designer.cs">
+      <DependentUpon>201903090353171_AddCostRecord.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201903090357583_ModifyBudgetAddIndex.cs" />
+    <Compile Include="Migrations\201903090357583_ModifyBudgetAddIndex.designer.cs">
+      <DependentUpon>201903090357583_ModifyBudgetAddIndex.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201903090400336_ModifyCostAddIndex.cs" />
+    <Compile Include="Migrations\201903090400336_ModifyCostAddIndex.designer.cs">
+      <DependentUpon>201903090400336_ModifyCostAddIndex.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201903090410121_ModifyCostAddRecordUser.cs" />
+    <Compile Include="Migrations\201903090410121_ModifyCostAddRecordUser.designer.cs">
+      <DependentUpon>201903090410121_ModifyCostAddRecordUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201903090753451_ModifyCostAddRecordTime.cs" />
+    <Compile Include="Migrations\201903090753451_ModifyCostAddRecordTime.designer.cs">
+      <DependentUpon>201903090753451_ModifyCostAddRecordTime.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201903260651575_AddMessageAbout.cs" />
+    <Compile Include="Migrations\201903260651575_AddMessageAbout.designer.cs">
+      <DependentUpon>201903260651575_AddMessageAbout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201903260653122_AddWarningAbout.cs" />
+    <Compile Include="Migrations\201903260653122_AddWarningAbout.designer.cs">
+      <DependentUpon>201903260653122_AddWarningAbout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201903290605192_ModifyReportAddNoticeType.cs" />
+    <Compile Include="Migrations\201903290605192_ModifyReportAddNoticeType.designer.cs">
+      <DependentUpon>201903290605192_ModifyReportAddNoticeType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904040639287_AddDangerMeasure.cs" />
+    <Compile Include="Migrations\201904040639287_AddDangerMeasure.designer.cs">
+      <DependentUpon>201904040639287_AddDangerMeasure.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904040643257_AddHumanDanger.cs" />
+    <Compile Include="Migrations\201904040643257_AddHumanDanger.designer.cs">
+      <DependentUpon>201904040643257_AddHumanDanger.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904171027224_AddHumanDangerTraining.cs" />
+    <Compile Include="Migrations\201904171027224_AddHumanDangerTraining.designer.cs">
+      <DependentUpon>201904171027224_AddHumanDangerTraining.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904190124168_ModifyHumanDangerAddEvaluateTimes.cs" />
+    <Compile Include="Migrations\201904190124168_ModifyHumanDangerAddEvaluateTimes.designer.cs">
+      <DependentUpon>201904190124168_ModifyHumanDangerAddEvaluateTimes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906190733158_ModifyHumanDangerTrainingAddStatus.cs" />
+    <Compile Include="Migrations\201906190733158_ModifyHumanDangerTrainingAddStatus.designer.cs">
+      <DependentUpon>201906190733158_ModifyHumanDangerTrainingAddStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906190805291_ModifyHumanDangerChangeType.cs" />
+    <Compile Include="Migrations\201906190805291_ModifyHumanDangerChangeType.designer.cs">
+      <DependentUpon>201906190805291_ModifyHumanDangerChangeType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906200356432_ModifyHumanDangerTrainingAddStandard.cs" />
+    <Compile Include="Migrations\201906200356432_ModifyHumanDangerTrainingAddStandard.designer.cs">
+      <DependentUpon>201906200356432_ModifyHumanDangerTrainingAddStandard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906210201189_ModifyDangerCategoryAddSort.cs" />
+    <Compile Include="Migrations\201906210201189_ModifyDangerCategoryAddSort.designer.cs">
+      <DependentUpon>201906210201189_ModifyDangerCategoryAddSort.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201909060916279_CostRecordprofessional.cs" />
+    <Compile Include="Migrations\201909060916279_CostRecordprofessional.designer.cs">
+      <DependentUpon>201909060916279_CostRecordprofessional.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201912240641150_ModifyTrainingUserAddTicketId.cs" />
+    <Compile Include="Migrations\201912240641150_ModifyTrainingUserAddTicketId.designer.cs">
+      <DependentUpon>201912240641150_ModifyTrainingUserAddTicketId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001090305333_ModifyHumanDangerAddApprove.cs" />
+    <Compile Include="Migrations\202001090305333_ModifyHumanDangerAddApprove.designer.cs">
+      <DependentUpon>202001090305333_ModifyHumanDangerAddApprove.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009140645364_ApplyMysql.cs" />
+    <Compile Include="Migrations\202009140645364_ApplyMysql.Designer.cs">
+      <DependentUpon>202009140645364_ApplyMysql.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202101250821480_ModifyHumanDanger.cs" />
+    <Compile Include="Migrations\202101250821480_ModifyHumanDanger.Designer.cs">
+      <DependentUpon>202101250821480_ModifyHumanDanger.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Mis\TicketContext.cs" />
+    <Compile Include="Mis\FaultContext.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201812070906568_Init.resx">
+      <DependentUpon>201812070906568_Init.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201812100625364_ModifyReportAddTasks.resx">
+      <DependentUpon>201812100625364_ModifyReportAddTasks.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201812110838575_ModifyReportRemoveCantdo.resx">
+      <DependentUpon>201812110838575_ModifyReportRemoveCantdo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201812120846597_AddReportSetting.resx">
+      <DependentUpon>201812120846597_AddReportSetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201812120923077_ModifyReportSetting.resx">
+      <DependentUpon>201812120923077_ModifyReportSetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201812131028552_ModifyReport.resx">
+      <DependentUpon>201812131028552_ModifyReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201812170918211_ModifyReportAddComments.resx">
+      <DependentUpon>201812170918211_ModifyReportAddComments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201812191043286_AddCultureWall.resx">
+      <DependentUpon>201812191043286_AddCultureWall.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201812260051275_ModifyReportAddCantdo.resx">
+      <DependentUpon>201812260051275_ModifyReportAddCantdo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201812270316177_ModifyCultureWall1.resx">
+      <DependentUpon>201812270316177_ModifyCultureWall1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903070312447_AddBudget.resx">
+      <DependentUpon>201903070312447_AddBudget.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903090353171_AddCostRecord.resx">
+      <DependentUpon>201903090353171_AddCostRecord.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903090357583_ModifyBudgetAddIndex.resx">
+      <DependentUpon>201903090357583_ModifyBudgetAddIndex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903090400336_ModifyCostAddIndex.resx">
+      <DependentUpon>201903090400336_ModifyCostAddIndex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903090410121_ModifyCostAddRecordUser.resx">
+      <DependentUpon>201903090410121_ModifyCostAddRecordUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903090753451_ModifyCostAddRecordTime.resx">
+      <DependentUpon>201903090753451_ModifyCostAddRecordTime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903260651575_AddMessageAbout.resx">
+      <DependentUpon>201903260651575_AddMessageAbout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903260653122_AddWarningAbout.resx">
+      <DependentUpon>201903260653122_AddWarningAbout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903290605192_ModifyReportAddNoticeType.resx">
+      <DependentUpon>201903290605192_ModifyReportAddNoticeType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904040639287_AddDangerMeasure.resx">
+      <DependentUpon>201904040639287_AddDangerMeasure.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904040643257_AddHumanDanger.resx">
+      <DependentUpon>201904040643257_AddHumanDanger.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904171027224_AddHumanDangerTraining.resx">
+      <DependentUpon>201904171027224_AddHumanDangerTraining.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904190124168_ModifyHumanDangerAddEvaluateTimes.resx">
+      <DependentUpon>201904190124168_ModifyHumanDangerAddEvaluateTimes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906190733158_ModifyHumanDangerTrainingAddStatus.resx">
+      <DependentUpon>201906190733158_ModifyHumanDangerTrainingAddStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906190805291_ModifyHumanDangerChangeType.resx">
+      <DependentUpon>201906190805291_ModifyHumanDangerChangeType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906200356432_ModifyHumanDangerTrainingAddStandard.resx">
+      <DependentUpon>201906200356432_ModifyHumanDangerTrainingAddStandard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906210201189_ModifyDangerCategoryAddSort.resx">
+      <DependentUpon>201906210201189_ModifyDangerCategoryAddSort.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909060916279_CostRecordprofessional.resx">
+      <DependentUpon>201909060916279_CostRecordprofessional.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912240641150_ModifyTrainingUserAddTicketId.resx">
+      <DependentUpon>201912240641150_ModifyTrainingUserAddTicketId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001090305333_ModifyHumanDangerAddApprove.resx">
+      <DependentUpon>202001090305333_ModifyHumanDangerAddApprove.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009140645364_ApplyMysql.resx">
+      <DependentUpon>202009140645364_ApplyMysql.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101250821480_ModifyHumanDanger.resx">
+      <DependentUpon>202101250821480_ModifyHumanDanger.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!--<Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />-->
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

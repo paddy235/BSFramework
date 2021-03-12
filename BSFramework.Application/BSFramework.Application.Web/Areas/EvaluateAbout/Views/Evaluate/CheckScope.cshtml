@@ -1,0 +1,55 @@
+﻿@using BSFramework.Application.Web.Areas.EvaluateAbout.Models;
+@using Newtonsoft.Json
+@{
+    ViewBag.Title = "CheckScope";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+    List<TreeModel> trees = Model;
+}
+<script>
+    var treeModel = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(trees))');
+    var ids = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(trees.Select(p=>p.id)))');
+    var checkNode = [];
+    $(function () {
+        var AuthTreeitem = {
+            height: $(window).height() - 50,
+            showcheck: true,
+            url: false,
+            data: treeModel,
+            oncheckboxclick: function (item) {
+                if (item.checkstate == 0) {
+                    checkNode.push(item);
+                } else {
+                    for (var i = 0; i < checkNode.length; i++) {
+                        if (checkNode[i].id == item.id) {
+                            checkNode.splice(i, 1);
+                        }
+                    }
+                }
+            },
+            onnodeclick: function ()
+            { }
+        }
+        $("#check_div").treeview(AuthTreeitem);
+
+        $("#checkall").click(function () {
+            $("#check_div").setCheckedNodes(ids);
+        })
+    })
+    //
+    function AcceptClick(elemtId, elemtName) {
+        var ids = [];
+        var names = [];
+        $.each(checkNode, function (index, item) {
+            ids.push(item.id);
+            names.push(item.text);
+        })
+        $(elemtId).val(ids);
+        $(elemtName).val(names);
+        dialogClose();
+    }
+
+</script>
+<input id="checkall"  type="checkbox" style="margin-left:10px;"/> 全选/反选
+<div id="check_div">
+
+</div>

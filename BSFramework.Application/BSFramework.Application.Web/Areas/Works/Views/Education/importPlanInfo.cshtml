@@ -1,0 +1,117 @@
+﻿@{
+    ViewBag.Title = "importPlanInfo";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+<style type="text/css">
+    .import_content {
+        width: 370px;
+        margin: 110px auto 0 auto;
+        text-align: center;
+        font-size: 16px;
+    }
+
+        .import_content button {
+            background: #3668e1;
+            color: #fff;
+            border: none;
+            line-height: 45px;
+            width: 180px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .import_content a {
+            color: #3869df;
+            text-decoration: underline;
+        }
+
+    .import_file {
+        position: relative;
+        margin-bottom: 35px;
+    }
+
+        .import_file input.select_file {
+            position: absolute;
+            line-height: 47px;
+            width: 180px;
+            left: 50%;
+            margin-left: -90px;
+            opacity: 0;
+            cursor: pointer;
+        }
+</style>
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+<script>
+
+    jQuery(function () {
+        jQuery('#isupload').val('');
+    });
+
+</script>
+@using (Html.BeginForm("ImportPlanInfo", "Education", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="import_content">
+        <div class="import_file">
+            <button id="load">导入文件</button>
+            <input style="display:block;width:180px;height:47px;margin:-47px auto 0px auto; opacity:0;" id="select_file" name="inputfile" type="file" />
+        </div>
+        <p>下载模板后，点击“导入文件”按钮，可上传文件</p>
+        @{
+            if (ViewBag.type == "web")
+            {
+                <a href="@Url.Content("~/Content/export/web端培训计划导入模板.xlsx")">下载模板</a>
+
+            }
+            else
+            {
+                <a href="@Url.Content("~/Content/export/管理平台培训计划导入模板.xlsx")">下载模板</a>
+
+            }
+
+        }
+        <label id="message"> </label>
+    </div>
+}
+<script>
+   var type = request("type");
+    $('#select_file').change(uploadFile);
+    $('#load').click(function () {
+        document.getElementById('select_file').click();
+    });
+    function uploadFile() {
+        var myform = new FormData();
+        myform.append('file', $('#select_file')[0].files[0]);
+        $.ajax({
+            url: "@Url.Action("Importxlsx")?type=@ViewBag.type",
+            type: 'POST',
+            dataType: 'json',
+            data: myform,
+            contentType: false,
+            processData: false,
+            clearForm: true,
+            success: function (data) {
+                if (data.success) {
+                    if (type != "web") {
+                        $.currentIframe().$("#grid").resetSelection();
+                        $.currentIframe().$("#grid").trigger("reloadGrid");
+                    } else {
+
+                    }
+
+                    //layer.msg(data.message);
+                    $("#message").text(data.message);
+                   // dialogClose();
+                }
+                else{
+                    //layer.msg(data.message);
+                    $("#message").text(data.message);
+                    $('#select_file').val("");
+                }
+            },
+            error: function (data) {
+            }
+        });
+    }
+
+</script>

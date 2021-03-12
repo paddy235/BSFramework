@@ -1,0 +1,207 @@
+﻿@{
+    ViewBag.Title = "Index3";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group a.btn {
+            margin-top: 4px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+</style>
+<script>
+    var selectedRowIndex;
+    var _parentId = "";
+    var _isOrg = "";
+    var deptid = "@Html.Raw(ViewBag.department)";
+    var itype='@ViewBag.type';
+    jQuery(function () {
+        InitialPage();
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $("#grid").setGridHeight($(window).height() - 142);
+                $("#departments").height($(window).height() - 50);
+            }, 200);
+            e.stopPropagation();
+        });
+
+        //GetTree();
+        if (itype == 1) {
+            jQuery('#meetingstarttime').val('@ViewBag.weekStartTime');
+            jQuery('#meetingendtime').val('@ViewBag.monthEndTime');
+        }else if(itype==3) //首页跳转，当前季度
+        {
+            jQuery('#meetingstarttime').val('@ViewBag.seasonStartTime');
+            jQuery('#meetingendtime').val('@ViewBag.monthEndTime');
+        }
+        else {
+            jQuery('#meetingstarttime').val('@ViewBag.monthStartTime');
+            jQuery('#meetingendtime').val('@ViewBag.monthEndTime');
+        }
+
+
+        jQuery('#grid').jqGrid({
+            height: $(window).height() - 142,
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'aftermeetingid', hidden: true, align: 'center' },
+                { label: '部门', name: 'team', index: 'team', width: 280, align: 'center' },
+                { label: '班组', name: 'department', index: 'department', width: 280, align: 'center', sortable: false },
+                { label: '班次', name: 'workset', index: 'workset', width: 280, align: 'center', sortable: false },
+                { label: '班前会', name: 'afterisover', index: 'afterisover', width: 280, align: 'center', sortable: false },
+                { label: '班后会', name: 'beforeisover', index: 'beforeisover', width: 280, align: 'center', sortable: false },
+                { label: '日期', name: 'meetingstarttime', index: 'meetingstarttime', width: 280, align: 'center', sortable: false }
+                //{ label: '主持人', name: 'meetingperson', index: 'meetingperson', width: 180, align: 'center' },
+                //{ label: '参加人员', name: 'members', width: 100, align: 'center' }
+            ],
+            url: '@Url.Action("GetIsMeet")',
+            datatype: "json",
+            postData:{
+                @*type: '@ViewBag.type',*@
+                type:"0",
+                deptid: deptid,
+                //team: jQuery('#team').val(),
+                begin: jQuery('#meetingstarttime').val(),
+                end: jQuery('#meetingendtime').val(),
+            },
+            shrinkToFit: false,
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: -1,
+            rownumbers: true,
+           // pager: "#gridPager"
+        });
+
+
+        $("#btn_Search").click(function () {
+            var obj = {
+                @*type: '@ViewBag.type',*@
+                type:"0",
+                deptid: deptid,
+                //team: jQuery('#team').val(),
+                begin: jQuery('#meetingstarttime').val(),
+                end: jQuery('#meetingendtime').val(),
+            };
+            jQuery('#grid').jqGrid('setGridParam', {
+                postData: obj, page: 1
+            }).trigger('reloadGrid');
+        });
+
+    });
+    function workOrdermeeting() {
+        window.location.href = '@Url.Action("Index2")';
+    }
+    //初始化页面
+    function InitialPage() {
+        $('#layout').layout({
+            west: {
+                size: 300
+            },
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+
+        $("#departments").height($(window).height() - 50);
+
+        //resize重设(表格、树形)宽高
+        //$(window).resize(function (e) {
+        //    window.setTimeout(function () {
+        //        $('#gridTable').setGridWidth(($('.gridPanel').width()));
+        //        $("#gridTable").setGridHeight($(window).height() - 141.5);
+        //        $("#itemTree").setTreeHeight($(window).height());
+        //    }, 200);
+        //    e.stopPropagation();
+        //});
+    }
+    //加载组织机构树
+    function GetTree() {
+        var item = {
+            height: $(window).height() - 50,
+            url: "/..@Url.Action("GetDeptTreeJson")?ids=" + deptid,
+            onnodeclick: function (item) {
+                deptid = item.id;
+                _parentId = item.EnCode;
+                _isOrg = item.Sort;
+                $('#btn_Search').trigger("click");
+            }
+        };
+        //初始化
+        $("#itemTree").treeview(item);
+    }
+
+    function onNodeSelected(item) {
+        deptid = item.id;
+        _parentId = item.EnCode;
+        _isOrg = item.Sort;
+        $('#btn_Search').trigger("click");
+    }
+
+</script>
+
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                <div class="col-md-10">
+                    组织机构
+                </div>
+                <div class="col-md-2 text-right" style="padding-right:8px;">
+                    <i class="fa fa-arrow-left" onclick="setBar(this)" style="cursor:pointer;" title="展开/收起"></i>
+                </div>
+            </div>
+            @Html.Partial("~/Areas/BaseManage/Views/Department/Tree.cshtml")
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title">
+                未开班会记录
+                <div class="btn-group" onclick="workOrdermeeting()" style="float:right;margin-right:50px">
+                 返回
+                </div>
+            </div>
+            <div class="titlePanel">
+                <div class="title-search">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label for="team">日期</label>
+                            <input type="text" class="form-control" id="meetingstarttime" onfocus="WdatePicker();" readonly="readonly">
+                            - <input type="text" class="form-control" id="meetingendtime" onfocus="WdatePicker();" readonly="readonly">
+                        </div>
+                        @*<div class="form-group">
+                            <input type="text" class="form-control" id="team" placeholder="请输入部门或班次">
+                        </div>*@
+                        <div class="form-group">
+                            <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="toolbar">
+               
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="grid"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,299 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<script src="~/Content/scripts/layui/layer.js"></script>
+<script>
+    var deptid = '@ViewBag.deptid';
+    var from = '@ViewBag.from';
+    var to = '@ViewBag.to';
+    var thisUserId = '@BSFramework.Application.Code.OperatorProvider.Provider.Current().UserId'
+    jQuery(function () {
+        $('#layout').layout({
+            west: {
+                size: 300
+            },
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $("#departments").height($(window).height() - 50);
+                $("#grid").setGridHeight($(window).height() - 170);
+            }, 200);
+            e.stopPropagation();
+        });
+
+        $("#departments").height($(window).height() - 50);
+
+        //initTree();
+
+        initGrid();
+
+        jQuery.post('@Url.Action("GetUndo")', { deptid: deptid, from: from, to: to, rows: 1, page: 1 }, function (data) {
+            jQuery('#undo').text(data.records + '次');
+        }, 'json');
+    });
+
+    function onNodeSelected(item) {
+        deptid = item.id;
+        $('#btn_Search').click();
+    }
+
+
+    @*function initTree() {
+        $("#itemTree").treeview({
+            height: $(window).height() - 50,
+            url: '/..@Url.Action("GetDepartmentTree", "Department", new { area = "BaseManage"})?deptid=' + deptid,
+            onnodeclick: function (item) {
+                deptid = item.id;
+                $('#btn_Search').click();
+            }
+        });
+    }*@
+
+    function initGrid() {
+        jQuery('#grid').jqGrid({
+            url: '@Url.Action("GetTrainings")',
+            mtype: 'POST',
+            datatype: "json",
+            height: $(window).height() - 170,
+            postData: { deptid: deptid },
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'TrainingId', hidden: true },
+                {
+                    label: '操作', name: 'action', width: 120, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        var html = "";
+                        html += "<a href=\"javascript:fn$view('" + rowObject.TrainingId + "')\" title=\"查看\" style=\"color:blue;padding-left:0px;\">查看</a> ";
+                        return html;
+                    }
+                },
+                { label: "工作任务", name: "TrainingTask", width: 400, align: "center", sortable: false },
+                {
+                    label: "分析人", name: "UserName", width: 400, align: "center", sortable: false
+                    //label: "分析人", name: "TrainingUser", width: 300, align: "center", sortable: false, formatter: function (cellvalue, options, rowObject) {
+                    //    //var ary = [];
+                    //    //jQuery.each(rowObject.TrainingUsers, function (i, o) {
+                    //    //    ary.push(o.UserName);
+                    //    //});
+                    //    //return ary.join(',');
+                    //}
+                },
+                { label: "分析时间", name: "TrainingTime", width: 150, align: "center", sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s' } },
+                { label: "部门班组", name: "DeptName", width: 200, align: "center", sortable: false },
+                { label: "完成状态", name: "Status", width: 200, align: "center", sortable: false },
+                {
+                    label: "评价状态", name: "IsEvaluated", width: 120, align: "center", sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        if (rowObject != null && rowObject.Evaluates != null) {
+                            var has = false;
+                            var evluateCount = 0;
+                            for (var i = 0; i < rowObject.Evaluates.length; i++) {
+                                if (rowObject.Evaluates[i].EvaluateId == thisUserId) {
+                                    has = true;
+                                }
+                                if (rowObject.Evaluates != null) {
+                                    evluateCount = rowObject.Evaluates.length;
+                                }
+                            }
+                        }
+                        if (has) {
+                            return "本人已评价(" + evluateCount + "人已评价" + ")"
+                        } else {
+                            return "本人未评价(" + evluateCount + "人已评价" + ")"
+                        }
+                        //switch (rowObject.Evaluate) {
+                        //    case 1:
+                        //        return '未评价';
+                        //    case 2:
+                        //        return '部分评价';
+                        //    case 3:
+                        //        return '已评价';
+                        //    default:
+                        //        return '';
+                        //}
+                    }
+                },
+            ],
+            rownumbers: true,
+            rowNum: 20,
+            viewrecords: true,
+            pager: '#gridPager',
+            gridComplete: function () {
+                @if (!BSFramework.Application.Code.OperatorProvider.Provider.Current().IsSystem)
+                {
+                    @Html.Raw("AuthiruzeBtn($('.toolbar'), $('#grid'));");//操作按钮权限控制
+                }
+            }
+        });
+    }
+
+    function fn$query() {
+        jQuery('#grid').jqGrid('setGridParam', { postData: { deptid: deptid, key: jQuery('#user').val(), evaluatestatus: jQuery('#evaluatestatus').val(), status: jQuery('#status').val(), evaluatelevel: $("#evaluatelevel").val(), from: jQuery('#from').val(), to: jQuery('#to').val(), fzuser: $("#fzuser").val() } }).trigger("reloadGrid");
+    }
+
+    function fn$refresh() {
+        fn$query();
+    }
+
+    function fn$all() {
+        jQuery('#user').val('');
+        jQuery('#status').val('全部');
+        jQuery('#evaluatelevel').val('全部');
+        jQuery('#from').val('');
+        jQuery('#to').val('');
+        jQuery('#fzuser').val('');
+        fn$query();
+    }
+
+    function fn$view(id) {
+        dialogOpen({
+            id: "Edit",
+            title: '查看',
+            url: '/../@Url.Action("Edit2")?id=' + id + "&action=show",
+            width: "1200px",
+            height: "800px",
+            btn: null,
+            callBack: function (iframeId) {
+                end();
+            }
+        });
+    }
+
+    function fn$undo() {
+        var tab = top.jQuery.tab;
+        tab.addTab('xcxc', '@Url.Action("Index3")', '未开展人身风险预控统计');
+    }
+
+    function edit() {
+        var keyValue = $("#grid").jqGridRowValue("TrainingId");
+        if (!!keyValue) {
+            var url = '/../@Url.Action("Detail2")?id=' + keyValue + "&action=edit";
+            dialogOpen({
+                id: "Detail",
+                title: '查看详情',
+                url: url,
+                width: "1200px",
+                height: "900px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                    //
+                }
+            });
+        } else {
+            dialogMsg('请选择需要编辑的数据！', 0);
+        }
+    }
+    //删除
+    function del() {
+        var keyValue = $("#grid").jqGridRowValue("TrainingId");
+        if (keyValue) {
+            $.RemoveForm({
+                url: "/../@Url.Action("DeleteTraining")",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#grid").trigger("reloadGrid");
+                }
+            })
+        } else {
+            dialogMsg('请选择需要删除的记录！', 0);
+        }
+    }
+
+    function ExportData() {
+        dialogOpen({
+            id: "ExportForm",
+            title: '导出台账',
+            url: "/../@Url.Action("ExportForm")",
+            width: "500px",
+            height: "300px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                //
+            }
+        });
+    }
+</script>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                <div class="col-md-10">
+                    组织机构
+                </div>
+            </div>
+            @Html.Partial("~/Areas/BaseManage/Views/Department/Tree.cshtml")
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title">
+                人身风险预控台账
+                <div class="btn-group" style="float:right;margin-right:30px">
+                    本月未开展人身风险预控次数：<a id="undo" href="#" onclick="fn$undo()" style="color:blue;text-decoration:underline;"></a>
+                </div>
+            </div>
+            <div class="titlePanel">
+                <div class="title-search">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label for="team">分析人</label>
+                            <input type="text" class="form-control" id="user" placeholder="可输入多个用,隔开">
+                        </div>
+                        <div class="form-group">
+                            <label for="team">工作负责人</label>
+                            <input type="text" class="form-control" id="fzuser" placeholder="可输入多个用,隔开">
+                        </div>
+                        <div class="form-group">
+                            <label for="team">评价状态</label>
+                            <select class="form-control" id="evaluatelevel" style="width:80px;">
+                                <option selected="selected">全部</option>
+                                <option>本人</option>
+                                <option>班组</option>
+                                <option>部门</option>
+                                <option>厂级部门公司</option>
+                            </select>
+                            <select class="form-control" id="evaluatestatus" style="width:80px;">
+                                <option selected="selected">全部</option>
+                                <option>已评</option>
+                                <option>未评</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="team">日期</label>
+                            <input type="text" class="form-control" id="from" onfocus="WdatePicker();" readonly="readonly" style="width:80px;">
+                            - <input type="text" class="form-control" id="to" onfocus="WdatePicker();" readonly="readonly" style="width:80px;">
+                        </div>
+                        <div class="form-group">
+                            <label for="status">完成状态</label>
+                            <select class="form-control" id="status">
+                                <option selected="selected">全部</option>
+                                <option>已完成</option>
+                                <option>工作任务已取消</option>
+                                <option>风险预控任务已取消</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <a id="btn_Search" class="btn btn-primary" onclick="fn$query()" style=" margin-left:10px; border-radius:4px;"><i class="fa fa-search"></i>&nbsp;查询</a>
+                            <a id="btn_SearchAll" class="btn btn-default" onclick="fn$all();" style="border-radius:4px;margin-left:10px; ">全部</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="toolbar">
+                    <div class="btn-group">
+                        @*<a id="lr-replace" class="btn btn-default" onclick="reload()" style="border-radius:4px;"><i class="fa fa-refresh"></i>&nbsp;刷新</a>*@
+                        <a id="lr-delete" code="lr-delete" class="btn btn-default" onclick="del()" style="border-radius:4px;"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+                        <a id="lr-delete" class="btn btn-default" onclick="ExportData()" style="border-radius:4px;">导出</a>
+                    </div>
+                    <script>$('.toolbar').authorizeButton()</script>
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="grid"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>

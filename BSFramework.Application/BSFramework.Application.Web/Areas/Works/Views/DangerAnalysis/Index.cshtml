@@ -1,0 +1,165 @@
+﻿@model BSFramework.Application.Entity.WorkMeeting.DangerAnalysisEntity
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")" />
+<script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/hammer.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+
+<script>
+    function getLayerWindow(index, layero) {
+        var body = layer.getChildFrame('body', index);
+        var iframeWindow = window[layero.find('iframe')[0]['name']];
+        return iframeWindow;
+    }
+
+    function fn$new() {
+        layer.open({
+            type: 2,
+            title: '危险辨识',
+            area: ['800px', '500px'],
+            content: '@Url.Action("Edit")?jobid=@ViewBag.id',
+            btn: ['保存', '取消'],
+            yes: function (idx, layero) {
+                var iframeWindow = getLayerWindow(idx, layero);
+                iframeWindow.fn$save();
+            }
+        });
+    }
+
+    function fn$edit(id) {
+        layer.open({
+            type: 2,
+            title: '危险辨识',
+            area: ['800px', '500px'],
+            content: '@Url.Action("Edit")/' + id,
+            btn: ['保存', '取消'],
+            yes: function (idx, layero) {
+                var iframeWindow = getLayerWindow(idx, layero);
+                iframeWindow.fn$save();
+            }
+        });
+    }
+
+    function fn$delete(id) {
+        layer.confirm('确定要删除该风险点吗？', {
+            btn: ['确定', '取消']
+        }, function () {
+            layer.close(layer.index);
+            layer.msg("删除数据中……", { icon: 16, time: 0, shade: 0.1 });
+            jQuery.ajax({
+                type: 'POST',
+                url: '@Url.Action("DeleteDanger")/' + id,
+                success: function () {
+                    top.location.reload();
+                },
+                complete: function () {
+                    layer.close(layer.index);
+                }
+            });
+        });
+    }
+
+    function fn$prev() {
+        layer.open({
+            type: 2,
+            title: '安全交底',
+            area: ['1200px', '700px'],
+            content: '@Url.Action("Prev")/@ViewBag.id',
+            btn: null,
+            end: function () {
+                top.location.reload();
+            }
+        });
+    }
+
+</script>
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="mg-b-10" style="margin-top:0px;padding-top:0px;">
+            <div class="" style="overflow: hidden;">
+                <div class="pull-left title">
+                    安全交底
+                    @*<a href="javascript:;">
+                        <img src="~/Content/styles/static/images/arrow-back-icon.png" alt="">
+                                        安全交底
+                                        </a>*@
+                </div>
+                <div style="float:right!important;line-height:40px!important;" code="tool_record">
+                    <a href="javascript:void(0);" onclick="fn$new();">
+                        <img src="@Url.Content("~/Content/styles/static/images/add-icon.png")" style="margin-top:-2px;" alt="">
+                        新增
+                    </a>
+                    <a href="javascript:void(0);" onclick="fn$prev();">
+                        <img src="@Url.Content("~/Content/styles/static/images/icon-18.png")" alt="">
+                        上一次
+                    </a>
+                    @*<a href="@Url.Action("BorrowList")">
+                            <img src="~/Content/styles/static/images/index_29.png" style="margin-top:-2px;" alt="">
+                            借用记录
+                        </a>*@
+                    @*<a href="@Url.Action("BorrowList")">
+                            <img src="~/Content/styles/static/images/index_29.png" style="margin-top:-2px;" alt="">
+                            借用记录
+                        </a>*@
+                </div>
+            </div>
+
+        </div>
+        <div class="bg-e3ebfd pd-10 my-body" style="overflow-y:auto;">
+            <table class="table table-striped" id="grid">
+                <colgroup>
+                    <col style="width:100px;" />
+                    <col style="width:500px;" />
+                    <col />
+                    <col style="width:160px;" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>
+                            序号
+                        </th>
+                        <th>
+                            风险点
+                        </th>
+                        <th>
+                            防范措施
+                        </th>
+                        <th>
+                            操作
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Dangers != null)
+                    {
+                        for (int i = 0; i < Model.Dangers.Count; i++)
+                        {
+                            <tr>
+                                <td>
+                                    @(i + 1)
+                                </td>
+                                <td>
+                                    @Html.Raw(Model.Dangers[i].Content)
+                                </td>
+                                <td>
+                                    @Html.Raw(Model.Dangers[i].MeasureList == null ? string.Empty : string.Join("、", Model.Dangers[i].MeasureList.Select(x => x.Content)))
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0);" onclick="fn$edit('@Model.Dangers[i].JobDangerousId')">编辑</a>
+                                    <a href="javascript:void(0);" onclick="fn$delete('@Model.Dangers[i].JobDangerousId')">删除</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <footer class="main-footer" style="height:30px;">
+            武汉博晟安全技术股份有限公司   版权所有
+        </footer>
+    </div>
+</div>

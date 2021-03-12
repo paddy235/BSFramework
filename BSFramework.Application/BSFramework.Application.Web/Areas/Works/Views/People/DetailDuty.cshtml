@@ -1,0 +1,67 @@
+﻿@model BSFramework.Application.Entity.BaseManage.RoleEntity
+@{
+    ViewBag.Title = "DetailDuty";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")" />
+
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/hammer.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<script>
+
+</script>
+<style>
+    table tr {
+        height: 45px;
+    }
+</style>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" >
+            <table class="form">
+                <tr>
+                    <td class="formTitle">岗位名称</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.FullName, new { @class = "form-control", @readonly = "readonly" })
+                        @Html.HiddenFor(x => x.RoleId)
+
+                    </td>
+                    <td class="formTitle">部门名称</td>
+                    <td class="formValue">
+
+                        @Html.TextBoxFor(x => x.DepartmentName, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">岗位职责</td>
+                </tr>
+                <tr>
+                    <td class="formValue" colspan="4">
+                        @Html.TextAreaFor(x => x.DutyContent, new { @style = "height:450px;margin-left:5px;", @class = "form-control", placeholder = "", @readonly = "readonly" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle">修订人员</td>
+                    <td class="formValue">
+
+                        @Html.TextBoxFor(x => x.ReviseUserName, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">修订时间</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.ReviseDate, new { @class = "form-control", @readonly = "readonly", Value = Model.ReviseDate==null?"":string.Format("{0:yyyy-MM-dd HH:mm}",Model.ReviseDate.Value) })
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+</div>
+

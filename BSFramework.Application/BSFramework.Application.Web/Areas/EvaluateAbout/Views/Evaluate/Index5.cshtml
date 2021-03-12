@@ -1,0 +1,273 @@
+﻿@using BSFramework.Entity.EvaluateAbout
+@model IList<BSFramework.Entity.EvaluateAbout.EvaluateEntity>
+
+@{
+    ViewBag.Title = "考评";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="@Url.Content("~/Content/scripts/plugins/highcharts/highcharts.js")"></script>
+<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+</style>
+<script>
+    var dept = '@ViewBag.pdeptname';
+    jQuery(function () {
+        SelectChange();
+        //$("#queryCondition .dropdown-menu li").click(function () {
+        //    var text = $(this).find('a').text();
+        //    var value = $(this).find('a').data('id');
+        //    $("#queryCondition .dropdown-text").text(text).data('id', value)
+        //});
+
+        //$("#query1 .dropdown-menu li").click(function () {
+        //    var text = $(this).find('a').text();
+        //    var value = $(this).find('a').data('id');
+        //    $("#query1 .dropdown-text").text(text).data('id', value)
+        //});
+
+        var pcts = jQuery.parseJSON('@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.pcts))');
+        var data = [];
+        jQuery.each(pcts, function (i, o) {
+            data.push([o.GroupName, o.Pct]);
+        });
+        var name = new Array();
+        var datas = new Array();
+        var rowNum = new Array();
+        var j = 1;
+        for (var i = 0; i < data.length; i++) {
+            name[i] = data[i][0];
+            if ('@Html.Raw(ViewBag.deptname)' == name[i]) {
+                datas[i] = { 'color': '#ffe82a', 'y': data[i][1] };
+            } else {
+                datas[i] = data[i][1];
+            }
+            if (i > 0) {
+                if (data[i][1] == data[i - 1][1]) {
+                    rowNum[i] = j
+                } else {
+                    rowNum[i] = j + 1;
+                    j++;
+                }
+            } else {
+                rowNum[i] = j
+            }
+        }
+        jQuery('#container').height($(window).height() - 300).highcharts({
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '@Html.Raw(ViewBag.season)' +dept+ '考评总分排名'
+            },
+            subtitle: {
+                text: '总分排名'
+            },
+            legend: {
+                enabled: false
+            },
+            xAxis: [{
+                categories: name,
+                reversed: false,
+                labels: {
+                    rotation: -30
+                }
+            }, {
+                opposite: true,
+                reversed: false,
+                categories: rowNum,
+                linkedTo: 0,
+                labels: {
+                    setp: 1
+                }
+
+            }],
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '评分'
+                }
+            },
+            tooltip: {
+                pointFormat: '<span style="color:{point.color}">\u25CF</span> 总分：<b>{point.y:.2f}</b>'
+            },
+            series: [
+                {
+                    name: '总分',
+                    data: datas,
+                    dataLabels: {
+                        enabled: true,
+                        rotation: -90,
+                        color: '#fff',
+                        align: 'right',
+                        format: '{point.y:.2f}',
+                        y: 10
+                    }
+                }
+            ]
+        });
+    });
+    function SelectChange() {
+        $("#queryCondition").on('change', function (e, data) { fn$search(); });
+        $("#query1").on('change', function (e, data) { fn$search(); });
+    }
+
+
+    function fn$search() {
+        //var text = jQuery("#queryCondition .dropdown-text").text();
+        //var text1 = jQuery("#query1 .dropdown-text").text();
+        //var id = jQuery("#queryCondition .dropdown-text").data('id');
+        //var categoryid = jQuery("#query1 .dropdown-text").data('id');
+        var text = jQuery("#queryCondition").find("option:selected").text();
+        var text1 = jQuery("#query1").find("option:selected").text();
+        var id = jQuery("#queryCondition").find("option:selected").val();
+        var categoryid = jQuery("#query1").find("option:selected").val();
+        if (!id) return;
+
+        jQuery.getJSON('@Url.Action("GetCalcScore1")/' + id, { categoryid: categoryid }, function (data) {
+            var pcts = []; names = [];
+            jQuery.each(data, function (i, o) {
+                pcts.push([o.GroupName, o.Pct]);
+                names.push(o.GroupName);
+            });
+            var name = new Array();
+            var datas = new Array();
+            var rowNum = new Array();
+            var j = 1;
+            for (var i = 0; i < pcts.length; i++) {
+                name[i] = pcts[i][0];
+                if ('@Html.Raw(ViewBag.deptname)' == name[i]) {
+                    datas[i] = { 'color': '#ffe82a', 'y': pcts[i][1] };
+                } else {
+                    datas[i] = pcts[i][1];
+                }
+                if (i > 0) {
+                    if (pcts[i][1] == pcts[i - 1][1]) {
+                        rowNum[i] = j
+                    } else {
+                        rowNum[i] = j + 1;
+                        j++;
+                    }
+                } else {
+                    rowNum[i] = j
+                  
+                }
+
+            }
+            
+            var clear = new Array();
+            jQuery('#container').highcharts().xAxis[1].setCategories(rowNum);
+            jQuery('#container').highcharts().series[0].setData(clear);
+            jQuery('#container').highcharts().series[0].setData(datas);
+
+            jQuery('#container').highcharts().setTitle({ text: text +dept+ '考评总分排名' }, { text: text1 ? text1 + '排名' : '总分排名' });
+        });
+    }
+
+</script>
+
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="bs-header">
+            <div class="title">
+                <a href="@Url.Action("Index3")">
+                    <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+                    排名统计
+                </a>
+            </div>
+        </div>
+        <div class="bg-e3ebfd pd-10 my-body">
+            <div class="bs-area-2" style="position:relative;">
+                <div class="titlePanel" style="background-color:white;">
+                    <div class="title-search">
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <label for="queryCondition">考评季度</label>
+                                <span class="my-select" style="width:260px;">
+                                    <select id="queryCondition" style="border:0px solid gray; border-bottom-width:1px;">
+                                        @{
+                                            var name = ViewBag.name as string;
+                                            foreach (var item in Model)
+                                            {
+
+                                                if (item.EvaluateSeason==name)
+                                                {
+                                                    <option value="@Html.Raw(item.EvaluateId)"  selected="selected">@Html.Raw(item.EvaluateSeason)</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@Html.Raw(item.EvaluateId)">@Html.Raw(item.EvaluateSeason)</option>
+                                                }
+
+                                            }
+                                        }
+                                    </select>
+                                    <span class="icon"></span>
+                                </span>
+                                @*<div id="queryCondition" class="btn-group">
+                                        <a class="btn btn-default dropdown-text" data-toggle="dropdown" style="width:200px;text-align:left;" data-id="@Html.Raw(Model[0].EvaluateId)">@Html.Raw(Model[0].EvaluateSeason)</a>
+                                        <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                                        <ul class="dropdown-menu" style="width:200px;text-align:left;">
+                                            @foreach (var item in Model)
+                                            {
+                                            <li><a data-id="@Html.Raw(item.EvaluateId)">@Html.Raw(item.EvaluateSeason)</a></li>
+                                            }
+                                        </ul>
+                                    </div>*@
+                            </div>
+                            <div class="form-group">
+                                <label for="query1">要素</label>
+                                <span class="my-select" style="width:260px;">
+                                    <select id="query1" style="border:none;border-bottom:1px solid #b0b8c1;">
+                                        @{
+                                            <option value="">总分</option>
+                                            var categories = ViewBag.categories as IList<EvaluateCategoryEntity>;
+
+                                            foreach (var item in categories)
+                                            {
+                                        <option value="@Html.Raw(item.CategoryId)">@Html.Raw(item.Category)</option>
+                                            }
+                                        }
+                                    </select>
+                                    <span class="icon"></span>
+                                </span>
+                                @*<div id="query1" class="btn-group">
+                                        <a class="btn btn-default dropdown-text" data-toggle="dropdown" style="width:200px;text-align:left;">总分</a>
+                                        <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                                        <ul class="dropdown-menu" style="width:200px;text-align:left;">
+                                            <li><a data-id="">总分</a></li>
+                                            @{
+                                                var categories = ViewBag.categories as IList<EvaluateCategoryEntity>;
+                                                foreach (var item in categories)
+                                                {
+                                            <li><a data-id="@Html.Raw(item.CategoryId)">@Html.Raw(item.Category)</a></li>
+                                                }
+                                            }
+                                        </ul>
+                                    </div>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="ss" style="padding-bottom:10px;">
+                    <div id="container" style="height:600px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="main-footer">
+            武汉博晟安全技术股份有限公司   版权所有
+        </footer>
+    </div>
+</div>

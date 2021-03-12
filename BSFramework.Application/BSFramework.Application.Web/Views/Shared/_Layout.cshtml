@@ -1,0 +1,348 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>@*@ViewBag.Title*@班组智能终端</title>
+    <!-- Bootstrap 3.3.5 -->
+    <style>
+        /*#ui_li li[code] {
+            display:none;
+        }
+        #div[code] {
+            display: none;
+        }*/
+    </style>
+
+    <link rel="stylesheet" href="~/Content/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/Content/styles/static/css/index.css">
+    <link rel="stylesheet" href="~/Content/styles/static/css/extend.css">
+    <link rel="stylesheet" href="~/Content/styles/font-awesome.min.css">
+    <script src="~/Content/scripts/jquery/jquery-2.0.3.min.js"></script>
+    <script src="~/Content/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/Content/scripts/nicescroll/nicescroll.min.js"></script>
+    <script src="~/Content/scripts/base.js"></script>
+    <script src="@Url.Content("~/Content/scripts/plugins/jquery.md5.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/utils/framework-ui.js")"></script>
+    <script>
+
+        var currUserDeptCode = "@BSFramework.Application.Code.OperatorProvider.Provider.Current().DeptCode";
+        var currUserOrgCode = "@BSFramework.Application.Code.OperatorProvider.Provider.Current().OrganizeCode";
+        var currUserId = "@BSFramework.Application.Code.OperatorProvider.Provider.Current().UserId";
+        var currUserAccount = "@BSFramework.Application.Code.OperatorProvider.Provider.Current().Account";
+        var currUserDeptName = "@BSFramework.Application.Code.OperatorProvider.Provider.Current().DeptName";
+        var currUserOrgName = "@BSFramework.Application.Code.OperatorProvider.Provider.Current().OrganizeName";
+        var contentPath = '@Url.Content("~")'.substr(0, '@Url.Content("~")'.length - 1);
+
+        function signout() {
+            $.ajax({
+                url: contentPath + "/Login/OutLogin",
+                type: "post",
+                dataType: "json",
+                success: function (data) {
+                    window.location.href = contentPath + "/Login/Index";
+                }
+            });
+        }
+
+        function showchangepwd() {
+            $('#modal9').modal('show');
+            $('#Uaccount').val(currUserAccount);
+        }
+        function changepwd() {
+            var opwd = $('#OldPassword').val();
+            var npwd = $('#NewPassword').val();
+            var rpwd = $('#RedoNewPassword').val();
+            if (npwd != rpwd) {
+                alert('两次输入的密码不相同，请重新输入！');
+                return;
+            } else {
+                $('#modal9').modal('hide');
+                $('#modal11').modal('show');
+                npwd = $.md5(npwd);
+                $.ajax({
+                    url: '@Url.Action("ChangeForm", "People")',
+                    type: 'post',
+                    data: { id: currUserId, pwd: npwd, npwd: rpwd },
+                    success: function (data) {
+                        $('#modal10').modal('show');
+                        $('#modal11').modal('hide');
+                    }
+                });
+            }
+
+        }
+        function changepwdNew() {
+            var opwd = $('#OldPassword').val();
+            var npwd = $('#NewPassword').val();
+            var rpwd = $('#RedoNewPassword').val();
+
+            if (npwd != rpwd) {
+                alert('两次输入的密码不相同，请重新输入！');
+                return;
+            } else {
+                $('#modal9').modal('hide');
+                $('#modal11').modal('show');
+
+                npwd = $.md5(npwd);
+                opwd = $.md5(opwd);
+                $.ajax({
+                    url: '@Url.Action("ChangeFormNew", "People")',
+                    type: 'post',
+                    data: { id: currUserId, pwd: npwd, opwd: opwd, account: currUserAccount, rpwd: rpwd },
+                    success: function (data) {
+                        var data = JSON.parse(data);
+                        if (data.type == "0") {
+                            $('#modal10').modal('show');
+                            $('#modal11').modal('hide');
+                        } else {
+                            $('#modal11').modal('hide');
+                            alert('账号密码不匹配，请重新输入！');
+                            $('#modal9').modal('show');
+                            return;
+                        }
+                    }
+
+                });
+            }
+
+        }
+        jQuery(function () {
+
+            $('.main-sidebar').niceScroll();
+
+            jQuery(function () {
+                if (typeof JsObj != 'undefined') {
+                    jQuery(document).on('focus', 'input:text,input:password,textarea', function () {
+                        JsObj.ShowInput();
+                    });
+                    jQuery(document).on('blur', 'input:text,input:password,textarea', function () {
+                        JsObj.CloseInput();
+                    });
+                }
+            });
+
+            //获取菜单(菜单控制)
+            InitMenu($("#ui_li"), undefined);
+
+        });
+    </script>
+</head>
+<body class="hold-transition skin-blue sidebar-mini body-container" oncontextmenu="self.event.returnValue=false">
+    <div class="wrapper">
+        <header class="main-header clearfix">
+            <!--logo-->
+            <div class="row">
+                <div class="col-md-5 logo">
+                    <a href="@Url.Action("Index", "Home", new { area = string.Empty })">
+                        <img src="@Url.Content("~/Content/styles/static/images/logo.png")" alt="">
+                    </a>
+                    @Html.Raw(BSFramework.Application.Web.App_Code.SystemRuntime.GetCompanyName(BSFramework.Application.Code.OperatorProvider.Provider.Current().UserId)) @Html.Raw(BSFramework.Application.Code.OperatorProvider.Provider.Current().DeptName)
+                </div>
+                <!--天气-->
+                <div class="col-md-3 climate">
+                    <div class="pull-left clearfix" style="margin-right:30px;">
+                        <img class="pull-left" src="@Url.Content("~/Content/styles/static/images/icon-10.png")" alt="">
+                        <div class="pull-left">@DateTime.Now.ToString("yyyy-MM-dd") <br>@DateTime.Now.ToString("dddd")</div>
+                    </div>
+                    @*<div class="pull-left clearfix">
+                            <img class="pull-left" src="@Url.Content("~/Content/styles/static/images/icon-11.png")" alt="">
+                            <div class="pull-left">晴转多云 <br>-3~4℃</div>
+                        </div>*@
+                </div>
+                <!--搜索-->
+                <div class="col-md-2 search">
+                    <input type="text" placeholder="输入您要查询的关键字">
+                    <span class="fa fa-search"></span>
+                </div>
+
+                <!--人员菜单-->
+                <div class="col-md-2 user dropdown">
+
+                    <a href="javascript:;" data-toggle="dropdown" id="dropdownMenu">
+                        <div class="pull-right">
+                            <span class="fa fa-sort-down"></span>
+                        </div>
+                        <div class="pull-right user-info">
+                            <div>@BSFramework.Application.Code.OperatorProvider.Provider.Current().UserName <br>欢迎您！</div>
+                        </div>
+                        <img class="pull-right" src="@Url.Content("~/Content/styles/static/images/user-icon.png")" alt="">
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu" style="width:200px;">
+                        <li class="clearfix">
+                            <a onclick="showchangepwd(); return false;">修改密码</a>
+                        </li>
+                        <li class="clearfix">
+                            <a href="javascript:signout();">退出</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!--<div class="pull-left logo">
+              <img src="../Content/styles/static/images/logo.png" alt="">中国石油加油站安全智能管控系统
+            </div>-->
+        </header>
+        <div class="main-wrapper">
+            <aside class="main-sidebar">
+                @{
+                    var area = (ViewContext.RouteData.Values["area"] ?? "").ToString();
+                    var controller = ViewContext.RouteData.Values["controller"].ToString();
+                    var action = ViewContext.RouteData.Values["action"].ToString();
+                }
+                <ul id="ui_li" class="nav main-sidebar-nav">
+                    <li class="@( controller == "Home" && action == "Index" ? "active" : string.Empty)"><a href="@Url.Action("Index", "Home", new { area = string.Empty })"><span class="icon icon-1"></span>主页</a></li>
+                    @if (BSFramework.Application.Web.App_Code.SystemRuntime.GetBzType(BSFramework.Application.Code.OperatorProvider.Provider.Current().DeptId) == "01")
+                    {
+                        <li code="meet" class="@( area == "Works" && controller == "DangerAnalysis" ? "active" : string.Empty)"><a href="@Url.Action("Index", "DangerAnalysis", new { area = "Works" })"><span class="icon icon-2"></span>安全交底</a></li>
+                    }
+                    <li code="meet" class="@( area == "Works" && controller == "WorkMeeting" ? "active" : string.Empty)"><a href="@Url.Action("Index", "WorkMeeting", new { area = "Works" })"><span class="icon icon-2"></span>班前班后会</a></li>
+                    <li code="work_danger" class="@( area == "Works" && controller == "Danger" && action == "Form" ? "active" : string.Empty)"><a href="@Url.Action("Form", "Danger", new { area = "Works" })"><span class="icon icon-3"></span>危险预知训练</a></li>
+                    <li code="activity" class="@( area == "Works" && controller == "Activity" ? "active" : string.Empty)"><a href="@Url.Action("Index", "Activity", new { area = "Works" })"><span class="icon icon-4"></span>班组活动</a></li>
+                    <li code="education" class="@( area == "Works" && controller == "Education" ? "active" : string.Empty)"><a href="@Url.Action("Index", "Education" , new { area="Works" })"><span class="icon icon-5"></span>教育培训</a></li>
+                    <li code="lllegal" class="@( area == "Works" && controller == "Lllegal" ? "active" : string.Empty)"><a href="@Url.Action("Index", "Lllegal" , new { area="Works" })"><span class="icon icon-8"></span>违章管理</a></li>
+                    <li code="tool" class="@( area == "Works" && controller == "Tool" ? "active" : string.Empty)"><a href="@Url.Action("List", "Tool" , new { area="Works" })"><span class="icon icon-10"></span>工器具管理</a></li>
+                    <li code="drug" class="@( area == "Works" && controller == "Drug" ? "active" : string.Empty)"><a href="@Url.Action("List", "Drug", new { area = "Works" })"><span class="icon icon-9"></span>药品管理</a></li>
+                    @*<li class="@( area == "Works" && controller == "Culture" && action == "Index" ? "active" : string.Empty)"><a href="@Url.Action("Index", "Culture", new { area = "Works" })"><span class="icon icon-11"></span>班组文化</a></li>*@
+                    <li code="evaluate" class="@( area == "EvaluateAbout" && controller == "Evaluate" ? "active" : string.Empty)"><a href="@Url.Action("Index3", "Evaluate", new { area = "EvaluateAbout" })"><span class="icon icon-12"></span>班组考评</a></li>
+                    @if (BSFramework.Application.Code.OperatorProvider.Provider.Current().RoleName == "班组长" || BSFramework.Application.Code.OperatorProvider.Provider.Current().RoleName == "班" +
+                        "长")
+                    {
+                        <li code="people" class="@( area == "Works" && controller == "People" ? "active" : string.Empty)"><a href="@Url.Action("List", "People", new { area = "Works",page=1,pagesize=12 })"><span class="icon icon-6"></span>成员管理</a></li>
+                    }
+                    else
+                    {
+                        <li code="people" class="@( area == "Works" && controller == "People" ? "active" : string.Empty)"><a href="@Url.Action("NewEdit", "People", new { area = "Works", id = BSFramework.Application.Code.OperatorProvider.Provider.Current().UserId, type = "editobj" })"><span class="icon icon-10"></span>成员管理</a></li>
+                    }
+                    <li code="search" class="@( area == "Works" && controller == "Search" && action == "Index" ? "active" : string.Empty)"><a href="@Url.Action("Index", "Search" , new { area="Works" })"><span class="icon icon-7"></span>台帐管理</a></li>
+                    <li code="task" class="@( area == "Works" && controller == "BaseData" ? "active" : string.Empty)"><a href="@Url.Action("Index", "BaseData" , new { area="Works" })"><span class="icon icon-16"></span>任务库</a></li>
+                    <li code="attendance" class="@( area == "Works" && controller == "Attendance" ? "active" : string.Empty)"><a href="@Url.Action("Index", "Attendance" , new { area="Works" })"><span class="icon icon-14"></span>考勤统计</a></li>
+                    <li code="score" class="@( area == "Works" && controller == "Score" ? "active" : string.Empty)"><a href="@Url.Action("ScoreAll", "Score" , new { area="Works" })"><span class="icon icon-15"></span>评分统计</a></li>
+                    @*<li class="@( area == "Works" && controller == "ERCHTMS" ? "active" : string.Empty)"><a href="@Url.Action("List", "ERCHTMS" , new { area="Works", page = 1, pagesize = 12 })"><span class="icon icon-17"></span>隐患台账</a></li>*@
+                    @*<li class="@( area == "Works" && controller == "ERCHTMS2" ? "active" : string.Empty)"><a href="@Url.Action("List", "ERCHTMS2" , new { area="Works", page = 1, pagesize = 12,ctype=1 })"><span class="icon icon-13"></span>安全检查台账</a></li>*@
+                    <li code="dangerhidden" class="@( area == "Works" && controller == "DangerHidden" ? "active" : string.Empty)"><a href="@Url.Action("Index", "DangerHidden" , new { area="Works" })"><span class="icon icon-18"></span>隐患统计 </a></li>
+                    <li code="safetycheck" class="@( area == "Works" && controller == "SafetyCheck" ? "active" : string.Empty)"><a href="@Url.Action("Index", "SafetyCheck" , new { area="Works" })"><span class="icon icon-19"></span>安全检查统计 </a></li>
+                    <li code="drillready" class="@( area == "Works" && action == "drillReady" ? "active" : string.Empty)"><a href="@Url.Action("drillReady", "ERCHTMSEmergency" , new { area="Works" })"><span class="icon icon-18"></span>应急演练 </a></li>
+                    <li code="drillplan" class="@( area == "Works" && action == "drillPlan" ? "active" : string.Empty)"><a href="@Url.Action("drillPlan", "ERCHTMSEmergency" , new { area="Works" })"><span class="icon icon-18"></span>应急预案 </a></li>
+                    <li code="drillplan" class="@( area == "Works" && action == "HumanDanger" ? "active" : string.Empty)"><a href="@Url.Action("Template", "HumanDanger" , new { area="Works" })"><span class="icon icon-18"></span>人身风险临时库 </a></li>
+                    <li code="cultureWall" class=""><a href="@Url.Action("GetCultureUrl","Home", new { area=string.Empty })"><span class="icon icon-18"></span>班组文化墙 </a></li>
+                    @*<li class="@( area == "Works" && action == "emergencyHistoryRecord" ? "active" : string.Empty)"><a href="@Url.Action("emergencyHistoryRecord", "Emergency" , new { area="Works", page = 1, pagesize = 12 })"><span class="icon icon-19"></span>应急演练历史 </a></li>*@
+
+                </ul>
+            </aside>
+
+
+            @RenderBody()
+        </div>
+    </div>
+    <script>
+        $(function () {
+            $("#ui_li li").click(function () {
+                $(this).addClass("active").siblings().removeClass("active");
+            })
+        })
+    </script>
+    <div class="modal fade launch-modal" id="modal9" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-my" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                    <h4 class="modal-title">修改密码</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="form" style="margin-top: 20px;">
+                        @*<tr>
+                                <td class="formTitle" style="height: 20px;"></td>
+                                <td>
+                                    <p style="color: #959393; padding-left: 8px;">为了保护您的帐号安全，操作前请您进行安全验证</p>
+                                </td>
+                            </tr>*@
+                        @*<tr>
+                                <td class="formTitle">旧密码<font face="宋体">*</font></td>
+                                <td class="formValue">
+                                    <input id="OldPassword" type="password" class="form-control input-profile" style="float: left;" />
+                                    <div style="width: 250px; float: left"></div>
+                                </td>
+                            </tr>*@
+                        <tr>
+                            <td class="formTitle" style="width:125p;text-align:right;">用户账号</td>
+                            <td class="formValue" style="padding-left:30px;">
+                                <input id="Uaccount" class="form-control input-profile" style="float: left;" />
+                                <div style="width: 160px; float: left"></div>
+                            </td>
+                        </tr>
+                        @*<tr style="height:35px;"></tr>
+                            <tr>
+                                <td class="formTitle" style="width:125p;text-align:right;">原密码</td>
+                                <td class="formValue" style="padding-left:30px;">
+                                    <input id="OldPassword" type="password" class="form-control input-profile"  style="float: left;" />
+                                    <div style="width: 160px; float: left"></div>
+                                </td>
+                            </tr>*@
+                        <tr style="height:35px;"></tr>
+                        <tr>
+                            <td class="formTitle" style="width:125px;text-align:right;">新密码</td>
+                            <td class="formValue" style="padding-left:30px;">
+                                <input id="NewPassword" type="password" class="form-control input-profile" style="float: left;" />
+                                <div style="width: 160px; float: left"></div>
+                            </td>
+                        </tr>
+                        <tr style="height:35px;"></tr>
+                        <tr>
+                            <td class="formTitle" style="width:125p;text-align:right;">重复新密码</td>
+                            <td class="formValue" style="padding-left:30px;">
+                                <input id="RedoNewPassword" type="password" class="form-control input-profile" style="float: left;" />
+                                <div style="width: 160px; float: left"></div>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="text-center mg-t-20 mg-b-20">
+                        <button class="my-btn bg-3669e1" onclick="changepwd(); return false;">确定</button>
+                        <button class="my-btn bd-3669e1 c-3669e1 bg-fff" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade launch-modal" id="modal10" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-my" role="document">
+            <div class="modal-content" style="height:200px;">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                    <h4 class="modal-title">修改密码</h4>
+                </div>
+                <div class="modal-body" style="text-align:center">
+                    <h4>修改成功，请牢记您的新密码！</h4>
+                </div>
+                <div class="text-center mg-t-10" style="margin-top:10px;">
+                    <button class="btn bg-3669e1 c-fff" style="width:200px;" data-dismiss="modal">完成</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade launch-modal" id="modal11" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-my" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                    <h4 class="modal-title">修改密码</h4>
+                </div>
+                <div class="modal-body">
+                    <h2>修改中，请稍后 . . .</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

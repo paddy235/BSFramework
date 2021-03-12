@@ -1,0 +1,199 @@
+Debug: 2019-09-19 09:03:46-1568855026021
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-19 11:18:00-1568863080575
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-19 11:34:41-1568864081460
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-19 11:49:40-1568864980169
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-19 11:51:48-1568865108572
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-19 11:57:20-1568865440075
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-19 13:39:52-1568871592453
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-19 13:49:47-1568872187986
+LaunchActivity
+LaunchActivity
+
+Info: 2019-09-19 14:04:54-1568873094514
+BaseApplication
+onTrimMemory ... level:20
+
+Debug: 2019-09-19 15:20:15-1568877615240
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-19 15:43:39-1568879019950
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-19 15:52:05-1568879525735
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-19 16:21:56-1568881316123
+LaunchActivity
+LaunchActivity
+
+Error: 2019-09-19 17:28:41-1568885321232
+Login Request
+java.net.SocketTimeoutException: timeout
+	at okio.Okio$4.newTimeoutException(Okio.java:230)
+	at okio.AsyncTimeout.exit(AsyncTimeout.java:285)
+	at okio.AsyncTimeout$2.read(AsyncTimeout.java:241)
+	at okio.RealBufferedSource.read(RealBufferedSource.java:46)
+	at okhttp3.internal.http1.Http1Codec$AbstractSource.read(Http1Codec.java:360)
+	at okhttp3.internal.http1.Http1Codec$FixedLengthSource.read(Http1Codec.java:404)
+	at okio.RealBufferedSource.read(RealBufferedSource.java:46)
+	at okio.ForwardingSource.read(ForwardingSource.java:35)
+	at retrofit2.OkHttpCall$ExceptionCatchingRequestBody$1.read(OkHttpCall.java:291)
+	at okio.Buffer.writeAll(Buffer.java:1005)
+	at okio.RealBufferedSource.readString(RealBufferedSource.java:190)
+	at okhttp3.ResponseBody.string(ResponseBody.java:175)
+	at com.bossien.lib.retrofit.fastjson_converter.FastJsonResponseBodyConverter.convert(FastJsonResponseBodyConverter.java:32)
+	at com.bossien.lib.retrofit.fastjson_converter.FastJsonResponseBodyConverter.convert(FastJsonResponseBodyConverter.java:13)
+	at retrofit2.ServiceMethod.toResponse(ServiceMethod.java:119)
+	at retrofit2.OkHttpCall.parseResponse(OkHttpCall.java:218)
+	at retrofit2.OkHttpCall.execute(OkHttpCall.java:180)
+	at retrofit2.adapter.rxjava2.CallExecuteObservable.subscribeActual(CallExecuteObservable.java:41)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at retrofit2.adapter.rxjava2.BodyObservable.subscribeActual(BodyObservable.java:34)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableScalarXMap$ScalarXMapObservable.subscribeActual(ObservableScalarXMap.java:166)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableMap.subscribeActual(ObservableMap.java:33)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableMap.subscribeActual(ObservableMap.java:33)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.subscribeInner(ObservableFlatMap.java:165)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.onNext(ObservableFlatMap.java:139)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.drain(ObservableZip.java:205)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipObserver.onNext(ObservableZip.java:276)
+	at io.reactivex.internal.operators.observable.ObservableScalarXMap$ScalarDisposable.run(ObservableScalarXMap.java:248)
+	at io.reactivex.internal.operators.observable.ObservableJust.subscribeActual(ObservableJust.java:35)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap.subscribeActual(ObservableFlatMap.java:55)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableOnErrorNext.subscribeActual(ObservableOnErrorNext.java:38)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.subscribeInner(ObservableFlatMap.java:165)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.onNext(ObservableFlatMap.java:139)
+	at io.reactivex.internal.operators.observable.ObservableOnErrorNext$OnErrorNextObserver.onNext(ObservableOnErrorNext.java:68)
+	at io.reactivex.internal.operators.observable.ObservableMap$MapObserver.onNext(ObservableMap.java:64)
+	at io.reactivex.internal.operators.observable.ObservableObserveOn$ObserveOnObserver.drainNormal(ObservableObserveOn.java:200)
+	at io.reactivex.internal.operators.observable.ObservableObserveOn$ObserveOnObserver.run(ObservableObserveOn.java:252)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.run(ScheduledRunnable.java:66)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.call(ScheduledRunnable.java:57)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:152)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:265)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1112)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:587)
+	at java.lang.Thread.run(Thread.java:818)
+Caused by: java.net.SocketTimeoutException
+	at java.net.PlainSocketImpl.read(PlainSocketImpl.java:488)
+	at java.net.PlainSocketImpl.access$000(PlainSocketImpl.java:37)
+	at java.net.PlainSocketImpl$PlainSocketInputStream.read(PlainSocketImpl.java:237)
+	at okio.Okio$2.read(Okio.java:139)
+	at okio.AsyncTimeout$2.read(AsyncTimeout.java:237)
+	... 58 more
+
+
+Debug: 2019-09-19 17:31:14-1568885474496
+LaunchActivity
+LaunchActivity
+
+Info: 2019-09-19 17:41:48-1568886108681
+BaseApplication
+onTrimMemory ... level:20
+
+Debug: 2019-09-19 17:42:15-1568886135556
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-19 17:50:16-1568886616388
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-19 18:36:01-1568889361292
+LaunchActivity
+LaunchActivity
+
+Error: 2019-09-19 19:12:53-1568891573540
+crash_handler
+java.lang.RuntimeException: Unable to destroy activity {com.bossien.banzu.terminal/com.bossien.module.ledger.view.activity.main.MainActivity}: java.lang.NullPointerException: Attempt to invoke virtual method 'void com.bossien.module.ledger.view.activity.main.MainFragmentManager.finishAll()' on a null object reference
+	at android.app.ActivityThread.performDestroyActivity(ActivityThread.java:3706)
+	at android.app.ActivityThread.handleDestroyActivity(ActivityThread.java:3724)
+	at android.app.ActivityThread.access$1400(ActivityThread.java:151)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1357)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'void com.bossien.module.ledger.view.activity.main.MainFragmentManager.finishAll()' on a null object reference
+	at com.bossien.module.ledger.view.activity.main.MainActivity.onDestroy(MainActivity.java:294)
+	at android.app.Activity.performDestroy(Activity.java:6169)
+	at android.app.Instrumentation.callActivityOnDestroy(Instrumentation.java:1141)
+	at android.app.ActivityThread.performDestroyActivity(ActivityThread.java:3693)
+	... 10 more
+
+
+Debug: 2019-09-19 19:12:56-1568891576585
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-19 19:14:57-1568891697136
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-19 19:23:51-1568892231091
+PeopleInfoPresenter
+未将对象引用设置到对象的实例。
+
+Debug: 2019-09-19 19:24:16-1568892256577
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-19 19:25:26-1568892326658
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-19 19:28:55-1568892535765
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-19 19:31:22-1568892682651
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-19 19:33:47-1568892827870
+LaunchActivity
+LaunchActivity
+

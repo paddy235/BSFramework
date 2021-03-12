@@ -1,0 +1,118 @@
+﻿@model BSFramework.Application.Entity.WorkMeeting.DangerAnalysisEntity
+@{
+    ViewBag.Title = "Edit";
+    Layout = "../Shared/_LayoutEdit.cshtml";
+}
+<link href="~/Content/layui/css/layui.css" rel="stylesheet" />
+<link href="~/Content/jquery-autocompleter/css/main.css" rel="stylesheet" />
+<style>
+    .autocompleterpanel {
+        margin-top: -26px;
+        margin-left: 15px;
+        width: 533px;
+    }
+</style>
+@section scripts {
+    <script src="~/Content/layui/layui.all.js"></script>
+    <script src="~/Content/jquery-autocompleter/js/jquery.autocompleter.js"></script>
+    <script>
+        var id = '@ViewBag.id';
+
+        function fn$copy(dangerid, el) {
+            parent.layer.msg("复制中……", { icon: 16, time: 0, shade: 0.1 });
+            var formdata = { JobId: id, JobDangerousId: dangerid };
+
+            jQuery.ajax({
+                url: '/..@Url.Action("Copy")/' + dangerid,
+                contentType: 'application/json',
+                type: 'POST',
+                data: JSON.stringify(formdata),
+                success: function (data) {
+                    jQuery(el).remove();
+                },
+                complete: function () {
+                    parent.layer.close(parent.layer.index);
+                }
+            });
+
+            @*
+            var formdata = {};
+            formdata.Danger = jQuery('#form > div:first input:text').val();
+            formdata.JobId = jQuery('#JobId').val();
+            formdata.Measures = [];
+            jQuery('#form > div:gt(0)').each(function (i, o) {
+                formdata.Measures.push(jQuery(o).find('input:text').val());
+            });
+
+            jQuery.ajax({
+                url: '/..@Url.Action("Edit")',
+                contentType: 'application/json',
+                type: 'POST',
+                data: JSON.stringify(formdata),
+                success: function (data) {
+                    parent.layer.close(parent.layer.getFrameIndex(window.name));
+                    parent.location.reload();
+                },
+                complete: function () {
+                    parent.layer.close(parent.layer.index);
+                }
+            });*@
+        }
+    </script>
+}
+<div class="form-horizontal" style="padding-top:10px;" id="form">
+    <div class="row">
+        <div class="col-md-2">@Html.Raw(Model.DeptName)</div>
+        <div class="col-md-2">@Html.Raw(Model.MeetingName)</div>
+        <div class="col-md-2">@Html.Raw(Model.MeetingTime)</div>
+    </div>
+    <div class="bg-e3ebfd pd-10 my-body" style="overflow-y:auto;">
+        <table class="table table-striped" id="grid">
+            <colgroup>
+                <col style="width:100px;" />
+                <col style="width:500px;" />
+                <col />
+                <col style="width:160px;" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>
+                        序号
+                    </th>
+                    <th>
+                        风险点
+                    </th>
+                    <th>
+                        防范措施
+                    </th>
+                    <th>
+                        操作
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Dangers != null)
+                {
+                    for (int i = 0; i < Model.Dangers.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                @(i + 1)
+                            </td>
+                            <td>
+                                @Html.Raw(Model.Dangers[i].Content)
+                            </td>
+                            <td>
+                                @Html.Raw(Model.Dangers[i].MeasureList == null ? string.Empty : string.Join("、", Model.Dangers[i].MeasureList.Select(x => x.Content)))
+                            </td>
+                            <td>
+                                <a href="javascript:void(0);" onclick="fn$copy('@Model.Dangers[i].JobDangerousId', this)">复制</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>

@@ -1,0 +1,278 @@
+﻿@{
+    ViewBag.Title = "安全双述台账";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+<script src="@Url.Content("~/Content/scripts/plugins/datepicker/WdatePicker.js")"></script>
+<script>
+    var _parentId = "";
+    var _isOrg = "";
+    var userId = top.currUserId; //当前用户Id
+    var deptCode = top.currUserDeptCode;//当前用户所属部门Code
+    var orgCode = top.currUserOrgCode;//当前用户所属机构Code
+    var type = '@ViewBag.type';
+    var from = '@ViewBag.from';
+    var to = '@ViewBag.to';
+    $(function () {
+        if (from != "")
+        {
+            $('#from').val(from);
+        }
+        if (to != "") {
+            $('#to').val(to);
+        }
+        InitialPage();
+        GetTree();
+        GetGrid();
+    });
+    //初始化页面
+    function InitialPage() {
+        $('#layout').layout({
+            applyDemoStyles: false,
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+    }
+
+    //加载组织机构树
+    function GetTree() {
+        var item = {
+            height: $(window).height() - 50,
+            url: "/..@Url.Action("GetDeptTreeJson")?ids=@Html.Raw(ViewBag.deptId)",
+            onnodeclick: function (item) {
+                deptCode = item.Code;
+               // deptid = item.id;
+               // _parentId = item.EnCode;
+               // _isOrg = item.Sort;
+                $('#btn_Search').trigger("click");
+            }
+        };
+        //初始化
+        $("#itemTree").treeview(item);
+    }
+    //加载表格
+    function GetGrid() {
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            url: "../../Danger/GetDangerJson?type="+type,
+            datatype: "json",
+            height: $(window).height() - 170,
+            autowidth: true,
+            colModel: [
+                 { label: '主键', name: 'id', hidden: true, align: 'center' },
+                  {
+                      label: '操作', name: '', index: '', width: 150, align: 'center',
+                      formatter: function (cellvaue, options, rowObject) {
+                          return "<a style='' href=\"javascript:detail('" + rowObject.id + "')\" title=\"点击查看详情\">查看</a>"
+
+                      }
+                  },
+                 {
+                     label: '工作任务', name: 'jobname', name: 'jobname', width: 350, align: 'center'
+                 },
+                 {
+                     label: '工作票编号', name: 'ticketid', name: 'ticketid', width: 350, align: 'center'
+                 },
+                 { label: '双述人', name: 'jobuser', index: 'jobuser', width: 200, align: 'center' },
+                 { label: '班组', name: 'groupname', index: 'groupname', width: 220, align: 'center' },
+                 {
+                     label: '双述时间', name: 'time', index: 'jobtime', width: 360, align: 'center'
+                 },
+                 //{ label: '完成状态', name: 'status', index: 'status', width: 200, align: 'center' },
+                 { label: '评价状态', name: 'number', index: 'appraisecontent', width: 180, align: 'center' }
+            ],
+            viewrecords: true,
+            rowNum: 30,
+            // rowList: [30, 50, 100],
+            pager: "#gridPager",
+            sortname: 'jobtime',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            onSelectRow: function () {
+                selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            },
+            loadError: function (xhr, status, error) {
+                //top.location.href = "../../Login/Index?Login_Error=1";
+            }
+
+        });
+        //$gridTable.authorizeColModel()
+        //查询条件
+        $("#queryCondition .dropdown-menu li").click(function () {
+            var text = $(this).find('a').html();
+            var value = $(this).find('a').attr('data-value');
+            $("#queryCondition .dropdown-text").html(text).attr('data-value', value)
+        });
+        //查询事件
+        $("#btn_Search").click(function () {
+            var from = $('#from').val();
+            var to = $('#to').val();
+            var queryJson = {
+              //  condition: $("#queryCondition").find('.dropdown-text').attr('data-value'),
+                keyword: $("#txt_Keyword").val(),
+                from: from,
+                to: to,
+                isOrg: _isOrg,
+                appraise: jQuery('#appraise').val(),
+                code: deptCode
+            }
+
+            $gridTable.jqGrid('setGridParam', {
+                postData: { queryJson: JSON.stringify(queryJson) }, page: 1
+            }).trigger('reloadGrid');
+        });
+        $("#btn_SearchAll").click(function () {
+            $('#from').val('');
+            $('#to').val('');
+            jQuery('#appraise').val('0');
+            $("#txt_Keyword").val('');
+            $('#btn_Search').trigger("click");
+        });
+        //查询回车
+        $('#txt_Keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+    }
+
+    //查看
+    function detail(id) {
+        var url = '/../@Url.Action("Detail4")?id=' + id + "&type=" + type + "&action=show";;
+        dialogOpen({
+            id: "Detail",
+            title: '查看详情',
+            url: url,
+            width: "1200px",
+            height: "900px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                //
+            }
+        });
+        // }
+    }
+
+    //删除
+    function del() {
+        var keyValue = $("#gridTable").jqGridRowValue("id");
+        if (keyValue) {
+            $.RemoveForm({
+                url: "/../@Url.Action("DeleteB")",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#gridTable").trigger("reloadGrid");
+                }
+            })
+        } else {
+            dialogMsg('请选择需要删除的记录！', 0);
+        }
+    }
+
+    function edit() {
+        var keyValue = $("#gridTable").jqGridRowValue("id");
+        console.log(keyValue)
+        if (!!keyValue) {
+            var url = '/../@Url.Action("Detail4")?id=' + keyValue + "&type=" + type+"&action=edit";
+            dialogOpen({
+                id: "Detail",
+                title: '查看详情',
+                url: url,
+                width: "1200px",
+                height: "900px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                    //
+                }
+            });
+        } else {
+            dialogMsg('请选择需要编辑的数据！', 0);
+        }
+    }
+
+
+</script>
+
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                <div class="col-md-10">
+                    组织机构
+                </div>
+                <div class="col-md-2 text-right" style="padding-right:8px;">
+                    <i class="fa fa-arrow-left" onclick="setBar(this)" style="cursor:pointer;" title="展开/收起"></i>
+                </div>
+            </div>
+            <div id="itemTree"></div>
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title">安全双述台帐</div>
+            <div class="titlePanel">
+                <div class="title-search">
+                    <table>
+                        <tr>
+                            <td>
+                                @*<div id="queryCondition" class="btn-group">
+                            <a class="btn btn-default dropdown-text" data-toggle="dropdown">选择条件</a>
+                            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a data-value="jobname">工作任务</a></li>
+                                <li><a data-value="RealName">姓名</a></li>
+                                    <li><a data-value="Mobile">手机</a></li>
+                            </ul>
+                        </div>*@
+                                工作任务
+                            </td>
+                            <td style="padding-left: 5px;">
+                                <input id="txt_Keyword" type="text" class="form-control" placeholder="请输入要查询关键字" style="width: 200px;" />
+                            </td>
+                            <td style="padding-left: 15px;">
+                                <label for="appraise">状态</label>
+                                <select id="appraise">
+                                    <option value="0">全部</option>
+                                    <option value="1">已评价</option>
+                                    <option value="2">未评价</option>
+                                </select>
+                            </td>
+                            <td style="padding-left: 15px; ">
+                                选择日期
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                <input id="from" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker();" style="width: 150px;" />
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                --
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                <input id="to" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker();" style="width: 150px;" />
+                            </td>
+                            <td style="padding-left: 5px;">
+                                <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                                <a id="btn_SearchAll" class="btn btn-primary">&nbsp;全部</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="toolbar">
+                    <div class="btn-group">
+                        <a id="lr-replace" class="btn btn-default" onclick="reload()"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+                        <a id="lr-edit" class="btn btn-default" onclick="edit()"><i class="fa fa-pencil-square-o"></i>&nbsp;编辑</a>
+                        <a id="lr-delete" class="btn btn-default" onclick="del()"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+                    </div>
+                </div>
+                <script>$('.toolbar').authorizeButton()</script>
+            </div>
+            <div class="gridPanel">
+                <table id="gridTable"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>

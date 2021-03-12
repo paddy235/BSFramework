@@ -1,0 +1,165 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<script>
+    var deptid = '@ViewBag.deptid';
+  
+    jQuery(function () {
+        $('#layout').layout({
+            west: {
+                size: 300
+            },
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+
+                $("#grid").setGridHeight($(window).height() - 170);
+            }, 200);
+            e.stopPropagation();
+        });
+        $("#departments").height($(window).height() - 50);
+
+        //initTree();
+
+        initGrid();
+
+    });
+
+    function initTree() {
+        $("#itemTree").treeview({
+            height: $(window).height() - 50,
+            url: '/..@Url.Action("GetDepartmentTree", "Department", new { area = "BaseManage"})?deptid=' + deptid,
+            onnodeclick: function (item) {
+                deptid = item.id;
+                $('#btn_Search').click();
+            }
+        });
+    }
+
+    function initGrid() {
+        jQuery('#grid').jqGrid({
+            url: '@Url.Action("GetUndo")',
+            mtype: 'POST',
+            datatype: "json",
+            height: $(window).height() - 168,
+            postData: { deptid: deptid, key: jQuery('#user').val(), status: jQuery('#status').val(), from: jQuery('#from').val(), to: jQuery('#to').val() },
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'TrainingUserId', hidden: true },
+                //{
+                //    label: '操作', name: 'action', width: 120, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                //        var html = "";
+                //        html += "<a href=\"javascript:fn$view('" + rowObject.TrainingId + "')\" title=\"查看\" style=\"color:blue;padding-left:0px;\">查看</a> ";
+                //        return html;
+                //    }
+                //},
+                { label: "工作任务", name: "TrainingTask", width: 500, align: "center", sortable: false },
+                { label: "分析人", name: "UserName", width: 400, align: "center", sortable: false },
+                { label: "日期", name: "CreateTime", width: 400, align: "center", sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' } },
+                { label: "部门/班组", name: "DeptName", width: 200, align: "center", sortable: false },
+            ],
+            rownumbers: true,
+            rowNum: 20,
+            viewrecords: true,
+            pager: '#gridPager',
+            loadComplete: function (data) {
+                jQuery('#total').text(data.records);
+            }
+        });
+    }
+
+    function fn$query() {
+        jQuery('#grid').jqGrid('setGridParam', { postData: { deptid: deptid, key: jQuery('#user').val(), status: jQuery('#status').val(), from: jQuery('#from').val(), to: jQuery('#to').val() } }).trigger("reloadGrid");
+    }
+    function onNodeSelected(item) {
+        deptid = item.id;
+       
+        fn$query();
+    }
+
+    function fn$refresh() {
+        fn$query();
+    }
+
+    function fn$all() {
+        jQuery('#user').val('');
+        jQuery('#status').val('全部');
+        jQuery('#from').val('');
+        jQuery('#to').val('');
+        fn$query();
+    }
+
+    function fn$view(id) {
+        dialogOpen({
+            id: "Edit",
+            title: '查看',
+            url: '/../@Url.Action("Edit2")/' + id,
+            width: "1200px",
+            height: "800px",
+            btn: null,
+            callBack: function (iframeId) {
+                end();
+            }
+        });
+    }
+</script>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                <div class="col-md-10">
+                    组织机构
+                </div>
+                @*<div class="col-md-2 text-right" style="padding-right:8px;">
+                <i class="fa fa-arrow-left" onclick="setBar(this)" style="cursor:pointer;" title="展开/收起"></i>
+            </div>*@
+            </div>
+            @*<div id="itemTree" style="border: 1px solid #ccc;border-top:none;"></div>*@
+            @Html.Partial("~/Areas/BaseManage/Views/Department/Tree.cshtml")
+
+
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title">
+                未开展人身风险预控台账
+                <div class="btn-group" style="float:right;margin-right:30px">
+                    总计：<label id="total">0</label> 次
+                </div>
+            </div>
+            <div class="titlePanel">
+                <div class="title-search">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label for="team">分析人</label>
+                            <input type="text" class="form-control" id="user" placeholder="可输入多个用,隔开">
+                        </div>
+                        <div class="form-group">
+                            <label for="team">日期</label>
+                            <input type="text" class="form-control" id="from" onfocus="WdatePicker();" readonly="readonly" value="@ViewBag.from">
+                            - <input type="text" class="form-control" id="to" onfocus="WdatePicker();" readonly="readonly" value="@ViewBag.to">
+                        </div>
+                        <div class="form-group">
+                            <a id="btn_Search" class="btn btn-primary" onclick="fn$query()"><i class="fa fa-search"></i>&nbsp;查询</a>
+                            <a id="btn_SearchAll" class="btn btn-primary" onclick="fn$all();">&nbsp;全部</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="toolbar" style="line-height:56px;">
+                    <div class="btn-group">
+                    </div>
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="grid"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,277 @@
+﻿@model IEnumerable<BSFramework.Entity.WorkMeeting.UserAttendanceEntity>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/scripts/layui/css/layui.css")" />
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/styles/static/css/manageDetail.css")" />
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/styles/static/css/manage.css")" />
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/styles/static/css/stylesheet.css")" />
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/styles/static/css/simple-calendar.css")" />
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/styles/static/css/print.css")" />
+<style>
+    body,.main-sidebar .main-sidebar-nav a{
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+    .main-sidebar-nav a{
+        font-weight:normal;
+    }
+    .user .user-info{
+       font-weight:normal;!important
+    }
+    .addMark {
+        padding-left: 10px;
+        padding-top: 5px;
+    }
+    .personImg{
+        background-image:url(@Url.Content("~/Content/styles/static/images/man.png"));
+    }
+    ul li{
+    padding-left:0;
+    }
+    .my-title a{
+      color:#3769e2;
+    }
+
+</style>
+
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/styles/static/js/simple-calendar.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.url.js")"></script>
+
+<script>
+    var userid = '@ViewBag.id';
+    $(function () {
+        $('.main-sidebar,.main-content').niceScroll({
+            autohidemode: false
+        });
+        $('.table-today tr').hover(function () {
+            $(this).addClass('hover');
+        }, function () {
+            $(this).removeClass('hover');
+        });
+        $('.table-today tr').click(function () {
+            $(this).toggleClass('actives');
+        })
+
+        $('.user>.dropdown-menu').css({
+            left: $('.user').innerWidth() - $('.user>.dropdown-menu').width() - 65
+        })
+
+        var myCalendar = new SimpleCalendar('#calendar');
+
+        myCalendar.updateSelect(jQuery.getUrlArgs('year'), jQuery.getUrlArgs('month'));
+        myCalendar.update(jQuery.getUrlArgs('month'), jQuery.getUrlArgs('year'));
+
+        layui.use(['laydate', 'layer'], function () {
+            var layer = layui.laydate
+            var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+            //触发事件
+            var active = {
+                offset: function (othis) {
+                    var type = othis.data('type'), text = othis.text();
+                    var year = jQuery('.sc-select-year').val();
+                    var month = jQuery('.sc-select-month').val();
+                    var day = jQuery(othis).find('div:eq(0)').text();
+
+                    if (jQuery(othis).hasClass('sc-othermenth')) {
+                        if (month > 1)
+                            if (day < 8)
+                                month = parseInt(month) + 1;
+                            else
+                                month = parseInt(month) - 1;
+                        else {
+                            if (day < 8) {
+                                month = 2
+                            } else {
+                                month = 12
+                                year = parseInt(year) - 1;
+                            }
+                        }
+                    }
+
+                    jQuery.getJSON('@Url.Action("GetDayAttendance")/' + userid + '?year=' + year + '&month=' + month + '&day=' + day, {}, function (json) {
+                        if (json.success && json.data.State) {
+                            jQuery('#daystate ul li').removeClass('test');
+                            jQuery('#daystate ul li[data-id="' + json.data.State + '"]').addClass('test');
+                            jQuery('#daystate ul li[data-id="' + json.data.DayType + '"]').addClass('test');
+
+                            layer.open({
+                                type: 1,
+                                title: '考勤变更',
+                                area: '604px;',
+                                offset: type, //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                                id: 'layerDemo' + type, //防止重复弹出                      ,
+                                content: jQuery('#daystate'),
+                                btnAlign: 'c', //按钮居中
+                                shade: 0.3, //不显示遮罩
+                                yes: function () {
+                                    layer.closeAll();
+                                }
+                            });
+                        }
+                    });
+
+                }
+            };
+            $(document).on('click', '.radioGroup li', function () {
+                let index = $(this).attr('data-id')
+                $(this).addClass('test').siblings().removeClass('test')
+
+            })
+            $('.sc-item').on('click', function () {
+                var othis = $(this), method = othis.data('method');
+                active[method] ? active[method].call(this, othis) : '';
+            });
+        });
+
+        //jQuery('.sc-mright').click(function () {
+        //    setTimeout(fn$getMonthAttendance, 100);
+        //});
+
+        fn$getMonthAttendance();
+    })
+
+    function fn$getMonthAttendance() {
+        var year = jQuery('.sc-select-year').val();
+        var month = jQuery('.sc-select-month').val();
+        jQuery.getJSON('@Url.Action("GetMonthAttendance")', { userid: userid, year: year, month: month }, function (json) {
+            //jQuery('.name').nextAll().remove();
+            //jQuery.each(json.Data, function (i, o) {
+            //    jQuery('.name').parent().append('<p style="line-height:12px;">' + this.Category + ' <span id="chuqin">' + this.Times + '</span> 天</p>');
+            //});
+            jQuery('#chuqin').text(json.Chuqin);
+            jQuery('#tiaoxiu').text(json.Tiaoxiu);
+            jQuery('#gongxiu').text(json.Gongxiu);
+            jQuery('#chuchai').text(json.Chuchai);
+            jQuery('#shijia').text(json.Shijia);
+            jQuery('#bingjia').text(json.Bingjia);
+            jQuery('#qita').text(json.Qita);
+        });
+    }
+
+    function fn$getAttendance(day, iscurrent) {
+        var year = jQuery('.sc-select-year').val();
+        var month = jQuery('.sc-select-month').val();
+        jQuery('#date').text(year + '-' + month + '-' + new Date().getDate());
+
+        if (!iscurrent) {
+            if (month > 1)
+                if (day < 8)
+                    month = parseInt(month) + 1;
+                else
+                    month = parseInt(month) - 1;
+            else {
+                if (day < 8) {
+                    month = 2
+                } else {
+                    month = 12
+                    year = parseInt(year) - 1;
+                }
+            }
+        }
+        var state = jQuery.ajax({
+            url: '@Url.Action("GetAttendance")/' + userid + '?date=' + year + '-' + month + '-' + day,
+            async: false
+        }).responseText;
+        return state;
+    }
+
+    function fn$ok() {
+        var year = jQuery('.sc-select-year').val();
+        var month = jQuery('.sc-select-month').val();
+        var day = jQuery('.sc-selected div:eq(0)').text();
+        var state = jQuery('#daystate .radioGroup1 li.test').data('id');
+        var daytype = jQuery('#daystate .radioGroup2 li.test').data('id');
+
+        if (jQuery('.sc-selected').hasClass('sc-othermenth')) {
+            if (month > 1)
+                if (day < 8)
+                    month = parseInt(month) + 1;
+                else
+                    month = parseInt(month) - 1;
+            else {
+                if (day < 8) {
+                    month = 2
+                } else {
+                    month = 12
+                    year = parseInt(year) - 1;
+                }
+            }
+        }
+
+
+        jQuery.post('@Url.Action("PostUserState")/' + userid + '?year=' + year + '&month=' + month + '&day=' + day, { State: state, DayType: daytype }, function (json) {
+            if (json.success) {
+                jQuery('.sc-selected span').text(state + (daytype == '全天' ? '' : ' 0.5'));
+                fn$getMonthAttendance();
+                layer.closeAll();
+            } else {
+                layer.alert(json.message, { icon: 2 });
+            }
+        });
+
+    }
+</script>
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="clearfix my-title">
+                    <div class="pull-left">
+                        <a href="@Url.Action("Index")">
+                            <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+                            查看月度出勤状况
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="content-wrapper" style="position: relative;">
+            <div class="inner clearfix">
+                <div id='calendar'></div>
+            </div>
+            <div class="personContainer">
+                <div class='personMessage'>
+                    <h2 id="date"></h2>
+                    <div class="personImg"></div>
+                    <p class="name"><span>@Html.Raw(ViewBag.username)</span></p>
+                    <p>本月出勤<span id="chuqin">0</span>天</p>
+                    <p>调休<span id="tiaoxiu">0</span>天</p>
+                    <p>公休<span id="gongxiu">0</span>天</p>
+                    <p>出差<span id="chuchai">0</span>天</p>
+                    <p>事假<span id="shijia">0</span>天</p>
+                    <p>病假<span id="bingjia">0</span>天</p>
+                    <p>其他<span id="qita">0</span>天</p>
+                </div>
+                <img src="" />
+            </div>
+        </div>
+        <footer class="main-footer">
+            武汉博晟安全技术股份有限公司   版权所有
+        </footer>
+    </div>
+</div>
+
+<div class="popup" id="daystate" style="display:none;">
+    <ul class="radioGroup radioGroup1">
+        <li data-id="病假">病假</li>
+        <li data-id="事假">事假</li>
+        <li data-id="其他">其他</li>
+        <li data-id="调休">调休</li>
+        <li data-id="公休">公休</li>
+        <li data-id="出差">出差</li>
+        <li data-id="出勤">出勤</li>
+    </ul><div class="middle">
+        <p>时间段：<p>
+            <ul class="radioGroup radioGroup2">
+                <li data-id="全天">全天</li>
+                <li data-id="上午">上午</li>
+                <li data-id="下午">下午</li>
+            </ul>
+    </div><div class="bottom">
+        <button class="layui-btn" style="background: #3668e1;" onClick="fn$ok();">确认</button><button class="layui-btn layui-btn-primary" onClick="layer.closeAll()" style="border-color: #376ae0;color:#376ae0;">取消</button>
+    </div>
+</div>

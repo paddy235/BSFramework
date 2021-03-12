@@ -1,0 +1,12 @@
+@charset "utf-8";
+
+/*教育培训*/
+
+.train-list a{color:#fff;}
+.train-list img{width:100%;}
+
+.train-list .list-item{height:289px;width:350px;padding:28px;background: #fff;font-size:18px;margin: 0 auto;border-radius: 10px;}
+.train-list .list-item button{height:45px;width:130px;background: url("../images/train-list-btn.png") left center no-repeat;border:0;overflow: hidden;text-indent: -999em;}
+.train-list .list-item .study{margin:0 15px 0 7px;}
+.train-list .img-container{height:165px;overflow: hidden;}
+.train-list .list-item > .text-left{margin-top:25px;}

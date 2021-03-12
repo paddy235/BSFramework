@@ -1,0 +1,235 @@
+﻿@using BSFramework.Application.Entity.PublicInfoManage
+
+@model BSFramework.Entity.WorkMeeting.CultureTemplateEntity
+
+@{
+    ViewBag.Title = "Index";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/reset.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/skin-2.css")">
+    <script>
+        document.ondblclick = function () {
+            window.location.href = '@Url.Action("Index", "Home", new { area = string.Empty })';
+        }
+    </script>
+</head>
+<body>
+    <div class="big_body">
+        <div class="header">
+            <img src="@Url.Content("~/Content/styles/static/images/logo_2.png")">
+            <img src="@Url.Content("~/Content/styles/static/images/slogan.png")" class="slogan">
+        </div>
+        <div class="content">
+            <div class="con_left">
+                <div class="section1">
+                    <div class="title_box">
+                        <h1>班组简介<img src="@Url.Content("~/Content/styles/static/images/title_icon.png")"></h1>
+                        <p class="subtitle">Team Introduction</p>
+                    </div>
+                    <div class="section1_main">
+                        @{
+                            var model = Model.Contents.Find(x => x.ContentSubject == "班组简介");
+                            if (model != null)
+                            {
+                                @Html.Raw(model.CultureContent)
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="section2">
+                    <div class="title_box">
+                        <h1>7S管理<img src="@Url.Content("~/Content/styles/static/images/title_icon.png")"></h1>
+                        <p class="subtitle">7S Management</p>
+                    </div>
+                    <div class="section2_main">
+                        @{
+                            model = Model.Contents.Find(x => x.ContentSubject == "7S管理");
+                            if (model != null)
+                            {
+                                @Html.Raw(model.CultureContent)
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="con_middle">
+                <div class="section3">
+                    <div class="title_box">
+                        <h1>班组成员<img src="@Url.Content("~/Content/styles/static/images/title_icon.png")"></h1>
+                        <p class="subtitle">Team Members</p>
+                    </div>
+                    <div class="section3_main">
+                        <div class="monitor"><img src="@Url.Content("~/Content/styles/static/images/member_img.png")"><p class="name">伍治国</p><p>班长</p></div>
+                        @{
+                            model = Model.Contents.Find(x => x.ContentSubject == "班组成员");
+                            if (model != null)
+                            {
+                                @Html.Raw(model.CultureContent)
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="section4">
+                    <div class="title_box">
+                        <h1>发展历程<img src="@Url.Content("~/Content/styles/static/images/title_icon.png")"></h1>
+                        <p class="subtitle">Classic Case</p>
+                    </div>
+                    <div class="section4_main">
+                        @{
+                            model = Model.Contents.Find(x => x.ContentSubject == "发展历程");
+                            if (model != null)
+                            {
+                                @Html.Raw(model.CultureContent)
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="con_right">
+                <div class="section5">
+                    <div class="title_box">
+                        <h1>公告栏<img src="@Url.Content("~/Content/styles/static/images/title_icon.png")"></h1>
+                        <p class="subtitle">Bulletin Board</p>
+                    </div>
+                    <div class="section5_main">
+                        <ul style="padding-left:30px;">
+                            @{
+                                var notices = ViewBag.notices as List<NewsEntity>;
+                                if (notices != null)
+                                {
+                                    foreach (var item in notices)
+                                    {
+                                        <li style="list-style:circle;">
+                                            <a href="@Url.Action("NewDetail", "Notice", new { keyValue=@item.NewsId, area = "PublicInfoManage"})" title="@Html.Raw(item.FullHead)">@Html.Raw(item.FullHead)</a>
+                                        </li>
+                                    }
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="section6">
+                    <div class="title_box">
+                        <h1>员工风采<img src="@Url.Content("~/Content/styles/static/images/title_icon.png")"></h1>
+                        <p class="subtitle">Staff Presence</p>
+                    </div>
+                    <div class="section6_main">
+                        <ul>
+                            @{
+                                var image4 = ViewBag.image4 as List<FileInfoEntity>;
+                            }
+                            <li>
+                                @if (image4.Count > 0)
+                                {
+                                    <a href="@Url.Action("Detail", "WorkMeeting", new { area = "Works", id = image4[0].RecId })">
+                                        <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = image4[0].FileId, area = "PublicInfoManage" })" alt="">
+                                    </a>
+                                }
+                                else
+                                {
+                                    <img src="@Url.Content("~/Content/styles/static/images/staff_img1.png")">
+                                }
+                            </li>
+                            <li>
+                                @if (image4.Count > 1)
+                                {
+                                    <a href="@Url.Action("Detail", "WorkMeeting", new { area = "Works", id = image4[1].RecId })">
+                                        <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = image4[1].FileId, area = "PublicInfoManage" })" alt="">
+                                    </a>
+                                }
+                                else
+                                {
+                                    <img src="@Url.Content("~/Content/styles/static/images/staff_img2.png")">
+                                }
+                            </li>
+                            <li>
+                                @if (image4.Count > 2)
+                                {
+                                    <a href="@Url.Action("Detail", "WorkMeeting", new { area = "Works", id = image4[2].RecId })">
+                                        <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = image4[2].FileId, area = "PublicInfoManage" })" alt="">
+                                    </a>
+                                }
+                                else
+                                {
+                                    <img src="@Url.Content("~/Content/styles/static/images/staff_img3.png")">
+                                }
+                            </li>
+                            <li>
+                                @if (image4.Count > 3)
+                                {
+                                    <a href="@Url.Action("Detail", "WorkMeeting", new { area = "Works", id = image4[3].RecId })">
+                                        <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = image4[3].FileId, area = "PublicInfoManage" })" alt="">
+                                    </a>
+                                }
+                                else
+                                {
+                                    <img src="@Url.Content("~/Content/styles/static/images/staff_img4.png")">
+                                }
+                            </li>
+                            <li><img src="@Url.Content("~/Content/styles/static/images/staff_img5.png")"> </li>
+                            <li>
+                                @if (image4.Count > 4)
+                                {
+                                    <a href="@Url.Action("Detail", "WorkMeeting", new { area = "Works", id = image4[4].RecId })">
+                                        <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = image4[4].FileId, area = "PublicInfoManage" })" alt="">
+                                    </a>
+                                }
+                                else
+                                {
+                                    <img src="@Url.Content("~/Content/styles/static/images/staff_img6.png")">
+                                }
+                            </li>
+                            <li><img src="@Url.Content("~/Content/styles/static/images/staff_img7.png")"></li>
+                            <li>
+                                @if (image4.Count > 5)
+                                {
+                                    <a href="@Url.Action("Detail", "WorkMeeting", new { area = "Works", id = image4[5].RecId })">
+                                        <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = image4[5].FileId, area = "PublicInfoManage" })" alt="">
+                                    </a>
+                                }
+                                else
+                                {
+                                    <img src="@Url.Content("~/Content/styles/static/images/staff_img8.png")">
+                                }
+                            </li>
+                            <li>
+                                @if (image4.Count > 6)
+                                {
+                                    <a href="@Url.Action("Detail", "WorkMeeting", new { area = "Works", id = image4[6].RecId })">
+                                        <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = image4[6].FileId, area = "PublicInfoManage" })" alt="">
+                                    </a>
+                                }
+                                else
+                                {
+                                    <img src="@Url.Content("~/Content/styles/static/images/staff_img9.png")">
+                                }
+                            </li>
+                            <li><img src="@Url.Content("~/Content/styles/static/images/staff_img10.png")"> </li>
+                            <li>
+                                @if (image4.Count > 7)
+                                {
+                                    <a href="@Url.Action("Detail", "WorkMeeting", new { area = "Works", id = image4[7].RecId })">
+                                        <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = image4[7].FileId, area = "PublicInfoManage" })" alt="">
+                                    </a>
+                                }
+                                else
+                                {
+                                    <img src="@Url.Content("~/Content/styles/static/images/staff_img11.png")">
+                                }
+                            </li>
+                            <li><img src="@Url.Content("~/Content/styles/static/images/staff_img12.png")"> </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+﻿@model  BSFramework.Application.Entity.SystemManage.DataItemDetailEntity
+@{
+    ViewBag.Title = "SetRole";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script src="~/Content/scripts/business/Common.js"></script>
+<script>
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var postData = $("#form1").formSerialize();
+        $.SaveForm({
+            url: '/..@Url.Action("SaveRole")',
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+            }
+        })
+    }
+    $(function () {
+        $("#ItemValue").keyup(function () {
+            var txtlength = $(this).val().length;
+            var txt = txtlength + "/" + "500"
+            $("#txtLength").text(txt)
+        })
+    })
+
+    function ClearTxt() {
+        $("#ItemValue").val("")
+        $("#txtLength").text("0/500")
+    }
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <table class="form">
+            <tr>
+                <td>
+                    <div style="width:100%; float:left">
+                        @Html.HiddenFor(x => x.ItemDetailId)
+                        @Html.TextAreaFor(p => p.ItemValue, new { @class = "form-control", @isvalid = "yes", @checkexpession = "NotNull", @maxlength = "500", @style = "min-height:300px;" })
+                    </div>
+                    <div style="float:right; margin-top:10px;">
+                        <input type="button" class="btn btn-primary" value="清空" onclick="ClearTxt()" />&nbsp;&nbsp;<span id="txtLength">@Html.Raw(Model == null || Model.ItemValue == null ? 0 : Model.ItemValue.Length)/500</span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+

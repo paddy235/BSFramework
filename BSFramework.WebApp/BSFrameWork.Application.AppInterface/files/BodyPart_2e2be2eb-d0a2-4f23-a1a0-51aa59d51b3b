@@ -1,0 +1,184 @@
+Debug: 2019-09-04 09:00:00-1567558800397
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-04 09:36:25-1567560985188
+LaunchActivity LaunchActivity
+
+Error: 2019-09-04 09:51:00-1567561860762
+SuspensionWindowService-info size:w176h144
+w320h240
+w352h288
+w640h480
+using size:640x480
+focus:fixed;
+
+Info: 2019-09-04 09:51:08-1567561868477
+SuspensionWindowService java.lang.RuntimeException: stop failed.
+	at android.media.MediaRecorder.stop(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.stopRecord(HardwareManager.java:352)
+	at com.bossien.video_support.suspension.RecordingState.pauseRecord(RecordingState.java:30)
+	at com.bossien.video_support.SuspensionWindowService.manualStopRecord(SuspensionWindowService.java:90)
+	at com.bossien.video_support.SuspensionWindowService.onRecordClick(SuspensionWindowService.java:115)
+	at com.bossien.video_support.suspension.ViewManager.lambda$initRecorderView$0(ViewManager.java:131)
+	at com.bossien.video_support.suspension.-$$Lambda$ViewManager$HXcW6nTE6xP9dD_jz6arQwvRu84.accept(lambda)
+	at io.reactivex.internal.observers.LambdaObserver.onNext(LambdaObserver.java:63)
+	at io.reactivex.observers.SerializedObserver.onNext(SerializedObserver.java:113)
+	at io.reactivex.internal.operators.observable.ObservableThrottleFirstTimed$DebounceTimedObserver.onNext(ObservableThrottleFirstTimed.java:82)
+	at com.jakewharton.rxbinding2.view.ViewClickObservable$Listener.onClick(ViewClickObservable.java:39)
+	at android.view.View.performClick(View.java:4780)
+	at android.view.View$PerformClick.run(View.java:19866)
+	at android.os.Handler.handleCallback(Handler.java:739)
+	at android.os.Handler.dispatchMessage(Handler.java:95)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Info: 2019-09-04 09:51:08-1567561868479
+java.lang.RuntimeException: stop failed.
+	at android.media.MediaRecorder.stop(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.stopRecord(HardwareManager.java:352)
+	at com.bossien.video_support.suspension.RecordingState.pauseRecord(RecordingState.java:30)
+	at com.bossien.video_support.SuspensionWindowService.manualStopRecord(SuspensionWindowService.java:90)
+	at com.bossien.video_support.SuspensionWindowService.onRecordClick(SuspensionWindowService.java:115)
+	at com.bossien.video_support.suspension.ViewManager.lambda$initRecorderView$0(ViewManager.java:131)
+	at com.bossien.video_support.suspension.-$$Lambda$ViewManager$HXcW6nTE6xP9dD_jz6arQwvRu84.accept(lambda)
+	at io.reactivex.internal.observers.LambdaObserver.onNext(LambdaObserver.java:63)
+	at io.reactivex.observers.SerializedObserver.onNext(SerializedObserver.java:113)
+	at io.reactivex.internal.operators.observable.ObservableThrottleFirstTimed$DebounceTimedObserver.onNext(ObservableThrottleFirstTimed.java:82)
+	at com.jakewharton.rxbinding2.view.ViewClickObservable$Listener.onClick(ViewClickObservable.java:39)
+	at android.view.View.performClick(View.java:4780)
+	at android.view.View$PerformClick.run(View.java:19866)
+	at android.os.Handler.handleCallback(Handler.java:739)
+	at android.os.Handler.dispatchMessage(Handler.java:95)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Error: 2019-09-04 09:51:14-1567561874461
+SuspensionWindowService java.lang.IllegalStateException
+	at android.media.MediaRecorder.setCamera(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.startRecord(HardwareManager.java:263)
+	at com.bossien.video_support.suspension.PauseState.startRecord(PauseState.java:25)
+	at com.bossien.video_support.SuspensionWindowService.manualStartRecord(SuspensionWindowService.java:83)
+	at com.bossien.video_support.SuspensionWindowService.onRecordClick(SuspensionWindowService.java:117)
+	at com.bossien.video_support.suspension.ViewManager.lambda$initRecorderView$0(ViewManager.java:131)
+	at com.bossien.video_support.suspension.-$$Lambda$ViewManager$HXcW6nTE6xP9dD_jz6arQwvRu84.accept(lambda)
+	at io.reactivex.internal.observers.LambdaObserver.onNext(LambdaObserver.java:63)
+	at io.reactivex.observers.SerializedObserver.onNext(SerializedObserver.java:113)
+	at io.reactivex.internal.operators.observable.ObservableThrottleFirstTimed$DebounceTimedObserver.onNext(ObservableThrottleFirstTimed.java:82)
+	at com.jakewharton.rxbinding2.view.ViewClickObservable$Listener.onClick(ViewClickObservable.java:39)
+	at android.view.View.performClick(View.java:4780)
+	at android.view.View$PerformClick.run(View.java:19866)
+	at android.os.Handler.handleCallback(Handler.java:739)
+	at android.os.Handler.dispatchMessage(Handler.java:95)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Error: 2019-09-04 09:51:14-1567561874467
+java.lang.IllegalStateException
+	at android.media.MediaRecorder.setCamera(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.startRecord(HardwareManager.java:263)
+	at com.bossien.video_support.suspension.PauseState.startRecord(PauseState.java:25)
+	at com.bossien.video_support.SuspensionWindowService.manualStartRecord(SuspensionWindowService.java:83)
+	at com.bossien.video_support.SuspensionWindowService.onRecordClick(SuspensionWindowService.java:117)
+	at com.bossien.video_support.suspension.ViewManager.lambda$initRecorderView$0(ViewManager.java:131)
+	at com.bossien.video_support.suspension.-$$Lambda$ViewManager$HXcW6nTE6xP9dD_jz6arQwvRu84.accept(lambda)
+	at io.reactivex.internal.observers.LambdaObserver.onNext(LambdaObserver.java:63)
+	at io.reactivex.observers.SerializedObserver.onNext(SerializedObserver.java:113)
+	at io.reactivex.internal.operators.observable.ObservableThrottleFirstTimed$DebounceTimedObserver.onNext(ObservableThrottleFirstTimed.java:82)
+	at com.jakewharton.rxbinding2.view.ViewClickObservable$Listener.onClick(ViewClickObservable.java:39)
+	at android.view.View.performClick(View.java:4780)
+	at android.view.View$PerformClick.run(View.java:19866)
+	at android.os.Handler.handleCallback(Handler.java:739)
+	at android.os.Handler.dispatchMessage(Handler.java:95)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Info: 2019-09-04 09:51:19-1567561879620
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-04 09:54:38-1567562078475
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-04 09:54:38-1567562078477
+LaunchActivity LaunchActivity
+
+Error: 2019-09-04 09:54:42-1567562082482
+SuspensionWindowService-info size:w176h144
+w320h240
+w352h288
+w640h480
+using size:640x480
+focus:fixed;
+
+Debug: 2019-09-04 09:55:42-1567562142939
+LaunchActivity LaunchActivity
+
+Error: 2019-09-04 09:55:47-1567562147616
+SuspensionWindowService-info size:w176h144
+w320h240
+w352h288
+w640h480
+using size:640x480
+focus:fixed;
+
+Debug: 2019-09-04 09:55:57-1567562157271
+LaunchActivity LaunchActivity
+
+Error: 2019-09-04 09:56:52-1567562212424
+SuspensionWindowService-info size:w176h144
+w320h240
+w352h288
+w640h480
+using size:640x480
+focus:fixed;
+
+Debug: 2019-09-04 09:57:04-1567562224707
+LaunchActivity LaunchActivity
+
+Info: 2019-09-04 09:57:44-1567562264622
+BaseApplication onTrimMemory ... level:20
+
+Error: 2019-09-04 09:58:22-1567562302488
+SuspensionWindowService-info size:w176h144
+w320h240
+w352h288
+w640h480
+using size:640x480
+focus:fixed;
+
+Debug: 2019-09-04 09:58:32-1567562312910
+LaunchActivity LaunchActivity
+
+Error: 2019-09-04 09:59:06-1567562346572
+SuspensionWindowService-info size:w176h144
+w320h240
+w352h288
+w640h480
+using size:640x480
+focus:fixed;
+
+Debug: 2019-09-04 09:59:15-1567562355904
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-04 18:05:07-1567591507355
+LaunchActivity LaunchActivity
+

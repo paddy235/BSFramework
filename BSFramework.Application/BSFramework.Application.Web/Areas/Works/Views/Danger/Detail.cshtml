@@ -1,0 +1,669 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@System.Web.Optimization.Scripts.Render("~/Content/scripts/utils/js")
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/qrcode/qrcode.min.js")"></script>
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")">
+<link rel="stylesheet" href="@Url.Content("~/content/scripts/layui/css/layui.css")">
+<link rel="stylesheet" href="@Url.Content("~/content/styles/static/css/peccancy.css")">
+<link rel="stylesheet" href="@Url.Content("~/content/styles/static/css/warning.css")">
+<link rel="stylesheet" href="~/Content/styles/static/css/before.css" />
+<script src="~/Content/scripts/plugins/audiojs/audio.min.js"></script>
+<script src="~/Content/styles/static/js/nicescroll.min.js"></script>
+<script type="text/javascript">
+    var keyValue = request("id");
+    $(function () {
+        $(".main-sidebar-nav").find("li").removeClass("active");
+        $(".main-sidebar-nav").find("li").eq(2).addClass("active");
+        if (keyValue.length == 0) {
+            $.get("GetJobListJson", function (data) {
+                var html = "";
+                var json = JSON.parse(data);
+                if (json.length == 0) {
+                    dialogMsg("没有待训练的工作任务！", 2);
+                    return false;
+                }
+                $(json).each(function (j, item) {
+                    if (j == 0) {
+                        html += '<li class="active">';
+                        show(item.id);
+                    } else {
+                        html += "<li>";
+                    }
+                    html += "<a onclick=show('" + item.id + "',this) style='cursor:pointer;'>" + item.jobname + "</a></li>";
+                });
+                $(".my-nav").html(html);
+
+                var navWidth = 0;
+                $('.my-nav li').each(function () {
+                    navWidth += $(this).width();
+                });
+                $('.my-nav').css('width', navWidth + 20);
+
+            });
+        } else {
+            $(".nav-warp").hide();
+            $("#bar").hide();
+            $(".title").show();
+            show(keyValue);
+
+        }
+        jQuery('#user-modal li span').click(function () {
+
+            if (jQuery(this).hasClass('on')) {
+                jQuery(this).removeClass('on');
+                jQuery(this).next().val('False');
+            }
+            else {
+                jQuery(this).addClass('on');
+                jQuery(this).next().val('True');
+            }
+        });
+
+    });
+    function selMe(obj) {
+        if (isOk) {
+            $("#user-modal li").find(".my-radio").removeClass('on');
+        }
+        if (jQuery(obj).hasClass('on')) {
+            jQuery(obj).removeClass('on');
+        }
+        else {
+            jQuery(obj).addClass('on');
+        }
+    };
+    var node = null;
+    var isOk = false;
+    var idx = 0;
+    function selUser(obj, rowIndex) {
+        isOk = false;
+        $("#users li").find(".my-radio").removeClass("on");
+        node = obj;
+        idx = rowIndex;
+        $("#users li").each(function (j, dom) {
+            if ($(obj).text().length > 0) {
+                var arr = $(obj).text().split(',');
+                $(arr).each(function (i, str) {
+                    if ($.trim($(dom).text()) == str) {
+                        $(dom).find(".my-radio").addClass("on");
+                    }
+
+                });
+            }
+        });
+        layer.open({
+            //area: ['300px', ($(window).height() - 100) + 'px'],
+            title: '选择责任人',
+            type: 1,
+            content: $('#user-modal'),
+            end: function () {
+                $('#user-modal').hide();
+            }
+        });
+
+    }
+    function selDutyUser(obj) {
+        isOk = true;
+        node = obj;
+        $("#users li").find(".my-radio").removeClass("on");
+        node = obj;
+        $("#users li").each(function (j, dom) {
+            if ($(obj).val().length > 0) {
+                var arr = $(obj).val().split(',');
+                $(arr).each(function (i, str) {
+                    if ($.trim($(dom).text()) == str) {
+                        $(dom).find(".my-radio").addClass("on");
+                    }
+
+                });
+            }
+        });
+        layer.open({
+            //area: ['300px', ($(window).height() - 100) + 'px'],
+            title: '选择责任人',
+            type: 1,
+            content: $('#user-modal'),
+            end: function () {
+                $('#user-modal').hide();
+            }
+        });
+    }
+    var picArr = new Array();
+    function show(id, obj) {
+        $(".my-nav li").removeAttr("class");
+        $(obj).parent().attr("class", "active");
+        //$("#qrcode").children().remove();
+        //var qrcode = new QRCode(document.getElementById("qrcode"), {
+        //    width: 120,
+        //    height: 120
+        //});
+        //qrcode.clear();
+        //qrcode.makeCode(id + "|危险预知训练");
+
+        keyValue = id;
+        $.post("GetFormJson", { keyValue: id }, function (data) {
+            var json = JSON.parse(data);
+            $(".content").formDeserialize(json.formData);
+            var status = json.formData.Status;
+            if (json.formData.Status == 2) {
+                $("#btnOver").remove();
+                $("#btnSave").remove();
+
+                var time = json.formData.JobTime + "";
+                var str = time.substring(0, time.length - 3);
+                time = json.formData.OperDate || '' + "";
+                str += "-" + time.substring(10, time.length - 3);
+                $("#JobTime").val(str);
+            } else {
+                //layui.use('laydate', function () {
+                //    var laydate = layui.laydate;
+                //    laydate.render({
+                //        elem: '#JobTime',
+                //        type: 'datetime'
+                //    });
+                //});
+            }
+
+            if (json.formData.Sno == null) {
+                $("#Sno").val("@DateTime.Now.ToString("yyyyMMddHHmmss")");
+            }
+            $("#Measure").val(json.formData.Measure);
+            $("#StopMeasure").val(json.formData.StopMeasure);
+            $("#Remark").val(json.formData.Remark);
+            if (json.files.length > 0) {
+                var pics = "";
+                var audios = "";
+                picArr = new Array();
+                var path = '@Url.Content("~")'.substr(0, '@Url.Content("~")'.length - 1);
+                var k = 0;
+                $(json.files).each(function (j, item) {
+                    var exts = ".gif;.jpg;.bmp;.png";
+                    var filePath = path + item.FilePath.substring(1, item.FilePath.length);
+                    if (exts.lastIndexOf(item.FileExtensions.toLowerCase()) >= 0) {
+                        picArr.push({
+                            src: filePath
+                        });
+                        if (status == 0) {
+                            pics += '<li><img onclick="playPic(this,' + k + ')" src="' + filePath + '" style="width:160px;height:120px;" /><button onclick="delFile(\'' + item.FileId + '\',\'' + (item.FileName + item.FileExtensions) + '\',this)"></button></li>';
+                        } else {
+                            pics += '<li><img onclick="playPic(this,' + k + ')" src="' + filePath + '" style="width:160px;height:120px;" /></li>';
+                        }
+
+                        k++;
+                    } else if ('.mp3;.wma'.lastIndexOf(item.FileExtensions.toLowerCase()) >= 0) {
+                        if (status == 0) {
+                            audios += '<li><div onclick="play(this)" class="play-audio"  data-url="' + filePath + '"><img src="../../Content/styles/static/images/horn-icon.png"  width="24" />&nbsp;&nbsp;' + item.FileName + '</div><button onclick="delFile(\'' + item.FileId + '\',\'' + (item.FileName + item.FileExtensions) + '\',this)"></button></li>';
+                        } else {
+                            audios += '<li><div onclick="play(this)" class="play-audio"  data-url="' + filePath + '"><img src="../../Content/styles/static/images/horn-icon.png"  width="24" />&nbsp;&nbsp;' + item.FileName + '</div></li>';
+                        }
+
+
+                        //audios += '<div class="col-sm-3"><a href="' + filePath + '" target="_blank" class="btn btn-primary btn-lg">查看</a></div></li>';
+                    }
+
+                });
+
+                $("#photos").html(pics); $("#audios").html(audios);
+                //json = {
+                //    "data": picArr
+                //}
+                //$('.images-container').delegate('li', 'click', function () {
+                //    json.start = jQuery(this).index();
+                //    layer.photos({
+                //        photos: json,
+                //        anim: 5
+                //    })
+                //});
+            };
+            var html = "";
+            $(json.measures).each(function (j, item) {
+                html += '<tr><td>' + (j + 1) + '</td><td>' + item.DangerSource + '</td><td align="left">' + item.Measure + '</td><td title="点击选择责任人"><input type="text" value=\"' + (item.DutyMan == null ? "" : item.DutyMan) + '\" readonly="readonly" onfocus="this.blur();" userid="' + item.UserId + '"  id="' + item.Id + '" class="item0" style="border-style:none;height:35px;text-align:center;" /></td><td class="sign thing" align="center">' + (item.IsOver == 0 || item.IsOver == null ? '<span class="my-radio" style="float:none;"></span>' : '<span class="my-radio on" style="float:none;"></span>') + '</td></tr>';
+            });
+            $("#measures").html(html);
+
+            html = "";
+            $(json.users).each(function (j, user) {
+                html += '<li style="border-bottom: 1px solid #cad3df; line-height: 50px; padding-left: 66px; font-size: 16px; color: #374757; background: url(../../content/styles/static/images/sign-icon.png) no-repeat 10px bottom;">';
+                html += '<span>' + user.username + '</span> <span class="my-radio" id="' + user.userid + '" onclick="selMe(this)"></span></li>';
+            });
+            $("#users").html(html);
+            $('.main-content').getNiceScroll().resize();
+
+            html = "";
+            var index = 0;
+            $(json.mea1).each(function (j, m) {
+                index = index + 1;
+                html += '<tr><td>' + index + '</td><td>' + m + '</td><td align="left">否</td></tr>';
+            });
+            $(json.mea2).each(function (j, s) {
+                index = index + 1;
+                html += '<tr><td>' + index + '</td><td>' + s + '</td><td align="left">是</td></tr>';
+            });
+            $("#mea").html(html);
+
+        });
+    }
+    function playPic(obj, idx) {
+        var json = {
+            "data": picArr
+        }
+        json.start = idx;
+        layer.photos({
+            photos: json,
+            anim: 5
+        })
+    }
+    function delFile(fileId, fileName, obj) {
+        var dlg = dialogConfirm("确定删除吗？", function (r) {
+            if (r) {
+                $.post("../Safetyday/RemoveFile", { fileName: fileName, recId: keyValue, __RequestVerificationToken: $("input[name='__RequestVerificationToken']").val() }, function (data) {
+                    $(obj).parent().remove();
+                    layer.close(dlg);
+                });
+            }
+        });
+    }
+    function play(obj) {
+        var isPlay = $(obj).attr('data-play')
+        if (!isPlay || isPlay == 'false') {
+            var src = jQuery(obj).find('img').attr('src');
+            jQuery(obj).find('img').attr('src', src.substring(0, src.lastIndexOf('/') + 1) + 'laba.gif');
+
+            var url = $(obj).data('url');
+            var html = '<audio id="audio1" src="' + url + '" controls autoplay style="width:483px;display:none;"></audio>';
+            $('#audio-warp').html(html);
+            $('#audio1')[0].addEventListener('canplaythrough', function () {
+                this.play();
+            });
+            $(obj).attr('data-play', true);
+            var audio2 = document.getElementById('audio1');
+            audio2.onpause = function () {
+                var audele = jQuery('div[data-url="' + jQuery(this).attr('src') + '"]');
+                var img = jQuery('div[data-url="' + jQuery(this).attr('src') + '"]').find('img');
+                var src = img.attr('src');
+                img.attr('src', src.substring(0, src.lastIndexOf('/') + 1) + 'horn-icon.png');
+                audele.attr('data-play', false)
+            };
+            audio2.pause();
+        } else {
+            var audio1 = document.getElementById('audio1');
+            audio1.pause()
+        }
+    }
+    function sure() {
+        var ids = "";
+        var names = "";
+        $("#user-modal").find(".on").each(function (j, dom) {
+            ids += $(dom).attr("id") + ",";
+            names += $(dom).prev().text() + ",";
+        });
+        ids = ids.substring(0, ids.length - 1);
+        names = names.substring(0, names.length - 1);
+        if (isOk) {
+            $(node).val(names);
+        } else {
+            $(node).val(names);
+            $(node).attr("userid", ids);
+        }
+        layer.closeAll();
+        return false;
+    }
+    //提交表单
+    function SubmitData(status) {
+        if (!$('.content').Validform()) {
+            return false;
+        }
+        if (status == 0) {
+            $("#btnSave").attr("disabled", true);
+        }
+        if (status == 1) {
+            $("#btnOver").attr("disabled", true);
+        }
+        var postData = $(".content").formSerialize(keyValue);
+        var arr = new Array();
+        $("#measures").find(".item0").each(function (j, dom) {
+            arr.push({
+                Id: $(dom).attr("id"),
+                DutyMan: $(dom).val(),
+                UserId: $(dom).attr("userid"),
+                IsOver: $(dom).parent().next().find("span").hasClass('on') ? 1 : 0
+            });
+        });
+        postData["measures"] = JSON.stringify(arr);
+        postData["Status"] = status;
+        postData["Measure"] = $("#Measure").val();
+        postData["StopMeasure"] = $("#StopMeasure").val();
+        postData["Remark"] = $("#Remark").val();
+        $.SaveForm({
+            url: "SaveForm?keyValue=" + keyValue,
+            param: postData,
+            loading: "正在处理...",
+            success: function () {
+                $("#btnSave").removeAttr("disabled");
+                $("#btnOver").removeAttr("disabled");
+                if (status == 2) {
+                    if ($(".my-nav").find("li").length > 1) {
+                        $(".my-nav").find(".active").remove();
+                        $(".my-nav").find("li").eq(0).find("a").trigger("click");
+                    } else {
+                        $("#btnOver").remove();
+                        $("#btnSave").remove();
+                    }
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                if (status == 2) {
+                    $("#btnOver").removeAttr("disabled");
+                } else {
+                    $("#btnSave").removeAttr("disabled");
+                }
+            }
+        })
+    }
+    function over() {
+        dialogConfirm("确定结束训练吗？", function (r) {
+            if (r) {
+                SubmitData(1);
+
+            }
+        });
+    }
+    @{
+        var Data = ViewData["model"] as BSFramework.Application.Entity.Activity.DangerEntity;
+
+    }
+    function fn$add() {
+        var isEvaluate = 0;
+        $.ajax({
+            url: '/..@Url.Action("GetIsEvaluate", "Activity")?keyValue=@Data.Id&&category=""',
+            type: "post",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                isEvaluate = data;
+            }
+        });
+        if (isEvaluate == 0) {
+            dialogOpen({
+                id: "form1",
+                title: '评价',
+                url: '/..@Url.Action("Evaluate", "Activity")?id=@Data.Id',
+                width: "500px",
+                height: "330px",
+                callBack: function (iframeId) {
+
+                    top.document.getElementsByTagName("iframe")[0].contentWindow.AcceptClick();
+
+                }
+            });
+        } else if (isEvaluate > 0) {
+            layer.msg("已评价过此活动");
+        }
+    }
+    function fn$refresh() {
+        location.reload();
+    }
+</script>
+<div id="audio-warp" style="height:32px;width:460px;display: none;overflow:hidden;">
+</div>
+<div class="my-modal sign" id="user-modal" style="display:none; ">
+    <ul class="nav" id="users">
+        @*<li style="border-bottom: 1px solid #cad3df; line-height: 50px; padding-left: 66px; font-size: 16px; color: #374757; background: url(../content/styles/static/images/sign-icon.png) no-repeat 10px bottom;">
+                <span>张三</span> <span class="my-radio" id="123456"></span>
+            </li>*@
+    </ul>
+    <div class="text-center mg-t-10">
+        <button class="btn bg-3669e1 c-fff my-close" style="width:200px;" onclick="sure()">确定</button>
+    </div>
+
+</div>
+
+<div class="main-content">
+    <div class="container-fluid warning">
+        <div class="title" style="display:none;">
+            <a href="Index">
+                <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+                历史记录
+            </a>
+        </div>
+
+        <div class="mg-b-10" id="bar">
+            <div class="nav-header">
+                <div class="pull-right">
+                    <a href="Index">
+                        <img src="~/content/styles/static/images/index_29.png" alt="">
+                        历史记录
+                    </a>
+                </div>
+                <div class="nav-warp">
+                    <ul class="clearfix my-nav" style="width:10000px;overflow-x:auto;"></ul>
+                </div>
+            </div>
+        </div>
+        <div class="bg-e3ebfd pd-10 peccancy-form">
+            <div class="bg-fff">
+                <div class="bd-2b-e3ebfd content" style="border-bottom:10px solid #e3ebfd;">
+                    <div class="pd-t-10 pd-b-10">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>工作票编号</label>
+                                <div>
+                                    <input placeholder="" class="block" type="text" id="TicketId" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label>记录编号</label>
+                                <div>
+                                    <input placeholder="系统自动生成" class="block" type="text" id="Sno" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>作业任务</label>
+                                <div>
+                                    <input placeholder="" class="block" type="text" id="JobName" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label>作业人</label>
+                                <div>
+                                    <input placeholder="点击可选择工作负责人" class="block" type="text" id="JobUser" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>作业地点</label>
+                                <div>
+                                    <input placeholder="" class="block" type="text" id="JobAddress" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label>作业时间</label>
+                                <div>
+                                    <input placeholder="" class="block" type="text" id="JobTime" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <table class="table text-center table-striped no-mg vertical">
+                    <thead>
+                        <tr>
+                            <th width="6%" class="bg-fff">序号</th>
+                            <th width="37%" class="bg-fff">潜在的危险因素及其后果</th>
+                            <th width="37%" class="bg-fff">采取的安全防范措施</th>
+                            <th width="10%" class="bg-fff">措施落实责任人</th>
+                            <th width="10%" class="bg-fff">措施是否落实</th>
+                        </tr>
+                    </thead>
+                    <tbody id="measures"></tbody>
+                </table>
+                <table class="table text-center table-striped no-mg vertical">
+                    <thead>
+                        <tr>
+                            <th width="10%" class="bg-fff">序号</th>
+                            <th width="70%" class="bg-fff">措施及责任人变更情况</th>
+                            <th width="20%" class="bg-fff">工作是否中断</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mea"></tbody>
+                </table>
+                @*<div style="border-top:10px solid #e3ebfd;padding-top:10px;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label style="width:200px;">措施及责任人变更情况</label>
+                                <div style="margin-left:200px;">
+                                    <input type="text" class="block" id="Measure" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label style="width:280px;">工作中断后措施及责任人变更情况</label>
+                                <div style="margin-left:280px;">
+                                    <input class="block" type="text" id="StopMeasure" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
+                <div class="pd-20 bg-fff bd-2t-e3ebfd warp" style="padding-bottom:0;">
+                    <div class="clearfix audio">
+                        <div class="pull-left f-18 f-w c-0d0d0d left">现场音频</div>
+                        <div class="pull-left right">
+                            <ul id="audios" style="margin-top:20px; margin-left:50px;"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="pd-20 bg-fff bd-2t-e3ebfd warp">
+                    <div class="mg-b-10">
+                        <div class="f-18 f-w c-0d0d0d">现场照片</div>
+                    </div>
+                    <div class="clearfix photo">
+                        <ul id="photos" class="images-container"></ul>
+                    </div>
+                </div>
+
+                <div class="pd-20 bg-fff bd-2t-e3ebfd warp">
+                    @*<div>
+                            <div class="pull-left f-18 f-w c-0d0d0d left" style="margin-right:20px;">评分</div>
+                            @{
+                                var Model = (BSFramework.Application.Entity.Activity.DangerEntity)ViewData["model"];
+                                if (Model.Score < 1)
+                                {
+                                    <img class="star" data-score="1" src="~/Content/images/start_empty.png" />
+                                    <img class="star" data-score="2" src="~/Content/images/start_empty.png" />
+                                    <img class="star" data-score="3" src="~/Content/images/start_empty.png" />
+                                    <img class="star" data-score="4" src="~/Content/images/start_empty.png" />
+                                    <img class="star" data-score="5" src="~/Content/images/start_empty.png" />
+                                    <span>0分</span>
+                                }
+                                else
+                                {
+                                    for (int l = 0; l < 5; l++)
+                                    {
+                                        if (l < Convert.ToDecimal(Model.Score))
+                                        {
+                                            <img class="star" data-score="@Html.Raw(l+1)" src="~/Content/images/start_full.png" />
+                                        }
+                                        else
+                                        {
+                                            <img class="star" data-score="@Html.Raw(l+1)" src="~/Content/images/start_empty.png" />
+                                        }
+                                    }
+
+                                    <span>@Html.Raw(Model.Score)分</span>
+                                }
+                            }
+                            <input type="hidden" value="@Model.Score" />
+
+                        </div>*@
+
+                    <div class="mg-b-10">
+                        <div class="f-18 f-w c-0d0d0d">效果评价</div>
+                    </div>
+
+
+                    <div style="height:100px;">
+                        <textarea style="height:100px;width: 100%;" id="Remark" readonly="readonly"></textarea>
+                    </div>
+                    <br />
+                    <br />
+                    <div>
+                        <h1 style="font-size:16px;font-weight:700;margin-top:15px;position:relative">活动评价<button class="btn bg-3669e1 c-fff " style="width:130px;position:absolute;left:83%;bottom:10px" onclick="fn$add()">添加评论</button></h1>
+
+
+                        @for (int i = 0; i < Data.Evaluateions.Count; i++)
+                        {
+                            <p class="right" style="border: 0;width:50%;margin-left: 5%;">
+                                <table class="score_div">
+                                    <tr>
+                                        <td style="width:120px;"> @Data.Evaluateions[i].EvaluateUser</td>
+                                        <td style="width:120px;font-size:10px;">@Data.Evaluateions[i].Nature</td>
+                                        @if (@Data.Evaluateions[i].Score == 1)
+                                        {
+                                            <td><img name="score" style="width:17px;height:17px;" src="~/Content/images/start_full.png"><span style="font-size:10px;display:none">1</span></td>
+                                            <td><img name="score" style="width:17px;height:17px;" src="~/Content/images/start_empty.png"><span style="font-size:10px;display:none">2</span></td>
+                                            <td><img name="score" style="width:17px;height:17px;" src="~/Content/images/start_empty.png"><span style="font-size:10px;display:none">3</span></td>
+                                            <td><img name="score" style="width:17px;height:17px;" src="~/Content/images/start_empty.png"><span style="font-size:10px;display:none">4</span></td>
+                                                <td><img name="score" style="width:17px;height:17px;" src="~/Content/images/start_empty.png"><span style="font-size:10px;display:none">5</span></td>
+                                        }
+                                        @if (@Data.Evaluateions[i].Score == 2)
+                                        {
+                                            <td><img name="score" style="width:17px;height:17px;" src="~/Content/images/start_full.png"><span style="font-size:10px;display:none">1</span></td>
+                                            <td><img name="score" style="width:17px;height:17px;" src="~/Content/images/start_full.png"><span style="font-size:10px;display:none">2</span></td>
+                                            <td><img name="score" style="width:17px;height:17px;" src="~/Content/images/start_empty.png"><span style="font-size:10px;display:none">3</span></td>
+                                            <td><img name="score" style="width:17px;height:17px;" src="~/Content/images/start_empty.png"><span style="font-size:10px;display:none">4</span></td>
+                                                <td><img name="score" style="width:17px;height:17px;" src="~/Content/images/start_empty.png"><span style="font-size:10px;display:none">5</span></td>
+                                        }
+                                        @if (@Data.Evaluateions[i].Score == 3)
+                                        {
+                                            <td><img name="score" style="width:17px;height:17px;" src="~/Content/images/start_full.png"><span style="font-size:10px;display:none">1</span></td>
+                                            <td><img name="score" style="width:17px;height:17px;" src="~/Content/images/start_full.png"><span style="font-size:10px;display:none">2</span></td>
+                                            <td><img name="score" style="width:17px;height:17px;" src="~/Content/images/start_full.png"><span style="font-size:10px;display:none">3</span></td>
+                                            <td><img name="score" style="width:17px;height:17px;" src="~/Content/images/start_empty.png"><span style="font-size:10px;display:none">4</span></td>
+                                                <td><img name="score" style="width:17px;height:17px;" src="~/Content/images/start_empty.png"><span style="font-size:10px;display:none">5</span></td>
+                                        }
+                                        @if (@Data.Evaluateions[i].Score == 4)
+                                        {
+                                            <td><img name="score" style="width:17px;height:17px;" src="~/Content/images/start_full.png"><span style="font-size:10px;display:none">1</span></td>
+                                            <td><img name="score" style="width:17px;height:17px;" src="~/Content/images/start_full.png"><span style="font-size:10px;display:none">2</span></td>
+                                            <td><img name="score" style="width:17px;height:17px;" src="~/Content/images/start_full.png"><span style="font-size:10px;display:none">3</span></td>
+                                            <td><img name="score" style="width:17px;height:17px;" src="~/Content/images/start_full.png"><span style="font-size:10px;display:none">4</span></td>
+                                                <td><img name="score" style="width:17px;height:17px;" src="~/Content/images/start_empty.png"><span style="font-size:10px;display:none">5</span></td>
+                                        }
+                                        @if (@Data.Evaluateions[i].Score == 5)
+                                        {
+                                            <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_full.png")"><span style="font-size:10px;display:none">1</span></td>
+                                            <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_full.png")"><span style="font-size:10px;display:none">2</span></td>
+                                            <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_full.png")"><span style="font-size:10px;display:none">3</span></td>
+                                            <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_full.png")"><span style="font-size:10px;display:none">4</span></td>
+                                                <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_full.png")"><span style="font-size:10px;display:none">5</span></td>
+                                        }
+                                        <td>
+                                            <span class="score_span" id="txtScore" style="font-size:10px;padding-left:5px;text-align:inherit;">@Data.Evaluateions[i].Score 分</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <span>@Data.Evaluateions[i].EvaluateContent</span>
+                                        </td>
+                                        <td colspan="6" style="text-align:left;">
+                                            <span style="">@Data.Evaluateions[i].CREATEDATE.ToString("yyyy-MM-dd HH:mm:ss")</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </p>
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+@Html.AntiForgeryToken()
+

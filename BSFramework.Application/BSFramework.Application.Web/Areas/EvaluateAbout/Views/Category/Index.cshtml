@@ -1,0 +1,328 @@
+﻿@{
+    ViewBag.Title = "考评";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group a.btn {
+            margin-top: 4px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+  
+</style>
+
+<script>
+    var selectedRowIndex, currentNode;
+    var OperState = 1;
+    jQuery(function () {
+        $('#layout').layout({
+            applyDemoStyles: false,
+            west: {
+                size: 300,
+            },
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#grid').setGridWidth(($('.gridPanel').width()));
+                $("#grid").setGridHeight($(window).height() - 51 - jQuery('#titlebar').height() - jQuery('#toolbar').height() - 29);
+                jQuery('#tree').height(jQuery(window).height() - 50);
+            }, 100);
+            e.stopPropagation();
+        });
+
+
+        //jQuery('.toolbar').authorizeButton();
+
+        fn$loadtree();
+        //IsOperAuthority();
+        jQuery('#grid').jqGrid({
+            url: '@Url.Action("GetData")',
+            datatype: "json",
+            height: $(window).height() - 51 - jQuery('#titlebar').height() - jQuery('#toolbar').height() - 29,
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'ItemId', hidden: true },
+                {
+                    label: '操作', name: 'action', width: 135, align: 'center', sortable: false
+                },
+                { label: "考评要素", name: "Category", width: 200, align: "center", sortable: false },
+                { label: "考评内容", name: "ItemContent", width: 500, align: "left", sortable: false },
+                { label: "考评标准", name: "ItemStandard", width: 500, align: "left", sortable: false },
+                { label: "标准分", name: "Score", width: 80, align: "center", sortable: false },
+                { label: "考评部门", name: "EvaluateDept", width: 120, align: "center", sortable: false },
+                { label: "适用部门", name: "UseDept", width: 120, align: "center", sortable: false },
+            ],
+            rownumbers: true,
+            rowNum: 20,
+            viewrecords: true,
+            pager: '#gridPager',
+            gridComplete: function () {
+                var gridid = this.id;
+                $("#" + this.id).setSelection(selectedRowIndex, false);
+                var rows = $("#" + this.id).jqGrid("getRowData");//获取当前页记录行数据
+                //查询用户对该模块的数据操作权限
+                $(rows).each(function (i, item) {
+                    var html = "";
+                    var isShow='@ViewBag.allowadd'
+                    html += "<a href=\"javascript:fn$view('" + item.ItemId + "')\" title=\"查看\" code=\"show\"  >查看</a>";
+                    if (isShow == "True") {
+                        html += "<a href=\"javascript:fn$edit('" + item.ItemId + "')\" title=\"修改\" code=\"edit\"  >修改</a>";
+                        html += "<a href=\"javascript:fn$delete('" + item.ItemId + "')\" title=\"删除\" code=\"delete\"  >删除</a>";
+                    }
+                  
+                    $("td[aria-describedby='" + gridid + "_action']").eq(i).html(html);
+                });
+                @*@if (!BSFramework.Application.Code.OperatorProvider.Provider.Current().IsSystem)
+                {
+                    @Html.Raw("AuthiruzeBtn($('.toolbar'), $('#grid'));");//操作按钮权限控制
+                }*@
+            }
+            //onSelectRow: function (rowid) {
+            //    selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            //}
+        })
+    });
+
+    function fn$loadtree() {
+        jQuery('#tree').treeview({
+            height: $(window).height() - 50,
+            url: '@Url.Action("GetCategories")',
+            onnodeclick: function (node) {
+                jQuery('#grid').jqGrid("setGridParam", {
+                    postData: { key: jQuery('#itemcontent-key').val(), categoryid: node.value },
+                    page: 1
+                }).trigger("reloadGrid");
+            }
+        });
+    }
+
+    function fn$addcategory() {
+        currentNode = jQuery('#tree').getCurrentNode();
+
+        dialogOpen({
+            id: "Form",
+            title: '新增类别',
+            url: '/../@Url.Action("Edit",new  { id = string.Empty})',
+            width: "500px",
+            height: "250px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    function fn$refreshtree(id) {
+        fn$loadtree();
+    }
+
+    function fn$refresh() {
+        jQuery('#grid').trigger("reloadGrid");
+    }
+
+    function fn$search() {
+        jQuery('#grid').jqGrid("setGridParam", {
+            postData: { key: jQuery('#itemcontent-key').val() },
+            page: 1
+        }).trigger("reloadGrid");
+    }
+    function fn$all()
+    {
+        jQuery('#itemcontent-key').val('');
+        $('#btn_Search').trigger("click");
+    }
+
+    //删除类别
+    function fn$deletecategory() {
+        var node = jQuery('#tree').getCurrentNode();
+        if (!node) {
+            dialogMsg('请选择考评标准类别！', 0);
+            return;
+        }
+
+        $.RemoveForm({
+            url: '/..@Url.Action("Delete")' + '/' + node.id,
+            success: function (data) {
+                fn$loadtree();
+            }
+        });
+    }
+    //修改类别
+    function fn$editcategory() {
+        var node = jQuery('#tree').getCurrentNode();
+        if (!node) {
+            dialogMsg('请选择要修改考评标准类别！', 0);
+            return;
+        }
+        dialogOpen({
+            id: "Form",
+            title: '修改类别',
+            url: '/../@Url.Action("ClassEdit")?id=' + node.id,
+            width: "500px",
+            height: "250px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+    
+    function fn$additem() {
+        currentNode = jQuery('#tree').getCurrentNode();
+
+        dialogOpen({
+            id: "Form",
+            title: '新增考评内容',
+            url: '/../@Url.Action("Edit2",new  { id = string.Empty})',
+            width: "800px",
+            height: "320px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    function fn$edit(id) {
+        dialogOpen({
+            id: "Form",
+            title: '新增考评内容',
+            url: '/../@Url.Action("Edit2",new  { id = string.Empty})/' + id,
+            width: "800px",
+            height: "320px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    function fn$view(id) {
+        dialogOpen({
+            id: "Form",
+            title: '查看考评内容',
+            url: '/../@Url.Action("Edit2",new  { id = string.Empty})/' + id,
+            width: "800px",
+            height: "320px",
+            btn: null,
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    function fn$delete(id) {
+        $.RemoveForm({
+            url: '/..@Url.Action("DeleteItem")' + '/' + id,
+            success: function (data) {
+                fn$refresh();
+            }
+        });
+    }
+
+    function fn$import() {
+        dialogOpen({
+            id: "Form",
+            title: '导入考评内容',
+            url: '/../@Url.Action("Import")',
+            width: "600px",
+            height: "160px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+        
+
+
+
+</script>
+
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                考评标准类别
+            </div>
+            <div id="tree"></div>
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div id="titlebar" class="panel-Title">考评内容</div>
+            <div id="toolbar" class="titlePanel">
+                <div class="title-search">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label for="person">考评内容</label>
+                            <input type="text" class="form-control" id="itemcontent-key">
+                        </div>
+                        <div class="form-group">
+                            <a id="btn_Search" class="btn btn-primary" onclick="fn$search();"><i class="fa fa-search"></i> 查询
+</a>
+                            <a id="btn_SearchAll" class="btn btn-primary" onclick="fn$all();">&nbsp;全部</a>
+                        </div>
+                    </div>
+
+                    @*<table>
+                            <tr>
+                                <td>
+                                    <div id="queryCondition" class="btn-group">
+                                        <a class="btn btn-default dropdown-text" data-toggle="dropdown">选择条件</a>
+                                        <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a data-value="Account">账户</a></li>
+                                            <li><a data-value="RealName">姓名</a></li>
+                                            <li><a data-value="Mobile">手机</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td style="padding-left: 2px;">
+                                    <input id="txt_Keyword" type="text" class="form-control" placeholder="请输入要查询关键字" style="width: 200px;" />
+                                </td>
+                                <td style="padding-left: 5px;">
+                                    <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                                </td>
+                            </tr>
+                        </table>*@
+                </div>
+                <div class="toolbar">
+                    <div class="btn-group">
+                        <a id="lr-replace" class="btn btn-default" onclick="reload()"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+                        @if (ViewBag.allowadd)
+                        {
+                            <a id="add" class="btn btn-default" onclick="fn$addcategory()"><i class="fa fa-plus"></i> 新增类别</a>
+                            <a id="edit" class="btn btn-default" onclick="fn$editcategory()"><i class="fa fa-plus"></i> 修改类别</a>
+                            <a id="delete" class="btn btn-default" onclick="fn$deletecategory()"><i class="fa fa-trash-o"></i> 删除类别</a>
+                        }
+                    </div>
+                    @if (ViewBag.allowadd)
+                    {
+                <div class="btn-group">
+                    <a id="add" class="btn btn-default" onclick="fn$additem()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+                    <a id="import" class="btn btn-default" onclick="fn$import()"><i class="fa fa-file-excel-o"></i>&nbsp;导入</a>
+                </div>
+                    }
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="grid"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>

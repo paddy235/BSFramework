@@ -1,0 +1,294 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group a.btn {
+            margin-top: 4px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+</style>
+<script>
+   var isallowd = '@ViewBag.isallowd';
+    var currentNode;
+    jQuery(function () {
+        jQuery('#layout').layout({
+            applyDemoStyles: false,
+            west: {
+                size: 300,
+            },
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+
+        jQuery(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#grid').setGridWidth(($('.gridPanel').width()));
+                $("#grid").setGridHeight($(window).height() - 51 - jQuery('#titlebar').height() - jQuery('#toolbar').height() - 29);
+                jQuery('#tree').height(jQuery(window).height() - 50);
+            }, 100);
+            e.stopPropagation();
+        });
+
+        fn$loadtree();
+
+        fn$loadgrid();
+    });
+
+    function fn$loadgrid() {
+        jQuery('#grid').jqGrid({
+            url: '@Url.Action("GetData")',
+            mtype: 'POST',
+            datatype: "json",
+            height: $(window).height() - 51 - jQuery('#titlebar').height() - jQuery('#toolbar').height() - 29,
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'ItemId', hidden: true },
+                {
+                    label: '操作', name: 'action', width: 135, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        var html = "";
+                        if (isallowd == 'True') {
+                            html += "<a href=\"javascript:fn$edit('" + rowObject.MeasureId + "')\" title=\"修改\" style=\"color:blue;padding-left:0px;\">修改</a> ";
+                            html += "<a href=\"javascript:fn$delete('" + rowObject.MeasureId + "')\" title=\"删除\" style=\"color:blue;padding-left:0px;\">删除</a> ";
+                        }
+                        return html;
+                    }
+                },
+                { label: "风险类别", name: "Category", width: 200, align: "center", sortable: true },
+                { label: "风险因素", name: "DangerReason", width: 200, align: "center", sortable: false },
+                { label: "风险预控措施", name: "MeasureContent", width: 500, align: "left", sortable: false },
+                { label: "操作人", name: "OperateUser", width: 200, align: "center", sortable: false },
+                { label: "操作时间", name: "OperateTime", width: 120, align: "center", sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' } },
+            ],
+            rownumbers: true,
+            rowNum: 20,
+            viewrecords: true,
+            pager: '#gridPager',
+        });
+    }
+
+    function fn$loadtree() {
+        jQuery('#tree').treeview({
+            height: $(window).height() - 50,
+            url: '@Url.Action("GetCategories")',
+            onnodeclick: function (node) {
+                currentNode = node;
+                fn$query();
+            }
+        });
+    }
+
+    function fn$refreshtree(id) {
+        fn$loadtree();
+    }
+
+    function fn$addcategory() {
+        dialogOpen({
+            id: "Form",
+            title: '新增类别',
+            url: '/..@Url.Action("Edit",new  { id = string.Empty})',
+            width: "500px",
+            height: "200px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    function fn$editcategory() {
+        var node = jQuery('#tree').getCurrentNode();
+        if (!node) {
+            dialogMsg('请选择人员安全风险类别！', 0);
+            return;
+        }
+
+        dialogOpen({
+            id: "Form",
+            title: '新增类别',
+            url: '/..@Url.Action("Edit",new  { id = string.Empty})/' + node.id,
+            width: "500px",
+            height: "200px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    function fn$deletecategory() {
+        var node = jQuery('#tree').getCurrentNode();
+        if (!node) {
+            dialogMsg('请选择人员安全风险类别！', 0);
+            return;
+        }
+
+        $.RemoveForm({
+            url: '/..@Url.Action("Delete")' + '/' + node.id,
+            success: function (data) {
+                fn$loadtree();
+            }
+        });
+    }
+
+    function fn$edit(id) {
+        dialogOpen({
+            id: "Edit",
+            title: '修改风险预控措施',
+            url: '/..@Url.Action("Edit2")/' + id,
+            width: "600px",
+            height: "320px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    function fn$additem() {
+        node = jQuery('#tree').getCurrentNode();
+
+        dialogOpen({
+            id: "Edit",
+            title: '新增风险预控措施',
+            url: '/..@Url.Action("Edit2",new  { id = string.Empty})' + '?categoryid=' + (node ? node.id : ''),
+            width: "600px",
+            height: "320px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    function fn$delete(id) {
+        $.RemoveForm({
+            url: '/..@Url.Action("Remove")' + '/' + id,
+            success: function (data) {
+                fn$refresh();
+            }
+        });
+    }
+
+    function fn$import() {
+        dialogOpen({
+            id: "Import",
+            title: '导入',
+            url: '/..@Url.Action("Import")',
+            width: "500px",
+            height: "200px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.fn$ok();
+            }
+        });
+    }
+
+    function fn$refresh() {
+        fn$query();
+    }
+
+    function fn$query() {
+        jQuery('#grid').jqGrid('setGridParam', { postData: { CategoryId: currentNode ? currentNode.id : null, key: jQuery('#key').val() } }).trigger("reloadGrid");
+    }
+
+    function fn$all() {
+        currentNode = null;
+        jQuery('#key').val('');
+        fn$query();
+    }
+    function SetRole() {
+          dialogOpen({
+              id: "SetRole",
+              title: '设置风险预控规则',
+            url: '/..@Url.Action("SetRole")',
+            width: "500px",
+            height: "450px",
+              callBack: function (iframeId) {
+                  top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    function setting() {
+        dialogOpen({
+            id: "Setting",
+            title: '规则设置',
+            url: '/..@Url.Action("Setting")',
+            width: "1000px",
+            height: "600px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                //
+            }
+        });
+    }
+
+
+</script>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                人身安全风险类别
+            </div>
+            <div id="tree"></div>
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div id="titlebar" class="panel-Title">风险预控措施</div>
+            <div id="toolbar" class="titlePanel">
+                <div class="title-search">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="key">
+                        </div>
+                        <div class="form-group">
+                            <a id="btn_Search" class="btn btn-primary" onclick="fn$query();">
+                                <i class="fa fa-search"></i> 查询
+                            </a>
+                            <a id="btn_SearchAll" class="btn btn-primary" onclick="fn$all();">&nbsp;全部</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="toolbar">
+                    @if (ViewBag.isallowd)
+                    {
+                        <div class="btn-group">
+                            <a id="lr-setting" class="btn btn-default" onclick="setting()"><i class="fa fa-gear"></i>&nbsp;规则设置</a>
+                        </div>
+                        @*<div class="btn-group">
+                            <a id="addcategory" class="btn btn-primary" onclick="SetRole()"> 设置风险预控规则</a>
+                        </div>*@
+                        <div class="btn-group">
+                            <a id="addcategory" class="btn btn-default" onclick="fn$addcategory()"><i class="fa fa-plus"></i> 新增类别</a>
+                            <a id="editcategory" class="btn btn-default" onclick="fn$editcategory()"><i class="fa fa-edit"></i> 修改类别</a>
+                            <a id="delcategory" class="btn btn-default" onclick="fn$deletecategory()"><i class="fa fa-trash-o"></i> 删除类别</a>
+                        </div>
+                        <div class="btn-group">
+                            <a id="add" class="btn btn-default" onclick="fn$additem()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+                            <a id="import" class="btn btn-default" onclick="fn$import()"><i class="fa fa-file-excel-o"></i>&nbsp;导入</a>
+                        </div>
+                    }
+
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="grid"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>

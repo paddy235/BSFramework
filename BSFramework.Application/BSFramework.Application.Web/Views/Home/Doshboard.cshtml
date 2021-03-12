@@ -1,0 +1,115 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="~/Content/scripts/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Content/styles/static/js/rem.js"></script>
+    <link href="~/Content/styles/static/css/indexmanage.css" rel="stylesheet" />
+    <style>
+
+        .webpart {
+            height: 415px;
+            padding: 5px;
+        }
+
+            .webpart iframe {
+                background-color: white;
+            }
+
+        .bg-white {
+            background-color: white;
+        }
+    </style>
+    <script src="~/Content/scripts/jquery/jquery-2.0.3.min.js"></script>
+    <script src="~/Content/scripts/bootstrap/bootstrap.min.js"></script>
+    <script>
+        var bzUrl = '@ViewBag.bzUrl';
+        jQuery(function () {
+            jQuery.ajax({
+                url: '@Url.Action("GetDoshboard")',
+                type: 'POST',
+                success: function (data) {
+                    var html = '';
+                    jQuery.each(data, function (i, o) {
+                        if (i % 3 == 0)
+                            html += '<div class="row">';
+
+                        jQuery('#container').append('<div class="col-xs-4 webpart"><iframe style="width:100%;height:100%;border:none;" src="' + (bzUrl + o.Url) + '"></iframe></div>');
+
+                        if (i % 3 == 0)
+                            html += '</div>';
+                    });
+                }
+            })
+        });
+
+        //双控调用 ， iframe、menutab样式不同，所以无法跳转
+        function addTabSK(dId, href, text)  //主键id，路径，名称
+        {
+
+
+            $(".navbar-custom-menu>ul>li.open").removeClass("open");
+            var dataId = dId;
+            var menuName = text;
+            top.$.cookie('currentmoduleId', dataId, { path: "/" });
+            top.$.cookie('currentmoduleName', menuName, { path: "/" });
+            var dataUrl = top.location.origin + href;
+
+            var flag = true;
+            if (dataUrl == undefined || $.trim(dataUrl).length == 0) {
+                return false;
+            }
+            /*20181122 xjl  主页点击，打开iframe */
+            parent.$('.menuTab').each(function () {
+                //parent.$(this).data('id') == 页面地址 ；
+                //循环判断所有标签，是否有相同地址的页面存在，有则打开，没有则创建
+                // * 原有模块，路径均无参数，主页跳转页面需增加参数，所以不会跳转，而是重新创建一个
+
+                if ($(this).data('id').indexOf(dataUrl) != -1 || dataUrl.indexOf($(this).data('id')) != -1) {
+                    //if (parent.$(this).data('id') == dataUrl) {
+
+                    if (!parent.$(this).hasClass('active')) {  //要打开的页面没有选中，隐藏特效并刷新页面（首页点击，此项必定未false 所以一定会执行）
+                        parent.$(this).addClass('active').siblings('.menuTab').removeClass('active');
+                        parent.$.tab.scrollToTab(this);
+                        parent.$('.mainContent .LRADMS_iframe').each(function () {
+
+                            if (parent.$(this).data('id').indexOf(dataUrl) != -1 || dataUrl.indexOf(parent.$(this).data('id')) != -1) {
+                                parent.$(this).show().siblings('.LRADMS_iframe').hide();
+                                parent.$(this).context.src = dataUrl; //刷新iframe
+                                return false;
+                            }
+                        });
+                    }
+                    flag = false;
+                    return false;
+                }
+            });
+            if (flag) {
+
+                var str = '<a href="javascript:;" class="active menuTab" data-id="' + dataUrl + '" mid="' + dataId + '">' + menuName + ' <i class="fa fa-remove"></i></a>';
+                parent.$('.menuTab').removeClass('active');
+
+                var str1 = '<iframe class="LRADMS_iframe" id="iframe' + dataId + '" name="iframe' + dataId + '"  width="100%" height="' + parent.$('.mainContent').find('iframe.LRADMS_iframe').eq(0).height() + '" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" seamless></iframe>';
+                parent.$('.mainContent').find('iframe.LRADMS_iframe').hide();
+                parent.$('.mainContent').append(str1);
+                // Loading(true);
+                //parent.$('.mainContent iframe:visible').load(function () {
+                //    Loading(false);
+                //});
+                parent.$('.menuTabs .page-tabs-content').append(str);
+                //parent.$.tab.scrollToTab(parent.$('.menuTab.active'));
+                return false;
+            }
+        }
+    </script>
+</head>
+<body style="height:100%; background-color:#eff6ff;margin:5px;">
+    <div id="container">
+    </div>
+</body>
+</html>

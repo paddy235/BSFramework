@@ -1,0 +1,408 @@
+﻿@model IEnumerable<BSFramework.Application.Entity.ToolManage.ToolTypeEntity>
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")" />
+<script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/hammer.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+
+<script>
+    var v;
+    var tId;
+    var tType;  //点击编辑
+    $(function () {
+        $('#uploadFile').change(cp);
+        //获取菜单(菜单控制)
+        InitMenu(undefined, $("div"));
+    });
+    function cp() {
+        $.ajaxFileUpload({
+            url: "@Url.Action("UploadFile")",
+            secureuri: false,
+            fileElementId: 'uploadFile',
+            dataType: 'json',
+            success: function (data) {
+
+                if (top.document.getElementById('photo') != undefined) {
+
+                    top.document.getElementById('photo').src = top.contentPath + data.resultdata.path;
+                }
+                document.getElementById('uploadPreview').src = top.contentPath + data.resultdata.path;
+                $("#tempImageSrc").val(top.location.origin + top.contentPath + data.resultdata.path);
+                $("#filename").val(data.resultdata.name);
+                $('#uploadFile').change(cp);
+            }
+        });
+    }
+
+    function save() {
+        var path = $("#tempImageSrc").val();
+        var name = $("#filename").val();
+        var url = '@Url.Action("AddToolType")';
+        if (!path) {
+            v = layer.open({
+                type: 1,
+                title: '数据验证',
+                content: $('.validimg'),
+                area: ['300px', '180px']
+            })
+            return;
+        }
+        if (!name) {
+            v = layer.open({
+                type: 1,
+                title: '数据验证',
+                content: $('.valid'),
+                area: ['300px', '180px']
+            })
+            return;
+        }
+        if (tType == "edit") {
+            url = '@Url.Action("EditToolType")';
+        }
+        $.ajax({
+            url: url,
+            type: 'post',
+            data: { path: path, name: name, id: tId },
+            success: function (data) {
+
+                //layer.close(iframeIndex);
+                // alert('新增成功');
+                window.location.href = '@Url.Action("List")';
+                // $('#modalt1').modal('show');
+            }
+        });
+    }
+
+    function delOK() {
+
+    }
+    var delt;
+
+    function deltc() {
+        layer.close(delt);
+        window.location.href = '@Url.Action("List")';
+    }
+
+</script>
+<div class="main-content" >
+    <div class="container-fluid">
+        @using (Html.BeginForm("List", "Tool", FormMethod.Post, new { @class = "sf", enctype = "multipart/form-data", @id = "upimg" }))
+        {
+
+            <div class="mg-b-10" style="margin-top:0px;padding-top:0px;">
+                <div class="" style="overflow: hidden;">
+                    <div class="pull-left title">
+                        <a href="javascript:;">
+                            @*<img src="~/Content/styles/static/images/arrow-back-icon.png" alt="">*@
+                            工器具管理
+                        </a>
+                    </div>
+                    <div style="float:right!important;line-height:40px!important;" code="tool_record">
+                        <a href="@Url.Action("BorrowList")">
+                            <img src="~/Content/styles/static/images/index_29.png" style="margin-top:-2px;" alt="">
+                            借用记录
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="bg-e3ebfd pd-10 my-body">
+                <div class="tools-list" style="">
+                    @*max-height:760px;overflow-y:auto;*@
+                    @for (int i = 0; i < Model.Count(); i++)
+                    {
+                    <div class="item-wrap">
+                        <div>
+                            <a href="@Url.Action("ToolList", new { id = Model.ToList()[i].ID })">
+                                <img width="170" height="160" src="@Model.ToList()[i].Path" alt=" ">
+                            </a>
+                            <div class="remove-bg">
+                                <button value="@Model.ToList()[i].ID" onclick=" edit(this.value); return false;" class="edit"></button>
+                                <button id="@Model.ToList()[i].ID"></button>
+                            </div>
+                        </div>
+                        <p>@Model.ToList()[i].Name</p>
+                    </div>
+                    }
+                    <div class="add-current">
+                        <div class="add">
+                            <a href="javascript:;">
+                                <img src="~/Content/styles/static/images/tools/photo-add.png" alt="">
+                            </a>
+                        </div>
+                        <p>添加</p>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="main-footer" style="height:30px;">
+                武汉博晟安全技术股份有限公司   版权所有
+            </footer>
+        }
+    </div>
+
+</div>
+
+<div class="add-container">
+    <table>
+        <tr>
+            <td>图片</td>
+            <td>
+
+                <div class="file">
+                    <label for="uploadFile">
+                        <img id="uploadPreview" style="width: 160px; height: 160px; " src="~/Content/styles/static/images/tools/photo-add.png" />
+                        <br />
+                        点击框可修改图片
+                        <input type="file" name="uploadFile" id="uploadFile" style="display:none;">
+                        <input type="hidden" id="tempImageSrc" />
+                    </label>
+                    <span class="select-btn">选择图库图片</span>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>名称</td>
+            <td>
+                <input type="text" id="filename" class="my-input" data-type="s1-100" placeholder="请输入" style="width:200px;">
+            </td>
+        </tr>
+        <tr style="height:20px;"></tr>
+        <tr>
+            <td></td>
+            <td>
+                <button class="btn-bg" style="background-color: #3669e1;" onclick="save();">确认</button>
+                <button class="btn-bd" style="border-radius: 0;margin-left:10px;" onclick="layer.closeAll();">取消</button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+
+
+
+
+
+
+
+@*<script src="../plugins/jQuery/jQuery-2.1.4.min.js"></script>
+    <script src="../plugins/jQuery/hammer.js"></script>*@
+
+@*<script src="../bootstrap/js/bootstrap.min.js"></script>
+    <script src="../plugins/nicescroll/nicescroll.min.js"></script>
+    <script src="../plugins/layui/layui.all.js"></script>*@
+
+<script>
+    var iframeIndex;
+    var lay;
+    $(function () {
+
+
+        $('.add').click(function () {
+            document.getElementById('uploadPreview').src = top.origin + top.contentPath + "/Content/styles/static/images/tools/photo-add.png";
+            $("#filename").val("");
+            iframeIndex = layer.open({
+                type: 1,
+                title: '新增类别',
+                content: $('.add-container'),
+                area: ['500px', '420px']
+            })
+        })
+
+        $('.tools-list').delegate('.item-wrap', 'click', function (e) {
+            e.stopPropagation();
+        })
+        $('.tools-list').delegate('.item-wrap button:not(".edit")', 'click', function (e) {
+            if (del(e.target.id)) {
+                var $p = $(this).parents('.item-wrap');
+                $p.remove();
+            } else
+            {
+                return false;
+            }
+
+        })
+        //$('.tools-list').delegate('button.edit', 'click', function () {
+        //    alert('修改');
+        //})
+        $('.tools-list > div').each(function () {
+            var mc = new Hammer(this);
+            mc.on('press', function (e) {
+                $('.tools-list').addClass('remove');
+                $('body').bind('click', clickHand);
+                return false;
+            })
+        })
+
+        $('.select-btn').click(function () {
+           // layer.close(iframeIndex);
+            lay = layer.open({
+                type: 1,
+                title: '图库',
+                content: $('.photo-list'),
+                area: ['1000px', '650px']
+            })
+        })
+        //$('.photo-list li').click(function () {
+            //layer.close(iframeIndex);
+            //alert("回调");
+        //})
+
+
+    })
+    function del(id) {
+        var msg = "删除后将无法恢复，请确认！";
+        if (confirm(msg) == true) {
+
+            $.ajax({
+                url: '@Url.Action("Del")',
+                type: 'post',
+                data: { id: id },
+                success: function (data) {
+                }
+            });
+            return true;
+            } else
+        {
+            return false;
+        }
+    }
+    function setImg(obj) {
+        layer.close(lay);
+        document.getElementById('uploadPreview').src = obj.src;
+        $("#tempImageSrc").val(obj.src);
+        var i = obj.src.lastIndexOf("/");
+        console.log(i);
+        console.log(obj.src.slice(i + 1));
+        var name = obj.src.slice(i + 1);
+        name = name.substring(0, name.length - 4);
+        $("#filename").val(obj.alt);
+
+    }
+    function clickHand() {
+        $('.tools-list').removeClass('remove');
+    }
+    function edit(id) {
+        tId = id;
+        tType = "edit";
+        $.ajax({
+            url: '@Url.Action("edit")',
+            type: 'post',
+            data: { id: id },
+            success: function (data) {
+                data = JSON.parse(data);
+ 
+                document.getElementById('uploadPreview').src = data.resultdata.path;
+                $("#tempImageSrc").val(data.resultdata.path);
+                $("#filename").val(data.resultdata.name);
+            }
+        });
+        iframeIndex = layer.open({
+            type: 1,
+            title: '修改类别',
+            content: $('.add-container'),
+            area: ['500px', '420px']
+        })
+    }
+</script>
+<div class="modal fade launch-modal" id="modalt1" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content" style="height:200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">重置密码</h4>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>操作成功，请牢记您的新密码！</h4>
+            </div>
+            <div class="text-center mg-t-10" style="margin-top:10px;">
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" data-dismiss="modal">完成</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="valid">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">请输入工器具名称！</h4>
+        <button class="btn bg-3669e1 c-fff" style="width:100px;margin-top:15px;" onclick="layer.close(v);">确认</button>
+    </div>
+</div>
+<div class="validimg">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">请选择图片！</h4>
+        <button class="btn bg-3669e1 c-fff" style="width:100px;margin-top:15px;" onclick="layer.close(v);">确认</button>
+    </div>
+</div>
+<div class="dels">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">删除后将无法恢复，请确认！</h4>
+        <button class="btn bg-3669e1 c-fff" style="margin-top:10px;width:70px;" onclick="retList();">确认</button>
+        <button class="btn bg-3669e1 c-fff" style="margin-top:10px;width:70px;" onclick="layer.close(v);">取消</button>
+    </div>
+</div>
+<div class="d1">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">该工器具内含有多规格工具，无法删除！</h4>
+        <button class="btn bg-3669e1 c-fff" style="margin-top:10px;width:70px;" onclick="deltc();">确认</button>
+        @*<button class="btn bg-3669e1 c-fff" style="margin-top:10px;width:70px;" onclick="">确认</button>*@
+    </div>
+</div>
+<div class="modal fade launch-modal" id="modalt2" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content" style="height:200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">删除确认</h4>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>删除后将无法恢复，请确认！</h4>
+            </div>
+            <div class="text-center mg-t-10" style="margin-top:10px;">
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" onclick="dely();">确定</button>
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="photo-list">
+    <ul class="nav">
+        <li><img src="~/Content/styles/static/images/tools/photo-1.png" alt="绝缘手套" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/tools/photo-2.png" alt="绝缘靴" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/tools/photo-3.png" alt="安全带" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/tools/photo-4.png" alt="标识牌" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/tools/photo-5.png" alt="绝缘垫" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/tools/photo-6.png" alt="绝缘隔板" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/tools/photo-7.png" alt="扳手" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/tools/photo-8.png" alt="液压扳手" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/tools/photo-9.png" alt="钳子" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/tools/photo-10.png" alt="卷尺" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/tools/photo-11.png" alt="锤子" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/tools/photo-12.png" alt="螺丝刀" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/tools/photo-13.png" alt="刷子" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/tools/photo-14.png" alt="绝缘杆" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/tools/photo-15.png" alt="携带型短路接地线" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/tools/photo-16.png" alt="绝缘笔" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/tools/photo-17.png" alt="电流表" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/tools/photo-18.png" alt="电压表" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/tools/photo-19.png" alt="万用表" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/tools/photo-20.png" alt="电动工器具" onclick="setImg(this)"></li>
+        <li><img src="~/Content/styles/static/images/tools/photo-21.png" alt="梯子" onclick="setImg(this)"></li>
+    </ul>
+</div>

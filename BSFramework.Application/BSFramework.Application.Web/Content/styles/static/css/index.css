@@ -1,0 +1,516 @@
+﻿@charset "utf-8";
+html,body{
+    height:100%;width:100%;
+}
+
+select::-ms-expand{
+    display:none;
+}
+.body-container{
+    height:100%;
+    width:100%;
+    overflow: hidden;
+}
+
+/*天气*/
+.climate{
+    color:#fff;
+    margin-top:30px;
+}
+.climate img{
+    margin-right:20px;
+}
+/*搜索*/
+.search{
+    position: relative;
+    background-color: #fff;
+    margin-top:30px;
+    height:46px;
+    border-radius: 23px;
+    padding:7px 46px 0 30px;
+    box-shadow: 0 1px 10px rgba(0,0,0,.1);
+}
+.search ::-webkit-input-placeholder{
+    color:#999ca8;
+}
+.search input{
+    background: none;
+    border:none;
+    outline: none;
+    line-height: 30px;
+    font-size:16px;
+    width:100%;
+    font-family: '微软雅黑';
+}
+.search .fa{
+    position: absolute;
+    font-size:24px;
+    color:#325dff;
+    right: 18px;
+    top: 8px;
+}
+/*人员菜单*/
+.user{
+    margin-top:30px;
+    text-align: right;
+}
+.user a{
+    color:#fff;
+}
+.user img{
+    margin-right:5px;
+}
+.user .user-info{
+    margin-top:5px;
+    line-height: 20px;
+}
+.user .fa{
+    margin-top:15px;
+    margin-left:5px;
+}
+.user.dropdown{
+    padding-right:50px;
+}   
+.user  .dropdown-menu{
+    line-height: 25px;
+}
+.user  .dropdown-menu li{
+    margin-bottom:5px;
+    border-bottom: 1px solid #ddd;
+}
+.user  .dropdown-menu img{
+    margin-left:5px;
+}
+.wrapper{
+    height:100%;width:100%;
+    padding:100px 0 0;
+    position: relative;
+}
+
+.main-header{
+    height:100px;
+    position: absolute;
+    background: #0032a5;
+    top:0;
+    width:100%;
+    z-index:100;
+}
+.main-header .logo{
+    font-size:30px;
+    font-weight:bold;
+    color:#fff;
+    text-shadow:1px 1px 10px rgba(0,0,0,0.3);
+    line-height: 64px;
+    margin-top:17px;
+}
+.main-header .logo img{
+    display: block;
+    float: left;
+    margin: 3px 20px 0;
+}
+.main-wrapper{
+    height:100%;
+    position: relative;
+    left:0;right:0;
+    overflow: hidden;
+}
+.main-sidebar{
+    width:240px;
+    height:100%;
+    background-color: #00257b;
+    float: left;
+    padding:35px 12px;
+}
+.main-sidebar .main-sidebar-nav{
+    font-size:16px;
+    font-family: '微软雅黑';
+}
+.main-sidebar .main-sidebar-nav a{
+    display: block;
+    line-height: 60px;
+    color:#a0cde7;
+    padding:0;
+    margin-bottom:5px;
+}
+.main-sidebar .main-sidebar-nav a:focus,
+.main-sidebar .main-sidebar-nav a:hover{
+    background: none;
+}
+.main-sidebar .main-sidebar-nav a>.icon{
+    display: block;
+    float: left;
+    height:60px;
+    width:60px;
+    background-image: url("../images/sprite-icon.png");
+}
+.main-sidebar .main-sidebar-nav a>.icon-1{
+    background-position: 0 top;
+}
+.main-sidebar .main-sidebar-nav a>.icon-2{
+    background-position: -60px top;
+}
+.main-sidebar .main-sidebar-nav a>.icon-3{
+    background-position: -120px top;
+}
+.main-sidebar .main-sidebar-nav a>.icon-4{
+    background-position: -180px top;
+}
+.main-sidebar .main-sidebar-nav a>.icon-5{
+    background-position: -240px top;
+}
+.main-sidebar .main-sidebar-nav a>.icon-6{
+    background-position: -300px top;
+}
+.main-sidebar .main-sidebar-nav a>.icon-7{
+    background-position: -360px top;
+}
+.main-sidebar .main-sidebar-nav a>.icon-8{
+    background-position: -420px top;
+}
+.main-sidebar .main-sidebar-nav a>.icon-9{
+    background-position: -480px top;
+}
+.main-sidebar .main-sidebar-nav a>.icon-10{
+    background-position: -540px top;
+}
+.main-sidebar .main-sidebar-nav a>.icon-11{
+    background-position: -600px top;
+}
+.main-sidebar .main-sidebar-nav a>.icon-12{
+    background-position: -660px top;
+}
+.main-sidebar .main-sidebar-nav a>.icon-13{
+    background-position: -720px top;
+}
+.main-sidebar .main-sidebar-nav a>.icon-14{
+    background-position: -780px top;
+}
+.main-sidebar .main-sidebar-nav a>.icon-15{
+    background-position: -840px top;
+}
+.main-sidebar .main-sidebar-nav a>.icon-16{
+    background-position: -900px top;
+}
+.main-sidebar .main-sidebar-nav a>.icon-17{
+    background-position: -968px top;
+}
+.main-sidebar .main-sidebar-nav a>.icon-18{
+    background-position: -1020px top;
+}
+.main-sidebar .main-sidebar-nav a>.icon-19{
+    background-position: -1080px top;
+}
+
+.main-sidebar .main-sidebar-nav a:hover>.icon-1{
+    background-position: 0 bottom;
+}
+.main-sidebar .main-sidebar-nav a:hover>.icon-2{
+    background-position: -60px bottom;
+}
+.main-sidebar .main-sidebar-nav a:hover>.icon-3{
+    background-position: -120px bottom;
+}
+.main-sidebar .main-sidebar-nav a:hover>.icon-4{
+    background-position: -180px bottom;
+}
+.main-sidebar .main-sidebar-nav a:hover>.icon-5{
+    background-position: -240px bottom;
+}
+.main-sidebar .main-sidebar-nav a:hover>.icon-6{
+    background-position: -300px bottom;
+}
+.main-sidebar .main-sidebar-nav a:hover>.icon-7{
+    background-position: -360px bottom;
+}
+.main-sidebar .main-sidebar-nav a:hover>.icon-8{
+    background-position: -420px bottom;
+}
+.main-sidebar .main-sidebar-nav a:hover>.icon-9{
+    background-position: -480px bottom;
+}
+.main-sidebar .main-sidebar-nav a:hover>.icon-10{
+    background-position: -540px bottom;
+}
+.main-sidebar .main-sidebar-nav a:hover>.icon-11{
+    background-position: -600px bottom;
+}
+.main-sidebar .main-sidebar-nav a:hover>.icon-12{
+    background-position: -660px bottom;
+}
+.main-sidebar .main-sidebar-nav a:hover>.icon-13{
+    background-position: -720px bottom;
+}
+.main-sidebar .main-sidebar-nav a:hover>.icon-14{
+    background-position: -780px bottom;
+}
+.main-sidebar .main-sidebar-nav a:hover>.icon-15{
+    background-position: -840px bottom;
+}
+.main-sidebar .main-sidebar-nav a:hover>.icon-16{
+    background-position: -900px bottom;
+}
+.main-sidebar .main-sidebar-nav a:hover>.icon-17{
+    background-position: -968px bottom;
+}
+.main-sidebar .main-sidebar-nav a:hover>.icon-18{
+    background-position: -1020px bottom;
+}
+.main-sidebar .main-sidebar-nav a:hover>.icon-19{
+    background-position: -1080px bottom;
+}
+
+
+.main-sidebar .main-sidebar-nav a:hover,
+.main-sidebar .main-sidebar-nav li.active a{
+    background-color:#3669e1;
+    color:#fff;
+    box-shadow: 1px 1px 15px rgba(0,0,0,.2);
+}
+
+.nav-last img{
+    margin-right:10px;
+}
+.table-today{
+    color:#454b4e;
+    font-size:16px;
+    font-weight: bold;
+    overflow: hidden;
+}
+.table-today>tbody>tr:nth-of-type(odd){
+    background-color: #f5f8fe;
+}
+.table-today>tbody>tr:nth-of-type(even){
+    background-color: #fff;
+}
+.table-today .icon{
+    padding-left:15px;
+}
+.table-today .icon span{
+    display: inline-block;
+    margin-right:20px;
+    height:32px;
+    width:32px;
+    vertical-align: middle;
+    background-image: url("../images/sprite-today.png");
+}
+.table-today .icon-2{
+    background-position: -32px 0;
+}
+.table-today .icon-3{
+    background-position: -64px 0;
+}
+.table-today .icon-4{
+    background-position: -96px 0;
+}
+.table-today .icon-5{
+    background-position: -128px 0;
+}
+.table-today .icon-6{
+    background-position: -160px 0;
+}
+.table-today .icon-7{
+    background-position: -192px 0;
+}
+.table-today .icon-8{
+    background-position: -224px 0;
+}
+.table-today .icon-9{
+    background-position: -256px 0;
+}
+.table-today .icon-10{
+  background-position: -288px 0;
+}
+.table-today .icon-11{
+    background-position: -320px 0;
+}
+.table-today .content{
+    font-size:16px;
+    font-weight: bold;
+    margin:0;
+}
+.table-today .person{
+    color:#737373;
+    margin:7px 0 0;
+    font-size:14px;
+    font-weight: normal;
+}
+.table-today .my-checkbox{
+   display: block;
+    margin-left:10px;
+    vertical-align: middle;
+    height:30px;
+    width:30px;
+    background: url("../images/checkbox-bg.png") left 0 no-repeat;
+    cursor: pointer;
+}
+.table-today tr.actives .my-checkbox{
+    background-position: -60px 0;
+}
+.table-today .hover .my-checkbox{
+    background-position: -30px 0;
+}
+.main-content{
+    margin-left:240px;
+    background-color: #fff;
+    height:100%;
+}
+
+.box-content{
+    overflow: hidden;
+    margin-bottom:15px;
+}
+.box-content .header{
+    color:#fff;
+    font-size:18px;
+    background-color: #3f73eb;
+    padding:12px 15px;
+}
+.box-content .header .right{
+    font-size:16px;
+}
+.box-content .header .right button{
+    background:none;
+    border:none;
+    outline: none;
+    font-size:20px;
+    margin-top:-2px;
+}
+.box-content .body{
+    padding:10px 15px;
+    border:3px solid #f4f7fe;
+    background-color: #fff;
+}
+.table-refuel{
+    margin-bottom:0;
+}
+.table-refuel>tbody>tr>td,
+.table-refuel>tbody>tr>th,
+.table-refuel>tfoot>tr>td,
+.table-refuel>tfoot>tr>th,
+.table-refuel>thead>tr>td,
+.table-refuel>thead>tr>th{
+    border:3px solid #dceaff;
+    font-size:16px;
+}
+.table-refuel td{
+    background-color: #f8fbff;
+    font-weight: bold;
+    color:#3798cd;
+}
+.table-refuel td.text-right{
+    background-color: #fff;
+    font-weight: normal;
+    color:#333;
+}
+.notice .body li{
+    padding-left:10px;
+    font-size:16px;
+    padding-top:5px;
+    margin-bottom:5px;
+}
+.notice .body li>div{
+    position: relative;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color:#333333;
+}
+.notice .body li>span{
+    color:#7d8286;
+    font-size:14px;
+}
+.target .body{
+    font-size:16px;
+    color:#333;
+    line-height: 40px;
+}
+.target .body .pull-right{
+    color:#8d8d8d;
+}
+.target .body .pull-right b{
+    color:#4280ff;
+}
+.card{
+    margin-top:10px;
+}
+.card .left>div{
+    width:50%;
+}
+.card img{
+    width:100%;
+    height:92px;
+}
+.my-title{
+    line-height: 66px;
+}
+.my-title img{
+    margin-right:5px;
+    vertical-align: middle;
+}
+.my-title .pull-left{
+    font-size:24px;
+    font-weight: bold;
+    color:#4280ff;
+}
+.my-title .pull-right{
+    font-size:16px;
+    color:#6f6f6f;
+}
+
+.main-footer{
+    left:240px;
+    right:0;
+    bottom:0;
+    height:40px;
+    text-align: center;
+    color:#6f6f6f;
+    line-height: 40px;
+}
+
+.table.no-border>tbody>tr>td,
+.table.no-border>tbody>tr>th,
+.table.no-border>tfoot>tr>td,
+.table.no-border>tfoot>tr>th,
+.table.no-border>thead>tr>td,
+.table.no-border>thead>tr>th{
+    border:none!important;
+}
+
+.table.vertical>tbody>tr>td,
+.table.vertical>tbody>tr>th,
+.table.vertical>tfoot>tr>td,
+.table.vertical>tfoot>tr>th,
+.table.vertical>thead>tr>td,
+.table.vertical>thead>tr>th{
+    vertical-align: middle;
+}
+
+.text-hidden{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.l,
+.m{
+    width:50%;
+    padding:10px;
+    background: #ebf1fe;
+}
+.m{
+    padding-left:0;
+}
+.l .table,
+.m .table{
+    margin-bottom:0;
+}
+.container-fluid{
+    padding: 20px 50px 0;
+}
+.index.table>tbody>tr>td,
+.index.table>tbody>tr>th,
+.index.table>tfoot>tr>td,
+.index.table>tfoot>tr>th,
+.index.table>thead>tr>td,
+.index.table>thead>tr>th{
+    padding:8px;
+}

@@ -1,0 +1,311 @@
+﻿@model BSFramework.Entity.WorkMeeting.JobTemplateEntity
+@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<style>
+    .images-container {
+        min-height: 120px;
+    }
+
+        .images-container li {
+            list-style: none;
+            float: left;
+            padding: 0px 5px;
+        }
+
+    .yinpin li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+
+    .items li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+
+    .ui-jqgrid tr.jqgrow td {
+        white-space: normal !important;
+        height: auto;
+        vertical-align: middle;
+        padding-top: 2px;
+    }
+</style>
+<script>
+    $(function () {
+        $('#uploadFile').change(cp);
+    });
+    function AcceptClick() {
+
+        if (!valid()) {
+            return false;
+        }
+        var count = jQuery('#grid').jqGrid('getRowData').length;
+        if (count < 1) {
+            dialogMsg('潜在危险及防范措施不能为空！', 0);
+            return false;
+        }
+        var json = jQuery('#form1').serializeJSON();
+        $.SaveForm({
+            url: '@Url.Action("SaveForm")',
+            param: json,
+            loading: "数据提交中...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        });
+
+    }
+
+    function cp() {
+        $.ajaxFileUpload({
+            url: "@Url.Action("UploadFile")?id=@Model.JobId",
+            secureuri: false,
+            fileElementId: 'uploadFile',
+            dataType: 'json',
+            success: function (data) {
+
+                // alert(top.location.origin + top.contentPath + data.resultdata.path);
+                //alert(data.resultdata.name);
+                //var imgs = $("#imgs").val();
+                //if (imgs!="") imgs = imgs + "\r\n";
+                if (data.message == "1") {
+                    alert("请上传GIF,PNG,JPG格式的图片！");
+                    $('#uploadFile').change(cp);
+                } else {
+                    $("#PicNumber").val(data.resultdata.name);
+                    // $("#imgs").attr("href",top.location.origin + top.contentPath + data.resultdata.path);
+                    $('#uploadFile').change(cp);
+                }
+            }
+        });
+    }
+    function valid() {
+        var d = $("#d").val();
+        var m = $("#m").val();
+        var JobContent = $("#JobContent").val();
+        var WorkType = $("#WorkType").val();
+        var WorkQuarters = $("#WorkQuarters").val();
+        var ResPrepare = $("#ResPrepare").val();
+        var WorkDescribe = $("#WorkDescribe").val();
+        var WorkArea = $("#WorkArea").val();
+        if (JobContent == "") {
+            dialogMsg('工作任务不能为空！', 0);
+            return false;
+        }
+        //if (WorkType == "") {
+        //    dialogMsg('作业类别不能为空！', 0);
+        //    return false;
+        //}
+        //if (WorkQuarters == "") {
+        //    dialogMsg('作业岗位不能为空！', 0);
+        //    return false;
+        //}
+        //if (ResPrepare == "") {
+        //    dialogMsg('资源准备不能为空！', 0);
+        //    return false;
+        //}
+        //if (WorkDescribe == "") {
+        //    dialogMsg('任务描述不能为空！', 0);
+        //    return false;
+        //}
+        //if (WorkArea == "") {
+        //    dialogMsg('作业区域不能为空！', 0);
+        //    return false;
+        //}
+        if (d == "") {
+            dialogMsg('潜在危险不能为空！', 0);
+            return false;
+        }
+        if (m == "") {
+            dialogMsg('防范措施不能为空！', 0);
+            return false;
+        }
+        return true;
+    }
+    function btn_evaluate() {
+
+        var id = $('#JobId').val();
+        dialogOpen({
+            id: "form1",
+            title: '危险因素及防范措施',
+            url: '/../@Url.Action("Danger")?jobid=' + id + "&iframeId=" + jQuery(self.frameElement).attr('id'),
+            width: "500px",
+            height: "330px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+    jQuery(function () {
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#grid').setGridWidth(($('.gridPanel').width()));
+                $("#grid").setGridHeight($(window).height() - 140);
+            }, 200);
+            e.stopPropagation();
+        });
+        var jobid = jQuery('#JobId').val();
+        jQuery('#grid').jqGrid({
+            colModel: [
+                {
+                    label: '操作', name: '', index: '', width: 150, align: 'center',
+                    formatter: function (cellvaue, options, rowObject) {
+                        return "<a style='' href=\"javascript:editdanger('" + rowObject.DangerId + "')\" title=\"修改\">修改</a><a style='' href=\"javascript:deldanger('" + rowObject.DangerId + "')\" title=\"删除\">删除</a>"
+
+                    }
+                },
+                { label: '潜在危险', name: 'Dangerous', width: 300, align: 'center', sortable: false },
+                { label: '防范措施', name: 'Measure', width: 250, align: 'center', sortable: false }
+            ],
+            height: 300,
+            autowidth: true,
+            url: '@Url.Action("GetDangers")?jobid=' + jobid,
+            datatype: "json",
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 10,
+            rownumbers: true,
+            //pager: "#gridPager",
+            gridComplete: function () {
+            }
+        });
+    });
+    function editdanger(id) {
+        dialogOpen({
+            id: "form1",
+            title: '编辑',
+            url: '/../@Url.Action("Danger")?dangerid=' + id + "&iframeId=" + jQuery(self.frameElement).attr('id'),
+            width: "500px",
+            height: "330px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+    function deldanger(id) {
+        $.RemoveForm({
+            url: '/../@Url.Action("DeleteDanger")/',
+            param: { keyValue: id },
+            success: function (data) {
+                $("#grid").resetSelection();
+                $("#grid").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style=" padding-right 30px;">
+            <table class="form">
+                <tr>
+                    <td class="formTitle">工作任务<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @Html.TextAreaFor(x => x.JobContent, new { @class = "form-control" })
+
+                        @Html.HiddenFor(x => x.JobId)
+                        @Html.HiddenFor(x => x.DeptCode)
+                    </td>
+                    <td class="formTitle">作业类别</td>
+                    <td class="formValue">
+
+                        @Html.TextAreaFor(x => x.WorkType, new { @class = "form-control" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">作业岗位</td>
+                    <td class="formValue">
+
+                        @Html.TextAreaFor(x => x.WorkQuarters, new { @class = "form-control" })
+                    </td>
+                    <td class="formTitle">资源准备</td>
+                    <td class="formValue">
+
+                        @Html.TextAreaFor(x => x.ResPrepare, new { @class = "form-control" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">任务描述</td>
+                    <td class="formValue">
+
+                        @Html.TextAreaFor(x => x.WorkDescribe, new { @class = "form-control" })
+                    </td>
+                    <td class="formTitle">作业区域</td>
+                    <td class="formValue">
+
+                        @Html.TextAreaFor(x => x.WorkArea, new { @class = "form-control" })
+                    </td>
+                </tr>
+                @*<tr style="line-height:100px;">
+                        <th class="formTitle" valign="top" style="padding-top: 4px;">
+                            潜在危险<font face="宋体">*</font>
+                        </th>
+                        <td class="formValue" colspan="3">
+                            @Html.TextAreaFor(x => x.d, new { @style = "height:120px;", @class = "form-control", placeholder = "请以‘。’分隔" })
+                            <textarea id="Dangers" class="form-control" style="height: 70px;"></textarea>
+                        </td>
+                    </tr>
+                    <tr style="line-height:100px;">
+                        <th class="formTitle" valign="top" style="padding-top: 4px;">
+                            防范措施<font face="宋体">*</font>
+                        </th>
+                        <td class="formValue" colspan="3">
+                            @Html.TextAreaFor(x => x.m, new { @style = "height:120px;", @class = "form-control", placeholder = "请以‘。’分隔" })
+                            <textarea id="Measure" class="form-control" style="height: 70px;"></textarea>
+                        </td>
+                    </tr>*@
+                <tr>
+                    <td colspan="4">
+                        <div class="pd-20 bg-fff bd-t-e3ebfd">
+                            <div class="f-18 f-w c-0d0d0d"><a id="lr-edit" class="btn btn-default" onclick="btn_evaluate()"><i class="fa fa-pencil-square-o"></i>&nbsp;潜在危险及防范措施</a></div>
+                            <div class="f-16 c-4a4e50 lh-36 pd-b-20" style="word-break:break-all;height:auto;min-height:110px;padding-top:10px;padding-left:10px;">
+                                @*@Html.DisplayFor(x => x.Remark)*@
+                                <div class="gridPanel">
+                                    <table id="grid"></table>
+                                    @*<div id="gridPager"></div>*@
+                                </div>
+
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="line-height:100px;">
+                    <th class="formTitle" valign="top" style="padding-top: 4px;">
+                        示例图片
+                    </th>
+
+                    <td colspan="2">
+                        @Html.TextBoxFor(x => x.PicNumber, new { @class = "form-control", @readonly = "readonly" })
+                        @*<a id="imgs" ><label id="name"></label></a>*@
+                    </td>
+                    <td>
+                        <input type="file" name="uploadFile" id="uploadFile" style="display:none;">
+                        <label for="uploadFile" style="margin-left:20px;color:blue;text-align:center;vertical-align:middle;font-size:12px;">上传照片</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">添加人</td>
+                    <td class="formValue">
+                        @Html.HiddenFor(x => x.CreateUserId)
+                        @Html.TextBoxFor(x => x.CreateUser, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">添加时间</td>
+                    <td class="formValue">
+
+                        @Html.TextBoxFor(x => x.CreateDate, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+</div>

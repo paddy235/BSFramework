@@ -1,0 +1,238 @@
+﻿@model BSFramework.Application.Web.Areas.Works.Models.EmergencyDataList
+
+@{
+    ViewBag.Title = "drillPlan";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")" />
+
+<style type="text/css">
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+</style>
+
+<!-- Content Wrapper. Contains page content -->
+<div class="main-content">
+    <div class="container-fluid">
+
+        <div class="mg-b-10">
+            <div class="" style="overflow: hidden;">
+                <div class="pull-left title">
+                    <a href="javascript:;">
+                        <img src="../static/images/arrow-back-icon.png" alt="">
+                        应急预案
+                    </a>
+                </div>
+            </div>
+
+        </div>
+        <div class="bg-e3ebfd pd-10 wrap">
+            <div class="bg-fff peccancy-list">
+                <div class="head">
+                    <div class="searchs" style="overflow: hidden;width:100%;">
+                        <label class="mg-l-30 ">预案名称：</label>
+                        <span class="my-input mg-r-10">
+                            <input type="text" name="Likename" id="Likename">
+                        </span>
+                        @*<label class="mg-l-30 ">应急预案类型：</label>
+                            <span class="my-select ">
+                                <select style="border:none;border-bottom:1px solid #b0b8c1;" id="EmergencyType">
+                                    @{
+
+                                        var content = ViewBag.content as List
+                                        <BSFramework.Application.Entity.SystemManage.DataItemDetailEntity>
+                                            ;
+                                        foreach (var item in content)
+                                        {
+                                            <option value="@item.ItemName">@item.ItemName</option>
+
+                                        }
+                                    }
+                                </select>
+                                <span class="icon"></span>
+                            </span>*@
+
+                        @*<label class="mg-l-30 ">时间范围：</label>
+                            <span class="my-time-group" style="width:12%;">
+                                @Html.TextBox("from", ViewData["from"])
+                                <img src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                            </span>
+                            <span class="my-time-group" style="width:12%;">
+                                @Html.TextBox("to", ViewData["to"])
+                                <img src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                            </span>*@
+                        <button class="my-btn bg-3669e1" type="button" style="margin-left: 30px;" onclick="search()">
+                            <img src="@Url.Content("~/Content/styles/static/images/search-icon.png")" alt="">
+                            搜索
+                        </button>
+                        @*<button class="my-btn bg-3669e1" type="button" style="margin-left: 30px;" onclick="add()">
+                                <img src="@Url.Content("~/Content/styles/static/images/search-icon.png")" alt="">
+                                新增
+                            </button>*@
+                    </div>
+                </div>
+                <ul class="safe-main">
+                    <li>
+                        <table id="tables" class="table text-center table-striped no-mg c-67748d" style="border-top: 2px solid #e3ebfd;">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>应急预案名称</th>
+                                    <th>应急预案类型</th>
+                                    <th>编制人</th>
+                                    <th>编制部门</th>
+                                    <th>编制时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table">
+                                @{
+                                    int i = 1;
+                                    if (Model.data != null)
+                                    {
+                                        foreach (var item in Model.data)
+                                        {
+                                            <tr>
+                                                <td>@i</td>
+                                                <td>@item.name</td>
+                                                <td>@item.plantypename</td>
+                                                <td>@item.username_bz</td>
+                                                <td>@item.departname_bz</td>
+                                                <td>@Convert.ToDateTime(item.datetime_bz).ToString("yyyy-MM-dd")</td>
+                                                <td>
+                                                    <a href="@Url.Action("drillProgramme")?EmergencyId=@item.id" style="color:#41bf5f">详情</a>
+
+                                                </td>
+                                            </tr>
+                                            i++;
+                                        }
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+        <footer class="main-footer">
+            武汉博晟安全技术股份有限公司   版权所有
+        </footer>
+
+    </div>
+</div>
+<!-- /.content-wrapper -->
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+@System.Web.Optimization.Scripts.Render("~/Content/scripts/plugins/jqgrid/js",
+    "~/Content/scripts/plugins/tree/js",
+    "~/Content/scripts/plugins/validator/js",
+            "~/Content/scripts/plugins/datepicker/js",
+    "~/Content/scripts/utils/js")
+<script src="@Url.Content("~/Content/scripts/bootstrap/js/bootstrap.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<script>
+    $(function () {
+        $('.main-sidebar,.main-content').niceScroll({
+            autohidemode: false
+        });
+        $('.table-today tr').hover(function () {
+            $(this).addClass('hover');
+        }, function () {
+            $(this).removeClass('hover');
+        });
+        $('.table-today tr').click(function () {
+            $(this).toggleClass('actives');
+        })
+        $('.user>.dropdown-menu').css({
+            left: $('.user').innerWidth() - $('.user>.dropdown-menu').width() - 65
+        });
+
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#from',
+                type: 'date'
+            });
+            laydate.render({
+                elem: '#to',
+                type: 'date'
+            });
+        })
+
+    });
+
+    function Download(fileId) {
+        $.download("../../Works/Emergency/DownloadFile", "keyValue=" + fileId, 'post');
+    }
+    function search() {
+        var postData = new Object();
+        //postData["from"] = $("#from").val();
+        //postData["to"] = $("#to").val();
+
+        postData["name"] = $("#Likename").val();
+        //postData["EmergencyType"] = $("#EmergencyType").find("option:selected").text();
+        $.ajax({
+            url: '/..@Url.Action("getEmergencyWorkList")',
+            type: "post",
+            data: postData,
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                InTable(data);
+            }
+        });
+    }
+    function add() {
+        layer.open({
+            title: '录入应急预案',
+            type: 2,
+            area: ['1000px', '630px'],
+            content: '@Url.Action("Edit")'
+            //yes: function () {
+            //    jQuery('[name*="Score"]').each(function () {
+            //        if (!jQuery(this).val())
+            //            jQuery(this).val('0');
+            //    })
+            //    jQuery('form').submit();
+            //}
+        });
+    }
+
+    function InTable(data) {
+
+        //var _htmlhead = '<tr>';
+        //for (var i = 0; i < data.length; i++) {
+        //    _htmlhead += '<th>' + data[i].name + '</th>';
+        //}
+        //_htmlhead += '</tr>';
+        //$("#tablehead").append(_htmlhead);
+        $("#tables tr:gt(0)").empty();
+        $("#tables tr").not(':eq(0)').empty();
+        var tboy = $("#table");
+        if (data.data.length > 0) {
+            $("#table").find("tr").removeClass()
+            var _html = '';
+            for (var i = 0; i < data.data.length; i++) {
+                _html += '<tr>';
+                _html += '<td>' + (i+1) + '</td>';
+                _html += '<td>' + data.data[i].name + '</td>';
+                _html += '<td>' + data.data[i].plantypename + '</td>';
+                _html += '<td>' + data.data[i].username_bz + '</td>';
+                _html += '<td>' + data.data[i].departname_bz + '</td>';
+                _html += '<td>' + data.data[i].datetime_bz + '</td>';
+                _html += "<td><a  href='@Url.Action("drillProgramme")?EmergencyId=" + data.data[i].EmergencyId + "' style='color:#41bf5f'>详情</a>";
+                @*<a href="javascript:;" style="color:#fd7849;margin-left: 15px;">修订</a>*@
+                _html += '</td>';
+                _html += '</tr>';
+
+            }
+
+            tboy.append(_html);
+        }
+
+    }
+</script>

@@ -1,0 +1,77 @@
+/* 
+* @Author: Administrator
+* @Date:   2018-05-21 18:58:27
+* @Last Modified by:   Administrator
+* @Last Modified time: 2018-05-22 08:41:47
+*/
+html,body{height:100%;}
+.warp{position:relative;height:100%;overflow: hidden;}
+.header{background: url(../images/skin-1.png) no-repeat center top;height:189px;position:absolute;top:0;width:100%;}
+.header h1{position:absolute;top:30px;left: 660px;color:#fff;font-weight: normal;}
+.body{position: absolute;top:190px;bottom:0px;width:100%;}
+.body .skin-1{position: absolute;right:0;bottom:-27px;}
+.body .left{position:absolute;top:0;bottom:-60px;width:610px;}
+.body .center{position:absolute;left:610px;top:-90px;bottom:-60px;width:580px;}
+.body .right{position:absolute;width:660px;left:1190px;top:0;bottom:0;padding-top:90px;}
+.area{padding-top:100px;position: relative;margin:0 auto;}
+.title{height:63px;background: url(../images/title-bg.png) no-repeat center center;position:absolute;width:100%;top:16px;font-size:16px;}
+.title-1{background-position: center 0;}
+.title-2{background-position: center -63px;}
+.title-3{background-position: center -126px;}
+.title-4{background-position: center -189px;}
+.title-5{background-position: center -252px;}
+.title-6{background-position: center -315px;}
+.title-7{background-position: center -378px;}
+
+.left .area{width:490px;}
+
+.content{overflow:hidden;position: relative;}
+
+.area-1 > div:not(.title) > div{text-indent: 2em;line-height: 26px;}
+.area-2 ul{overflow: hidden;}
+.area-2 li{float: left;text-align:center;height:180px;margin:0 1px;}
+.area-2 li p.name{font-size:20px;}
+.area-2 li p.name + p{font-family: "楷体";font-size:18px;line-height: 22px;}
+.area-2 li img{display: block;}
+.area-2 li p:first-child{font-size:18px;}
+
+.center .area{width:530px;}
+
+.area-3 .content{width:530px;background: url(../images/area-3.png) no-repeat center center;}
+.area-3 .content > div{position: absolute;height: 137px;width: 145px;top: 75px;}
+.area-3 .content > div:first-child{left: 19px;}
+.area-3 .content > div:nth-child(2){left:188px;}
+.area-3 .content > div:nth-child(3){left:361px;}
+.area-3 .content dl{padding-left:13px;}
+.area-3 .content dt,
+.area-3 .content dd{height:100%;width:24px;float: left;text-align:center;}
+.area-3 .content dt{font-weight: bold;font-size:18px;margin-right:3px;}
+.area-3 .content dd{color:#fff;padding-top:9px;position:relative;}
+.area-3 .content dd:before{content:'.';font-weight: bold;display: block;position: absolute;top:-10px;left:50%;margin-left:-2px;}
+
+.area-4 dl{float: left;width:50%;}
+.area-4 dl dt{font-size:18px;font-weight: bold;padding-left:9px;position:relative;margin-bottom: 6px;}
+.area-4 dl dt:before{content:'.';font-weight:bold;position:absolute;left:-5px;top:-5px;}
+.area-4 dl dd{text-indent:1em;line-height: 24px;}
+
+.area-5 li{float: left;margin-right:5px;}
+
+.area-6{line-height: 26px;}
+.area-6 div{padding-left:10px;}
+.area-6 dl{margin-bottom:10px;}
+.area-6 dt{font-size:18px;font-weight: bold;position:relative;padding-left:15px;}
+.area-6 dt:before{content:'.';font-size:40px;font-weight: bold;position:absolute;top:-11px;left:0;}
+.area-6 dd{overflow: hidden;}
+.area-6 p{position:relative;float: left;width:50%;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;padding:0 10px;text-shadow: 1px 1px 1px rgba(255,255,255,1);}
+.area-6 p:before{content:'.';font-size:30px;font-weight: bold;position:absolute;left:0;top:-8px;}
+
+.skin-bg-2{height:135px;width:675px;position:absolute;top:-60px;background: url(../images/skin-bg-2.png);}
+
+.skin-3{height:360px;width: 540px;}
+.skin-3 li{float: left;margin-right: 12px;margin-bottom: 12px;position: relative;}
+.skin-3 li:nth-child(3),.skin-3 li:nth-child(6),.skin-3 li:nth-child(8){margin-right: 0;}
+.skin-3 li:nth-child(7),.skin-3 li:nth-child(8){margin-bottom: 0;}
+.skin-3 span{position: absolute;bottom:10px;left: 50%;transform: translate(-50%,0);color: #fff;font-weight: bold;font-size: 14px;text-shadow: #0d0d0d 1px 1px 1px;}
+.skin-3 li img{border-radius: 15px; display:inherit;}
+
+.footer{background: url(../images/skin-1.png) no-repeat center bottom;height:108px;position:absolute;bottom:0;width:100%;z-index:10;}

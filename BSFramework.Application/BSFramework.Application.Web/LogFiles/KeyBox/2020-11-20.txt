@@ -1,0 +1,6 @@
+2020-11-20 15:04:12 用户：超级管理员  id：System开始编辑钥匙管理数据 
+ {"ID":null,"CreateDate":null,"CreateUserId":null,"CreateUserName":null,"ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"042bf0fd-3fb6-4810-9147-197884831e6d","DeptCode":"001001001001005","DeptName":"采制三班","KeyCode":"qjzy01","KeyPlace":"撒大苏打","Category":"汽机专业","CategoryId":"0","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-20 15:11:18 用户：超级管理员  id：System开始编辑钥匙管理数据 
+ {"ID":null,"CreateDate":null,"CreateUserId":null,"CreateUserName":null,"ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"7fbf2215-71ee-4f4f-8854-b76c08011784","DeptCode":"001001001004002","DeptName":"锅炉本体维护班","KeyCode":"rkzy01","KeyPlace":"撒大苏打","Category":"热控专业","CategoryId":"3","State":false,"Sort":"01"} 
+------------------------------------------------------------

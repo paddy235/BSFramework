@@ -1,0 +1,388 @@
+﻿@model IEnumerable<BSFramework.Application.Entity.EducationManage.EduPlanInfoEntity>
+
+@{
+    ViewBag.Title = "IndexEduPlanWeb";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/plugins/layui/css/layui.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/person.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/app.css")" />
+<script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+
+<script>
+    $(function () {
+        $(window).resize(function () {
+            setW();
+        }).trigger('resize');
+
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#year',
+                type: 'year',
+
+                format: 'yyyy'
+            });
+        });
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#month',
+                type: 'month',
+                format: 'M'
+            });
+        });
+
+        $("#edtype").find("option").each(function (i, o) {
+            var values = $(o).val();
+            if (values == "@ViewBag.edtype") {
+                $(o).attr("selected", "selected");
+            }
+
+        })
+        $("#state").find("option").each(function (i, o) {
+            var values = $(o).val();
+            if (values == "@ViewBag.state") {
+                $(o).attr("selected", "selected");
+            }
+
+        })
+
+        jQuery('.new').click(function () {
+            layer.open({
+                area: ['825px', '700px'],
+                title: '新增',
+                type: 2,
+                content: '@Url.Action("EditEduPlanInfo")',
+                end: function () {
+                    $("#allSelect").click();
+                }
+            });
+        });
+        jQuery('.VeriFy').click(function () {
+            layer.open({
+                area: ['400px', '200px'],
+                title: '审核',
+                type: 2,
+                content: '@Url.Action("VeriFyEduPlanInfo")',
+                end: function () {
+
+                }
+            });
+        });
+    });
+
+    function edit(keyValue) {
+        layer.open({
+            area: ['825px', '700px'],
+            title: '修改',
+            type: 2,
+            content: '@Url.Action("EditEduPlanInfo")?keyValue=' + keyValue,
+            end: function () {
+                $("#allSelect").click();
+            }
+        });
+
+    }
+
+    function fn$callback() {
+        fn$all();
+    }
+    function setW() {
+        var h = $(window).height();
+        $('.body').css('min-height', h - 310);
+    }
+    function btnok() {
+        var pid = jQuery('#lbid').val();
+    }
+    function del(id) {
+        jQuery('#lbid').val(id);
+    }
+
+
+    function dele() {
+
+        var keyValue = jQuery('#lbid').val();
+        $.ajax({
+            url: '@Url.Action("delEduPlanInfoDetail")',
+            type: 'post',
+            data: { keyValue: keyValue },
+            success: function (data) {
+                $('#modal3').modal('hide');
+                window.location.reload();
+            }
+        });
+    }
+    function fn$all() {
+        $("#year").val("");
+        $("#month").val("");
+        $("#edtype").find("option").each(function (i,o) {
+            if (i==0) {
+                $(o).attr("selected", "selected");
+            }
+
+        })
+        $("#state").find("option").each(function (i, o) {
+            if (i == 0) {
+                $(o).attr("selected", "selected");
+            }
+
+        })
+    }
+    function ExportData() {
+        var year = $('#year').val();
+        var month = $('#month').val();
+        var edutype = jQuery('#edtype').val();
+        var state = jQuery('#state').val();
+        if (state == "全部") {
+            state = "";
+        }
+        var txt_Keyword = $("#txt_Keyword").val();
+        window.location.href = '@Url.Action("ExportData")?year=' + year + '&month=' + month + '&edutype=' + edutype + '&state=' + state + '&txt_Keyword=&deptCode=@ViewBag.deptcode&type=web';
+    }
+    function ExportDataIn() {
+        dialogOpen({
+            id: 'Formimport',
+            title: '导入',
+            url: '/../@Url.Action("importPlanInfo")?type=web',
+            width: '680px',
+            height: '415px',
+            btn: null
+
+        });
+
+    }
+</script>
+
+<div class="main-content">
+    <div class="container-fluid">
+        @using (Html.BeginForm("IndexEduPlanWeb", "Education", new { page = 1, pagesize = 12 }, FormMethod.Post))
+        {
+
+    <div class="clearfix mg-b-10">
+        <div class="title">
+            <a class="pull-left" href="@Url.Action("Index")" style="color: #3669e1; text-decoration: none;">
+                <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">培训计划
+            </a>
+        </div>
+    </div>
+                    <div class="bg-e3ebfd pd-10 my-body">
+                        <div class="text-center">
+
+                            <label>培训类型</label>
+                            <span class="my-select" style="width:120px;">
+                                <select id="edtype" name="edtype" style="border:0px solid gray; border-bottom-width:1px;">
+                                    @{ var edutype = ViewBag.edutype as List<SelectListItem>;
+                                        foreach (var item in edutype)
+                                        {
+                        <option value="@Html.Raw(item.Value)">@Html.Raw(item.Text)</option>
+ } }
+
+                                </select>
+                                <span class="icon"></span>
+                            </span>
+                            <label>完成情况</label>
+                            <span class="my-select" style="width:120px;">
+                                <select id="state" name="state" style="border:0px solid gray; border-bottom-width:1px;">
+                                    <option value="全部">全部</option>
+                                    <option value="未完成">未完成</option>
+                                    <option value="已完成">已完成</option>
+                                </select>
+                                <span class="icon"></span>
+                            </span>
+                            <label>培训时间</label>
+                            <span class="my-input mg-r-15" style="width:100px;">
+                                <input type="text" name="year" id="year" value="@ViewBag.year">
+                            </span>
+                            <span class="my-input mg-r-15" style="width:100px;">
+                                <input type="text" name="month" id="month" value="@ViewBag.month">
+                            </span>
+                            <button class="my-btn bg-3669e1 mg-r-15">
+                                <img src="@Url.Content("~/Content/styles/static/images/search-icon.png")" alt="">
+                                搜索
+                            </button>
+                            <button id="allSelect" class="my-btn bg-8fadce" onclick="fn$all();">全部</button>
+                            <div class="pull-right">
+                                @*<a class="VeriFy" style="line-height: 60px;color:#0d0d0d;font-size:16px;">
+                                    <img src="@Url.Content("~/Content/styles/static/images/btn-new.png")" alt="">&nbsp;
+                                    提交审核
+                                </a>*@
+                                <a class="new" style="line-height: 60px;color:#0d0d0d;font-size:16px;">
+                                    <img src="@Url.Content("~/Content/styles/static/images/btn-new.png")" alt="">&nbsp;
+                                    新增
+                                </a>
+                                <a class="importin" style="line-height: 60px;color:#0d0d0d;font-size:16px;" onclick="ExportDataIn()">
+                                    <img src="@Url.Content("~/Content/styles/static/images/icon-18.png")" alt="">&nbsp;
+                                    导入
+                                </a>
+                                <a class="importout" style="line-height: 60px;color:#0d0d0d;font-size:16px;" onclick="ExportData()">
+                                    <img src="@Url.Content("~/Content/styles/static/images/icon-18.png")" alt="">&nbsp;
+                                    导出
+                                </a>
+                            </div>
+
+
+                            <div class="body">
+                                <table class="table text-center table-striped no-mg vertical">
+                                    <thead>
+                                        <tr>
+                                            <th width="10%" class="bg-fff">序号</th>
+                                            <th width="8%" class="bg-fff">培训类型</th>
+                                            <th width="7%" class="bg-fff">培训对象</th>
+                                            <th width="10%" class="bg-fff">培训人</th>
+                                            <th width="10%" class="bg-fff">培训主题</th>
+                                            <th width="10%" class="bg-fff">培训内容</th>
+                                            <th width="10%" class="bg-fff">培训时间</th>
+                                            <th width="10%" class="bg-fff">完成情况</th>
+                                            <th width="15%" class="bg-fff">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.Count(); i++)
+                                        {
+                                            int n = ((int)ViewBag.current - 1) * 12 + i + 1;
+                                            string id = @Model.ToList()[i].ID;
+                        <tr style="height:50px;">
+                            <td width="10%">@n</td>
+                            <td width="10%">
+                                @Model.ToList()[i].TrainTypeName
+                                @*<a style="text-decoration:none;" href="@Url.Action("Edit", new { id = id, type = "initobj" })">@Model.ToList()[i].Name</a>*@
+
+                            </td>
+                            <td width="10%">@Model.ToList()[i].TrainUserName</td>
+                            <td width="10%">@Model.ToList()[i].TrainHostUserName</td>
+                            <td width="10%">@Model.ToList()[i].TrainProject</td>
+                            <td width="10%">@Model.ToList()[i].TrainContent</td>
+                            <td width="10%">
+                                @Model.ToList()[i].TrainDateYear 年
+                                @{ if (!string.IsNullOrEmpty(Model.ToList()[i].TrainDateMonth))
+                                    {
+                @Model.ToList()[i].TrainDateMonth <span>月</span> } }
+                            </td>
+                            <td width="10%">@Model.ToList()[i].workState</td>
+                            <td width="10%">
+                                @{ @*<a href="@Url.Action("Edit", new { id = id, type = "initobj" })" class="my-link detail"><img src="~/Content/styles/static/images/detail-icon.png" alt="">详情</a>*@
+                                                    <a onclick="edit('@Model.ToList()[i].ID')" class="my-link detail"><img src="~/Content/styles/static/images/detail-icon.png" alt=""> 编辑</a>
+                                                                        <a id="@Model.ToList()[i].ID" href="#" onclick="del(this.id);" data-toggle="modal" data-target="#modal3" class="my-link remove mg-l-15"><img src="~/Content/styles/static/images/remove-icon-2.png" alt=""> 删除</a> }
+                            </td>
+                        </tr>
+}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="text-align:center;">
+                                <ul class="pagination">
+                                    @if ((int)ViewBag.current == 1)
+                                    {
+                    <li class="disabled">
+                        <a>首页</a>
+                    </li>
+                                        <li class="disabled">
+                                            <a>上一页</a>
+                                        </li>
+ }
+                                    else
+                                    {
+                    <li>
+                        @Html.ActionLink("首页", "IndexEduPlanWeb", new { page = "1", pagesize = "12" })
+                    </li>
+                                        <li>
+                                            @Html.ActionLink("上一页", "IndexEduPlanWeb", new { page = ((int)ViewBag.current - 1).ToString(), pagesize = "12" })
+                                        </li>
+}
+                                    @if (ViewBag.pages > 5) //超过5页
+                                    {
+                                        //显示前5页标识
+                                        for (int i = (ViewBag.current - 1) / 12 * 10; i < 5; i++)
+                                        {
+                    <li class="@((i + 1) == ViewBag.current ? "Education" : string.Empty)">
+                        @Html.ActionLink((i + 1).ToString(), "IndexEduPlanWeb", new { page = (i + 1).ToString(), pagesize = "12" })
+                    </li>
+ }
+                if ((int)ViewBag.current == (int)ViewBag.pages)
+                {
+    <li class="disabled">
+        <a>...</a>
+        @*@Html.ActionLink("...", "List", new { page = ViewBag.pages.ToString(), pagesize = "8" })*@
+    </li>
+ }
+else
+{
+    <li>
+        @Html.ActionLink("...", "IndexEduPlanWeb", new { page = ((int)ViewBag.current + 1).ToString(), pagesize = "12" })
+    </li>
+ }
+}
+else
+{
+for (int i = (ViewBag.current - 1) / 12 * 10; i < (Math.Ceiling((decimal)ViewBag.current / 12) * 10 > ViewBag.pages ? ViewBag.pages : Math.Ceiling((decimal)
+
+ViewBag.current / 12) * 10); i++)
+{
+    <li class="@((i + 1) == ViewBag.current ? "Education" : string.Empty)">
+        @Html.ActionLink((i + 1).ToString(), "IndexEduPlanWeb", new { page = (i + 1).ToString(), pagesize = "12" })
+    </li>
+}
+}
+                                    @if ((int)ViewBag.current == (int)ViewBag.pages || (int)ViewBag.pages == 0)
+                                    {
+                    <li class="disabled">
+                        <a>下一页</a>
+                    </li>
+                                        <li class="disabled">
+                                            <a>末页</a>
+                                        </li>
+ }
+                                    else
+                                    {
+                    <li>
+                        @Html.ActionLink("下一页", "IndexEduPlanWeb", new { page = ((int)ViewBag.current + 1).ToString(), pagesize = "12" })
+                    </li>
+                                        <li>
+                                            @Html.ActionLink("末页", "IndexEduPlanWeb", new { page = ((int)ViewBag.pages).ToString(), pagesize = "12" })
+                                        </li>
+}
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>            }
+        <footer class="main-footer">
+            武汉博晟安全技术股份有限公司   版权所有
+        </footer>
+    </div>
+
+</div>
+<div class="modal fade launch-modal" id="modal3" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">友好提示</h4>
+            </div>
+            <div class="modal-body">
+                <div class="text-center c-0d0d0d f-18 pd-t-20 pd-b-20">
+                    即将删除该数据，请确认！
+                </div>
+                <div class="text-center mg-t-20 mg-b-20">
+                    @*@Html.ActionLink("确认", "List", new { id = "", page = 1, pagesize = 5 })*@
+                    <label id="lbid" style="visibility:hidden"></label>
+                    <button onclick="dele();" type="submit" class="my-btn mg-r-15 bg-3669e1">确认</button>
+                    <button class="my-btn bd" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

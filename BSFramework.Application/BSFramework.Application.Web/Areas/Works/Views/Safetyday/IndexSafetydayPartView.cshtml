@@ -1,0 +1,90 @@
+﻿@model List<BSFramework.Application.Entity.PublicInfoManage.ViewMode.KeyValue>
+@{
+    ViewBag.Title = "IndexSafetydayPartView";
+    Layout = null;
+}
+<script src="~/Content/styles/static/js/rem.js"></script>
+<link href="~/Content/styles/static/css/indexmanage.css" rel="stylesheet" />
+<link href="~/Content/styles/framework-ui.css" rel="stylesheet" />
+
+
+<div>
+    <div class="item_title">
+        <a onclick="top.openTab('','@Url.Action("Index5", "Activity", new { area= "Works" ,category="安全日活动"})','安全日活动')"> <h2>月度安全日活动</h2></a>
+    </div>
+    <div class="content chart2_content">
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <th>序号</th>
+                <th>班组</th>
+                <th>活动次数</th>
+            </tr>
+            @if (Model != null && Model.Count() > 0)
+            {
+                int count = 1;
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@(count++)</td>
+                        <td>@item.key</td>
+                        <td>@item.value</td>
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+</div>
+
+@*<div class="container-fluid">
+        <div class="row div_border">
+            <div class="col-xs-12"><span><b style="font-size:15pt;">月度安全日活动</b></span></div>
+
+        </div>
+        @if (Model != null && Model.Count() > 0)
+        {
+            <div class="row " style=" min-height:35px;  ">
+                <div class="col-xs-12 aa">
+                    <div class="col-xs-2  " style="font-size:15pt;">序号</div>
+                    <div class="col-xs-7" style="font-size:15pt; padding-left:30px;">班组</div>
+                    <div class="col-md-3" style="font-size:15pt;">活动次数</div>
+                </div>
+            </div>
+            int count = 1;
+            foreach (var item in Model)
+            {
+                <div class="row " style=" min-height:35px; ">
+                    <div class="col-xs-12 aa">
+                        <div class="col-xs-2 padding_30">@(count++)</div>
+                        <div class="col-xs-8 padding_30">@item.key</div>
+                        <div class="col-md-3  padding_30">@item.value</div>
+                    </div>
+                </div>
+            }
+        }
+    </div>*@
+<style>
+    /*th {
+        font-size:12pt;
+    }
+    td {
+        text-align:center;
+        padding-top:8px;
+        font-size:11pt;
+    }*/
+    .aa {
+        display: flex;
+        align-items: center;
+    }
+
+    .div_border {
+        border-bottom: 1px solid #d9d9d9;
+        padding: 10px 0px;
+        font-size: 15pt;
+    }
+
+    .padding_30 {
+        padding-left: 30px;
+        padding-right: 0px;
+    }
+</style>
+

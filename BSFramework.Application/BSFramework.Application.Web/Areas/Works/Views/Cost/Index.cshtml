@@ -1,0 +1,229 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group a.btn {
+            margin-top: 4px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+    .page {
+        height: 26px;
+        line-height: 24px;
+        border: 1px solid gray;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+        .page li {
+            height: 24px;
+            float: left;
+            padding: 0px 2px;
+        }
+
+    .page-current {
+        background-color: #337ab7;
+        color: white;
+    }
+
+    .ui-jqgrid tr.jqgrow td {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .ui-jqgrid tr.footrow-ltr td {
+        border: 1px solid #ccc;
+    }
+</style>
+@section Scripts {
+    <script>
+        var selectedRowIndex;
+
+        jQuery(function () {
+            $(window).resize(function (e) {
+                window.setTimeout(function () {
+                    $('#grid').setGridWidth(($('.gridPanel').width()));
+                    $("#grid").setGridHeight($(window).height() - 140);
+                }, 200);
+                e.stopPropagation();
+            });
+
+            var year = new Date().getFullYear();
+            for (var i = year; i >= year - 10; i--) {
+                jQuery('#year').append('<option value="' + i + '">' + i + '</option>');
+            }
+            for (var i = 1; i <= 12; i++) {
+                jQuery('#month').append('<option value="' + i + '">' + i + '</option>');
+            }
+
+            jQuery('#grid').jqGrid({
+                colModel: [
+                    { label: '主键', name: 'ReportId', hidden: true, align: 'center', key: true },
+                    {
+                        label: '操作', name: 'action', width: 80, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                            var html = "";
+                            //html += "<a href=\"javascript:fn$edit('" + rowObject.BudgetId + "')\" title=\"修改\" style=\"color:blue;padding-left:0px;\">修改</a> ";
+                            html += "<a href=\"javascript:fn$delete('" + rowObject.RecordId + "')\" title=\"删除\" style=\"color:blue;padding-left:0px;\">删除</a> ";
+                            return html;
+                        }
+                    },
+                    { label: '时间', name: 'RecordMonth', index: 'RecordMonth', width: 120, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y年m月', newformat: 'Y年m月' } },
+                    { label: '费用类型', name: 'Category', index: 'Category', width: 120, align: 'center', sortable: false },
+                    { label: '当月预算', name: 'BudgetAmount', index: 'BudgetAmount', width: 160, align: 'right', sortable: false, formatter: 'number', formatoptions: { decimalSeparator: '.', thousandsSeparator: ',', decimalPlaces: 2, defaultValue: 0 } },
+                    { label: '提交人', name: 'RecordUser', index: 'RecordUser', width: 120, align: 'center', sortable: false },
+                    { label: '提交单位', name: 'RecordDept', index: 'RecordDept', width: 180, align: 'center', sortable: false },
+                    { label: '提交时间', name: 'RecordTime', index: 'RecordTime', width: 180, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y/m/d', newformat: 'Y/m/d' } },
+                    {
+                        label: '附件', name: 'FileName', index: 'FileName', width: 600, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                            var html = "";
+                            html += "<a href=\"" + rowObject.FilePath + "\" title=\"" + rowObject.FileName + "\" style=\"color:blue;padding-left:0px;\">" + rowObject.FileName + "</a> ";
+                            return html;
+                        }
+                    },
+                ],
+                height: $(window).height() - 140,
+                url: '@Url.Action("GetData")',
+                datatype: "json",
+                mtype: 'POST',
+                //postData: { year: jQuery('#year').val() },
+                viewrecords: true,
+                gridview: true,
+                sortable: false,
+                shrinkToFit: true,
+                autowidth: true,
+                rowNum: 20,
+                rownumbers: true,
+                //footerrow: true,
+                altRows: true,
+                pager: "#gridPager",
+                //gridComplete: function () {
+                //    for (var i = 1; i <= 12; i++) {
+                //        var col = 'Budget' + i;
+                //        var total = jQuery('#grid').getCol(col, false, 'sum');
+                //        var json = '{"' + col + '":' + total + '}';
+                //        jQuery('#grid').footerData('set', JSON.parse(json), { formatter: 'number', formatoptions: { decimalSeparator: '.', thousandsSeparator: ',', decimalPlaces: 2, defaultValue: 0 } });
+                //    }
+                //    var total = jQuery('#grid').getCol('Total', false, 'sum');
+                //    jQuery('#grid').footerData('set', { Total: total }, { formatter: 'number', formatoptions: { decimalSeparator: '.', thousandsSeparator: ',', decimalPlaces: 2, defaultValue: 0 } });
+                //}
+            });
+        });
+
+        function fn$query() {
+            jQuery('#grid').jqGrid('setGridParam', { postData: { year: jQuery('#year').val() || '', month: jQuery('#month').val(), category: jQuery('#category').val(), dept: jQuery('#dept').val() } }).trigger("reloadGrid");
+        }
+
+        function fn$delete(id) {
+            $.RemoveForm({
+                url: '/..@Url.Action("Remove")' + '/' + id,
+                success: function (data) {
+                    fn$refresh();
+                }
+            });
+        }
+
+        function fn$edit(id) {
+            dialogOpen({
+                id: "Edit",
+                title: '修改',
+                url: '/..@Url.Action("Detail")/' + id,
+                width: "800px",
+                height: "430px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.fn$ok();
+                }
+            });
+        }
+
+        function fn$add() {
+            dialogOpen({
+                id: "Add",
+                title: '新增',
+                url: '/..@Url.Action("Detail")',
+                width: "800px",
+                height: "430px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.fn$ok();
+                }
+            });
+        }
+
+        function fn$import() {
+            dialogOpen({
+                id: "Import",
+                title: '导入',
+                url: '/..@Url.Action("Import")',
+                width: "500px",
+                height: "200px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.fn$ok();
+                }
+            });
+        }
+
+        function fn$refresh() {
+            fn$query();
+        }
+
+    </script>
+}
+<div class="titlePanel">
+    <div class="title-search">
+        <div class="form-inline">
+            <div class="form-group">
+                <label for="year">年</label>
+                <select id="year" class="form-control" style="width:120px">
+                    <option value="">请选择</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="month">月</label>
+                <select id="month" class="form-control" style="width:120px">
+                    <option value="">请选择</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="category">费用类型</label>
+                <select id="category" class="form-control" style="width:120px">
+                    <option value="">请选择</option>
+                    <option value="材料费">材料费</option>
+                    <option value="修理费">修理费</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="dept">提交单位</label>
+                <input id="dept" type="text" class="form-control" style="width:120px" />
+            </div>
+            <div class="form-group">
+                <a id="btn_Search" class="btn btn-primary" onclick="fn$query();"><i class="fa fa-search"></i>查询</a>
+            </div>
+        </div>
+    </div>
+    <div class="toolbar">
+        <div class="btn-group">
+            <a id="add" class="btn btn-default" onclick="fn$add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+        </div>
+        @*<script>$('.toolbar').authorizeButton()</script>*@
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="grid"></table>
+    <div id="gridPager"></div>
+</div>

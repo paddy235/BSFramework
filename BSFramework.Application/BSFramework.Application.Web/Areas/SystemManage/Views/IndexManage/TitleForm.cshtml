@@ -1,0 +1,95 @@
+﻿@{
+    ViewBag.Title = "TitleForm";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = request("keyValue");
+    var indexType = request("indexType");
+    var Templet = request("Templet");
+    $(function () {
+        FullForm()
+    })
+
+    function FullForm() {
+
+        //获取表单
+        if (!!keyValue) {
+            $.SetForm({
+                url: '/..@Url.Action("GetTitleFormJson")',
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#form1").formDeserialize(data);
+                }
+            });
+        } else {
+            if (!!indexType) {
+                $("#IndexType").val(indexType)
+            }
+            if (!!Templet) {
+                $("#Templet").val(Templet);
+            }
+        }
+    }
+       //保存表单
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var postData = $("#form1").formSerialize(keyValue);
+
+        $.SaveForm({
+            url: '/..@Url.Action("SaveTitle")' + "?keyValue=" + keyValue,
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<div class="" style="margin: 5px; margin-bottom: 0px; padding-bottom: 2px;">
+    <div >
+        <table class="form">
+            <tbody>
+                <tr>
+                    <th class="formTitle" style="text-align: left; padding-left: 7px; width: 100px;">分类名称<font face="宋体">*</font></th>
+                    <td class="formValue">
+                        <input id="Title" type="text" class="form-control" style="" placeholder="分类名称" isvalid="yes" checkexpession="NotNull" />
+                        <input type="hidden" id="DeptId" />
+                        <input type="hidden" id="DeptCode" />
+                        <input type="hidden" id="DeptName" />
+                        <input type="hidden" id="ID" />
+                        <input type="hidden" id="IndexType" />
+
+                    </td>
+
+                </tr>
+                <tr>
+                    <th class="formTitle" style="text-align: left; padding-left: 7px; width: 55px;">是否显示</th>
+                    <td class="formValue">
+                        <select id="IsShow" class="form-control">
+                            <option value="1">是</option>
+                            <option value="0">否</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle" style="text-align: left; padding-left: 7px; width: 100px;">排序<font face="宋体">*</font></th>
+                    <td class="formValue">
+                        <input id="Sort" type="text" class="form-control" placeholder="" isvalid="yes" checkexpession="Num" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle" style="text-align: left; padding-left: 7px; width: 100px;">所属模板</th>
+                    <td class="formValue">
+                        <select id="Templet" name="Templet" class="form-control">
+                            <option value="1">第一套</option>
+                            <option value="2">第二套</option>
+                            <option value="3">第三套</option>
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

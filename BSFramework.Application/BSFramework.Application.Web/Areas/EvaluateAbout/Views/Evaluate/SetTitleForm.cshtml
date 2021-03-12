@@ -1,0 +1,78 @@
+﻿@using BSFramework.Application.Entity.EvaluateAbout;
+@{
+    ViewBag.Title = "SetTitleForm";
+    Layout = "~/Views/Shared/_Form.cshtml";
+    IEnumerable<DesignationEntity> models = Model;
+}
+
+<script>
+    var groupId = request("groupId");
+    var groupName = request("groupName");
+    var evaluateId = request("evaluateId");
+    var TitleId = request("TitleId");
+    $(function () {
+        if (!!groupId) {
+            $("#GroupId").val(groupId)
+        }
+        if (!!groupName) {
+            $("#GroupName").val(groupName)
+        }
+        if (!!evaluateId) {
+            $("#EvaluateId").val(evaluateId)
+        }
+        if (!!TitleId) {
+            $("#TitleId").val(TitleId)
+        }
+    })
+
+    function AcceptClick() {
+        var json = $('#BaseInfo').formSerialize();
+            if (!groupId && groupId == "") {
+                dialogMsg('找不到班组Id，请重新选择要设置称号的班组', 0);
+                return false;
+            }
+            $.SaveForm({
+                url: '@Url.Action("SaveGroupTitle")',
+                param: json,
+                loading: "正在保存数据...",
+                success: function () {
+                    $.currentIframe().$("#gridTable").trigger("reloadGrid");
+                }
+            })
+    }
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right 30px;">
+            <input id="GroupId" value="" type="hidden" />
+            <input id="EvaluateId" value="" type="hidden" />
+            <input id="TitleId" value="" type="hidden" />
+            <table class="form">
+                <tr>
+                    <td class="formTitle">班组</td>
+                    <td class="formValue" colspan="3">
+                        <input type="text" id="GroupName" class="form-control" readonly="readonly" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">称号</td>
+                    <td class="formValue" colspan="3">
+                        <select class="form-control" id="Tid">
+                            <option value="" selected="selected">无称号</option>
+                            @if (models != null && models.Count() > 0)
+                            {
+                                foreach (var item in models)
+                                {
+                                    <option value="@item.Id" @Html.Raw(Request["Tid"] == item.Id ? " selected=\"selected\"" : "")>@item.ClassName</option>
+                                }
+                            }
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="ExpandInfo" class="tab-pane">
+            <div class="app_layout app_preview" style="border-top: 1px solid #ccc;" id="frmpreview"></div>
+        </div>
+    </div>
+</div>

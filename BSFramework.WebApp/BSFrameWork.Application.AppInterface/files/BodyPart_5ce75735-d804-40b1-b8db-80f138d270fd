@@ -1,0 +1,179 @@
+Debug: 2019-09-16 09:16:26-1568596586788
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-16 09:22:06-1568596926894
+LaunchActivity
+LaunchActivity
+
+Info: 2019-09-16 15:11:01-1568617861904
+BaseApplication
+onTrimMemory ... level:20
+
+Error: 2019-09-16 15:11:28-1568617888467
+crash_handler
+io.reactivex.exceptions.OnErrorNotImplementedException: Unable to find explicit activity class {com.bossien.banzu.terminal/android.app.LauncherActivity}; have you declared this activity in your AndroidManifest.xml?
+	at io.reactivex.internal.functions.Functions$OnErrorMissingConsumer.accept(Functions.java:704)
+	at io.reactivex.internal.functions.Functions$OnErrorMissingConsumer.accept(Functions.java:701)
+	at io.reactivex.internal.observers.LambdaObserver.onError(LambdaObserver.java:77)
+	at io.reactivex.internal.observers.LambdaObserver.onNext(LambdaObserver.java:67)
+	at com.uber.autodispose.HalfSerializer.onNext(HalfSerializer.java:129)
+	at com.uber.autodispose.AutoDisposingObserverImpl.onNext(AutoDisposingObserverImpl.java:81)
+	at io.reactivex.internal.operators.observable.ObservableObserveOn$ObserveOnObserver.drainNormal(ObservableObserveOn.java:200)
+	at io.reactivex.internal.operators.observable.ObservableObserveOn$ObserveOnObserver.run(ObservableObserveOn.java:252)
+	at io.reactivex.android.schedulers.HandlerScheduler$ScheduledRunnable.run(HandlerScheduler.java:109)
+	at android.os.Handler.handleCallback(Handler.java:739)
+	at android.os.Handler.dispatchMessage(Handler.java:95)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+Caused by: android.content.ActivityNotFoundException: Unable to find explicit activity class {com.bossien.banzu.terminal/android.app.LauncherActivity}; have you declared this activity in your AndroidManifest.xml?
+	at android.app.Instrumentation.checkStartActivityResult(Instrumentation.java:1777)
+	at android.app.Instrumentation.execStartActivity(Instrumentation.java:1501)
+	at android.app.Activity.startActivityForResult(Activity.java:3745)
+	at android.support.v4.app.FragmentActivity.startActivityForResult(FragmentActivity.java:767)
+	at android.app.Activity.startActivityForResult(Activity.java:3706)
+	at android.support.v4.app.FragmentActivity.startActivityForResult(FragmentActivity.java:754)
+	at android.app.Activity.startActivity(Activity.java:4016)
+	at android.app.Activity.startActivity(Activity.java:3984)
+	at com.bossien.launch.view.activity.login.LoginActivity.loginSuccess(LoginActivity.java:136)
+	at com.bossien.launch.view.activity.login.LoginPresenter.lambda$postMainProcess$13(LoginPresenter.java:276)
+	at com.bossien.launch.view.activity.login.-$$Lambda$LoginPresenter$0vDuku0nnZsr0JKuDI29XKLCpX8.accept(lambda)
+	at io.reactivex.internal.observers.LambdaObserver.onNext(LambdaObserver.java:63)
+	... 13 more
+
+
+Debug: 2019-09-16 15:11:32-1568617892104
+LaunchActivity
+LaunchActivity
+
+Info: 2019-09-16 15:12:47-1568617967722
+BaseApplication
+onTrimMemory ... level:20
+
+Debug: 2019-09-16 15:12:59-1568617979131
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 15:19:59-1568618399686
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 15:21:25-1568618485357
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 15:22:13-1568618533070
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 15:22:31-1568618551314
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 15:50:03-1568620203252
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 16:50:43-1568623843237
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 18:54:41-1568631281825
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 19:47:48-1568634468921
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 19:56:38-1568634998476
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 19:58:24-1568635104239
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 19:58:47-1568635127141
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 20:00:48-1568635248619
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 20:01:15-1568635275698
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 20:02:00-1568635320785
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 20:02:39-1568635359636
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 20:03:16-1568635396479
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 20:05:28-1568635528539
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 20:06:01-1568635561135
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 20:06:46-1568635606548
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 20:07:11-1568635631825
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 20:07:40-1568635660808
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 20:07:57-1568635677157
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 20:08:30-1568635710379
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 20:08:52-1568635732195
+LaunchActivity
+LaunchActivity
+
+Info: 2019-09-16 20:17:02-1568636222192
+BaseApplication
+onTrimMemory ... level:20
+
+Debug: 2019-09-16 20:17:39-1568636259490
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-16 20:22:05-1568636525860
+LaunchActivity
+LaunchActivity
+
+Info: 2019-09-16 20:22:31-1568636551569
+BaseApplication
+onTrimMemory ... level:20
+
+Info: 2019-09-16 20:33:58-1568637238194
+BaseApplication
+onTrimMemory ... level:20
+
+Info: 2019-09-16 20:34:18-1568637258118
+BaseApplication
+onTrimMemory ... level:20
+

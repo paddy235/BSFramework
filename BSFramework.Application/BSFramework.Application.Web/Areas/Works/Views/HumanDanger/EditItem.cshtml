@@ -1,0 +1,120 @@
+﻿@model BSFramework.Application.Entity.Activity.HumanDangerEntity
+
+@{
+    ViewBag.Title = "考评标准";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.url.js")"></script>
+<style>
+    .ui-select-option-content>ul>li,.ui-select-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+<script>
+    jQuery(function () {
+        $("#CategoryId").ComboBoxTree({
+            url: '@Url.Action("GetCategories", "DangerMeasure")',
+            description: "",
+            height: "180px",
+            click: function (item) {
+                jQuery('#Category').val(item.text);
+                jQuery('#MeasureId').attr('data-value', '').attr('data-text', '').empty();
+                jQuery('#DangerReason').val('');
+                fn$load1();
+            }
+        });
+
+        $("#MeasureId").ComboBox({
+            url: '@Url.Action("GetDangerReasons", "DangerMeasure")',
+            param: { categoryid: jQuery('#CategoryId').attr('data-value') },
+            description: "",
+            id: "MeasureId",
+            text: "DangerReason",
+            height: "200px"
+        }).bind("change", function () {
+            var text = $(this).attr('data-text');
+            jQuery('#DangerReason').val(text);
+        });
+
+        var id = jQuery.getUrlArgs('id');
+        if (id) fn$init(id);
+    });
+
+    function fn$init(id) {
+        var frameid = jQuery.getUrlArgs('frameid');
+        var data = top.jQuery('#' + frameid).get(0).contentWindow.getCurrentData(id);
+
+        jQuery('#HumanDangerMeasureId').val(data.HumanDangerMeasureId);
+        jQuery('#Category').val(data.Category);
+        jQuery('#CategoryId').ComboBoxTreeSetValue(data.CategoryId);
+        jQuery('#DangerReason').val(data.DangerReason);
+
+        $("#MeasureId").ComboBox({
+            url: '@Url.Action("GetDangerReasons", "DangerMeasure")',
+            param: { categoryid: data.CategoryId },
+            description: "",
+            id: "MeasureId",
+            text: "DangerReason",
+            height: "200px"
+        }).bind("change", function () {
+            var text = $(this).attr('data-text');
+            jQuery('#DangerReason').val(text);
+        });
+
+        jQuery('#MeasureId').ComboBoxSetValue(data.MeasureId);
+        jQuery('#MeasureContent').val(data.MeasureContent);
+    }
+
+    function fn$load1() {
+        $("#MeasureId").ComboBox({
+            url: '@Url.Action("GetDangerReasons", "DangerMeasure")',
+            param: { categoryid: jQuery('#CategoryId').attr('data-value') },
+            description: "",
+            id: "MeasureId",
+            text: "DangerReason",
+            height: "200px"
+        }).bind("change", function () {
+            var text = $(this).attr('data-text');
+            jQuery('#DangerReason').val(text);
+        });
+    }
+
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+
+        var formdata = $("#form1").formSerialize();
+        var frameid = jQuery.getUrlArgs('frameid');
+        top.jQuery('#' + frameid).get(0).contentWindow.fn$additemcallback(formdata);
+        dialogClose();
+    }
+
+</script>
+<div style="margin:10px">
+    <table class="form">
+        <tr>
+            <td class="formTitle" style="width:120px;">风险类别<font face="宋体">*</font></td>
+            <td class="formValue">
+                <input type="hidden" name="HumanDangerMeasureId" id="HumanDangerMeasureId" value="@ViewBag.id" />
+                <input id="Category" name="Category" type="hidden" />
+                <div id="CategoryId" type="selectTree" class="ui-select" isvalid="yes" checkexpession="NotNull"></div>
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle" style="width:120px;">风险因素<font face="宋体">*</font></td>
+            <td class="formValue">
+                <input id="DangerReason" name="DangerReason" type="hidden" />
+                <div id="MeasureId" type="select" class="ui-select" isvalid="yes" checkexpession="NotNull"></div>
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">风险预控措施<font face="宋体">*</font></td>
+            <td class="formValue">
+                <textarea id="MeasureContent" name="MeasureContent" class="form-control" placeholder="请输入风险预控措施" type="text" style="height:80px" maxlength="500" isvalid="yes" checkexpession="NotNull"></textarea>
+            </td>
+        </tr>
+    </table>
+</div>

@@ -1,0 +1,180 @@
+﻿@model BSFramework.Application.Entity.BudgetAbout.BudgetEntity
+
+@{
+    ViewBag.Title = "考评标准";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<script src="~/Content/scripts/business/Common.js" type="text/javascript"></script>
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.url.js")"></script>
+<style>
+    .form .formTitle {
+        width: 130px;
+    }
+</style>
+<script>
+    function fn$ok() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+
+        var json = jQuery('#form1').serializeJSON();
+        $.SaveForm({
+            url: '@Url.Action("Edit", new { id = ViewBag.id})',
+            contentType: 'application/json',
+            param: json,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().fn$refresh();
+            }
+        })
+    }
+
+    jQuery(function () {
+        jQuery('.numbox').keydown(function (e) {
+            if (e.keyCode == 8 || e.keyCode == 9 || (e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode == 110 || e.keyCode == 190) {
+                if (e.key == '.') {
+                    if (jQuery(this).val().indexOf(e.key) >= 0)
+                        return false;
+                    else if (!jQuery(this).val())
+                        return false;
+                }
+            } else {
+                return false;
+            }
+        });
+
+        jQuery('.numbox').change(function () {
+            var value = jQuery(this).val();
+            if (value.startsWith('0')) {
+                if (value == '0.')
+                    jQuery(this).val(value.substring(0, 1));
+                else if (!value.startsWith('0.'))
+                    jQuery(this).val(value.substring(1));
+            }
+            else if (value.startsWith('.')) {
+                if (value == '.')
+                    jQuery(this).val('0');
+                else
+                    jQuery(this).val('0' + value);
+
+            } else if (!value)
+                jQuery(this).val('0');
+
+            var total = 0;
+            jQuery('.numbox').each(function () {
+                total = Math.round((total += parseFloat(jQuery(this).val())) * 100) / 100;
+            });
+            jQuery('#Total').val(total);
+        });
+
+        jQuery('#DeptId').change(function () {
+            jQuery('#DeptName').val(jQuery('#DeptId :selected').text());
+        });
+
+        jQuery('#DeptName').val(jQuery('#DeptId :selected').text());
+
+        var budgetid = jQuery('#BudgetId').val();
+        if (budgetid && budgetid != '@Guid.Empty.ToString()') {
+            jQuery('#Category').attr('disabled', 'disabled');
+            jQuery('#DeptId').attr('disabled', 'disabled');
+        }
+    });
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right:30px;">
+            @Html.HiddenFor(x => x.BudgetId)
+            <table class="form">
+                <tr>
+                    <td class="formTitle">年度</td>
+                    <td class="formValue">
+                        @Html.DropDownListFor(x => x.Year, ViewData["years"] as List<SelectListItem>, new { @class = "form-control" })
+                    </td>
+                    <td class="formTitle">费用类型</td>
+                    <td class="formValue">
+                        @Html.DropDownListFor(x => x.Category, ViewData["categories"] as List<SelectListItem>, new { @class = "form-control" })
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="formTitle">所属单位</td>
+                    <td class="formValue">
+                        @Html.DropDownListFor(x => x.DeptId, ViewData["depts"] as List<SelectListItem>, new { @class = "form-control" })
+                        @Html.HiddenFor(x => x.DeptName)
+                    </td>
+                    <td class="formTitle">预算费用总额（元）</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Total, new { @class = "form-control", placeholder = "请输入预算费用总额", isvalid = "yes", checkexpession = "Double", onfocus = "this.blur()" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">1月份（元）<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Budget1, new { @class = "form-control numbox", placeholder = "请输入预算", isvalid = "yes", checkexpession = "Double" })
+                    </td>
+                    <td class="formTitle">2月份（元）<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Budget2, new { @class = "form-control numbox", placeholder = "请输入预算", isvalid = "yes", checkexpession = "Double" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">3月份（元）<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Budget3, new { @class = "form-control numbox", placeholder = "请输入预算", isvalid = "yes", checkexpession = "Double" })
+                    </td>
+                    <td class="formTitle">4月份（元）<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Budget4, new { @class = "form-control numbox", placeholder = "请输入预算", isvalid = "yes", checkexpession = "Double" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">5月份（元）<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Budget5, new { @class = "form-control numbox", placeholder = "请输入预算", isvalid = "yes", checkexpession = "Double" })
+                    </td>
+                    <td class="formTitle">6月份（元）<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Budget6, new { @class = "form-control numbox", placeholder = "请输入预算", isvalid = "yes", checkexpession = "Double" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">7月份（元）<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Budget7, new { @class = "form-control numbox", placeholder = "请输入预算", isvalid = "yes", checkexpession = "Double" })
+                    </td>
+                    <td class="formTitle">8月份（元）<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Budget8, new { @class = "form-control numbox", placeholder = "请输入预算", isvalid = "yes", checkexpession = "Double" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">9月份（元）<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Budget9, new { @class = "form-control numbox", placeholder = "请输入预算", isvalid = "yes", checkexpession = "Double" })
+                    </td>
+                    <td class="formTitle">10月份（元）<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Budget10, new { @class = "form-control numbox", placeholder = "请输入预算", isvalid = "yes", checkexpession = "Double" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">11月份（元）<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Budget11, new { @class = "form-control numbox", placeholder = "请输入预算", isvalid = "yes", checkexpession = "Double" })
+                    </td>
+                    <td class="formTitle">12月份（元）<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Budget12, new { @class = "form-control numbox", placeholder = "请输入预算", isvalid = "yes", checkexpession = "Double" })
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="ExpandInfo" class="tab-pane">
+            <div class="app_layout app_preview" style="border-top: 1px solid #ccc;" id="frmpreview"></div>
+        </div>
+    </div>
+</div>

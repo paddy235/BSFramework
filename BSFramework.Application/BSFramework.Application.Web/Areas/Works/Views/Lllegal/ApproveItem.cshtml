@@ -1,0 +1,300 @@
+﻿@model BSFramework.Application.Entity.LllegalManage.LllegalEntity
+
+@{
+    ViewBag.Title = "违章核准";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<style>
+    .images-container {
+        min-height: 120px;
+    }
+
+        .images-container li {
+            list-style: none;
+            float: left;
+            padding: 0px 5px;
+        }
+
+    .yinpin li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+
+    .items li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+</style>
+<script>
+    var json = {
+        "data": [
+            @foreach (var item in Model.Files)
+            {
+                          @Html.Raw(string.Format("{{ \"src\" : \"{0}\"}},", @Url.Action("DownloadFile", "ResourceFile", new { keyValue = item.FileId, area = "PublicInfoManage" })));
+            }
+        ]
+    };
+
+    jQuery(function () {
+        $('.images-container').delegate('li', 'click', function () {
+            json.start = jQuery(this).index();
+            layer.photos({
+                photos: json,
+                anim: 5
+            })
+        });
+        jQuery('#approved').change(fn$check);
+        jQuery('#reject').change(fn$check);
+
+        fn$check();
+    });
+
+    function fn$check() {
+        var approve = jQuery('input[name="ApproveResult"]:checked').val();
+        if (approve == "0") {
+            jQuery('#ApproveReason').parent().hide();
+            jQuery('#ApproveReason').parent().prev().hide();
+
+            jQuery('#ApproveReason').removeAttr('isvalid');
+            jQuery('#ApproveReason').removeAttr('checkexpession');
+        } else {
+            jQuery('#ApproveReason').parent().show();
+            jQuery('#ApproveReason').parent().prev().show();
+
+            //jQuery('#ApproveReason').attr('isvalid', 'yes');
+            //jQuery('#ApproveReason').attr('checkexpession', 'NotNull');
+        }
+    }
+
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var approve = jQuery('input[name="ApproveResult"]:checked').val();
+        if (approve == "0") {
+            var approveperson = $('#ReformPeople').val();
+            var redate = $('#ReformDate').val();
+            var appdate = $('#ApproveDate').val();
+            if (approveperson == "") {
+                layer.msg("请选择整改人！");
+                return;
+            }
+            if (redate == "") {
+                layer.msg("请选择整改期限！");
+                return;
+            } else {
+                var d1 = new Date(redate);
+                var d2 = new Date(appdate);
+                if (d2 > d1) {
+                    layer.msg("整改期限不能小于核准时间！")
+                    return;
+                }
+
+            }
+        }
+
+        //var postData = $("#form1").formSerialize(keyValue);
+        //if (document.getElementById("man").checked) {
+        //    postData["Gender"] = 1;
+        //}
+        //if (document.getElementById("woman").checked) {
+        //    postData["Gender"] = 0;
+        //}
+        //postData.Birthday = postData.Birthday == "&nbsp;" ? null : postData.Birthday;
+        //postData["DutyName"] = $("#DutyId").attr('data-text');
+        //postData["PostName"] = $("#PostId").attr('data-text');
+        //postData["Manager"] = $("#ManagerId").attr('data-text');
+        //var _instanceData = $("#frmpreview").frmGetData();
+        //var moduleFormInstanceEntity = { "FormId": formId, "FormInstanceJson": JSON.stringify(_instanceData) };
+        //$.SaveForm({
+
+        //    url: top.contentPath + "/BaseManage/User/SaveForm",
+        //    param: { "keyValue": keyValue, "strUserEntity": JSON.stringify(postData), "FormInstanceId": instanceId, "strModuleFormInstanceEntity": JSON.stringify(moduleFormInstanceEntity) },
+        //    loading: "正在保存数据...",
+        //    success: function (data) {
+        //        $.currentIframe().$("#gridTable").trigger("reloadGrid");
+        //    }
+        //})
+        var json = jQuery('#form1').serializeJSON();
+        $.SaveForm({
+            url: '@Url.Action("ApproveItem")',
+            param: json,
+            loading: "数据提交中...",
+            success: function (data) {
+                if (data.success)
+                    $.currentIframe().$("#grid").trigger("reloadGrid");
+            }
+        });
+    }
+    var l;
+    function seluser() {
+        l = layer.open({
+            type: 1,
+            title: '选择整改人',
+            content: $('#m4'),
+            area: ['300px', '500px']
+        })
+    }
+    function sel(obj) {
+        $('#ReformPeople').val(obj.name);
+        $('#ReformPeopleId').val(obj.id);
+        layer.close(l);
+    }
+</script>
+<div style="margin-left: 10px; margin-right: 10px;height:600px;overflow-y:hidden;">
+    <div class="tab-content" style="padding-top: 15px; ">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right:30px;">
+            <table class="form">
+                <tr>
+                    <td class="formTitle">违章编号</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.LllegalNumber, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">违章单位/部门</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.LllegalDepart, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">违章类型</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.LllegalType, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">违章班组</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.LllegalTeam, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">违章等级</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.LllegalLevel, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">违章人员</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.LllegalPerson, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">记录人</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.RegisterPerson, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">违章时间</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.LllegalTime, new { @class = "form-control", @readonly = "readonly", Value = string.Format("{0:yyyy-MM-dd}", Model.LllegalTime) })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">违章地点</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.LllegalAddress, new { @class = "form-control", @readonly = "readonly", style = "height:60px;" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">违章描述</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.LllegalDescribe, new { @class = "form-control", @readonly = "readonly", style = "height:60px;" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">违章图片</td>
+                    <td class="formValue" colspan="3">
+                        <ul class="images-container">
+                            @for (int i = 0; i < Model.Files.Count; i++)
+                            {
+                                <li><img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = Model.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:160px;height:120px;"></li>
+                            }
+                        </ul>
+                    </td>
+                </tr>
+                <tr style="height:38px;">
+                    <td class="formTitle">核准结果</td>
+                    <td class="formValue">
+                        <ul class="items">
+                            <li>
+                                <input type="radio" value="0" id="approved" name="ApproveResult" @(Model.ApproveResult == "0" ? "checked" : "") /><label for="approved">核准通过</label>
+                            </li>
+                            <li>
+                                <input type="radio" value="1" id="reject" name="ApproveResult" @(Model.ApproveResult == "1" ? "checked" : "") /><label for="reject">核准不通过</label>
+                            </li>
+                        </ul>
+                    </td>
+                    <td class="formTitle">不通过原因</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.ApproveReason, new { @class = "form-control" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">核准人</td>
+                    <td class="formValue">
+                        @Html.HiddenFor(x => x.ApprovePersonId)
+                        @Html.TextBoxFor(x => x.ApprovePerson, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">核准时间</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.ApproveDate, new { @class = "form-control", @readonly = "readonly", Value = string.Format("{0:yyyy-MM-dd}", Model.ApproveDate) })
+                    </td>
+                </tr>
+                @*<tr>
+                        <td class="formTitle">考核方式</td>
+                        <td class="formValue">
+                            @Html.DropDownList("Checktype", ViewData["checktype"] as IEnumerable<SelectListItem>, new { @class = "form-control", style = "width:120px" })
+                        </td>
+                        <td class="formTitle">考核内容</td>
+                        <td class="formValue">
+                            @Html.TextBoxFor(x => x.CheckContent, new { @class = "form-control", maxlength = 200 })
+                        </td>
+                    </tr>*@
+                <tr>
+                    <td class="formTitle">考核金额</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.AssessMoney, new { @class = "form-control", maxlength = 200 })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">整改人</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.ReformPeople, new { nullmsg = "不能为空", datatype = "*", placeholder = "请选择整改人", @readonly = "readonly", onclick = "seluser();", @class = " block " })
+                        @Html.TextBoxFor(x => x.ReformPeopleId, new { @type = "hidden", @class = " block " })
+                    </td>
+                    <td class="formTitle">整改期限</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.ReformDate, new { @class = "form-control", @readonly = "readonly", @onfocus = "WdatePicker();", Value = string.Format("{0:yyyy-MM-dd }", Model.ReformDate) })
+                        @*<input type="text" class="form-control" id="ReformDate" onfocus="WdatePicker();" readonly="readonly">*@
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            $("#AssessMoney").keyup(function () {
+                if (this.value.length == 1) { this.value = this.value.replace(/[^1-9]/g, '') } else { this.value = this.value.replace(/\D/g, '') }
+            });
+            $("#AssessMoney").afterpaste(function () {
+                if (this.value.length == 1) { this.value = this.value.replace(/[^1-9]/g, '') } else { this.value = this.value.replace(/\D/g, '') }
+            });
+        });
+    </script>
+    <div class="m4" id="m4" style="overflow-y:auto;">
+        @{
+            var users = (IList<BSFramework.Application.Entity.BaseManage.UserEntity>)ViewData["users"];
+        }
+        <div style="text-align:center;overflow-x:hidden;">
+            <ul style="margin-top:20px;">
+                @for (int i = 0; i < users.Count; i++)
+                {
+                    <li>
+                        <a href="#" id="@Html.Raw(users[i].UserId)" style="line-height:30px;" name="@Html.Raw(users[i].RealName)" onclick="sel(this);">@Html.Raw(users[i].RealName)</a>
+                    </li>
+                }
+            </ul>
+        </div>
+
+    </div>
+</div>

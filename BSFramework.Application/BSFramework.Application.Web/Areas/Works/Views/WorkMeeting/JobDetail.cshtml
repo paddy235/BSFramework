@@ -1,0 +1,326 @@
+﻿@using BSFramework.Application.Entity.BaseManage
+@{ ViewBag.Title = "JobDetail";
+    Layout = "~/Views/Shared/_LayoutEmpty.cshtml"; }
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/launch-activity.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/app.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/before.css")" />
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<style>
+    .audio-list {
+        float: left;
+    }
+
+        .audio-list li {
+            list-style: none;
+        }
+
+    .image-list {
+    }
+
+        .image-list li {
+            list-style: none;
+            float: left;
+            margin: 10px;
+        }
+
+            .image-list li img {
+                cursor: pointer;
+            }
+</style>
+<script>
+    var imagedata = {};
+    var jobId;
+    jQuery(function () {
+        var job = parent.fn$getjob();
+        jobId = job.jobid;
+        jQuery('#job').val(job.Job);
+        if (job.Relation && job.Relation.JobUsers) {
+            job.checker = '';
+            job.teammaters = '';
+            jQuery.each(jQuery.grep(job.Relation.JobUsers, function (o) { return o.JobType == 'ischecker'; }), function (i, o) {
+                job.checker += o.UserName + '、';
+            });
+            job.checker = job.checker.replace(/、$/, '');
+            jQuery.each(jQuery.grep(job.Relation.JobUsers, function (o) { return o.JobType == 'isdoperson'; }), function (i, o) {
+                job.teammaters += o.UserName + '、';
+            });
+            job.teammaters = job.teammaters.replace(/、$/, '');
+        }
+        //jQuery('#checker').val(job.checker);
+        //jQuery('#teammaters').val(job.teammaters);
+        jQuery('#jobuser').val(job.checker + '、' + job.teammaters);
+        if (!job.prior) job.prior = job.StartTime.getFullYear() + '/' + (job.StartTime.getMonth() + 1) + '/' + job.StartTime.getDate() + ' ' + job.StartTime.getHours() + ':' + job.StartTime.getMinutes() + ' ~ ' + job.EndTime.getFullYear() + '/' + (job.EndTime.getMonth() + 1) + '/' + job.EndTime.getDate() + ' ' + job.EndTime.getHours() + ':' + job.EndTime.getMinutes();
+        jQuery('#prior').val(job.prior);
+        jQuery('#dangerous').val(job.dangerous || job.Dangerous);
+        jQuery('#measure').val(job.measure || job.Measure);
+        jQuery('#remark').val(job.remark || job.Remark);
+        jQuery('#Description').val(job.Description);
+        jQuery('#TaskType').val(job.tasktype || job.TaskType);
+        jQuery('#RiskLevel').val(job.risklevel || job.RiskLevel);
+        jQuery('#NeedTrain').val(job.NeedTrain ? '是' : '否');
+        jQuery('#TicketCode').val(job.TicketCode);
+        
+        if (job.jobtype == "班后会" || parent.meeting.MeetingType == '班后会') {
+            jQuery('#DescriptionDiv').css('display', 'block');
+
+            jQuery.getJSON('@Url.Action("GetJobFiles")/' + (job.meetingjobid || job.Relation.MeetingJobId), null, function (data) {
+                if (data.success) {
+                    var audiosUser = "";
+
+                    var htmlaudios = "";
+                    jQuery.each(data.data.audios, function (i, o) {
+                        //返回值根据名称排序  初始化 audiosUser 为空
+                        if (o.CreateUserName != audiosUser) {
+                            //第一次初始化
+                            if (!audiosUser) {
+                                htmlaudios += '<div class="clearfix audio" >';
+                                htmlaudios += '<div class="pull-left my-form-control w-90-">';
+                                htmlaudios += '<label>' + o.CreateUserName + '</label>';
+                                htmlaudios += '<div class="audio-list">';
+                                htmlaudios += '<div class="play-audio" onclick="seeaudio(this)" data-url="' + o.FilePath + '"><img src="' + '@Url.Content("~/Content/styles/static/images/horn-icon.png")' + '" width="24">' + o.FileName + '</div>';
+                            }
+                            //循环结尾
+                            if (i == data.data.audios.length) {
+                                htmlaudios += '</div></div></div>'
+                            } else
+                                if (i > 1) {
+                                    //循环进行中
+                                    htmlaudios += '</div></div></div>'
+                                    htmlaudios += '<div class="clearfix audio" >';
+                                    htmlaudios += '<div class="pull-left my-form-control w-90-">';
+                                    htmlaudios += '<label>' + o.CreateUserName + '</label>';
+                                    htmlaudios += '<div class="audio-list">';
+                                }
+
+                            audiosUser = o.CreateUserName;
+
+                        } else {
+                            htmlaudios += '<div class="play-audio" onclick="seeaudio(this)" data-url="' + o.FilePath + '"><img src="' + '@Url.Content("~/Content/styles/static/images/horn-icon.png")' + '" width="24">' + o.FileName + '</div>';
+                        }
+                        // jQuery('#play-audio-container').append('<li style="width:30%;float:left;"><span>' + o.CreateUserName + '</span><div class="play-audio" data-url="' + o.FilePath + '"><img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" alt="" width="24">' + o.FileName + '</div></li>');
+
+                    });
+                    jQuery('#audiopart').after(htmlaudios);
+                    imagedata.data = [];
+                    var imagesUser = "";
+
+                    var htmlimages = "";
+                    jQuery.each(data.data.images, function (i, o) {
+                        //返回值根据名称排序  初始化 audiosUser 为空
+                        if (o.CreateUserName != imagesUser) {
+                            //第一次初始化
+                            if (!imagesUser) {
+                                htmlimages += '<div class="clearfix audio">';
+                                htmlimages += '<div class="pull-left my-form-control w-90-">';
+                                htmlimages += '<label>' + o.CreateUserName + '</label>';
+                                htmlimages += '<div class="image-list">';
+                                htmlimages += '<img  onclick="seeimage(' + i + ')" data-id="' + o.FileId + '" src="' + o.FilePath + '"  alt="" style="width:160px;height:120px;"/>';
+                            }
+                            //循环结尾
+                            if (i == data.data.images.length) {
+                                htmlimages += '</div></div></div>'
+                            } else
+                                if (i > 1) {
+                                    //循环进行中
+                                    htmlimages += '</div></div></div>'
+                                    htmlimages += '<div class="clearfix audio" >';
+                                    htmlimages += '<div class="pull-left my-form-control w-90-">';
+                                    htmlimages += '<label>' + o.CreateUserName + '</label>';
+                                    htmlimages += '<div class="image-list">';
+                                }
+
+                            imagesUser = o.CreateUserName;
+
+                        } else {
+                            htmlimages += '<img   onclick="seeimage(' + i + ')" data-id="' + o.FileId + '" src="' + o.FilePath + '"  alt="" style="width:160px;height:120px;"/>';
+                        }
+
+
+                        //jQuery('#images-container').append('<li style="width:30%;float:left;"><span>' + o.CreateUserName + '</span><img data-id="' + o.FileId + '" src="' + o.FilePath + '"  alt="" style="width:160px;height:120px;"/></li>');
+                        imagedata.data.push({ src: o.FilePath });
+                    });
+                    jQuery('#imagepart').after(htmlimages);
+
+                }
+            });
+        } else {
+            jQuery('#audiopart').hide();
+            jQuery('#imagepart').hide();
+        }
+    });
+    function seeaudio(obj) {
+        var url = $(obj).data('url');
+        var html = '<audio id="audio" src="' + url + '" controls autoplay style="width:483px;display:block;"></audio>';
+        $('#audio-warp').append(html);
+        $('#audio')[0].addEventListener('canplaythrough', function () {
+            this.play();
+        });
+        layer.open({
+            type: 1,
+            area: ['460px', '36px'],
+            content: $('#audio-warp '),
+            title: false,
+            end: function () {
+                $('#audio-warp').empty();
+                $('#audio-warp').hide();
+            }
+        })
+    };
+
+    function seeimage(index) {
+        imagedata.start = index;
+        layer.photos({
+            photos: imagedata,
+            anim: 5
+        })
+    }
+
+    function fn$ChangeJob() {
+
+        layer.open({
+            area: ['1000px', '510px'],
+            title: '变更任务',
+            type: 2,
+            content: '@Url.Action("ChangeJob")' + '?id=' + jobId
+        });
+    }
+
+
+</script>
+
+
+
+<div id="audio-warp" style="height:32px;width:460px;display: none;overflow:hidden;">
+</div>
+<div class="main-content" style="margin-left:20px;">
+    <div class="container-fluid">
+        @using (Html.BeginForm("Edit", "Activity", FormMethod.Post, new { @class = "sf", enctype = "multipart/form-data" }))
+        {@*@Html.HiddenFor(x => x.ActivityId)
+                @Html.HiddenFor(x => x.ActivityType)
+                @Html.HiddenFor(x => x.GroupId)*@
+                        <input type="hidden" id="isfile" name="isfile" value="false" />
+                                        <input type="hidden" id="delete" name="delete" value="" />
+
+                                                        <div class="bg-fff pd-10">
+                                                            <div class="clearfix">
+                                                                <div class="pull-left my-form-control w-90-">
+                                                                    <label>工作任务</label>
+                                                                    <div>
+                                                                        <input name="job" id="job" type="text" readonly="readonly" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="clearfix">
+                                                                <div class="pull-left my-form-control" style="width:45%;">
+                                                                    <label>作业人</label>
+                                                                    <div>
+                                                                        <input name="jobuser" id="jobuser" type="text" readonly="readonly" />
+                                                                    </div>
+                                                                </div>
+                                                                @*<div class="pull-left my-form-control w-30-">
+                                                                        <label>工作负责人</label>
+                                                                        <div>
+                                                                            <input name="checker" id="checker" type="text" readonly="readonly" />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="pull-left my-form-control w-30-">
+                                                                        <label>工作组成员</label>
+                                                                        <div>
+                                                                            <input name="teammaters" id="teammaters" type="text" readonly="readonly" />
+                                                                        </div>
+                                                                    </div>*@
+                                                                <div class="pull-left my-form-control" style="width:45%;">
+                                                                    <label>计划时间</label>
+                                                                    <div>
+                                                                        <input name="prior" id="prior" type="text" readonly="readonly" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="clearfix">
+                                                                <div class="pull-left my-form-control  w-30-">
+                                                                    <label>任务类别</label>
+                                                                    <div>
+                                                                        <input name="TaskType" id="TaskType" type="text" readonly="readonly" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="pull-left my-form-control  w-30-">
+                                                                    <label>风险等级</label>
+                                                                    <div>
+                                                                        <input name="RiskLevel" id="RiskLevel" type="text" readonly="readonly" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="pull-left my-form-control  w-30-">
+                                                                    <label>是否KYT</label>
+                                                                    <div>
+                                                                        <input name="NeedTrain" id="NeedTrain" type="text" readonly="readonly" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="clearfix">
+                                                                <div class="pull-left my-form-control  w-30-">
+                                                                    <label>工作票</label>
+                                                                    <div>
+                                                                        <input name="TicketCode" id="TicketCode" type="text" readonly="readonly" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="clearfix">
+                                                                <div class="pull-left my-form-control w-90-">
+                                                                    <label>危险因素</label>
+                                                                    <div>
+                                                                        <textarea name="dangerous" id="dangerous" readonly="readonly"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="clearfix">
+                                                                <div class="pull-left my-form-control w-90-">
+                                                                    <label>防范措施</label>
+                                                                    <div>
+                                                                        <textarea name="measure" id="measure" readonly="readonly"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="clearfix" id="DescriptionDiv" style="display:none">
+                                                                <div class="pull-left my-form-control w-90-">
+                                                                    <label>任务说明</label>
+                                                                    <div>
+                                                                        <textarea name="description" id="Description" readonly="readonly"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="clearfix">
+                                                                <div class="pull-left my-form-control w-90-">
+                                                                    <label>备注</label>
+                                                                    <div>
+                                                                        <textarea name="reamark" id="remark" readonly="readonly"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="clearfix audio" id="audiopart">
+                                                                <div class="pull-left my-form-control w-90-">
+                                                                    <label>音频</label>
+                                                                    <div class="audio-list" style="width:100%;">
+                                                                        <ul id="play-audio-container" class="play-audio-container">
+                                                                            @*<li>
+                                                                                    <div class="play-audio" data-url="SJ002F001.mp3"><img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" alt="" width="24">SJ002F001.mp3</div>
+                                                                                    <button></button>
+                                                                                </li>*@
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="clearfix audio" id="imagepart">
+                                                                <div class="pull-left my-form-control w-90-">
+                                                                    <label>照片</label>
+                                                                    <div class="image-list">
+                                                                        <ul id="images-container" class="images-container" style="min-height:60px;"></ul>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>}
+    </div>
+</div>
+
+
+

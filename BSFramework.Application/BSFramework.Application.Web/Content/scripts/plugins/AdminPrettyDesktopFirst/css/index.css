@@ -1,0 +1,212 @@
+.mainBox {
+  width: 100%;
+  /* height: 1084px; */
+  background-size: 100% 100%;
+  /* min-width: 1660px;
+  overflow: hidden;
+ */
+ overflow: hidden;
+  background-image: url(../img/index_bg.png);
+}
+.mainBox .top {
+  height: 86px;
+  width: 100%;
+  position: relative;
+}
+.mainBox .top img {
+  position: absolute;
+  top: 0;
+}
+.mainBox .top .topImg1 {
+  left: 0;
+}
+.mainBox .top .topImg2 {
+  left: 50%;
+  transform: translate(-50%);
+  top: 20px;
+}
+.mainBox .top .topImg3 {
+  right: 0;
+}
+.mainBox .main {
+  width: 100%;
+  height: 998px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+.mainBox .main .mainUl {
+  width: 100%;
+  height: 100%;
+}
+.mainBox .main .mainUl .mainLi {
+  width: 49%;
+  float: left;
+  height: 420px;
+  background: rgba(14, 28, 64, 0.5);
+  position: relative;
+}
+.mainBox .main .mainUl .mainLi p {
+  width: 100%;
+  height: 48px;
+  line-height: 48px;
+  padding-left: 22px;
+  box-sizing: border-box;
+  color: #fff;
+  font-size: 18px;
+  border-bottom: 2px solid #033d6e;
+}
+.mainBox .main .mainUl .mainLi p .clickUi {
+  float: right;
+  width: 200px;
+  margin-top: 10px;
+  margin-right: 10px;
+  border: 1px solid #3879e7;
+  border-radius: 5px;
+}
+.mainBox .main .mainUl .mainLi p .clickUi span {
+  width: 66px;
+  height: 26px;
+  line-height: 26px;
+  text-align: center;
+  float: left;
+  font-size: 16px;
+  border-right: 1px solid #3879e7;
+  cursor: pointer;
+  position: relative;
+  /* overflow: hidden; */
+  z-index:7;
+}
+.mainBox .main .mainUl .mainLi p .clickUi span>span{
+  border-right: 0;
+  background-color: #101c3a;
+}
+.mainBox .main .mainUl .mainLi p .clickUi span:nth-of-type(3)>span{
+  border-right: 0;
+}
+.mainBox .main .mainUl .mainLi p .clickUi span:hover{
+  background:#3879e7;
+}
+/* .mainBox .main .mainUl .mainLi p .clickUi span:hover::before{
+  transition: all 0.3s;
+  width: 100%;
+}
+.mainBox .main .mainUl .mainLi p .clickUi span:hover::after{
+  transition: all 0.3s;
+  width: 100%;
+}
+.mainBox .main .mainUl .mainLi p .clickUi span::before{
+  transform: skew(-45deg,0);
+  content:"";
+  position:absolute;
+  top:0;
+  left:-30px;
+  width:0;
+  height:100%;
+  background-color: #3879e7;
+  z-index: -1;
+}
+.mainBox .main .mainUl .mainLi p .clickUi span::after{
+  transform: skew(-45deg,0);
+  content:"";
+  position:absolute;
+  top:0;
+  right:-30px;
+  width:0;
+  height:100%;
+  background-color: #3879e7;
+} */
+
+.mainBox .main .mainUl .mainLi p .clickUi .spa {
+  background-color: #3879e7;
+  color: #fff;
+}
+.mainBox .main .mainUl .mainLi p .clickUi span:nth-of-type(3) {
+  border-right: 0;
+}
+.mainBox .main .mainUl .mainLi .mainDiv,
+.mainBox .main .mainUl .mainLi .mainDiv2 {
+  width: 100%;
+  height: 370px;
+  box-sizing: border-box;
+  padding: 16px 22px;
+  position: absolute;
+  top:48px;
+  left:0;
+}
+.mainBox .main .mainUl .mainLi .mainDiv.newapp{
+  height:270px;
+}
+.mainBox .main .mainUl .mainLi .mainDiv table,
+.mainBox .main .mainUl .mainLi .mainDiv2 table {
+  position: absolute;
+  top:0;
+  left:0;
+  width: 100%;
+  height: 340px;
+  display: block;
+  border: 0;
+  /* overflow: scroll; */
+}
+.mainBox .main .mainUl .mainLi .mainDiv.newapp table{
+  height:240px;
+}
+.mainBox .main .mainUl .mainLi .mainDiv table tbody,
+.mainBox .main .mainUl .mainLi .mainDiv2 table tbody {
+  width: 100%;
+  display: block;
+}
+.mainBox .main .mainUl .mainLi .mainDiv table tr,
+.mainBox .main .mainUl .mainLi .mainDiv2 table tr {
+  text-align: center;
+  height: 38px!important;
+  line-height: 38px;
+  font-size: 16px;
+  color: #fff;
+  width: 100%;
+  transition: all 2s;
+}
+.mainBox .main .mainUl .mainLi .mainDiv table tr.active,
+.mainBox .main .mainUl .mainLi .mainDiv2 table tr.active {
+  transform: rotateX(360deg)
+}
+.mainBox .main .mainUl .mainLi .mainDiv table tr td,
+.mainBox .main .mainUl .mainLi .mainDiv2 table tr td {
+  text-align: center;
+  height: 38px;
+  line-height: 38px;
+  font-size: 16px;
+  color: #ccc;
+  margin: 0;
+  padding: 0;
+  letter-spacing: 2px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+}
+
+.mainBox .main .mainUl .mainLi .mainDiv table tr:first-child td,
+.mainBox .main .mainUl .mainLi .mainDiv2 table tr:first-child td {
+  /* font-weight: bold; */
+  /* font-size: 20px; */
+  color: #fff;
+}
+.mainBox .main .mainUl .mainLi .mainDiv table tr:nth-child(odd),
+.mainBox .main .mainUl .mainLi .mainDiv2 table tr:nth-child(odd) {
+  background-color: rgba(56,121,231,0.1);
+}
+.mainBox .main .mainUl .mainLi #echlist1,
+.mainBox .main .mainUl .mainLi #echlist2 {
+  width: 100%;
+  height: 440px;
+  box-sizing: border-box;
+  padding: 16px 22px;
+}
+.mainBox .main .mainUl .mainLi:nth-child(even) {
+  float: right;
+}
+.mainBox .main .mainUl .mainLi:nth-of-type(3),
+.mainBox .main .mainUl .mainLi:nth-of-type(4) {
+  height: 500px;
+  margin-top: 20px;
+}

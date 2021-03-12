@@ -1,0 +1,503 @@
+﻿@model BSFramework.Application.Web.Areas.Works.Models.LllegaDetailEntity
+
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/app.css")">
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+
+<!-- Content Wrapper. Contains page content -->
+
+<script>
+    var keyValue = '@ViewBag.Id';
+    $(function () {
+        var json = {
+            "data": [
+                @foreach (var item in Model.lllegalpic)
+        {
+                      @Html.Raw(string.Format("{{ \"src\" : \"{0}\"}},",item.fileurl));
+        }
+            ]
+        }
+        $('#lllegalPic').delegate('li', 'click', function () {
+            json.start = jQuery(this).index();
+            layer.photos({
+                photos: json,
+                anim: 5
+            })
+        });
+
+        var refromJson;
+        @if (Model.flowstate == "待验收" || Model.flowstate == "验收通过")
+        {
+            @Html.Raw("refromJson = {");
+            @Html.Raw("\"data\": [");
+                foreach (var item in Model.reformpic)
+                {
+                    @Html.Raw(string.Format("{{ \"src\" : \"{0}\"}},", item.fileurl));
+                }
+            @Html.Raw("]");
+            @Html.Raw("}");
+        }
+        else
+        {
+            @Html.Raw("refromJson = {");
+            @Html.Raw("\"data\": [");
+                foreach (var item in Model.acceptpic)
+                {
+                    @Html.Raw(string.Format("{{ \"src\" : \"{0}\"}},", item.fileurl));
+                }
+            @Html.Raw("]");
+            @Html.Raw("}");
+        }
+        ///验收通过
+
+        $('#refromPic').delegate('li', 'click', function () {
+            refromJson.start = jQuery(this).index();
+            layer.photos({
+                photos: refromJson,
+                anim: 5
+            })
+        });
+        jQuery('.sf').Validform({
+            tiptype: 3
+        });
+        $('.main-content').niceScroll({
+            autohidemode: false
+        });
+
+        //layui.use('laydate', function () {
+        //    var laydate = layui.laydate;
+        //    laydate.render({
+        //        elem: '#ApproveDate',
+        //        type: 'date'
+        //    });
+        //})
+        //layui.use('laydate', function () {
+        //    var laydate = layui.laydate;
+        //    laydate.render({
+        //        elem: '#LllegalTime',
+        //        type: 'date'
+        //    });
+        //})
+    });
+
+    //取消按钮
+    function retlist() {
+        window.location.href = '@Url.Action("List", new {})' + '?page=1&pagesize=12';
+    }
+</script>
+<style type="text/css">
+    select {
+        width: 150px;
+        height: 40px;
+    }
+
+        select option {
+            text-align: center;
+            font-size: 18px;
+        }
+
+    .my-input {
+        padding: 10px;
+    }
+
+        .my-input input[type="text"] {
+            position: relative;
+            z-index: 100;
+            background: none;
+        }
+    .peccancy-form div[class^="col-"] > label{
+        width:150px;
+    }
+    .peccancy-form div[class^="col-"] > div{
+        margin-left:150px;
+    }
+</style>
+<div class="main-content">
+    <div class="container-fluid">
+        @using (Html.BeginForm("Detail", "Lllegal", FormMethod.Post, new { @class = "sf", enctype = "multipart/form-data" }))
+        {
+
+
+            <div>
+                <div class="" style="overflow: hidden;">
+                    <div class="pull-left title">
+                        <a href="@Url.Action("List", new { page = 1, pagesize = 15 })">
+                            <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+                            违章核准
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-fff peccancy-list">
+                <div class="bg-e3ebfd pd-10 peccancy-form">
+                    <div class="bg-fff">
+                        <div class="bd-2b-e3ebfd content">
+                            <div class="head" style="overflow: hidden;">
+                                <div class="sub-title pull-left">
+                                    违章信息：
+                                </div>
+                                <div class="pull-right">
+                                    <a href="@Url.Action("ASPExWord", new { id = Model.lllegalid })" style="line-height: 50px;color:#0d0d0d;font-size:16px;">
+                                        <img src="@Url.Content("~/Content/styles/static/images/icon-18.png")" alt="">&nbsp;
+                                        导出
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>违章编号</label>
+                                        <div>
+                                            @Html.TextBoxFor(x => x.lllegalnumber, new { @readonly = "readonly", @class = " block" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>违章单位/部门</label>
+                                        <div>
+                                            @Html.TextBoxFor(x => x.lllegaldepart, new { @readonly = "readonly", @class = " block" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>违章班组</label>
+                                        <div>
+                                            @Html.TextBoxFor(x => x.lllegalteam, new { @readonly = "readonly", @class = " block" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>违章类型</label>
+                                        <div>
+                                            @Html.TextBox(Model.lllegaltypename, Model.lllegaltypename)
+
+                                            @*@Html.DropDownListFor(x => x.LllegalType, new SelectList(new string[] { "作业违章", "装置违章", "管理违章" }), null, new { @class = "block my-select" })*@
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>违章时间</label>
+                                        <div>
+                                            @Html.TextBox("LTIME", Model.lllegaltime.Value.ToString("yyyy-MM-dd"), new { @readonly = "readonly", @class = " block" })
+                                            @*@Html.TextBoxFor(x => x.Remark, Model.LllegalTime.ToString("yyyy-MM-dd"), new { @readonly = "readonly", @class = " block" })*@
+                                            @*<img style="" src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">*@
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>记录人</label>
+                                        <div>
+                                            @Html.TextBoxFor(x => x.createusername, new { @readonly = "readonly", @class = " block" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>违章等级</label>
+                                        <div>
+
+                                            @Html.TextBox(Model.lllegallevelname, Model.lllegallevelname)
+
+                                            @*@Html.DropDownListFor(x => x.LllegalLevel, new SelectList(new string[] { "严重违章", "较严重违章", "一般违章" }), null, new { @class = "block my-select" })*@
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <label>违章人员</label>
+                                        <div>
+                                            @Html.TextBoxFor(x => x.lllegalperson, new { @readonly = "readonly", @class = " block" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>违章地点</label>
+                                        <div>
+                                            @Html.TextBoxFor(x => x.lllegaladdress, new { @readonly = "readonly", @class = " block" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>违章描述</label>
+                                        <div>
+                                            @Html.TextBoxFor(x => x.lllegaldescribe, new { @readonly = "readonly", @class = " block" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pd-20 bg-fff bd-2t-e3ebfd photo">
+                                    <div class="mg-b-10">
+                                        <div class="f-18 f-w c-0d0d0d">违章图片</div>
+                                    </div>
+                                    <div class="clearfix" id="zhaopian">
+                                        <ul class="images-container" id="lllegalPic">
+                                            @for (int i = 0; i < Model.lllegalpic.Count; i++)
+                                            {
+                                                <li><img src="@Model.lllegalpic[i].fileurl" alt="@Model.lllegalpic[i].filename" style="width:180px;height:120px;"></li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    @if (Model.appentity != null)
+                    {
+                        <div class="bg-fff">
+                            <div class="content">
+                                <div class="head" style="overflow: hidden;">
+                                    <div class="sub-title pull-left">
+                                        违章核准：
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label>核准结果</label>
+                                            <div>
+                                                <label class="my-radio" style="margin-right:30px;">
+                                                    <input type="radio" name="yes" checked="checked">
+                                                    @*else
+                                                        {
+                                                            <input type="radio" name="yes">
+                                                        }*@
+                                                    <span class="icon"></span>
+                                                    @if (Model.appentity.approveresult == "0")
+                                                    {
+                                                        <label> 核准不通过</label>
+                                                    }
+                                                    @if (Model.appentity.approveresult == "1")
+                                                    {
+                                                        <label> 核准通过</label>
+                                                    }
+                                                </label>
+                                                @*<label class="my-radio">
+                                                        @if (Model.ApproveResult == "1")
+                                                        {
+                                                            <input type="radio" name="yes" checked="checked">
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="radio" name="yes">
+
+                                                        }
+                                                        <span class="icon"></span>
+                                                        核准不通过
+                                                    </label>*@
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8" id="dvreson">
+                                            @if (Model.appentity.approveresult == "0")
+                                            {
+                                                <label>不予核准原因</label>
+                                                <div>
+                                                    @Html.TextBoxFor(x => x.appentity.approvereason, new { @readonly = "readonly", @class = " block " })
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label>核准人</label>
+                                            <div>
+                                                @Html.TextBoxFor(x => x.appentity.approveperson, new { @readonly = "readonly", @class = " block " })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label>核准时间</label>
+                                            <div>
+                                                @if (Model.appentity.approvedate.HasValue)
+                                                {
+                                                    @Html.TextBox("ApproveDate", Model.appentity.approvedate.Value.ToString("yyyy-MM-dd"), new { @readonly = "readonly", @class = " block " })
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBox("ApproveDate", DateTime.Now.ToString("yyyy-MM-dd"), new { @readonly = "readonly", @class = " block " })
+                                                }
+                                                <img style="" src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label>整改人</label>
+                                            <div>
+                                                <div>
+                                                    @Html.TextBoxFor(x => x.reformpeople, new { @readonly = "readonly", @class = " block " })
+                                                    @Html.TextBoxFor(x => x.reformpeopleid, new { @type = "hidden", @class = " block " })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @*<div class="col-md-4">
+                                                <label>整改期限</label>
+                                                <div>
+                                                    @if (Model.ReformDate != null)
+                                                    {
+                                                        @Html.TextBox("ReformDate", Model.ReformDate.Value.ToString("yyyy-MM-dd"), new { @readonly = "readonly", @class = " block " })
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.TextBox("ReformDate", "", new { @readonly = "readonly", @class = " block " })
+                                                    }
+                                                    <img style="" src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                                                </div>
+                                            </div>*@
+                                    </div>
+                                    <div class="row">
+                                        @*<div class="col-md-4">
+                                                <label>考核金额</label>
+                                                <div>
+                                                    <div>
+                                                        @Html.TextBoxFor(x => x.AssessMoney, new { @readonly = "readonly", @class = " block " })
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                   
+                        <div class="bg-fff">
+                            <div class="content">
+                                <div class="head" style="overflow: hidden;">
+                                    <div class="sub-title pull-left">
+                                        违章整改：
+                                    </div>
+                                </div>
+                                <div>
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label>整改人</label>
+                                            <div>
+                                                <div>
+                                                    @Html.TextBoxFor(x => x.reformpeople, new { @readonly = "readonly", @class = " block " })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label style="width:150px;">整改完成时间</label>
+                                            <div style="margin-left:150px;margin-top:12px;">
+                                                <div>
+                                                    @if (Model.reformfinishdate.HasValue)
+                                                    {
+                                                        @Html.TextBoxFor(x => x.reformfinishdate.Value, new { @class = "form-control", @readonly = "readonly", Value = string.Format("{0:yyyy-MM-dd}", Model.reformfinishdate.Value) })
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label>整改描述</label>
+                                            <div>
+                                                <div>
+                                                    @Html.TextBoxFor(x => x.reformmeasure, new { @readonly = "readonly", @class = " block " })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="pd-20 bg-fff bd-2t-e3ebfd photo" style="border:0px;">
+                                            <div class="mg-b-10">
+                                                <div class="f-18 f-w c-0d0d0d">整改图片</div>
+                                            </div>
+                                            <div class="clearfix" id="zhaopian">
+                                                <ul class="images-container" id="refromPic">
+                                                    @if (Model.reformpic != null)
+                                                    {
+                                                        for (int i = 0; i < Model.reformpic.Count; i++)
+                                                        {
+                                                            <li><img src="@Model.reformpic[i].fileurl" alt="" style="width:180px;height:120px;"></li>
+                                                        }
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-fff">
+                            <div class="content">
+                                <div class="head" style="overflow: hidden;">
+                                    <div class="sub-title pull-left">
+                                        违章验收：
+                                    </div>
+                                </div>
+                                <div>
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label>验收人</label>
+                                            <div>
+                                                <div>
+
+                                                    @Html.TextBoxFor(x => x.acceptpeople, new { @readonly = "readonly", @class = " block " })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>验收时间</label>
+                                            <div>
+                                                <div>
+                                                    @if (Model.accepttime.HasValue)
+                                                    {
+                                                        @Html.TextBoxFor(x => x.accepttime.Value, new { @class = "form-control", @readonly = "readonly", Value = string.Format("{0:yyyy-MM-dd}", Model.accepttime.Value) })
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label>验收意见</label>
+                                            <div>
+                                                <div>
+                                                    @Html.TextBoxFor(x => x.acceptmind, new { @readonly = "readonly", @class = " block " })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="pd-20 bg-fff bd-2t-e3ebfd photo" style="border:0px;">
+                                            <div class="mg-b-10">
+                                                <div class="f-18 f-w c-0d0d0d">验收图片</div>
+                                            </div>
+                                            <div class="clearfix" id="zhaopian">
+                                                <ul class="images-container" id="refromPic">
+                                                    @if (Model.acceptpic != null)
+                                                    {
+                                                        for (int i = 0; i < Model.acceptpic.Count; i++)
+                                                        {
+                                                            <li><img src="@Model.acceptpic[i].fileurl" alt="" style="width:180px;height:120px;"></li>
+                                                        }
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <footer class="main-footer">
+                武汉博晟安全技术股份有限公司   版权所有
+            </footer>
+        }
+        <!-- /.content-wrapper -->
+    </div>
+</div>

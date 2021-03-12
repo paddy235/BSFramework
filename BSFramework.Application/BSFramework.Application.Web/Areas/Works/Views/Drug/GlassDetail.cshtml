@@ -1,0 +1,148 @@
+﻿@model BSFramework.Application.Entity.DrugManage.GlassEntity
+@{
+    ViewBag.Title = "GlassDetail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/Font-Awesome/css/font-awesome.min.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/utensilDetail.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/video.min.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/drugsDetail.css")">
+
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/video/js/video.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/layui/layui.all.js")"></script>
+<script>
+    var id;
+    function fn$refresh() {
+        window.location.reload();
+    }
+    $(function ()
+    {
+
+    });
+    function editWarn(obj)
+    {
+        $('#glassName').val(obj.getAttribute('glassName'));
+        id = obj.id;
+        layer.open({
+            type: 1,
+            title: '修改预警值',
+            content: $('#warn'),
+            area: ['520px', '300px']
+        })
+    }
+    function btnOK()
+    {
+        var warn = $('#Warn').val();
+        $.ajax({
+            url: '@Url.Action("editWarn")',
+            type: 'post',
+            data: {id:id,warn:warn},
+            loading: "数据提交中...",
+            success: function (data) {
+
+                    window.location.reload();
+            }
+        });
+    }
+</script>
+        <div class="main-content">
+            <div class="container-fluid">
+        @using (Html.BeginForm("GlassDetail", "Drug"))
+        {
+        <div class="mg-b-10">
+                    <div class="" style="overflow: hidden;">
+                        <div class="pull-left title">
+                            <a href="@Url.Action("GlassList")">
+                                <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt=" ">
+                                器皿详情
+                            </a>
+                        </div>
+                        <div class="pull-right" style="margin-right: 20px;">
+                            <a href="javascript:;">
+                                <img src="@Url.Content("~/Content/styles/static/images/utensils_03.png")" alt="">
+                                入库
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+        <div class="bg-e3ebfd pd-10" style="">
+                    <div class="utensil" style="height:820px;">
+                        <div class="left">
+                            <img src="@Model.Path" style="width:100%;height:80%;" />
+                            <p>
+                                <span></span>
+        预警值：@Model.Warn 个
+        <input type="button" id="@Html.Raw(Model.ID)" glassName="@Model.Name" onclick="editWarn(this); "  style=" background: #3669e1;    border: none;color: #fff; height:30px;line-height:28px; font-size:12px;margin-left:20px;" value="修改" />
+    </p>
+    <h2 style="border-bottom:0px;margin-top:30px;">
+        <strong style="color: #000000;">库存信息</strong>
+        <span>规格 ：@Model.Spec ml、数量 @Model.Amount 个</span>
+    </h2>
+</div>
+<div class="right">
+    <h3>基本信息</h3>
+    <dl>名称：@Model.Name</dl>
+        @*<dl>别名：三角烧瓶、锥形烧瓶</dl>*@
+    <dl>
+        <dt>使用方法:</dt>
+        @*<dd>锥形瓶一般使用过过过过过过过过多或付所军多付撒扩或发军扩绿付或军奥付哈军或付军或发绿付哈或付军撒。</dd>*@
+    </dl>
+    <dl>
+        <dt>注意事项：</dt>
+        @*<dd>(1)注意防守打法胜多负少。</dd>
+                        <dd>(2)注意防守打法胜多负少。</dd>
+                        <dd>(3)注意防守打法胜多负少。</dd>
+                        <dd>(4)注意防守打法胜多负少。</dd>
+                        <dd>(5)注意防守打法胜多负少。</dd>
+                        <dd>(6)注意防守打法胜多负少。</dd>*@
+    </dl>
+        @*<img src="static/images/images/code_03.png" class="code" />*@
+</div>
+</div>
+</div>
+        <footer class="main-footer">
+        武汉博晟安全技术股份有限公司   版权所有
+    </footer>
+}
+</div>
+
+</div>
+
+<div class="put-out" id="warn">
+
+    <table>
+        <tr>
+            <td>器皿名称</td>
+            <td>
+                <input type="text" id="glassName" class="my-input" data-type="s1-100"  readonly="readonly">
+            </td>
+        </tr>
+        <tr>
+            <td>预警值</td>
+            <td>
+                <input type="text" id="Warn" class="my-input" data-type="s1-100" placeholder="请输入">
+                @*<select class="select" id="Warn" name="Warn">
+                    @for (int i = 1; i <= 10; i++)
+                    {
+                        <option value="@Html.Raw(i*10)">@Html.Raw(i*10)</option>
+                    }
+                </select>*@
+            </td>
+
+        </tr>
+        <tr>
+            <td></td>
+            <td style="padding-top:20px;">
+                <button class="btn-bg" style="background-color: #3669e1;" onclick="if(!btnOK()) return false;">确认</button>
+                <button class="btn-bd" style="border-radius: 0;margin-left:10px;" type="button" onclick="layer.closeAll();">返回</button>
+            </td>
+        </tr>
+    </table>
+</div>

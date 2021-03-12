@@ -1,0 +1,283 @@
+﻿
+@{
+    ViewBag.Title = "考评";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group a.btn {
+            margin-top: 4px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+</style>
+<script>
+    var selectedRowIndex;
+
+    jQuery(function () {
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#grid').setGridWidth(($('.gridPanel').width()));
+                $("#grid").setGridHeight($(window).height() - 140);
+            }, 200);
+            e.stopPropagation();
+        });
+
+
+        jQuery('#grid').jqGrid({
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'EvaluateId', hidden: true, align: 'center' },
+                {
+                    label: '操作', name: 'action', width: 300, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        var html = "";
+                        if (rowObject.CanEdit == "1")
+                            html += "<a href=\"javascript:fn$edit('" + rowObject.EvaluateId + "')\" title=\"编辑\" style=\"color:blue;padding-left:0px;\" >编辑</a> ";//code=\"edit\"
+                        if (rowObject.CanScore == "1")
+                            html += "<a href=\"javascript:fn$score('" + rowObject.EvaluateId + "')\" title=\"打分\" style='color:blue;padding-left:0px;'>打分</a> ";// code=\"dafen\"
+                        if (rowObject.CanCalc == "1")
+                            html += "<a href=\"javascript:fn$total('" + rowObject.EvaluateId + "')\" title=\"汇总\" style='color:blue;padding-left:0px;' >汇总</a> ";//code=\"huizong\"
+                        if (rowObject.CanPublish && !rowObject.IsPublished) {
+                            html += "<a href=\"javascript:fn$publish('" + rowObject.EvaluateId + "')\" title=\"发布\" style='color:blue;padding-left:0px;'>发布</a> ";// code=\"publish\"
+                        }
+                        if (rowObject.CanDel == "1")
+                            html += "<a href=\"javascript:del('" + rowObject.EvaluateId + "')\"  title=\"删除\" style=\"color:blue;padding-left:0px;\" >删除</a> ";//code=\"edit\"
+                        return html;
+                    }
+                },
+                { label: '考评时间', name: 'EvaluateSeason', index: 'EvaluateSeason', width: 300, align: 'center', sortable: false },
+                { label: '考评截止日期', name: 'LimitTime', index: 'LimitTime', width: 300, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' } },
+                { label: '发布人', name: 'EvaluateUser', index: 'EvaluateUser', width: 300, align: 'center', sortable: false },
+                { label: '发布时间', name: 'PublishDate', index: 'PublishDate', width: 300, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' } },
+                {
+                    label: '考评状态（ <span style="background-color:orange;">已处理</span> ）', name: 'EvaluateStatus', index: 'EvaluateStatus', width: 300, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        var resolved = 'background-color:orange;padding:3px 5px;', unresolved = 'background-color:lightgray;padding:3px 5px;';
+                        //return '<span style="' + (rowObject.IsEvaluated ? resolved : unresolved) + '" onclick="fn$depts(\'' + rowObject.EvaluateId + '\');">部门考评</span> --> <span style="' + (rowObject.IsCalculated ? resolved : unresolved) + '">考评汇总</span> --> <span style="' + (rowObject.IsPublished ? resolved : unresolved) + '">结果发布</span>'
+                        //var depts='<span style="' + (rowObject.IsEvaluated ? resolved : unresolved) + '" onclick="fn$depts(\'' + rowObject.EvaluateId + '\');">部门考评</span> --> ';
+                         var depts='<span style="' + (rowObject.IsEvaluated ? resolved : unresolved) + '" >部门考评</span> --> ';
+                        var calc = '<span style="' + (rowObject.IsCalculated ? resolved : unresolved) + '">考评汇总</span> -->';
+                        if (rowObject.IsCalculated) //如果已汇总，可点击查看详情，根据部门查询、发布结果、导出
+                        {
+                            calc = '<span style="' + (rowObject.IsCalculated ? resolved : unresolved) + '" onclick="fn$totalnew(\'' + rowObject.EvaluateId + '\');">考评汇总</span> -->';
+                        }
+                        var pub = '<span style="' + (rowObject.IsPublished ? resolved : unresolved) + '">结果发布</span>';
+                        //if (rowObject.IsPublished)
+                        //{
+                        //    pub = '<span style="' + (rowObject.IsPublished ? resolved : unresolved) + '" onclick="fn$totalnew(\'' + rowObject.EvaluateId + '\');">考评汇总</span> -->';
+                        //}
+                        return depts + calc + pub;
+                    }
+                },
+            ],
+            height: $(window).height() - 140,
+            url: '@Url.Action("GetData")',
+            datatype: "json",
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 20,
+            rownumbers: true,
+            pager: "#gridPager",
+            gridComplete: function () {
+                 @if (!BSFramework.Application.Code.OperatorProvider.Provider.Current().IsSystem)
+                {
+                    @Html.Raw("AuthiruzeBtn($('.toolbar'), $('#grid'));");//操作按钮权限控制
+                }
+            }
+
+        });
+    });
+    function fn$depts(id) {
+        dialogOpen({
+            id: "Form",
+            title: '部门考评',
+            url: '/../@Url.Action("EvalDepts")/' + id,
+            width: '500px',
+            height: '500px',
+            btn: null
+        });
+    }
+    function fn$score(id) {
+        var width = jQuery(window).width();
+        var height = jQuery(window).height();
+
+        dialogOpen({
+            id: "Form",
+            title: '考评打分',
+            url: '/../@Url.Action("EvaluateDetail")/' + id,
+            width: (width - 100) + 'px',
+            height: (height - 20) + 'px',
+            btn: ['提交', '关闭'],
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.fn$submit();
+            }
+        });
+    }
+
+    function fn$total(id) {
+        var width = jQuery(window).width();
+        var height = jQuery(window).height();
+
+        dialogOpen({
+            id: "Form",
+            title: '考评汇总',
+            url: '/../@Url.Action("EvaluateAll")/' + id,
+            width: (width - 100) + 'px',
+            height: (height - 20) + 'px',
+            btn: ['提交', '关闭'],
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.fn$submit();
+            }
+        });
+    }
+    function fn$totalnew(id) {
+        var width = jQuery(window).width();
+        var height = jQuery(window).height();
+        
+        dialogOpen({
+            id: "Form",
+            title: '考评汇总',
+            url: '/../@Url.Action("EvaluateAllNew")/' + id,
+            width: (width - 100) + 'px',
+            height: (height - 20) + 'px',
+            btn: null
+        });
+    }
+    function fn$refresh() {
+        jQuery('#grid').jqGrid('setGridParam', {
+            postData: { name: jQuery('#template').val() },
+            page: 1
+        }).trigger("reloadGrid");
+    }
+
+    function fn$add() {
+        dialogOpen({
+            id: "Form",
+            title: '新增考评',
+            url: '/../@Url.Action("Edit2",new  { id = string.Empty,type="add"})',
+            width: "800px",
+            height: "300px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    function fn$edit(id) {
+        dialogOpen({
+            id: "Form",
+            title: '编辑考评',
+            url: '/../@Url.Action("Edit2",new  {type="edit"})&id=' + id,
+            width: "800px",
+            height: "300px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    function del(keyValue) {
+      //  var keyValue = $("#grid").jqGridRowValue('EvaluateId');
+        if (!!keyValue && keyValue != "") {
+            $.RemoveForm({
+                url: '/../..@Url.Action("RemoveForm")',
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $('#grid').trigger("reloadGrid");
+                }
+            })
+        } else {
+            dialogMsg('请选择需要删除的数据！', 0);
+        }
+    }
+
+    function fn$publish(id) {
+        top.layer.confirm('确认发布？', { icon: 3, title: '确认' },
+            function (idx) {
+                $.SaveForm({
+                    url: '@Url.Action("Publish")',
+                    param: { id: id },
+                    loading: "提交中...",
+                    success: function () {
+                        $('#grid').trigger("reloadGrid");
+                    }
+                });
+
+            });
+    }
+
+</script>
+<div id="Evaluate" class="titlePanel">
+    <div class="title-search">
+        @*<table>
+                <tr>
+                    <td>
+                        <span class="formTitle" style="margin:0px 10px;">部门</span>
+                    </td>
+                    <td style="padding-left: 2px;">
+                        <input id="txt_Keyword" type="text" class="form-control" placeholder="请输入要查询关键字" style="width: 200px;" />
+                    </td>
+                    <td style="padding-left: 5px;">
+                        <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                    </td>
+                </tr>
+            </table>*@
+        <div class="form-inline">
+            @*<div class="form-group">
+                    <label for="category">状态</label>
+                    @Html.DropDownList("state", ViewData["state"] as IEnumerable<SelectListItem>, new { @class = "form-control", style = "width:120px" })
+                </div>
+                <div class="form-group">
+                    <label for="category">违章类型</label>
+                    @Html.DropDownList("category", ViewData["category"] as IEnumerable<SelectListItem>, new { @class = "form-control", style = "width:120px" })
+                </div>
+                <div class="form-group">
+                    <label for="level">违章等级</label>
+                    @Html.DropDownList("level", ViewData["level"] as IEnumerable<SelectListItem>, new { @class = "form-control", style = "width:120px" })
+                </div>
+                <div class="form-group">
+                    <label for="no">违章编号</label>
+                    <input type="text" class="form-control" id="no">
+                </div>*@
+            <div class="form-group">
+                <label for="person">考评时间</label>
+                <input type="text" class="form-control" id="template">
+            </div>
+            <div class="form-group">
+                <a id="btn_Search" class="btn btn-primary" onclick="fn$refresh();"><i class="fa fa-search"></i>查询</a>
+            </div>
+        </div>
+    </div>
+    <div class="toolbar">
+        <div class="btn-group">
+            @*<a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>*@
+            @*<a id="replace" class="btn btn-default" onclick="reload();"><i class="fa fa-refresh"></i>&nbsp;刷新</a>*@
+            @if (ViewBag.allowadd)
+            {
+                <a id="add" class="btn btn-default" onclick="fn$add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+            }
+            @*<a id="delete" class="btn btn-default" onclick="del()"><i class="fa fa-trash-o"></i>&nbsp;删除</a>*@
+        </div>
+        @*<div class="btn-group">
+                <a id="lr-delete11" class="btn btn-default" onclick="btn_delete()"><i class="fa fa-sitemap"></i>&nbsp;组织架构图</a>
+            </div>*@
+        @*<script>$('.toolbar').authorizeButton()</script>*@
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="grid"></table>
+    <div id="gridPager"></div>
+</div>

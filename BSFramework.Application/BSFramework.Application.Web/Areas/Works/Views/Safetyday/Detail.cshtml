@@ -1,0 +1,170 @@
+﻿@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script>
+    var keyValue = request('keyValue');
+    $(function () {
+        initControl();
+    });
+    //初始化控件
+    function initControl() {
+        //获取表单
+        if (!!keyValue) {
+            $.SetForm({
+                url: "../../Works/Safetyday/GetFormJson",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#form1").formDeserialize(data.formData);
+                    if (data.formData.ActivityType == "安全学习日" || data.formData.ActivityType == "安全日活动") {
+                        $("#answerDiv").css("display", "");
+
+
+                    }
+                    if (data.files.length > 0) {
+                        var html = "";
+                        $(data.files).each(function (i, item) {
+                            html += '<div class="row" style="margin:10px;"><div class="col-sm-6">' + (item.FileName + item.FileExtensions) + '</div><div class="col-sm-2"><a href="../../ResourceFile/DownloadFile?keyValue=' + item.FileId + '\" target="_blank" style="cursor:pointer"  title="下载文件"><i class="fa fa-download"></i></a></div></div>';
+                        });
+                        $("#dndArea").append(html);
+                    }
+                }
+            })
+        } else {
+            keyValue = $("#Id").val();
+        }
+
+        var queryJson = {
+            keyvalue: keyValue
+        }
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            autowidth: true,
+            height: 200,
+            postData: { queryJson: JSON.stringify(queryJson) },
+            url: "@Url.Action("GetListJson", "QuestionBank")",
+            datatype: "json",
+            colModel: [
+                { label: 'Id', name: 'id', hidden: true },
+                 {
+                     label: '操作', name: 'oper', width: 300, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                         var html = "";
+
+                         html += '<a href="javascript:show(\'' + rowObject.Id + '\')">查看</a>';
+                         return html;
+                     }
+                 },
+                {
+                    label: '题型', name: 'topictype', index: 'topictype', width: 300, align: 'center', sortable: true
+                },
+                {
+                    label: '题目', name: 'topictitle', index: 'topictitle', width: 300, align: 'center', sortable: true
+                }
+            ],
+            onSelectRow: function () {
+                selectedRowIndex = $('#' + this.id).getGridParam('selrow');
+            },
+            gridComplete: function () {
+
+            },
+            viewrecords: true,
+            rowNum: 5,
+            // rowList: [30, 50, 100],
+            pager: "#gridPager",
+            sortname: 'createdate',
+            sortorder: 'desc',
+            rownumbers: true,
+        });
+
+    }
+
+
+    function show(id) {
+        dialogOpen({
+            id: 'QuestionDetail',
+            title: '查看试题',
+            url: '/..@Url.Action("Detail","QuestionBank")?keyvalue=' + id,
+            width: '700px',
+            height: ($(top.window).height() - 600) + 'px',
+            btn: null
+
+        });
+    }
+    //保存表单;
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        if ($(".filelist").find(".row").length == 0) {
+            dialogMsg('请上传材料！', -1);
+            return false;
+        }
+        var postData = $("#form1").formSerialize(keyValue);
+        $.SaveForm({
+            url: "../../Works/Safetyday/SaveForm?keyValue=" + keyValue,
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+
+</script>
+<div style="margin-top: 20px; margin-right: 30px;">
+    <table class="form" id="form1">
+        <tr>
+            <td class="formTitle">活动类型</td>
+            <td class="formValue">
+                <input id="ActivityType" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" readonly />
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">活动主题</td>
+            <td class="formValue">
+                <input id="Subject" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" readonly />
+                <input type="hidden" id="Id" value="@Guid.NewGuid().ToString()" />
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">活动说明</td>
+            <td class="formValue">
+                <textarea id="Explain" class="form-control" rows="5" isvalid="yes" checkexpession="NotNull" readonly></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">推送范围<font face="宋体">*</font></td>
+            <td class="formValue">
+                <textarea id="DeptName" class="form-control" isvalid="yes" checkexpession="NotNull" readonly rows="3" style="width:100%;"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">推送材料<font face="宋体">*</font></td>
+            <td class="formValue">
+                <div id="uploader" style="border:2px dashed gray; margin-top:10px; min-height:200px;">
+                    <div class="queueList">
+                        <div id="dndArea" class="placeholder">
+                            <div id="filePicker" style="margin-left:25px; margin-top:10px;"></div>
+                        </div>
+                    </div>
+                    <div class="statusBar" style="display:none;">
+                        <div class="progress">
+                            <span class="text">0%</span>
+                            <span class="percentage"></span>
+                        </div>
+                        <div class="info"></div>
+
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="answerDiv" style="display:none">
+
+    <div class="gridPanel">
+        <table id="gridTable"></table>
+        <div id="gridPager"></div>
+    </div>
+</div>

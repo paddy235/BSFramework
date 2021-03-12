@@ -1,0 +1,3 @@
+2020-07-30 14:46:02 用户：超级管理员  id：System开始编辑积分管理数据d6a93bdc-e6af-4061-ad60-0c1cc512bc76 
+ {"Id":null,"RuleId":null,"UserName":"泰迪","UserId":"08dbc037-9413-fd7f-c3e2-fb3dae425d43","Gender":null,"Score":5.5,"Area":"123","Reasons":"123123","ScoreType":null,"DeptId":null,"DeptName":null,"DeptCode":null,"CreateUserId":null,"CreateUserName":null,"CreateDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null,"ModifyDate":"0001-01-01T00:00:00"} 
+------------------------------------------------------------

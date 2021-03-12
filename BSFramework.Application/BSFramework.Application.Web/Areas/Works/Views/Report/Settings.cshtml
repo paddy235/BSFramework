@@ -1,0 +1,148 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group a.btn {
+            margin-top: 4px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+</style>
+@section Scripts {
+    <script>
+        var selectedRowIndex;
+
+        jQuery(function () {
+            $(window).resize(function (e) {
+                window.setTimeout(function () {
+                    $('#grid').setGridWidth(($('.gridPanel').width()));
+                    $("#grid").setGridHeight($(window).height() - 140);
+                }, 200);
+                e.stopPropagation();
+            });
+
+            //$("#queryCondition .dropdown-menu li").click(function () {
+            //    var text = $(this).find('a').html();
+            //    var value = $(this).find('a').attr('data-value');
+            //    $("#queryCondition .dropdown-text").html(text).attr('data-value', value)
+            //});
+
+            jQuery('#grid').jqGrid({
+                autowidth: true,
+                colModel: [
+                    { label: '主键', name: 'SettingId', hidden: true, align: 'center' },
+                    {
+                        label: '操作', name: 'action', width: 80, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                            var html = "";
+                            html += "<a href=\"javascript:fn$detail('" + rowObject.ReportId + "')\" title=\"查看\" style=\"color:blue;padding-left:0px;\">查看</a> ";
+                            return html;
+                        }
+                    },
+                    {
+                        label: '总结时间', name: 'ReportTime', index: 'ReportTime', width: 240, align: 'center', sortable: false
+                    },
+                    { label: '开始时间', name: 'StartTime', index: 'StartTime', width: 180, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d H:i', newformat: 'Y-m-d H:i' }, hidden: true },
+                    { label: '截止时间', name: 'EndTime', index: 'EndTime', width: 180, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d H:i', newformat: 'Y-m-d H:i' }, hidden: true },
+                    { label: '总结类型', name: 'ReportType', index: 'ReportType', width: 100, align: 'center', sortable: false },
+                    { label: '总结人', name: 'ReportUser', index: 'ReportUser', width: 180, align: 'center', sortable: false },
+                    { label: '工作总结（周/月）', name: 'ReportContent', index: 'ReportContent', width: 300, align: 'center', sortable: false },
+                    { label: '完成工作（周/月）', name: 'Tasks', index: 'Tasks', width: 300, align: 'center', sortable: false, },
+                    { label: '未完成工作（周/月）', name: 'Undo', index: 'Undo', width: 300, align: 'center', sortable: false, },
+                    { label: '下周工作重点/下月工作计划', name: 'Plan', index: 'Plan', width: 300, align: 'center', sortable: false, },
+                    //{ label: '需协调工作', name: 'Cantdo', index: 'Cantdo', width: 300, align: 'center', sortable: false, },
+                ],
+                height: $(window).height() - 140,
+                url: '@Url.Action("GetData")',
+                datatype: "json",
+                mtype: 'POST',
+                viewrecords: true,
+                gridview: true,
+                sortable: false,
+                rowNum: 20,
+                rownumbers: true,
+                pager: "#gridPager",
+                gridComplete: function () {
+                    var gridid = this.id;
+                    $("#" + this.id).setSelection(selectedRowIndex, false);
+                    var rows = $("#" + this.id).jqGrid("getRowData");
+                    jQuery.each(rows, function (i, o) {
+                        $("td[aria-describedby='" + gridid + "_ReportTime']").eq(i).html(o.StartTime + " ~ " + o.EndTime);
+                    });
+                }
+            });
+        });
+
+        function fn$query() {
+            var args = { category: jQuery('#category').val(), start: jQuery('#start').val(), end: jQuery('#end').val(), key: jQuery('#key').val() }
+            jQuery('#grid').jqGrid('setGridParam', { postData: args, page: 1 }).trigger("reloadGrid");
+        }
+
+        function fn$detail(id) {
+            dialogOpen({
+                id: "Detail",
+                title: '工作总结详情',
+                url: '/../@Url.Action("Detail")/' + id,
+                width: "700px",
+                height: "500px",
+                btn: null,
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+
+        }
+
+    </script>
+}
+@*<div class="titlePanel">
+    <div class="title-search">
+        <div class="form-inline">
+            <div class="form-group">
+                <label for="person">总结类型</label>
+                <select id="category" class="form-control" style="width:120px">
+                    <option>全部</option>
+                    <option>周工作总结</option>
+                    <option>月工作总结</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="start">日期</label>
+                <input type="text" class="form-control" id="start" onfocus="WdatePicker();" readonly="readonly">
+                - <input type="text" class="form-control" id="end" onfocus="WdatePicker();" readonly="readonly">
+            </div>
+            <div class="form-group">
+                <label for="key">搜索</label>
+                <input type="text" class="form-control" id="key">
+            </div>
+            <div class="form-group">
+                <a id="btn_Search" class="btn btn-primary" onclick="fn$query();"><i class="fa fa-search"></i>查询</a>
+                <a id="build" class="btn btn-primary" onclick="fn$build();"><i class="fa fa-search"></i>生成</a>
+            </div>
+        </div>
+    </div>
+    <div class="toolbar">
+        <div class="btn-group">
+            <a id="add" class="btn btn-default" onclick="fn$add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+            <a id="add" class="btn btn-default" onclick="fn$setting()"><i class="fa fa-plus"></i>&nbsp;设置</a>
+        </div>
+    </div>
+</div>*@
+<div class="gridPanel">
+    <table id="grid"></table>
+    <div id="gridPager"></div>
+</div>

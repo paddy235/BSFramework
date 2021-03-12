@@ -1,0 +1,885 @@
+﻿@model IEnumerable<BSFramework.Application.Entity.DrugManage.DrugEntity>
+@using BSFramework.Application.Entity.DrugManage
+
+@{
+    ViewBag.Title = "StockManage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/scripts/plugins/jquery-autocompleter/css/main.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/Font-Awesome/css/font-awesome.min.css")">
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/hammer.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/layui/layui.all.js")"></script>
+@*<script src="@Url.Content("~/Content/scripts/bootstrap/bootstrap.min.js")"></script>*@
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jquery-autocompleter/js/jquery.autocompleter.js")"></script>
+<style type="text/css">
+    .title li:first-child {
+        border-left: 1px solid #3668e1;
+    }
+
+    .title li {
+        list-style: none;
+        border: 1px solid #3668e1;
+        font-size: 17px;
+        padding: 5px 20px;
+        font-weight: 800;
+        color: #3668e1;
+        float: left;
+        border-left: 0;
+    }
+
+    .title .select {
+        background: #3668e1;
+        color: #fff;
+    }
+
+    .title {
+        padding-left: 0;
+    }
+
+    .autocompleter {
+        width: 300px;
+        position: absolute;
+        left: 135px;
+        z-index: 2;
+    }
+
+    .find1 {
+        top: 70px;
+    }
+</style>
+
+<script>
+    var did;
+    var outnum;
+    function fn$refresh() {
+        window.location.reload();
+    }
+    $(function () {
+        //获取菜单(菜单控制)
+        InitMenu($("ul"), undefined);
+    })
+    $(function () {
+
+        $('.tools-list').delegate('.item-wrap', 'click', function (e) {
+            e.stopPropagation();
+        })
+        $('.tools-list').delegate('.remove-bg button', 'click', function () {
+            var drugId = this.getAttribute("drugid");
+            DelDrug(drugId);
+            var $p = $(this).parents('.item-wrap');
+            $p.remove();
+        })
+        $('.tools-list > div').each(function () {
+            var mc = new Hammer(this);
+            mc.on('press', function (e) {
+                $('.tools-list').addClass('remove');
+                $('body').bind('click', clickHand);
+                return false;
+            })
+        })
+        //$('.add-current').click(function () {
+
+        //})
+        //$('#put-in').click(function () {
+
+        //})
+        //$('.out').click(function () {
+
+        //})
+
+        $('#DrugName').autocompleter({
+            source: '@Url.Action("FindTrainings")',
+            customClass: ['find1'],
+            highlightMatches: true,
+            empty: false,
+            cache: false,
+            limit: 5,
+            customLabel: 'DrugName',
+            customValue: 'DrugName',
+            callback: function (value, index, selected) {
+                var inventoryid = selected.Id;
+                $("#DrugInventoryId").val(inventoryid);
+            }
+        });
+    })
+    function checknum(obj)
+    {
+        var val = obj.value;
+        var re = /^[1-9]\d*$/;
+        if (!re.exec(val)) {
+            v = layer.open({
+                type: 1,
+                title: '验证',
+                content: $('.validnum'),
+                area: ['300px', '180px']
+            })
+            obj.value = "";
+            return;
+        }
+    }
+
+    function fn$add()
+    {
+        $("#DrugName").val('');
+        $("#DrugInventoryId").val('');
+        $(".add-container #CreateUserId").val("@ViewData["CurrUser"]");
+        $(".add-container #CreateUserName").val("@ViewData["CurrUserName"]");
+        $(".add-container #CreateDate").val("@ViewData["NowTime"]");
+
+        var v = $(".add-container #DrugLevel").val();
+        var options = $(".add-container #DrugLevel option");
+        for (var i = 0; i < options.length; i++) {
+            if (options[i].value == v) {
+                $(".add-container #DrugLevelName").val(options[i].text);
+            }
+        }
+        layer.open({
+            type: 1,
+            title: '新增药品种类',
+            content: $('.add-container'),
+            area: ['500px', '650px']
+        })
+        $("#StockWarn").val('10');
+    }
+    function fn$in(obj)
+    {
+        did = obj.getAttribute("drugid");
+        $("#Location1").val(obj.getAttribute("location"));
+        $("#DrugName1").val(obj.getAttribute("drugname"));
+        $(".put-in #CreateUserId1").val("@ViewData["CurrUser"]");
+        $(".put-in #CreateUserName1").val("@ViewData["CurrUserName"]");
+        $(".put-in #CreateDate1").val("@ViewData["NowTime"]");
+        $("#DrugId1").val(obj.getAttribute("drugid"));
+        $("#drugUSL").val(obj.getAttribute("spec"));
+        layer.open({
+            type: 1,
+            title: '药品入库',
+            content: $('.put-in'),
+            area: ['500px', '500px']
+        })
+    }
+
+    function del(id)
+    {
+        jQuery('#lbid').val(id);
+    }
+
+    function dele() {
+
+        var keyValue = jQuery('#lbid').val();
+        $.ajax({
+            url: '@Url.Action("RemoveForm")',
+            type: 'post',
+            data: { keyValue: keyValue },
+            success: function (data) {
+
+                var data = JSON.parse(data);
+                if (data.message == "1") {
+                    alert('该药品取用尚有剩余，无法删除！');
+                    $('#modal3').modal('hide');
+                }
+                window.location.reload();
+            }
+        });
+    }
+    function fn$out(obj)
+    {
+        var num = obj.getAttribute("drugnum");
+        var warn = obj.getAttribute("warn");
+        if (warn != "0") {
+            $("#Warn1").val(obj.getAttribute("warn"));
+        }
+        if (parseInt(num) == 0)
+        {
+            v=layer.open({
+                type: 1,
+                title: '出库',
+                content: $('.outnum'),
+                area: ['300px', '180px']
+            })
+            return;
+        }
+        outnum=num;
+        did = obj.getAttribute("drugid");
+        $("#DrugId2").val(obj.getAttribute("drugid"));
+        $("#DrugName2").val(obj.getAttribute("drugname"));
+        $("#drugUSL1").val(obj.getAttribute("spec"));
+        //$("#out_Surplus").val(obj.getAttribute("drugsup"));
+        @*$(".put-out #CreateUserId2").val("@ViewData["CurrUser"]");
+        $(".put-out #CreateUserName2").val("@ViewData["CurrUserName"]");*@
+        $(".put-out #CreateDate2").val("@ViewData["NowTime"]");
+        $("#GuarDianName").val("@ViewData["CurrUserName"]");
+        $("#GuarDianId").val("@ViewData["CurrUser"]");
+        layer.open({
+            type: 1,
+            title: '药品出库',
+            content: $('.put-out'),
+            area: ['500px', '500px']
+        })
+    }
+    function clickHand() {
+
+        $('.tools-list').removeClass('remove');
+    }
+    function Cancel() {
+
+        layer.close(this.layer.index);
+
+    }
+    function AddDrug() {
+
+        var DrugName = $("#DrugName").val();
+        var StockWarn = $("#StockWarn").val();
+        if (!DrugName) {
+            v = layer.open({
+                type: 1,
+                title: '数据验证',
+                content: $('.valid'),
+                area: ['300px', '180px']
+            })
+            return false;
+        }
+        if (!StockWarn) {
+            v = layer.open({
+                type: 1,
+                title: '数据验证',
+                content: $('.validwarn'),
+                area: ['300px', '180px']
+            })
+            return false;
+        }
+        var json = jQuery('#form1').serializeJSON();
+        $.ajax({
+            url: '@Url.Action("SaveDrug")',
+            type: 'post',
+            data: json,
+            loading: "数据提交中...",
+            success: function (data) {
+                if (!data.success) {
+                    $("#info").text(data.message);
+                    v = layer.open({
+                        type: 1,
+                        title: '提示消息',
+                        content: $('.messInfo'),
+                        area: ['300px', '180px']
+                    })
+
+                } else {
+                    window.location.reload();
+                }
+            }
+        });
+        return false;
+    }
+    function AddDrugStock() {
+        var num = $('#inDrugNum').val();
+        if (!num) {
+            v = layer.open({
+                type: 1,
+                title: '提示消息',
+                content: $('.validinnumber'),
+                area: ['300px', '180px']
+            })
+            return;
+        }
+
+
+        var json =
+            {
+                "DrugId": $('#DrugId1').val(),
+                "DrugNum": $('#inDrugNum').val(),
+                "DrugUSL": $('#drugUSL').val(),
+                "CreateUserName":$('#CreateUserName1').val(),
+        "CreateUserId":$('#CreateUserId1').val(),
+        }
+        var location=jQuery('#Location1').val();
+        $.ajax({
+            url: '@Url.Action("SaveDrugStock")',
+            type: 'post',
+            data: {stockData:JSON.stringify(json),location:location,drugid:did},
+            loading: "数据提交中...",
+            success: function (data) {
+                if (!data.success) {
+                    $("#info").text(data.message);
+                    v = layer.open({
+                        type: 1,
+                        title: '提示消息',
+                        content: $('.messInfo'),
+                        area: ['300px', '180px']
+                    })
+
+                } else {
+                    window.location.reload();
+                }
+            }
+        });
+        return false;
+    }
+    function AddDrugOut() {
+        var num = $("#DrugNum1").val();
+
+        var re = /^[1-9]\d*$/;
+        if (!re.exec(num)) {
+            v = layer.open({
+                type: 1,
+                title: '验证',
+                content: $('.validnum'),
+                area: ['300px', '180px']
+            })
+            $("#DrugNum1").val('');
+            return;
+        }
+        if (parseInt(num) == 0 || !num) {
+            v = layer.open({
+                type: 1,
+                title: '提示信息',
+                content: $('.validoutnumber'),
+                area: ['300px', '180px']
+            })
+            return;
+        }
+        if (parseInt(num) > outnum)
+        {
+            v = layer.open({
+                type: 1,
+                title: '提示信息',
+                content: $('.validoutnumber1'),
+                area: ['300px', '180px']
+            })
+            return;
+        }
+        var outwarn = $("#Warn1").val();
+        if (parseInt(outwarn) == 0 || !outwarn) {
+            v = layer.open({
+                type: 1,
+                title: '提示信息',
+                content: $('.validoutwarn'),
+                area: ['300px', '180px']
+            })
+            return;
+        }
+        var json =
+            {
+                "DrugId": $('#DrugId2').val(),
+                "DrugNum": $('#DrugNum1').val(),
+                "DrugUSL": $('#drugUSL1').val()
+            };
+        $.ajax({
+            url: '@Url.Action("SaveDrugOut")',
+            type: 'post',
+            data: { outData: JSON.stringify(json), drugid: did, warn: outwarn },
+            loading: "数据提交中...",
+            success: function (data) {
+                if (!data.success) {
+                    $("#info").text(data.message);
+                    v = layer.open({
+                        type: 1,
+                        title: '提示消息',
+                        content: $('.messInfo'),
+                        area: ['300px', '180px']
+                    })
+                } else {
+                    window.location.reload();
+                }
+            }
+        });
+        return false;
+    }
+    function DelDrug(drugId) {
+        $.ajax({
+            url: '@Url.Action("DelDrugNew")',
+            type: 'post',
+            data: drugId,
+            loading: "数据提交中...",
+            success: function (data) {
+                if (!data.success) {
+                    $("#info").text(data.message);
+                    v = layer.open({
+                        type: 1,
+                        title: '提示消息',
+                        content: $('.messInfo'),
+                        area: ['300px', '180px']
+                    })
+                } else {
+                    //window.location.reload();
+                }
+            }
+        });
+    }
+    function LevelChanged(r) {
+        $(".add-container #DrugLevelName").val(r.options[r.options.selectedIndex].text);
+    }
+    function getall() {
+
+        $('#DrugNameS').val('');
+    }
+    function fn$import() {
+        layer.open({
+            area: ['680px', '415px'],
+            title: '药品导入',
+            type: 2,
+            content: '@Url.Action("Import")'
+        });
+    }
+
+    function fn$reload() {
+        layer.closeAll();
+        getall();
+    }
+</script>
+
+<div class="main-content">
+    <div class="container-fluid">
+        @using (Html.BeginForm("StockManage", "Drug", new { page = 1, pagesize = 10 }))
+        {
+            <div class="mg-b-10">
+                <div class="" style="overflow: hidden;margin-top:-7px;">
+                    <ul class="pull-left title" style="height:40px; line-height:35px;font-size:20px;">
+                        <li code="drug_use"><a href="@Url.Action("List")" style="text-decoration:none">药品取用管理</a></li>
+                        <li code="drug_stock" class="select" onclick="fn$refresh();">药品库存管理</li>
+                        <li code="drug_glassware"><a href="@Url.Action("GlassList")" style="text-decoration:none">玻璃器皿管理</a></li>
+                        @*<li><a href="#" style="text-decoration:none">化学仪器管理</a></li>*@
+                    </ul>
+                    <div style="float:right!important;line-height:40px!important;">
+                        <a href="javascript:void(0);" onclick="fn$import();">
+                            <img src="@Url.Content("~/Content/styles/static/images/icon-18.png")" alt="">&nbsp;
+                            导入
+                        </a>
+                        <a href="javascript:void(0);" onclick="fn$add();">
+                            <img src="@Url.Content("~/Content/styles/static/images/btn-new.png")" alt="">&nbsp;
+                            新增种类
+                        </a>
+                        <a href="@Url.Action("StockList", new { page = 1, pagesize = 10 })" style="margin-left:15px;">
+                            <img src="~/Content/styles/static/images/index_30.png" style="margin-top:-2px;" alt="">
+                            出入库记录
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="bg-e3ebfd pd-10 my-body" style="margin-top:-3px;">
+                <div class="bg-fff peccancy-list" style="margin-top:0px;">
+                    <div class="head">
+                        <div class="searchs text-center" style="overflow: hidden;">
+                            <span class="my-input mg-r-15">
+                                <input type="text" name="DrugNameS" id="DrugNameS" value="@Html.Raw(ViewData["DrugName"])" placeholder="请输入药品名称">
+                            </span>
+                            <button class="my-btn bg-3669e1 mg-r-15">
+                                <img src="@Url.Content("~/Content/styles/static/images/search-icon.png")" alt="">
+                                搜索
+                            </button>
+                            <button onclick="getall();" class="my-btn bg-8fadce">全部</button>
+                        </div>
+                    </div>
+                    <div style="min-height:600px;">
+                        <table class="table text-center table-striped no-mg c-67748d">
+                            <thead>
+                                <tr>
+                                    <th width="10%" class="bg-fff">序号</th>
+
+                                    <th width="10%" class="bg-fff">药品名称</th>
+                                    <th width="10%" class="bg-fff">等级</th>
+                                    <th width="10%" class="bg-fff">位置</th>
+                                    <th width="10%" class="bg-fff">规格</th>
+                                    <th width="10%" class="bg-fff">数量</th>
+                                    <th width="10%" class="bg-fff">预警值</th>
+                                    <th width="15%" class="bg-fff">操作</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.Count(); i++)
+                                {
+                                    var list = Model.ToList();
+                                    var n = i + 1;
+                                    <tr style="">
+                                        <td width="10%" style="vertical-align:middle;">@n</td>
+                                        <td width="10%" style="vertical-align:middle;"><a href="@Url.Action("Show", new { id = list[i].Id, type = "1" })" style="text-decoration:none;">@list[i].DrugName</a> </td>
+                                        <td width="10%" style="vertical-align:middle;">@list[i].DrugLevel</td>
+                                        <td width="10%" style="vertical-align:middle;">@list[i].Location</td>
+                                        <td width="10%" style="vertical-align:middle;">@list[i].Spec @list[i].Unit</td>
+
+                                        @if (list[i].Less == "y")
+                                        {
+                                            <td width="10%" style="vertical-align:middle; color:red;">@list[i].DrugNum</td>
+                                        }
+                                        else
+                                        {
+                                            <td width="10%" style="vertical-align:middle;">@list[i].DrugNum</td>
+                                        }
+                                        <td width="10%" style="vertical-align:middle;">@list[i].StockWarn</td>
+                                        <td width="10%" style="vertical-align:middle;">
+                                            <a class="my-link detail" drugid="@list[i].Id" drugsup="@list[i].Surplus" location="@list[i].Location" spec="@list[i].Spec" drugname="@list[i].DrugName" onclick="fn$in(this);"><img src="~/Content/styles/static/images/utensils_03.png" alt=""> 入库</a>
+                                            <a class="my-link remove mg-l-15" drugid="@list[i].Id" drugsup="@list[i].Surplus" location="@list[i].Location" spec="@list[i].Spec" drugname="@list[i].DrugName" warn="@list[i].Warn" drugnum="@list[i].DrugNum" onclick="fn$out(this)"><img src="~/Content/styles/static/images/icon-out_03.png" alt=""> 出库</a>
+                                            <a id="@list[i].Id" href="#" onclick="del(this.id);" data-toggle="modal" data-target="#modal3" class="my-link remove mg-l-15"><img src="~/Content/styles/static/images/remove-icon-2.png" alt=""> 删除</a>
+                                        </td>
+
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    @*<div class="text-center table bg-fff" style="border-top:1px solid #e3ebfd;padding:10px 0; margin-bottom:6px;">
+                            <a class="add icon-btn" href="javascript:;"  id="btn-new"></a>
+                        </div>*@
+                    <div style="text-align:center;">
+                        <ul class="pagination">
+                            @if ((int)ViewBag.page == 1)
+                            {
+                                <li class="disabled">
+                                    <a>首页</a>
+                                </li>
+                                <li class="disabled">
+                                    <a>上一页</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    @Html.ActionLink("首页", "StockManage", new { page = "1", pagesize = ViewBag.pagesize })
+                                </li>
+                                <li>
+                                    @Html.ActionLink("上一页", "StockManage", new { page = ((int)ViewBag.page - 1).ToString(), pagesize = ViewBag.pagesize })
+                                </li>
+                            }
+                            @for (int i = (ViewBag.page - 1) / 10 * 10; i < (Math.Ceiling((decimal)ViewBag.page / 10) * 10 > ViewBag.pagecount ? ViewBag.pagecount : Math.Ceiling((decimal)ViewBag.pagecount / 10) * 10); i++)
+                            {
+                                <li class="@((i + 1) == ViewBag.page ? "active" : string.Empty)">
+                                    @Html.ActionLink((i + 1).ToString(), "StockManage", new { page = (i + 1).ToString(), pagesize = ViewBag.pagesize })
+                                </li>
+                            }
+                            @if ((int)ViewBag.page == (int)ViewBag.pagecount || (int)ViewBag.pagecount == 0)
+                            {
+                                <li class="disabled">
+                                    <a>下一页</a>
+                                </li>
+                                <li class="disabled">
+                                    <a>末页</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    @Html.ActionLink("下一页", "StockManage", new { page = ((int)ViewBag.page + 1).ToString(), pagesize = ViewBag.pagesize })
+                                </li>
+                                <li>
+                                    @Html.ActionLink("末页", "StockManage", new { page = ((int)ViewBag.pagecount).ToString(), pagesize = ViewBag.pagesize })
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <footer class="main-footer" style="height:30px;">
+                武汉博晟安全技术股份有限公司   版权所有
+            </footer>
+        }
+    </div>
+</div>
+<div class="add-container">
+    <form id="form1">
+        <table>
+            <tr>
+                <td>药品名称</td>
+                <td>
+                    <input type="text" id="DrugName" name="DrugName" class="my-input" placeholder="请输入">
+                    <input type="hidden" id="DrugInventoryId" name="DrugInventoryId">
+                </td>
+            </tr>
+            <tr>
+                <td>等级</td>
+                <td>
+                    <select class="select" id="DrugLevel" name="DrugLevel" onchange="LevelChanged(this)">
+                        @foreach (BSFramework.Application.Entity.SystemManage.DataItemDetailEntity item in (ViewData["DrugLevellist"] as List<BSFramework.Application.Entity.SystemManage.DataItemDetailEntity>))
+                        {
+                            <option value="@item.ItemValue">@item.ItemName</option>
+                        }
+                    </select>
+                    <input type="hidden" id="DrugLevelName" name="DrugLevelName" class="my-input" placeholder="请输入">
+                </td>
+            </tr>
+            <tr>
+                <td>规格</td>
+                <td>
+                    <select class="select" id="Spec" name="Spec">
+                        @foreach (BSFramework.Application.Entity.SystemManage.DataItemDetailEntity item in (ViewData["DrugUSLlist"] as List<BSFramework.Application.Entity.SystemManage.DataItemDetailEntity>))
+                        {
+                            <option value="@item.ItemValue">@item.ItemName</option>
+                        }
+                    </select>
+                    @*<input type="hidden" id="DrugLevelName" name="DrugLevelName" class="my-input" placeholder="请输入">*@
+                </td>
+            </tr>
+            <tr>
+                <td>单位</td>
+                <td>
+
+                    <select class="select" id="Unit" name="Unit">
+                        @foreach (BSFramework.Application.Entity.SystemManage.DataItemDetailEntity item in (ViewData["DrugUnitlist"] as List<BSFramework.Application.Entity.SystemManage.DataItemDetailEntity>))
+                        {
+                            <option value="@item.ItemValue">@item.ItemName</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>位置</td>
+                <td>
+                    <input type="text" id="Location" name="Location" class="my-input"
+                           placeholder="请输入">
+                </td>
+            </tr>
+            <tr>
+                <td>数量</td>
+                <td>
+                    <input type="text" id="DrugNum" name="DrugNum" class="my-input" style="width:160px;" onchange="checknum(this);" placeholder="请输入"> &nbsp;瓶
+                </td>
+            </tr>
+            <tr>
+                <td>库存预警值</td>
+                <td>
+                    <input type="text" id="StockWarn" name="StockWarn" class="my-input" onchange="checknum(this);" placeholder="请输入">
+                </td>
+            </tr>
+            <tr>
+                <td>登记人</td>
+                <td>
+                    <input type="text" id="CreateUserName" name="CreateUserName" readonly="readonly" class="my-input" placeholder="请输入">
+                    <input type="hidden" id="CreateUserId" name="CreateUserId" class="my-input" placeholder="请输入">
+                </td>
+            </tr>
+            <tr>
+                <td>登记时间</td>
+                <td>
+                    <input type="text" id="CreateDate" name="CreateDate" readonly="readonly" class="my-input" placeholder="请输入">
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="padding-top:20px;">
+                    <button class="btn-bg" onclick="if (!AddDrug()) return false;" style="background-color: #3669e1;">确认</button>
+                    <button class="btn-bd" type="button" style="border-radius: 0;margin-left:10px;" onclick="layer.closeAll();">取消</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<div class="valid">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">请输入药品名称！</h4>
+        <button class="btn bg-3669e1 c-fff" style="margin-top:10px;width:70px;" onclick="layer.close(v);">确认</button>
+    </div>
+</div>
+<div class="validinnumber">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">请输入入库数量！</h4>
+        <button class="btn bg-3669e1 c-fff" style="margin-top:10px;width:70px;" onclick="layer.close(v);">确认</button>
+    </div>
+</div>
+<div class="validoutnumber">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">请输入取用数量！</h4>
+        <button class="btn bg-3669e1 c-fff" style="margin-top:10px;width:70px;" onclick="layer.close(v);">确认</button>
+    </div>
+</div>
+<div class="validoutnumber1">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">出库数量不能大于库存数量！</h4>
+        <button class="btn bg-3669e1 c-fff" style="margin-top:10px;width:70px;" onclick="layer.close(v);">确认</button>
+    </div>
+</div>
+<div class="validnum">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">请输入大于0的正整数！</h4>
+        <button class="btn bg-3669e1 c-fff" style="margin-top:10px;width:70px;" onclick="layer.close(v);">确认</button>
+    </div>
+</div>
+<div class="validwarn">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">请输入库存预警值！</h4>
+        <button class="btn bg-3669e1 c-fff" style="margin-top:10px;width:70px;" onclick="layer.close(v);">确认</button>
+    </div>
+</div>
+<div class="validoutwarn">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">请输入取用预警值！</h4>
+        <button class="btn bg-3669e1 c-fff" style="margin-top:10px;width:70px;" onclick="layer.close(v);">确认</button>
+    </div>
+</div>
+<div class="Outvalid">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">取用量不能为空！</h4>
+        <button class="btn bg-3669e1 c-fff" style="margin-top:10px;width:70px;" onclick="layer.close(v);">确认</button>
+    </div>
+</div>
+<div class="outnum">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">库存不足，请先入库！</h4>
+        <button class="btn bg-3669e1 c-fff" style="margin-top:10px;width:70px;" onclick="layer.close(v);">确认</button>
+    </div>
+</div>
+<div class="Outvalid1">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">取用量不能大于剩余量！</h4>
+        <button class="btn bg-3669e1 c-fff" style="margin-top:10px;width:70px;" onclick="layer.close(v);">确认</button>
+    </div>
+</div>
+<div class="messInfo">
+    <div style="text-align:center;">
+        <h4 id="info" style="margin-top:35px;"></h4>
+        <button class="btn bg-3669e1 c-fff" style="margin-top:10px;width:70px;" onclick="layer.close(v);">确认</button>
+    </div>
+</div>
+<div class="put-in">
+    <form id="form2">
+        <table>
+            <tr>
+                <td>药品名称</td>
+                <td>
+                    @*<select class="select" id="DrugId" name="DrugId" style="background-color:#EEEEEE;" disabled="disabled">
+                            @foreach (BSFramework.Application.Entity.DrugManage.DrugEntity item in (ViewData["DrugList"] as List<BSFramework.Application.Entity.DrugManage.DrugEntity>))
+                            {
+                                string opValue = item.DrugName + "(" + item.DrugLevel + ")";
+                                <option value="@item.Id">@opValue</option>
+                            }
+                        </select>*@
+
+                    <input type="text" id="DrugName1" class="my-input" readonly="readonly" placeholder="请输入">
+                    <input type="hidden" id="DrugId1" class="my-input" readonly="readonly" placeholder="请输入">
+                </td>
+            </tr>
+            <tr>
+                <td>规格</td>
+                <td>
+                    @*<select class="select" id="drugUSL" name="DrugUSL">
+                            @foreach (BSFramework.Application.Entity.SystemManage.DataItemDetailEntity item in (ViewData["DrugUSLlist"] as List<BSFramework.Application.Entity.SystemManage.DataItemDetailEntity>))
+                            {
+                                <option value="@item.ItemValue">@item.ItemName</option>
+                            }
+                        </select>*@
+                    <input type="text" id="drugUSL" class="my-input" readonly="readonly" placeholder="请输入">
+                </td>
+            </tr>
+            <tr>
+                <td>数量</td>
+                <td>
+                    <input type="text" id="inDrugNum" name="inDrugNum" class="my-input" style="width:260px;" onchange="checknum(this);" placeholder="请输入数量">
+                    &nbsp;&nbsp;瓶
+                </td>
+            </tr>
+            <tr>
+                <td>位置</td>
+                <td>
+                    <input type="text" id="Location1" name="Location1" class="my-input" placeholder="请输入">
+                </td>
+            </tr>
+            <tr>
+                <td>登记人</td>
+                <td>
+                    <input type="text" id="CreateUserName1" name="CreateUserName" readonly="readonly" class="my-input" placeholder="请输入">
+                    <input type="hidden" id="CreateUserId1" name="CreateUserId" class="my-input" placeholder="请输入">
+                </td>
+            </tr>
+            <tr>
+                <td>登记时间</td>
+                <td>
+                    <input type="text" id="CreateDate1" name="CreateDate" readonly="readonly" class="my-input" placeholder="请输入">
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="padding-top:20px;">
+                    <button class="btn-bg" style="background-color: #3669e1;" onclick="if (!AddDrugStock()) return false;">确认</button>
+                    <button class="btn-bd" style="border-radius: 0;margin-left:10px;" type="button" onclick="layer.closeAll();">取消</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div class="put-out">
+    <form id="form3">
+        <table>
+            <tr>
+                <td>药品名称</td>
+                <td>
+                    <input type="text" id="DrugName2" class="my-input" readonly="readonly" placeholder="请输入">
+                    <input type="hidden" id="DrugId2" class="my-input" readonly="readonly" placeholder="请输入">
+                </td>
+            </tr>
+            <tr>
+                <td>规格</td>
+                <td>
+                    <input type="text" id="drugUSL1" class="my-input" readonly="readonly" placeholder="请输入">
+                </td>
+            </tr>
+            <tr>
+                <td>数量</td>
+                <td>
+                    <input type="text" id="DrugNum1" name="DrugNum1" class="my-input" style="width:260px;" @*onchange="checknum(this);"*@ placeholder="请输入数量">
+                    &nbsp;&nbsp;瓶
+                </td>
+            </tr>
+            <tr>
+                <td>取用预警值</td>
+                <td>
+                    <input type="text" id="Warn1" class="my-input" style="width:260px;" onchange="checknum(this);" placeholder="请输入">&nbsp;&nbsp;g/ml
+                </td>
+            </tr>
+            <tr>
+                <td>登记人</td>
+                <td>
+                    <input type="text" id="GuarDianName" name="GuarDianName" readonly="readonly" class="my-input">
+                    <input type="hidden" id="GuarDianId" name="GuarDianId" class="my-input" placeholder="请输入">
+                </td>
+            </tr>
+            <tr>
+                <td>登记时间</td>
+                <td>
+                    <input type="text" id="CreateDate2" name="CreateDate" readonly="readonly" class="my-input" placeholder="请输入">
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="padding-top:20px;">
+                    <button class="btn-bg" style="background-color: #3669e1;" onclick="if (!AddDrugOut()) return false;">确认</button>
+                    <button class="btn-bd" style="border-radius: 0;margin-left:10px;" type="button" onclick="layer.closeAll();">取消</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<div class="modal fade launch-modal" id="modal3" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">友好提示</h4>
+            </div>
+            <div class="modal-body">
+                <div class="text-center c-0d0d0d f-18 pd-t-20 pd-b-20">
+                    即将删除该数据，请确认！
+                </div>
+                <div class="text-center mg-t-20 mg-b-20">
+                    @*@Html.ActionLink("确认", "List", new { id = "", page = 1, pagesize = 5 })*@
+                    <label id="lbid" style="visibility:hidden"></label>
+                    <button onclick="dele();" type="submit" class="my-btn mg-r-15 bg-3669e1">确认</button>
+                    <button class="my-btn bd" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>

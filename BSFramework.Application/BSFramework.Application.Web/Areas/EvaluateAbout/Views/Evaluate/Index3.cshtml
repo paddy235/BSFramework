@@ -1,0 +1,218 @@
+﻿@using BSFramework.Entity.EvaluateAbout
+
+@model BSFramework.Entity.EvaluateAbout.EvaluateCalcEntity
+
+@{
+    ViewBag.Title = "考评";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/skin.css")">
+<script src="@Url.Content("~/Content/scripts/plugins/highcharts/highcharts.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/highcharts/highcharts-more.js")"></script>
+<script>
+    $(function () {
+        //获取菜单(菜单控制)
+        InitMenu(undefined, $("div"));
+    })
+    var pcts;
+    jQuery(function () {
+        pcts = jQuery.parseJSON('@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.pcts))');
+        var categories = [], data = [], flag = false;
+        jQuery.each(pcts, function (pi, po) {
+            flag = pi == 0;
+            var serie = {
+                name: po.Season,
+                pointPlacement: 'on',
+                data: []
+            }
+
+            jQuery.each(po.Data, function (di, dd) {
+                serie.data.push(dd.Pct);
+                if (flag) categories.push(dd.Category);
+            });
+
+            data.push(serie);
+        });
+
+        jQuery('#chart').highcharts({
+            chart: {
+                polar: true,
+                type: 'line'
+            },
+            title: {
+                enabled: false,
+                text: '季度对标',
+                style: {
+                    'font-weight': 'bold',
+                }
+            },
+            pane: {
+                size: '80%'
+            },
+            xAxis: {
+                categories: categories,
+                tickmarkPlacement: 'on',
+                lineWidth: 0,
+            },
+            yAxis: {
+                gridLineInterpolation: 'polygon',
+                lineWidth: 0,
+                min: 0,
+                labels: {
+                    enabled: false
+                }
+            },
+            tooltip: {
+                shared: true,
+                formatter: function () {
+                    var s = this.x;
+                    jQuery.each(this.points, function (i, o) {
+                        var point = this;
+                        var pct = jQuery.grep(pcts, function (po) {
+                            return po.Season == point.series.name;
+                        })[0];
+                        item = jQuery.grep(pct.Data, function (oo) {
+                            return oo.Category == point.key;
+                        });
+                        s += '<br/> <span style="color:' + point.color + '">\u25CF</span> ' + this.series.name + ': <b>' + item[0].ActualScore + '</b>';
+                    });
+                    return s;
+                }
+            },
+            legend: {
+                align: 'left',
+                verticalAlign: 'top',
+                y: 70,
+                layout: 'horizontal'
+            },
+            series: data
+        });
+
+        jQuery('#season').change(function () {
+            var season = jQuery(this).find('option:checked').text();
+
+            jQuery.getJSON('@Url.Action("GetCalcScore2")', { name: season }, function (json) {
+                jQuery('#total').text(json.total);
+                jQuery('#seq').text(json.seq);
+
+                jQuery('#category1 li').each(function (i, e) {
+                    var category = jQuery.grep(json.pct.Data, function (o) {
+                        return o.Category == jQuery(e).find('label').text();
+                    });
+
+                    jQuery(e).find('label').next().find('em').text(category[0].ActualScore);
+                    jQuery(e).find('label').next().find('span').css({ 'width': category[0].Pct + '%' });
+                });
+
+                jQuery('#category2 li').each(function (i, e) {
+                    var category = jQuery.grep(json.pct.Data, function (o) {
+                        return o.Category == jQuery(e).find('label').text();
+                    });
+
+                    jQuery(e).find('label').next().find('em').text(category[0].ActualScore);
+                    jQuery(e).find('label').next().find('span').css({ 'width': category[0].Pct + '%' });
+                });
+            });
+        });
+    });
+    function index5() {
+        window.location.href = '@Url.Action("Index5")' + '?name=' + $('#season').find('option:checked').text();
+    }
+    function index6() {
+        window.location.href = '@Url.Action("Index6")' + '?name=' + $('#season').find('option:checked').text();
+    }
+    function fn$search() {
+
+    }
+
+</script>
+<!-- Content Wrapper. Contains page content -->
+<div class="main-content">
+    <div class="container-fluid bs-box">
+        <div class="bs-header">
+            <div class="title">
+                <a href="javascript:;">
+                    班组考评
+                </a>
+            </div>
+            <div class="more">
+            </div>
+        </div>
+        <div class="bs-body">
+            <div class="bs-area-2" style="position:relative;">
+                <div class="pull-left">
+                    <div id="chart" style="height:100%;">
+                    </div>
+                </div>
+                <div class="pull-right" style="position:absolute;right:40px;top:50%;transform:translate(0%,-50%); ">
+                    <div class="text-center mg-b-10">
+                        <label>查询时间</label>
+                        <span class="my-select" style="width:260px;">
+                            <select id="season" style="border:0px solid gray; border-bottom-width:1px;">
+                                @{
+                                    var evaluations = ViewBag.evaluations as IList<EvaluateEntity>;
+                                    foreach (var item in evaluations)
+                                    {
+                                        <option value="@Html.Raw(item.EvaluateId)">@Html.Raw(item.EvaluateSeason)</option>
+                                    }
+                                }
+
+                            </select>
+                            <span class="icon"></span>
+                        </span>
+                    </div>
+                    <div class="clearfix">
+                        <div class="pull-left left" code="evaluate_score">
+                            <div class="evaluate evaluate-1" onclick="index6()">
+                                <div>综合得分</div>
+                                <span id="total">@ViewBag.total</span>
+                            </div>
+                            <ul id="category1" style="list-style:none; padding-left:20px;">
+                                @if (Model.Data.Count > 0)
+                                {
+                                    for (int i = 0; i < Model.Data.Count / 2; i++)
+                                    {
+                                        <li>
+                                            <label style="width:60%;text-align:center;">@Html.Raw(Model.Data[i].Category)</label>
+                                            <div style="width:60%;">
+                                                <em>@Html.Raw(Model.Data[i].ActualScore)</em>
+                                                <span style="width:@Html.Raw(Model.Data[i].Pct)%;"></span>
+                                            </div>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                        <div class="pull-left right" code="evaluate_rank">
+                            <div class="evaluate evaluate-2" onclick="index5()">
+                                <div>考评排名</div>
+                                <span id="seq">@ViewBag.seq</span>
+                            </div>
+                            <ul id="category2" style="list-style:none">
+                                @if (Model.Data.Count > 0)
+                                {
+                                    for (int i = Model.Data.Count / 2; i < Model.Data.Count; i++)
+                                    {
+                                        <li>
+                                            <label style="width:60%;text-align:center;">@Html.Raw(Model.Data[i].Category)</label>
+                                            <div style="width:60%;">
+                                                <em>@Html.Raw(Model.Data[i].ActualScore)</em>
+                                                <span style="width:@Html.Raw(Model.Data[i].Pct)%;"></span>
+                                            </div>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="evaluate evaluate-3" onclick="window.location.href = '@Url.Action("Index4")';" code="evaluate_pk">
+                        <div>班组</div>
+                        <span>PK</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bs-footer">武汉博晟安全技术股份有限公司 版权所有</div>
+    </div>
+</div>
+<!-- /.content-wrapper -->

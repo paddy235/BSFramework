@@ -1,0 +1,361 @@
+﻿@model IEnumerable<BSFramework.Application.Entity.ToolManage.ToolInfoEntity>
+@using BSFramework.Application.Entity.ToolManage
+@{
+    ViewBag.Title = "ToolList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")" />
+
+@*<script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>*@
+<script src="@Url.Content("~/Content/scripts/plugins/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/hammer.js")"></script>
+@*<script src="@Url.Content("~/Content/bootstrap/js/bootstrap.min.js")"></script>*@
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+
+@*<link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/index.css">
+    <link rel="stylesheet" href="../static/css/extend.css">
+    <link rel="stylesheet" href="../Font-Awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/peccancy.css">*@
+
+@*<script src="../plugins/jQuery/jQuery-2.1.4.min.js"></script>
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+    <script src="../plugins/nicescroll/nicescroll.min.js"></script>
+    <script src="../plugins/layui/layui.all.js"></script>*@
+<script>
+    var key = "";
+    $(function () {
+        $('#s1').hide();
+
+        $('input[type=radio][name=isgood]').change(function () {
+            if (this.value == "y") {
+                $('#s1').hide();
+            } else if (this.value == "n") {
+                $('#s1').show();
+            }
+        })
+    })
+    function openback(id) {
+        key = id;
+        layer.open({
+            type: 1,
+            title: '归还工器具',
+            content: $('#m4'),
+            area: ['430px', '280px']
+
+        })
+    }
+    function back() {
+        var s = "";
+        var obj = document.getElementsByName('state');
+        var g = $('input[type=radio][name=isgood]:checked').val();  //是否完好
+        for (var i = 0; i < obj.length; i++) {
+            if (obj[i].checked) {
+
+                s += obj[i].value + ",";     //破损情况
+            }
+        }
+        if (g == "n" && s == "") {
+            alert('请选择破算情况！');
+            return;
+        }
+        $.ajax({
+            url: '@Url.Action("Back")',
+            type: 'post',
+            data: { id: key, isgood: g, state: s },
+            success: function (data) {
+                window.location.reload();
+            }
+        });
+    }
+
+    function backnew(s) {
+        if (s == "完好") {
+            g = "y";
+        } else {
+            g = "n";
+        }
+
+        $.ajax({
+            url: '@Url.Action("Back")',
+            type: 'post',
+            data: { id: key, isgood: g, state: s },
+            success: function (data) {
+                window.location.reload();
+            }
+        });
+    }
+    var lay0;
+    function borrow(id) {
+        $.ajax({
+            url: '@Url.Action("Borrow")',
+            type: 'post',
+            data: { id: id },
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.message == "0") {
+                    //$('#m1').modal('show');
+                    layer.open({
+                        type: 1,
+                        title: '借用工器具',
+                        content: $('#m11'),
+                        area: ['350px', '180px'],
+                        closeBtn: 0
+                    })
+                }
+                else {
+                    //$('#m2').modal('show');
+                    layer.open({
+                        type: 1,
+                        title: '借用工器具',
+                        content: $('#m22'),
+                        area: ['350px', '180px']
+                    })
+                }
+            }
+        });
+    }
+</script>
+
+
+
+    <div class="main-content">
+        <div class="container-fluid" style="height:100%;padding-top:10px;padding-bottom:0px;">
+@using (Html.BeginForm("ToolList", "Tool", FormMethod.Post))
+{
+            <div class="mg-b-10">
+                <div class="" style="overflow: hidden;">
+                    <div class="pull-left title">
+                        <a href="@Url.Action("List")">
+                            <img src="~/Content/styles/static/images/arrow-back-icon.png" alt="">
+                            @ViewData["ToolName"]
+                        </a>
+                    </div>
+                    <div class="pull-right lh-40">
+                        <a href="@Url.Action("BorrowList")">
+                            <img src="~/Content/styles/static/images/index_29.png" style="margin-top:-2px;" alt="">
+                            借用记录
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="bg-e3ebfd pd-10 my-body">
+                <div class="tools-details-list">
+                    @for (int i = 0; i < Model.Count(); i++)
+                    {
+                        var id = @Model.ToList()[i].ID;
+                        <div class="item-details">
+                            <div class="content-wrap">
+                                <div>
+                                    <a style="display:inline-block;width:190px;height:100%;margin-top:60px;overflow:hidden; text-overflow:ellipsis;" href="@Url.Action("Detail", new { id=id})">
+
+                                        @Model.ToList()[i].Name<br>
+                                        @Model.ToList()[i].CurrentNumber/@Model.ToList()[i].Total
+                                    </a>
+
+                                </div>
+
+                                <div class="remove-bg">
+                                    <button id="@id" class="edit" onclick="edittool(this.id); return false;"></button>
+                                    <button value="@id"></button>
+                                </div>
+                            </div>
+                            <div class="btn-wrap">
+                                <button id="@id" class="btn-bg" onclick="borrow(this.id); return false;" style="margin-left:50px;">借用</button>
+                                @*@if (Model.ToList()[i].CurrentNumber == Model.ToList()[i].Total)
+                                    {
+                                        <button value="@id" class="btn-bd" onclick="return false;">归还</button>
+                                    }
+                                    else
+                                    {
+                                        <button value="@id" class="btn-bd" onclick=" openback(this.value); return false;">归还</button>
+                                    }*@
+                            </div>
+                        </div>
+                    }
+                    <div class="add-current">
+                        <div class="content-wrap">
+                            <div>
+                                <a href="@Url.Action("AddTool", new { typeid = ViewData["TypeId"] })"> <img src="~/Content/styles/static/images/tools/photo-add.png" alt="" width="85"></a>
+                            </div>
+                        </div>
+                        <div class="btn-wrap">
+                            <a href="@Url.Action("AddTool", new { typeid = ViewData["TypeId"] })">添加</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="main-footer">
+                武汉博晟安全技术股份有限公司   版权所有
+            </footer>
+}
+        </div>
+    </div>
+
+<script>
+    $(function () {
+
+        $('.tools-details-list').delegate('.item-details', 'click', function (e) {
+            e.stopPropagation();
+        })
+        $('.tools-details-list').delegate('.item-details .content-wrap button:not(".edit")', 'click', function (e) {
+            if (deltool(e.target.value)) {  //返回true则删除样式
+                var $p = $(this).parents('.item-details');
+                $p.remove();
+            } else {
+                return false;
+            }
+        })
+        $('.tools-details-list').delegate('button.edit', 'click', function () {
+            //alert('修改');
+        })
+        $('.tools-details-list > div').each(function () {
+            var mc = new Hammer(this);
+            mc.on('press', function (e) {
+                $('.tools-details-list').addClass('remove');
+                $('body').bind('click', clickHand);
+                return false;
+            })
+        });
+
+    })
+    function clickHand() {
+        $('.tools-details-list').removeClass('remove');
+    }
+    function edittool(id) {
+        window.location.href = '@Url.Action("ToolEdit")?id=' + id;
+    }
+    function deltool(id) {
+        var msg = "删除后将无法恢复，请确认！";
+        if (confirm(msg) == true) {
+            $.ajax({
+                url: '@Url.Action("DelTool")',
+                type: 'post',
+                data: { id: id },
+                success: function (data) {
+                }
+            });
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>
+
+<div class="modal fade launch-modal" id="m1" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content" style="height:200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">借用工器具</h4>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>借用成功！</h4>
+            </div>
+            <div class="text-center mg-t-10" style="margin-top:10px;">
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" onclick="window.location.reload();">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="" id="m11" tabindex="-1">
+    <div class="modal-body" style="text-align:center">
+        <h4>借用成功！</h4>
+    </div>
+    <div class="text-center mg-t-10" style="margin-top:10px;">
+        <button class="btn bg-3669e1 c-fff" style="width:100px;" onclick="window.location.reload();">确定</button>
+    </div>
+</div>
+
+<div class="modal fade launch-modal" id="m2" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content" style="height:200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">借用工器具</h4>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>库存不足，借用失败！</h4>
+            </div>
+            <div class="text-center mg-t-10" style="margin-top:10px;">
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" data-dismiss="modal">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="" id="m22" tabindex="-1">
+    <div class="modal-body" style="text-align:center">
+        <h4>库存不足，借用失败！</h4>
+    </div>
+    <div class="text-center mg-t-10" style="margin-top:10px;">
+        <button class="btn bg-3669e1 c-fff" style="width:100px;" onclick="window.location.reload();">确定</button>
+    </div>
+</div>
+<div class="m3" id="m3">
+
+    <div style="text-align:center">
+        <h3>工器具是否完好</h3><br />
+        <input type="radio" value="y" id="y" name="isgood" checked="checked" />&nbsp;<label for="y">是</label>&nbsp;&nbsp;&nbsp;
+        <input type="radio" value="n" id="n" name="isgood" />&nbsp;<label for="n">否</label>
+        <br /><br />
+        <div id="s1" style="font:18px;">
+            <input type="checkbox" name="state" value="破损" />破损
+            <input type="checkbox" name="state" value="失效" />失效
+            <input type="checkbox" name="state" value="超期" />超期
+            <input type="checkbox" name="state" value="其他" />其他
+        </div>
+    </div>
+    <div class="text-center mg-t-10" style="margin-top:10px;">
+        <button class="btn bg-3669e1 c-fff" style="width:200px;" onclick="back(); return false;">确定</button>
+    </div>
+
+</div>
+<style type="text/css">
+    #m4 ul li {
+        list-style: none;
+        font-size: 19px;
+        margin-left: -20px;
+        line-height: 36px;
+    }
+
+        #m4 ul li a {
+            color: #3669E1;
+        }
+</style>
+
+<div class="m4" id="m4">
+
+    <div style="text-align:center">
+        <ul style="margin-top:20px;">
+            <li>
+                <a href="#" onclick="backnew(this.text);">完好</a>
+            </li>
+            <li>
+                <a href="#" onclick="backnew(this.text);">破损</a>
+            </li>
+            <li>
+                <a href="#" onclick="backnew(this.text);">失效</a>
+            </li>
+            <li>
+                <a href="#" onclick="backnew(this.text);">超期</a>
+            </li>
+            <li>
+                <a href="#" onclick="backnew(this.text);">其他</a>
+            </li>
+        </ul>
+    </div>
+
+</div>
+

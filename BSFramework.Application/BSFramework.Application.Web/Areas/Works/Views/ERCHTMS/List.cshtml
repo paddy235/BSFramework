@@ -1,0 +1,397 @@
+﻿@model IEnumerable<BSFramework.Application.Web.Areas.Works.Models.HTBaseInforows>
+
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+}
+
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/plugins/layui/css/layui.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/person.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/app.css")" />
+<script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+
+<script>
+    $(function () {
+        $('.main-sidebar,.main-content').niceScroll({
+            autohidemode: false
+        });
+        $('.table-today tr').hover(function () {
+            $(this).addClass('hover');
+        }, function () {
+            $(this).removeClass('hover');
+        });
+        $('.table-today tr').click(function () {
+            $(this).toggleClass('actives');
+        })
+        $('.user>.dropdown-menu').css({
+            left: $('.user').innerWidth() - $('.user>.dropdown-menu').width() - 65
+        });
+
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#from',
+                type: 'date',
+            });
+            laydate.render({
+                elem: '#to',
+                type: 'date',
+            });
+        })
+    });
+
+    var account= top.currUserAccount;
+    var ip = '@BSFramework.Util.Config.GetValue("SyncIp")';
+    function getList() {
+        var columnJson;
+        $.ajax({
+            url: path,
+            type: "get",
+            dataType: "json",
+            success: function (data) {
+                columnJson = data.rows;
+                document.getElementById("records").value = data.records;
+                document.getElementById("pagenum").value = data.page;
+                var tb = document.getElementById("tb");
+                for (var i = 0; i < columnJson.length; i++) {
+                    var num = Number(i) + Number(1);
+                    tb.innerHTML += "<tr><td>" + num + "</td><td>" + columnJson[i].workstream + "</td><td>" + columnJson[i].hidcode + "</td><td>" + columnJson[i].hidtypename + "</td><td>" + columnJson[i].hidrankname + "</td><td>" + columnJson[i].checktypename + "</td><td>" + columnJson[i].checkdepartname + "</td><td>" + columnJson[i].hiddescribe + "</td></tr>";
+
+                }
+
+            },
+        });
+
+
+    }
+
+    function getList2() {
+
+        var records = document.getElementById("records").value;
+        var pagenum = document.getElementById("pagenum").value;
+        $.ajax({
+            url: '@Url.Action("getList2")',
+            type: 'post',
+            data: { Records: records, Pagenum: pagenum },
+            success: function (data) {
+
+            }
+        });
+    }
+
+    function fn$edit(el) {
+        layer.open({
+            area: ['1500px', '800px'],
+            title: '隐患描述',
+            type: 2,
+            content: el
+        });
+    }
+
+
+</script>
+
+    <div class="main-content">
+        <div class="container-fluid">
+@using (Html.BeginForm("List", "ERCHTMS", new { page = 1,pagesize = 12,records=0 }, FormMethod.Post))
+{
+    @Html.Hidden("pId")
+            <div>
+                <div class="title">隐患台账</div>
+            </div>
+            <div class="bg-e3ebfd pd-10 my-body">
+                
+                <div class="bg-fff">
+                    <div>
+                        <div class="searchs" style="overflow: hidden;width:100%;">
+                            <label class="mg-l-30 ">流程状态：</label>
+                            <span class="my-select">
+                                <select  name="WorkStream" id="WorkStream" value="@ViewData["WorkStream"]"     style="border:none;border-bottom:1px solid #b0b8c1; width:150px;">
+                                    <option value="">===全部===</option>
+                                    <option value="隐患登记">隐患登记</option>
+                                    <option value="隐患评估">隐患评估</option>
+                                    <option value="隐患整改">隐患整改</option>
+                                    <option value="隐患验收">隐患验收</option>
+                                    <option value="整改效果评估">整改效果评估</option>
+                                    <option value="整改结束">整改结束</option>
+                                    @*<option value="b349c6d5-4998-49f4-aea3-3f7371661885">隐患登记</option>
+                                    <option value="e94e70ba-926b-4924-a821-d1229266e725">隐患评估</option>
+                                    <option value="6f55fbd8-b6af-4e57-9365-cbea4035ccbd">隐患整改</option>
+                                    <option value="fd5d4d35-ee1d-4a0c-a14d-e1f0b7368e16">隐患验收</option>
+                                    <option value="24d01eeb-14bf-462e-bcff-0fa7552ebff6">整改效果评估</option>
+                                    <option value="f772437e-e1e4-44ec-be77-c47883d6ea2a">整改结束</option>*@
+                                </select>
+                                <span class="icon"></span>
+                            </span>
+                            <label class="mg-l-30 ">隐患类型：</label>
+                            <span class="my-select ">
+                                <select name="HidType" id="HidType" value="@ViewData["HidType"]"  style="border:none;border-bottom:1px solid #b0b8c1; width:150px;">
+                                    <option value="">===全部===</option>
+                                    <option value="2efd52b1-a424-4f12-84b8-f0227a147e61">人身安全隐患</option>
+                                    <option value="1c27460a-c325-4e1e-b9f3-45730766f161">电力安全事故隐患</option>
+                                    <option value="9dac546e-1a55-4f85-8a64-219ba783cc78">设备设施事故隐患</option>
+                                    <option value="6202bb56-5974-4d90-ae75-08a66342ea5b">大坝安全隐患</option>
+                                    <option value="de1e5961-3e51-49f4-8668-4fdabffc15c7">安全管理隐患</option>
+                                    <option value="cf0df7fd-9fbf-4545-843c-846efbf3d45b">火灾事故隐患</option>
+                                </select>
+                                <span class="icon"></span>
+                            </span>
+                            <label class="mg-l-30 ">隐患级别：</label>
+                            <span class="my-select ">
+                                <select name="HidRank" id="HidRank" value="@ViewData["HidRank"]"   style="border:none;border-bottom:1px solid #b0b8c1; width:150px;">
+                                    <option value="">===全部===</option>
+                                    <option value="cc7d6d8c-26a7-4cf4-8813-34f395e20588">一般隐患</option>
+                                    <option value="b6be44d6-353e-41d1-9add-8587c655ceff">I级重大隐患</option>
+                                    <option value="bfe94a66-9672-4836-9224-55a90ffe0184">II级重大隐患</option>
+
+                                </select>
+                                <span class="icon"></span>
+                            </span>
+                            <label class="mg-l-30 ">是否违章：</label>
+                            <img src="~/Content/styles/static/images/noCheck.png" class="checkIsBreakRule" data-id='0' />
+                            <input type="text" style="display:none;"  name="IsBreakRule" id="IsBreakRule" value="@ViewData["IsBreakRule"]"/>
+                            <label class="mg-l-30 ">是否曝光：</label>
+                            <img src="~/Content/styles/static/images/noCheck.png" class="checkIsExposureState" data-id='0' />
+                            <input type="text" style="display:none;"  name="IsExposureState" id="IsExposureState" value="@ViewData["IsExposureState"]" />
+
+                         
+                            <label class="mg-l-30 ">检查类型：</label>
+                            <span class="my-select ">
+                                <select name="SaftyCheckType" id="SaftyCheckType" value="@ViewData["SaftyCheckType"]"  style="border:none;border-bottom:1px solid #b0b8c1; width:150px;">
+                                    <option value="">===全部===</option>
+                                    <option value="9eee65ff-b93d-4823-8adb-476e7003a58a">日常安全检查</option>
+                                    <option value="07f60395-0c96-487a-bba8-00d54acf10b8">专项安全检查</option>
+                                    <option value="7c589dbd-5618-4859-be94-f8aead996609">节假日前后安全检查</option>
+                                    <option value="8b126747-871d-4541-a4bd-bd4bbec19aa4">季节性安全检查</option>
+                                    <option value="bab6d37c-32f2-4b9d-9451-6645931b9ddc">综合安全检查</option>
+                                </select>
+                                <span class="icon"></span>
+                            </span><br />
+                            <label class="mg-l-30 ">隐患状态：</label>
+                            <span class="my-select ">
+                                <select name="ChangeStatus" id="ChangeStatus" value="@ViewData["ChangeStatus"]"   style="border:none;border-bottom:1px solid #b0b8c1; width:150px;">
+                                    <option value="">===全部===</option>
+
+                                    <option value="未整改">未整改</option>
+                                    <option value="逾期未整改">逾期未整改</option>
+                                    <option value="延期整改">延期整改</option>
+                                    <option value="即将到期未整改">即将到期未整改</option>
+                                    <option value="本人登记">本人登记</option>
+                                    <option value="已整改">已整改</option>
+                                    <option value="挂牌督办">挂牌督办</option>
+
+                                    @*<option value="82255ea9-13ae-4c0a-aa88-fb4d2dc0a1d8">未整改</option>
+                                    <option value="85e1550b-c4e1-4eac-a792-c50a1690c3fe">逾期未整改</option>
+                                    <option value="622adfc6-2a28-4123-9dbb-0b77d0b5adc5">延期整改</option>
+                                    <option value="d3f440e3-8e24-4c1e-9a4d-71ef6cfbf6c2">即将到期未整改</option>
+                                    <option value="b407f5c5-9246-47e0-aaeb-0dde33f5670b">本人登记</option>
+                                    <option value="b5b659c8-73c1-4162-b0ad-f4cbfdd54d5a">已整改</option>
+                                    <option value="367cc4a0-3faf-4e76-99fd-ab60e99db6e1">挂牌督办</option>*@
+                                </select>
+                                <span class="icon"></span>
+                            </span>
+                            <label class="mg-l-30 ">时间范围：</label>
+                            <span class="my-input mg-r-15" style="width:160px;">
+                                @Html.TextBox("from", ViewData["from"])
+                                <img src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                            </span>&nbsp;
+                            至&nbsp;
+                            <span class="my-input mg-r-15" style="width:160px;">
+                                @Html.TextBox("to", ViewData["to"])
+                                <img src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                            </span>
+                            <button class="my-btn bg-3669e1 mg-r-15">
+                                <img src="@Url.Content("~/Content/styles/static/images/search-icon.png")" alt="">
+                                搜索
+                            </button>
+</div>
+                       
+                    </div>
+                    <div class="body">
+                        <table class="table text-center table-striped no-mg vertical">
+                            <thead>
+                                <tr>
+                                    <th width="10%" class="bg-fff">序号</th>
+                                    <th width="10%" class="bg-fff">流程状态</th>
+                                    <th width="10%" class="bg-fff">隐患编号</th>
+                                    <th width="10%" class="bg-fff">隐患类别</th>
+                                    <th width="10%" class="bg-fff">隐患级别</th>
+                                    <th width="10%" class="bg-fff">检查类型</th>
+                                    <th width="10%" class="bg-fff">排查单位</th>
+                                    <th width="10%" class="bg-fff">隐患描述</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.Count(); i++)
+                                {
+                                    int n = ((int)ViewBag.current - 1) * 12 + i + 1;
+                                    string  p= @Model.ToList()[i].Id;
+                                    <tr style="height:50px;">
+                                        <td width="10%">@n</td>
+                                        <td width="10%">@Model.ToList()[i].Workstream</td>
+                                        <td width="10%">@Model.ToList()[i].Hidcode</td>
+                                        <td width="10%">@Model.ToList()[i].Hidtypename</td>
+                                        <td width="10%">@Model.ToList()[i].Hidrankname</td>
+                                        <td width="10%">@Model.ToList()[i].Checktypename</td>
+                                        <td width="10%">@Model.ToList()[i].Checkdepartname</td>
+                                        <td width="10%">
+                                            <a href="#" onclick="fn$edit('@p');">
+                                                @Model.ToList()[i].Hiddescribe
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="text-align:center;">
+                        <ul class="pagination">
+                            @if ((int)ViewBag.current == 1)
+                            {
+                                <li class="disabled">
+                                    <a>首页</a>
+                                </li>
+                                <li class="disabled">
+                                    <a>上一页</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    @Html.ActionLink("首页", "List", new { page = "1", pagesize = "12" })
+                                </li>
+                                <li>
+                                    @Html.ActionLink("上一页", "List", new { page = ((int)ViewBag.current - 1).ToString(), pagesize = "12" })
+                                </li>
+                            }
+                            @if (ViewBag.pages > 5) //超过5页
+                            {
+                                //显示前5页标识
+                                for (int i = (ViewBag.current - 1) / 12 * 10; i < 5; i++)
+                                {
+                                    <li class="@((i + 1) == ViewBag.current ? "people" : string.Empty)">
+                                        @Html.ActionLink((i + 1).ToString(), "List", new { page = (i + 1).ToString(), pagesize = "12" })
+                                    </li>
+                                }
+                                if ((int)ViewBag.current == (int)ViewBag.pages)
+                                {
+                                    <li class="disabled">
+                                        <a>...</a>
+                                        @*@Html.ActionLink("...", "List", new { page = ViewBag.pages.ToString(), pagesize = "8" })*@
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        @Html.ActionLink("...", "List", new { page = ((int)ViewBag.current + 1).ToString(), pagesize = "12" })
+                                    </li>
+                                }
+                            }
+                            else
+                            {
+                                for (int i = (ViewBag.current - 1) / 12 * 10; i < (Math.Ceiling((decimal)ViewBag.current / 12) * 10 > ViewBag.pages ? ViewBag.pages : Math.Ceiling((decimal)
+
+                                ViewBag.current / 12) * 10); i++)
+                                {
+                                    <li class="@((i + 1) == ViewBag.current ? "people" : string.Empty)">
+                                        @Html.ActionLink((i + 1).ToString(), "List", new { page = (i + 1).ToString(), pagesize = "12" })
+                                    </li>
+                                }
+                            }
+                            @if ((int)ViewBag.current == (int)ViewBag.pages || (int)ViewBag.pages == 0)
+                            {
+                                <li class="disabled">
+                                    <a>下一页</a>
+                                </li>
+                                <li class="disabled">
+                                    <a>末页</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    @Html.ActionLink("下一页", "List", new { page = ((int)ViewBag.current + 1).ToString(), pagesize = "12" })
+                                </li>
+                                <li>
+                                    @Html.ActionLink("末页", "List", new { page = ((int)ViewBag.pages).ToString(), pagesize = "12" })
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+}
+            <footer class="main-footer">
+                武汉博晟安全技术股份有限公司   版权所有
+            </footer>
+        </div>
+        <div style="display:none;">
+        <input type="text" name="records" id="records" value="@ViewData["records"]"  />
+        <input type="text" name="pagenum" id="pagenum" value="@ViewData["pagenum"]" />
+        </div>
+
+    </div>
+    <div class="modal fade launch-modal" id="modal3" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-my" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                    <h4 class="modal-title">友好提示</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center c-0d0d0d f-18 pd-t-20 pd-b-20">
+                        即将删除该数据，请确认！
+                    </div>
+                    <div class="text-center mg-t-20 mg-b-20">
+                        @*@Html.ActionLink("确认", "List", new { id = "", page = 1, pagesize = 5 })*@
+                        <label id="lbid" style="visibility:hidden"></label>
+                        <button onclick="dele();" type="submit" class="my-btn mg-r-15 bg-3669e1">确认</button>
+                        <button class="my-btn bd" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js"></script>
+<script src="~/Content/scripts/plugins/nicescroll/nicescroll.min.js"></script>
+<script>
+    $('.checkIsBreakRule').click(function () {
+        var str = $(this).attr('data-id')
+        var path= "@Url.Content("~/Content/styles/static/images/")";
+        if (str == 0) {
+            $(this).attr('src', path + 'checked.png')
+            $(this).attr('data-id', '1')
+            document.getElementById("IsBreakRule").value = "1";
+        } else {
+            $(this).attr('src', path+'noCheck.png')
+            $(this).attr('data-id', '0')
+            document.getElementById("IsBreakRule").value ="0";
+        }
+    })
+    $('.checkIsExposureState').click(function () {
+        var str = $(this).attr('data-id')
+        var path= "@Url.Content("~/Content/styles/static/images/")";
+        if (str == 0) {
+            $(this).attr('src', path + 'checked.png')
+            $(this).attr('data-id', '1')
+            document.getElementById("IsExposureState").value = "1";
+        } else {
+            $(this).attr('src', path+'noCheck.png')
+            $(this).attr('data-id', '0')
+            document.getElementById("IsExposureState").value = "0";
+        }
+    })
+    @ViewBag.getList
+    var path = "@ViewBag.path";
+
+</script>
+

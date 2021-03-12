@@ -1,0 +1,302 @@
+﻿@{ ViewBag.Title = "IndexDutyDanger";
+                Layout = "~/Views/Shared/_LayoutIndex.cshtml"; }
+<script>
+    var _parentId = "";
+    var _isOrg = "";
+    var userId = top.currUserId; //当前用户Id
+    var deptCode = top.currUserDeptCode;//当前用户所属部门Code
+    var orgCode = top.currUserOrgCode;//当前用户所属机构Code
+    var departmentId = "0";
+    var deptid = '@ViewBag.deptid';
+    //加载组织机构树
+    @*function GetTree() {
+        var $grid = $("#gridTable");
+        var item = {
+            height: $(window).height() - 50,
+            url: '/..@Url.Action("GetDepartmentTree", "Department", new { area = "BaseManage"})?deptid=' + deptid,
+            onnodeclick: function (item) {
+                _parentId = item.id;
+                _isOrg = item.Sort;
+                var queryJson = {
+                    deptid: _parentId
+                };
+                $grid.jqGrid('setGridParam', {
+                    postData: queryJson, page: 1
+                }).trigger('reloadGrid');
+            }
+        };
+        //初始化
+        $("#itemTree").treeview(item);
+    }*@
+    $(function () {
+        InitialPage();
+        //GetTree();
+        GetGrid();
+    });
+    //初始化页面
+    function InitialPage() {
+        //$('#layout').layout({
+        //    applyDemoStyles: false,
+        //    onresize: function () {
+        //        $(window).resize()
+        //    }
+        //});
+        ////resize重设(表格、树形)宽高
+        //$(window).resize(function (e) {
+        //    window.setTimeout(function () {
+        //        $('#gridTable').setGridWidth(($('.gridPanel').width()));
+        //        $("#gridTable").setGridHeight($(window).height() - 170);
+        //    }, 200);
+        //    e.stopPropagation();
+        //});
+        $('#layout').layout({
+            west: {
+                size: 300
+            },
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $("#departments").height($(window).height() - 50);
+                $("#gridTable").setGridHeight($(window).height() - 170);
+            }, 200);
+            e.stopPropagation();
+        });
+        $("#departments").height($(window).height() - 50);
+    }
+    function GetGrid() {
+        var selectedRowIndex = 0;
+        var $grid = $("#gridTable");
+        $grid.jqGrid({
+            url: '@Url.Action("GetDutyDangerData")',
+            datatype: "json",
+            autowidth: true,
+            multiselect: false,
+            colModel: [
+                { label: '主键', name: 'RoleId', hidden: true },
+                { label: '', name: 'Remark', hidden: true },
+                {
+                    label: '操作', name: '', index: '', width: 160, align: 'center', sortable: false,
+                    formatter: function (cellvaue, options, rowObject) {
+                        return "<a style='' href=\"javascript:detailnew('" + rowObject.RoleId + "','" + rowObject.FullName + "','" + rowObject.DepartmentName + "')\" title=\"\">查看</a><a style='' code='edit' href=\"javascript:editnew('" + rowObject.RoleId + "','" + rowObject.FullName + "','" + rowObject.DepartmentName + "')\" title=\"\">修改</a>"
+                    }
+                },
+                {
+                    label: '岗位名称', name: 'FullName', index: 'FullName', width: 180, align: 'center', sortable: false
+                }, {
+                    label: '部门名称', name: 'DepartmentName', index: 'DepartmentName', width: 180, align: 'center', sortable: false
+                }, {
+                    label: '岗位安全职责', name: 'DutyContent1', index: 'DutyContent1', width: 300, align: 'center', sortable: false,
+                    formatter: function (cellvaue, options, rowObject) {
+                        if (cellvaue) {
+                            if (cellvaue.length > 20) {
+                                cellvaue = cellvaue.replace(/[\r\n]/g, "").substring(0, 20) + "...";
+                            }
+                            return cellvaue;
+                        } else {
+                            return "";
+                        }
+                    }
+                }, {
+                    label: '岗位存在的危险', name: 'Danger', index: 'Danger', width: 260, align: 'center', sortable: false,
+                    formatter: function (cellvaue, options, rowObject) {
+                        if (cellvaue) {
+                            if (cellvaue.length > 20) {
+                                cellvaue = cellvaue.replace(/[\r\n]/g, "").substring(0, 20) + "...";
+                            }
+                            return cellvaue;
+                        } else {
+                            return "";
+                        }
+                    }
+                }, {
+                    label: '危险防范措施', name: 'Measure', index: 'Measure', width: 260, align: 'center', sortable: false,
+                    formatter: function (cellvaue, options, rowObject) {
+                        if (cellvaue) {
+                            if (cellvaue.length > 20) {
+                                cellvaue = cellvaue.replace(/[\r\n]/g, "").substring(0, 20) + "...";
+                            }
+                            return cellvaue;
+                        } else {
+                            return "";
+                        }
+                    }
+                }, {
+                    label: '职责修订时间', name: 'ReviseDate1', index: 'ReviseDate1', width: 150, align: 'center', formatter: 'date', sortable: false, formatoptions: { srcformat: 'Y-m-d H:i', newformat: 'Y-m-d H:i' }
+                }, {
+                    label: '风险及措施修订时间', name: 'ReviseDate2', index: 'ReviseDate2', width: 180, align: 'center', formatter: 'date', sortable: false, formatoptions: { srcformat: 'Y-m-d H:i', newformat: 'Y-m-d H:i' }
+                }
+
+            ],
+            height: $(window).height()-170,
+            viewrecords: true,
+            rowNum: 20,
+            rowList: [20, 50, 100],
+            pager: "#gridPager",
+            sortname: 'ReviseDate',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            onSelectRow: function () {
+                selectedRowIndex = $grid.getGridParam('selrow');
+            },
+            gridComplete: function () {
+                $grid.setSelection(selectedRowIndex, false);
+                                            @if (!BSFramework.Application.Code.OperatorProvider.Provider.Current().IsSystem)
+                {
+                    @Html.Raw("AuthiruzeBtn($('.toolbar'), $('#gridTable'));");//操作按钮权限控制
+                }
+            }
+
+        });
+        $("#btn_Search").click(function () {
+            var queryJson = {
+                deptid: _parentId,
+                name: $("#txt_Keyword").val()
+            };
+            $grid.jqGrid('setGridParam', {
+                postData: queryJson, page: 1
+            }).trigger('reloadGrid');
+        });
+        $("#btn_SearchAll").click(function () {
+
+            $("#txt_Keyword").val('');
+            $('#btn_Search').trigger("click");
+        });
+        $("#refresh").click(function () {
+
+            var queryJson = {
+                deptid: _parentId,
+                name: $("#txt_Keyword").val()
+            };
+            $grid.jqGrid('setGridParam', {
+                postData: queryJson, page: 1
+            }).trigger('reloadGrid');
+        });
+
+    }
+    function onNodeSelected(item) {
+        _parentId = item.id;
+
+        _isOrg = item.Sort;
+        $('#btn_Search').trigger("click");
+    }
+
+
+    function detailnew(id,name,dept)
+    {
+        var roleJson = {
+            RoleId: id,
+            FullName: name,
+            DepartmentName: dept
+        }
+        dialogOpen({
+            id: "Detail",
+            title: '查看岗位安全职责及风险信息',
+            url: '/../@Url.Action("DetailDutyDanger")?id=' + id + '&name=' + name + '&dept=' + dept,
+            width: "800px",
+            height: "900px",
+            btn: null
+        });
+    }
+    function editnew(id, name, dept) {
+        var roleJson = {
+            RoleId: id,
+            FullName: name,
+            DepartmentName: dept
+        }
+        dialogOpen({
+            id: "Detail",
+            title: '修改岗位安全职责及风险信息',
+            url: '/../@Url.Action("FormDutyDanger")?id=' + id + '&name=' + name + '&dept=' + dept,
+            width: "800px",
+            height: "900px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    function exp() {
+        //var ids = $('#gridTable').jqGrid('getGridParam', 'selarrrow');
+        //if (ids.length < 1)
+        //{
+        //    alert('请选择要导出的数据！');
+        //    return;
+        //}
+        //var idstr = '';
+        //ids.forEach(function (value, i)
+        //{
+        //    idstr += $('#gridTable').getCell(ids[i], "GlassWareId") + ",";
+        //})
+        var name = $("#txt_Keyword").val();
+        window.location.href = '@Url.Action("ExportDanger")?deptid=' + _parentId + '&name=' + name;
+    }
+    function imp() {
+        dialogOpen({
+            id: "Form",
+            title: '新增',
+            url: '/../@Url.Action("ImportNew")/?type=2',
+            width: "800px",
+            height: "500px",
+            btn: null
+        });
+    }
+</script>
+<style>
+    .ui-jqgrid tr.jqgrow td {
+        text-overflow: ellipsis;
+    }
+</style>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                <div class="col-md-10">
+                    组织机构
+                </div>
+                <div class="col-md-2 text-right" style="padding-right:8px;">
+                    <i class="fa fa-arrow-left" onclick="setBar(this)" style="cursor:pointer;" title="展开/收起"></i>
+                </div>
+            </div>
+            @Html.Partial("~/Areas/BaseManage/Views/Department/Tree.cshtml")
+
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title">岗位安全职责</div>
+            <div class="titlePanel">
+                <div class="title-search">
+                    <table>
+                        <tr>
+                            <td style="padding-left: 2px;">
+                                <input id="txt_Keyword" type="text" class="form-control" placeholder="请输入要查询关键字" style="width: 200px;" />
+                            </td>
+                            <td style="padding-left: 5px;">
+                                <a id="btn_Search" class="btn btn-primary" style="line-height:15px;"><i class="fa fa-search"></i>&nbsp;查询</a>
+                                <a id="btn_SearchAll" class="btn btn-primary" style="line-height:15px;">&nbsp;全部</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="toolbar">
+                    <div class="btn-group">
+                        <a id="refresh" class="btn btn-default"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+                        <a id="exp" class="btn btn-default" onclick="exp()"><i class="fa fa-download"></i>&nbsp;导出</a>
+                        <a id="imp" code="imp" class="btn btn-default" onclick="imp()"><i class="fa fa-upload"></i>&nbsp;导入</a>
+                    </div>
+                    @*<script>$('.toolbar').authorizeButton()</script>*@
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="gridTable"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>

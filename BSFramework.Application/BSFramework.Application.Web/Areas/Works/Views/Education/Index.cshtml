@@ -1,0 +1,70 @@
+﻿@{ /**/
+
+                ViewBag.Title = "Index";
+                Layout = "~/Views/Shared/_Layout.cshtml"; }
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/record.css")" />
+<script src="@Url.Content("~/Content/scripts/base.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/layui/layui.all.js")"></script>
+<script>
+    function fn$goto(e) {
+        window.location.href = jQuery(e).data('href');
+    }
+    $(function () {
+        //获取菜单(菜单控制)
+        InitMenu(undefined, $("div"));
+    })
+
+
+</script>
+@using (Html.BeginForm("Index", "Educatoin", FormMethod.Post, new { @class = "sf" }))
+{
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="title col-md-11">
+            <a href="javascript:;">
+                教育培训
+            </a>
+
+        </div>
+        <div class="bg-f5f8fe pd-20 pd-t-80  my-body">
+            @Html.Partial("~/Areas/Works/Views/Activity/ActivityMenu.cshtml")
+        </div>
+
+
+        <footer class="main-footer">
+            武汉博晟安全技术股份有限公司   版权所有
+        </footer>
+    </div>
+
+</div>}
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/bootstrap/js/bootstrap.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+
+@*<script src="plugins/jQuery/jQuery-2.1.4.min.js"></script>
+
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="plugins/nicescroll/nicescroll.min.js"></script>*@
+<script>
+    $(function () {
+        $('.main-sidebar,.main-content').niceScroll({
+            autohidemode: false
+        });
+        $('.table-today tr').hover(function () {
+            $(this).addClass('hover');
+        }, function () {
+            $(this).removeClass('hover');
+        });
+        $('.table-today tr').click(function () {
+            $(this).toggleClass('actives');
+        })
+        console.log($('.user').innerWidth())
+        $('.user>.dropdown-menu').css({
+            left: $('.user').innerWidth() - $('.user>.dropdown-menu').width() - 65
+        })
+    })
+
+</script>

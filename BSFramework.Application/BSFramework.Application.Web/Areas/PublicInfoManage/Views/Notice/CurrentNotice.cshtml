@@ -1,0 +1,18 @@
+﻿@model IEnumerable<BSFramework.Application.Entity.PublicInfoManage.NewsEntity>
+
+
+@foreach (var item in Model)
+{
+    <div class="row" style="line-height: 39px; border-bottom: 1px solid #F1F1F1;" data-id="@Html.Raw(item.NewsId)" onclick="detail(this)">
+        <a class="col-md-7" href="#" style="text-decoration: none;color:@(item.IsImport ? "red" : "#999999");overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0px;">
+            <div class="row">
+                @Html.Raw(item.FullHead)
+
+            </div>
+            <div class="row">
+                <label style="float: left;">@Html.Raw(item.ReleaseTime.Value.ToString("yyyy-MM-dd"))</label>
+                <label style="float: right;">@Html.Raw(item.NoticeDept)</label>
+            </div>
+        </a>
+    </div>
+}

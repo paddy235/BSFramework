@@ -1,0 +1,323 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+    .check:hover {
+        cursor: pointer;
+    }
+
+    .my-select {
+        width: 20%;
+    }
+
+    .safe-nav {
+        padding-left: 50px;
+        border-bottom: 1px solid #e3ebfd;
+        height: 80px;
+    }
+
+        .safe-nav li {
+            float: left;
+            font-size: 18px;
+            line-height: 78px;
+            font-weight: 800;
+            margin-right: 50px;
+        }
+
+            .safe-nav li:hover {
+                cursor: pointer;
+            }
+
+    .safe-main li {
+        height: 780px;
+    }
+
+    .safe-nav .active {
+        color: #3669e1;
+        border-bottom: 2px solid #3669e1;
+    }
+
+    .peccancy-list .head {
+        border: 0;
+    }
+
+    #chart {
+        height: 700px;
+        margin-top: 60px;
+        width: 100%;
+    }
+</style>
+
+<div class="main-content">
+    <div class="container-fluid">
+
+        <div class="mg-b-10">
+            <div class="" style="overflow: hidden;">
+                <div class="pull-left title">
+                    <a href="javascript:;">
+                        <img src="static/images/arrow-back-icon.png" alt="">
+                        安全检查
+                    </a>
+                </div>
+            </div>
+
+        </div>
+        <div class="bg-e3ebfd pd-10">
+            <div class="bg-fff peccancy-list" style="height: 950px;">
+                <div class="head">
+                    <div class="searchs" style="overflow: hidden;width:100%;">
+                        <label class="mg-l-30 ">检查名称：</label>
+                        <span class="my-select ">
+                            <select id="safetyType" style="border:none;border-bottom:1px solid #b0b8c1;">
+                                <option value="全部" selected="selected">全部</option>
+                                <option value="日常安全检查">日常安全检查</option>
+                                <option value="专项安全检查">专项安全检查</option>
+                                <option value="季节性安全检查">季节性安全检查</option>
+                                <option value="节假日前后安全检查">节假日前后安全检查</option>
+                                <option value="综合安全检查">综合安全检查</option>
+                            </select>
+                            <span class="icon"></span>
+                        </span>
+                        <label class="mg-l-30 ">时间范围：</label>
+                        <span class="my-select" style="width:260px;">
+                            <select id="safetyTime" style="border:none;border-bottom:1px solid #b0b8c1;"></select>
+                            <span class="icon"></span>
+                        </span>
+
+                        <button id="btn" class="my-btn bg-3669e1" type="button" style="margin-left: 30px;">
+                            <img src="@Url.Content("~/Content/styles/static//images/search-icon.png")" alt="">
+                            搜索
+                        </button>
+                    </div>
+                </div>
+                <div id="chart"></div>
+            </div>
+        </div>
+        <footer class="main-footer">
+
+            武汉博晟安全技术股份有限公司   版权所有
+        </footer>
+    </div>
+</div>
+
+<!-- ./wrapper -->
+<!-- jQuery 2.1.4 -->
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/echarts/echarts.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/bootstrap/js/bootstrap.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<script>
+    jQuery(function () {
+        TimeSelect();
+        searchCheck();
+    });
+    $('.safe-main li').map(function (idx, item) {
+        $(item).niceScroll()
+    })
+    $('.safe-nav li').click(function () {
+        var index = $(this).index()
+        $(this).addClass('active').siblings().removeClass('active')
+        $('.safe-main li').eq(index).show().siblings().hide()
+    })
+    $("#btn").click(function () {
+        searchCheck();
+    });
+    function TimeSelect() {
+        var myJsTime = "@BSFramework.Util.Time.GetToday()";
+        var year = myJsTime.split('-')[0];
+        var start = parseInt(year) - 2;
+        var end = parseInt(year) + 1;
+        var _html = '';
+        for (var i = start; i < end; i++) {
+            if (i == year) {
+                _html += '<option value="' + i + '" selected="selecteed" >' + i + '</option>';
+
+            } else {
+                _html += '<option value="' + i + '">' + i + '</option>';
+            }
+
+        }
+        $("#safetyTime").append(_html);
+    }
+    function searchCheck() {
+        var SumTime = $("#safetyTime").find("option:selected").text();
+        var hidangerSumType = $("#safetyType").find("option:selected").text();
+        ajaxGetCheckNumChart(SumTime, hidangerSumType);
+    }
+    function ajaxGetCheckNumChart(StrTime, ctype) {
+        $.ajax({
+            url: '/..@Url.Action("GetCheckNumChart")?StrTime=' + StrTime + '&ctype=' + ctype,
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (result) {
+                var GetCheckNumChartData = result;
+                GetCheckNumChartfun(GetCheckNumChartData);
+            }
+        });
+    }
+
+    function GetCheckNumChartfun(GetHtNumReadjustChartData) {
+        var data = GetHtNumReadjustChartData;
+        function count(result) {
+            var Chart4 = echarts.init(document.getElementById('chart'))
+            var hidangerSumType = $("#safetyType").find("option:selected").text();
+            var title
+            var context;
+            var colors = ['#1fe7d1', '#ffe82a', '#ff8062', '#749eff', '#ffa960'];
+            if (hidangerSumType != "全部") {
+                title = [hidangerSumType];
+                var i = 0;
+                switch (hidangerSumType) {
+                    case "专项安全检查":
+                        i = 1;
+                        break
+                    case "季节性安全检查":
+                        i = 2;
+                        break
+                    case "节假日前后安全检查":
+                        i = 3;
+                        break
+                    case "综合安全检查":
+                        i = 4;
+                        break
+                    default:
+                        break;
+                }
+                context = [
+                {
+                    name: hidangerSumType,
+                    type: 'bar',
+                    stack: '总量',
+                    barWidth: '30%',
+                    color: colors[i],
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'inside'
+
+                        }
+                    },
+                    data: result[i]
+                }];
+            } else {
+                title = ['日常安全检查', '专项安全检查', '季节性安全检查', '节假日前后安全检查', '综合安全检查'];
+                context = [
+                {
+                    name: '日常安全检查',
+                    type: 'bar',
+                    stack: '总量',
+                    barWidth: '30%',
+                    color: colors[0],
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'inside'
+
+                        }
+                    },
+                    data: result[0]
+                },
+                {
+                    name: '专项安全检查',
+                    type: 'bar',
+                    stack: '总量',
+                    barWidth: '30%',
+                    color: colors[1],
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'inside'
+                        }
+                    },
+                    data: result[1]
+                },
+                {
+                    name: '季节性安全检查',
+                    type: 'bar',
+                    stack: '总量',
+                    barWidth: '30%',
+                    color: colors[2],
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'inside'
+                        }
+                    },
+                    data: result[2]
+                },
+                {
+                    name: '节假日前后安全检查',
+                    type: 'bar',
+                    stack: '总量',
+                    barWidth: '30%',
+                    color: colors[3],
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'inside'
+                        }
+                    },
+                    data: result[3]
+                },
+                {
+                    name: '综合安全检查',
+                    type: 'bar',
+                    stack: '总量',
+                    barWidth: '30%',
+                    color: colors[4],
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'inside'
+                        }
+                    },
+                    data: result[4]
+                }];
+            }
+
+
+            var option = {
+                title: {
+                    text: '安全检查次数统计图',
+                    x: 'center',
+                },
+                grid: {
+                    bottom: '0',
+                    left: '30%'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                        type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                legend: {
+                    data: title,
+                    x: 'center',
+                    y: '30'
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: context
+            }
+          
+            Chart4.setOption(option,true);
+           
+        }
+        count(data);
+    }
+
+</script>

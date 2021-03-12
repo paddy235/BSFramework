@@ -1,0 +1,193 @@
+﻿@{
+    ViewBag.Title = "EditCard";
+    Layout = "~/Views/Shared/_OrderForm.cshtml";
+}
+
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+<script>
+
+
+</script>
+<div>
+    <span style="font-size:18px;">周期设置</span>
+    <table class="table">
+        <tbody>
+
+
+            <tr id="Timeset"></tr>
+        </tbody>
+    </table>
+</div>
+<div style="border-top:1px solid #e3ebfd;width:100%;padding-bottom:6px">
+    <span style="font-size:18px;">规则说明</span><br>
+ <textarea id="regulation"  type="text" class="form-control" style="height:100px"  ></textarea>
+</div>
+
+
+<div style="border-top:1px solid #e3ebfd;width:100%">
+    <span style="font-size:18px;"> 定点设置</span><br>
+
+    <a id="lr-add" class="btn btn-default" onclick="btn_add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+
+</div>
+
+
+<div>
+    <table class="table" style="border:1px solid #e3ebfd;text-align:center">
+        <colgroup>
+            <col style="width:50px;" />
+            <col style="width:80px;" />
+            <col style="width:120px;" />
+            <col style="width:150px;" />
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="bg-fff">序号</th>
+                <th class="bg-fff">操作</th>
+                <th class="bg-fff">指定区域</th>
+                <th class="bg-fff">说明</th>
+            </tr>
+        </thead>
+        <tbody id="table_set"></tbody>
+    </table>
+</div>
+
+
+<script>
+    var deleteStr = new Array();
+    var addhtml = "";
+    var addTable = "";
+    var setTime = "";
+    $(function () {
+        TimesetGet();
+        getSet();
+    });
+    function btn_add() {
+        jQuery('#table_set').append("<tr class='grid-row'><td>" + (jQuery('#table_set tr').length + 1) + "</td><td>" +
+                    "<a class='c-orange' onclick='deleteTr(this,1);' style='color:orange;cursor:pointer;'>删除</a></td>" +
+                    "<td><input  type='text' class='form-control'/>" +
+                    "</td><td><input  type='text' class='form-control'/></td></tr>")
+    }
+    function deleteTr(o, i) {
+        if (i != 1) {
+
+            deleteStr.push(o.id);
+        }
+        jQuery(o).parent().parent().remove();
+    }
+    function TimesetGet() {
+        $.ajax({
+            url: "@Url.Action("GetTimeSet")",
+            type: 'post',
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            clearForm: true,
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].iswork) {
+                        addhtml = addhtml + "<td><input value='" + data[i].Id + "'  onclick='checkSet(this)' type='checkbox' checked='true'>" + data[i].cycle + "</td>";
+                    } else {
+                        addhtml = addhtml + "<td><input value='" + data[i].Id + "' onclick='checkSet(this)'  type='checkbox'  >" + data[i].cycle + "</td>";
+                    }
+                }
+                jQuery('#Timeset').append(addhtml)
+                jQuery("#regulation").val(data[0].regulation);
+            },
+            error: function (data) {
+            }
+        });
+    }
+    function getSet() {
+        $.ajax({
+            url: "@Url.Action("getSet")",
+            type: 'post',
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            clearForm: true,
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    addTable = addTable + '<tr  class="grid-row"><td>' + (i + 1) + '</td><td>' +
+                        '<a class="c-orange" onclick="deleteTr(this,0)" id="' + data[i].Id + '" style="color:orange;cursor:pointer;">删除</a></td>' +
+                        '<td><label>' + data[i].space + '</label></td><td>' + data[i].remark + '</td></tr>';
+
+                }
+                jQuery('#table_set').append(addTable)
+            },
+            error: function (data) {
+            }
+        });
+    }
+    function checkSet(g) {
+        jQuery('#Timeset input').each(function (i, o) {
+            if (g != o) {
+                jQuery(o).attr("checked", false);
+            } else {
+                setTime = jQuery(g).val();
+            }
+        })
+
+
+    }
+
+    function getTable() {
+        var data = new Array();
+        $("#table_set input").each(function (i, o) {
+            data.push(jQuery(this).val())
+        })
+        return data
+    }
+    //保存表单;
+    function AcceptClick() {
+
+        var postData = {};
+        var Table = getTable();
+        postData["deleteStr"] = JSON.stringify(deleteStr);
+        postData["entity"] = JSON.stringify(Table);
+        for (var i = 1; i <= Table.length; i++) {
+            if (i % 2 != 0 || i == 1) {
+                if ($.trim(Table[i - 1]) == "") {
+                    alert("指定区域不能为空！");
+                    return;
+                }
+            }
+        }
+        var ck = new Array();
+        for (var i = 1; i <= Table.length; i++) {
+            if (i % 2 != 0 || i == 1) {
+                ck.push(Table[i - 1]);
+            }
+        }
+        $("#table_set label").each(function (i, o) {
+            ck.push(jQuery(this).text())
+        })
+        for (var i = 0; i < ck.length; i++) {
+            var one = ck[i];
+            var index = i;
+            for (var j = 0; j < ck.length; j++) {
+                if (index != j) {
+                    if (one ==ck[j]) {
+                        alert("区域不能为重复！");
+                        return;
+                    }
+
+                }
+            }
+        }
+        postData["setTime"] = setTime;
+        postData["regulation"] = $("#regulation").val();
+        $.SaveForm({
+            url: "@Url.Action("SaveData")",
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#grid").trigger("reloadGrid");
+            }
+        })
+    }
+
+
+
+
+</script>

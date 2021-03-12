@@ -1,0 +1,70 @@
+﻿@{
+    ViewBag.Title = "选择岗位";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var deptId = request('deptId');
+    var checkMode = request('checkMode');
+    var mode = request('mode');
+    var userid = request('userid');
+    var jobname = request('jobname');
+    $(function () {
+        initControl();
+    })
+    //初始化数据
+    function initControl() {
+        var item = {
+            cascadecheck:false,
+            height: 540,
+            showcheck: true,
+            url: "/..@Url.Action("getjobs", "Activity")?deptid=" + deptId + "&userid=" + userid + "&checkMode=" + checkMode + "&mode=" + mode + "&jobname=" + jobname,
+            isTool: true
+        };
+        $("#DeptTree").treeview(item);
+    }
+    //返回选择后的结果并赋值到dom控件
+    //winObject:窗体中需要查找domId的对象，一般可写成window.document.body
+    //domId：接收返回值的dom节点的ID，多个用逗号分隔，顺序依次为部门名称,部门Code，部门Id（多选用逗号分隔）
+    function AcceptClick(winObject, domId) {
+        var selVal = new Array();
+        if (winObject!=undefined && domId!=undefined) {
+            if (domId.length > 0) {
+                var deptTree = $("#DeptTree");
+                if (checkMode == 1) {
+                    var ids = '', names = '';
+                    var nodes = deptTree.getTSNs(true);
+                    jQuery.each(nodes, function (i, o) {
+                        ids += o.value + ',';
+                        names += o.text + ',';
+                    });
+                    selVal = new Array(names.replace(/,$/, ''), ids.replace(/,$/, ''), ids.replace(/,$/, ''));
+                } else {
+                    var currentNode = deptTree.getCurrentNode();
+                    var manager = "";
+                    var managerId = "";
+                    if (currentNode.manager != undefined && currentNode.manager !=null) {
+                        var arr = currentNode.manager.split(',');
+                        if (arr.length>0) {
+                            manager = arr[0]; managerId=arr[1];
+                        }
+                    }
+                    selVal = new Array(currentNode.text, currentNode.value, currentNode.id, manager, managerId);
+                }
+                var ids = domId.split(',');
+                for (var j = 0; j < ids.length; j++) {
+                    if (ids[j].length>0) {
+                     var dom = $(winObject).find("#"+ids[j]).eq(0);
+                      if (dom!=undefined) {
+                          dom.val(selVal[j]);
+                      }
+                    }
+
+                }
+            }
+            dialogClose();
+        }
+    }
+</script>
+<div style="margin: 10px; ">
+    <div id="DeptTree"></div>
+</div>

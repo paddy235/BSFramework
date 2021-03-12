@@ -1,0 +1,181 @@
+﻿@{
+    ViewBag.Title = "EvaluateDetail";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+@System.Web.Optimization.Styles.Render("~/Content/scripts/plugins/jqgrid/css")
+@System.Web.Optimization.Scripts.Render("~/Content/scripts/plugins/jqgrid/js")
+
+<script>
+    var evaluateid = '@Html.Raw(ViewBag.evaluateid)', categories, details, rows = [], row_idx, col_idx;
+
+    jQuery(function () {
+        var localdata = [];
+
+        categories = jQuery.parseJSON('@Html.Raw(ViewBag.categories)');
+        details = jQuery.parseJSON('@Html.Raw(ViewBag.details)');
+
+        jQuery.each(categories, function (i, o) {
+            rows = jQuery.merge(rows, o.Items);
+        });
+
+        var columns = [
+            { name: 'ItemId', index: 'ItemId', hidden: true, frozen: true },
+            {
+                name: 'Category', index: 'Category', label: '考评要素', width: 100, align: 'center', frozen: true, sortable: false, cellattr: function (rowid, value, rowobj, colModel, arrobj) {
+                    if (rowobj.rowspan == 0)
+                        return ' style="display:none;"';
+                    else
+                        return ' rowspan="' + rowobj.rowspan + '"';
+                }
+            },
+            { name: 'ItemContent', index: 'ItemContent', label: '考评内容', width: 260, align: 'center', frozen: true, sortable: false },
+            { name: 'Score', index: 'Score', label: '标准分', width: 60, align: 'center', frozen: true, sortable: false },
+        ];
+
+        jQuery.each(details.Groups, function (gi, go) {
+            columns.push({
+                name: 'Group' + gi, index: 'Group' + gi, label: go.GroupName, width: 100, align: 'center', sortable: false,
+                cellattr: function (rowid, value, rowobj, colModel, arrobj) { return value < rowobj.Score ? ' style="background-color:red;"' : ''; },
+                //formatter: function (value) {
+                //    if (value == -1) return '不适用'
+                //    else return value;
+                //}
+            })
+        });
+
+
+        var groupcol;
+        jQuery.each(categories, function (ci, co) {
+            jQuery.each(co.Items, function (ii, io) {
+                var rowspan = 0;
+                if (groupcol != co.Category) {
+                    groupcol = co.Category;
+                    rowspan = co.Items.length;
+                }
+                localdata.push({ ItemId: io.ItemId, Category: co.Category, ItemContent: io.ItemContent, Score: io.Score, rowspan: rowspan });
+            });
+        });
+
+        jQuery.each(details.Groups, function (gi, go) {
+            jQuery.each(localdata, function (li, lo) {
+                var item = jQuery.grep(go.Items, function (io) { return io.EvaluateContentId == lo.ItemId });
+                if (item.length > 0)
+                    lo['Group' + gi] = item[0].ActualScore;
+                else
+                    lo['Group' + gi] = '/';
+            });
+        });
+
+        jQuery('#grid').jqGrid({
+            colModel: columns,
+            datatype: 'local',
+            autowidth: true,
+            height: jQuery(window).height() - 80,
+            rownumbers: true,
+            sortable: false,
+            shrinkToFit: false,
+            gridview: true,
+            data: localdata,
+            rowNum: localdata.length,
+            onCellSelect: function (rowid, iCol, cellcontent, e) {
+                row_idx = rowid;
+                col_idx = iCol;
+                if (rowid < 1 || iCol < 5 || cellcontent == '不适用') return;
+
+                var evaluateitem = jQuery.grep(details.Groups[iCol - 5].Items, function (io) {
+                    return io.EvaluateContentId == rows[rowid - 1].ItemId;
+                });
+
+                if (!evaluateitem) return;
+
+                dialogOpen({
+                    id: "dafen",
+                    title: '打分',
+                    url: '/../@Url.Action("Edit",new  { id = string.Empty})/' + evaluateitem[0].EvaluateItemId + '?frameid=' + jQuery(self.frameElement).attr('id'),
+                    width: "800px",
+                    height: "500px",
+                    callBack: function (iframeId) {
+                        top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                    }
+                });
+            }
+        });
+
+        if (details.Groups) {
+            var groups = [];
+            for (var i = 0; i < details.Groups.length; i++) {
+                var colspan = jQuery.grep(details.Groups, function (go) {
+                    return go.DeptName == details.Groups[i].DeptName;
+                }).length;
+                groups.push({ startColumnName: 'Group' + i, numberOfColumns: colspan, titleText: details.Groups[i].DeptName });
+                i += colspan - 1;
+            }
+
+            jQuery('#grid').jqGrid('setGroupHeaders', {
+                useColSpanStyle: false,
+                groupHeaders: groups
+            });
+        }
+
+        if (details.Groups.length)
+            jQuery('#grid').jqGrid('setFrozenColumns');
+
+
+    });
+    function fn$refresh(value) {
+        
+        var isred = false;
+        var cell = jQuery('#grid').jqGrid('getCell', row_idx, 'Score');
+        isred = parseInt(value) < parseInt(cell || 0);
+        jQuery('#grid').jqGrid('setCell', row_idx, col_idx, value, isred ? { 'background-color': 'red' } : { 'background-color': 'transparent' });
+    }
+
+    function fn$ok() {
+        var rows = jQuery('#grid').jqGrid('getRowData');
+        var useful = jQuery.grep(rows, function (row) {
+            return row.EvaluateGroupId;
+        });
+        var data = [];
+        jQuery.each(useful, function (ui, uo) {
+            jQuery.each(editColumns, function (ei, eo) {
+                var items = jQuery.grep(details.Groups[ui].Items, function (io) { return io.EvaluateContentId == eo.ItemId });
+                if (items) data.push({ EvaluateItemId: items[0].EvaluateItemId, ActualScore: uo['CategoryItem' + ei] });
+            });
+        });
+
+        var formobj = { EvaluateId: evaluateid };
+        jQuery.each(data, function (di, o) {
+            formobj['EvaluateItems[' + di + '].EvaluateItemId'] = this.EvaluateItemId;
+            formobj['EvaluateItems[' + di + '].ActualScore'] = this.ActualScore;
+        });
+        $.SaveForm({
+            url: '@Url.Action("SubmitEvaluations")/' + evaluateid,
+            param: formobj,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().fn$refresh();
+            }
+        })
+    }
+
+    function fn$submit() {
+        top.layer.confirm('提交后不能修改，确定要提交汇总吗？', { icon: 3, title: '确认' },
+            function (idx) {
+                $.SaveForm({
+                    url: '@Url.Action("SubmitAll")',
+                    param: { id: evaluateid },
+                    loading: "提交中...",
+                    success: function () {
+                        $.currentIframe().fn$refresh();
+                    }
+                });
+
+            });
+    }
+
+</script>
+
+<div class="gridPanel">
+    <table id="grid"></table>
+    <div id="gridPager"></div>
+</div>

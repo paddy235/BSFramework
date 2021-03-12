@@ -1,0 +1,157 @@
+﻿@model IEnumerable<BSFramework.Application.Entity.LllegalManage.LllegalEntity>
+@{
+    ViewBag.Title = "LList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/person.css")" />
+
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/record.css")" />
+<script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>
+<script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jquery.md5.js")"></script>
+
+<script>
+    var keyValue = '@ViewBag.Id';
+    $(function () {
+
+        
+    });
+
+</script>
+<style type="text/css">
+</style>
+@using (Html.BeginForm("LList", "People", FormMethod.Post, new { @class = "sf", enctype = "multipart/form-data", @id = "upimg" }))
+{
+
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="title mg-b-10 clearfix">
+                <div class="title">
+                    <a class="pull-left" href="@Url.Action("List", "People", new { page = 1, pagesize = 12 })"><img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">成员详情</a>
+                </div>
+            </div>
+            <div class="bg-e3ebfd pd-10 warp">
+                <div class="body">
+                    <div class="tab-toggle">
+                        <ul class="nav nav-tabs" style="height:60px;">
+                            <li ><a href="javascript:;">基础信息</a></li>
+                            <li ><a href="javascript:;">培训档案</a></li>
+                            <li class="active"><a href="javascript:;">违章档案</a></li>
+                            <li><a href="javascript:;">职业健康档案</a></li>
+                            <li><a href="javascript:;">其他档案</a></li>
+                        </ul>
+                        <table class="table text-center table-striped no-mg vertical">
+                            <thead>
+                                <tr>
+                                    <th width="8%" class="bg-fff">序号</th>
+                                    <th width="15%" class="bg-fff">违章时间</th>
+                                    <th width="15%" class="bg-fff">违章地点</th>
+                                    <th width="15%" class="bg-fff">违章类型</th>
+                                    <th width="20%" class="bg-fff">违章描述</th>
+                                    <th width="20%" class="bg-fff">整改情况</th>
+                                    <th width="7%" class="bg-fff">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.Count(); i++)
+                                {
+                                    int n = ((int)ViewBag.current - 1) * 12 + i + 1;
+                                    string id = @Model.ToList()[i].ID;
+                                    <tr>
+                                        <td width="8%">@n</td>
+                                        <td width="15%">@Model.ToList()[i].LllegalTime</td>
+                                        <td width="15%">@Model.ToList()[i].LllegalAddress</td>
+                                        <td width="15%">@Model.ToList()[i].LllegalType</td>
+                                        <td width="20%">@Model.ToList()[i].LllegalDescribe</td>
+                                        <td width="20%">@Model.ToList()[i].LllegalDepart</td>
+                                        <td width="7%"><a href="@Url.Action("Detail","Lllegal", new { id = Model.ToList()[i].ID })">
+    <img src="@Url.Content("~/Content/styles/static/images/detail-icon.png")" alt="">
+    详情
+</a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="text-align:center; height:62px;">
+                        <ul class="pagination">
+                            @if ((int)ViewBag.current == 1)
+                            {
+                                <li class="disabled">
+                                    <a>首页</a>
+                                </li>
+                                <li class="disabled">
+                                    <a>上一页</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    @Html.ActionLink("首页", "Llist", new { page = "1", pagesize = "12" })
+                                </li>
+                                <li>
+                                    @Html.ActionLink("上一页", "Llist", new { page = ((int)ViewBag.current - 1).ToString(), pagesize = "12" })
+                                </li>
+                            }
+                            @if (ViewBag.pages > 5) //超过5页
+                            {
+                                //显示前5页标识
+                                for (int i = (ViewBag.current - 1) / 12 * 10; i < 5; i++)
+                                {
+                                    <li class="@((i + 1) == ViewBag.current ? "people" : string.Empty)">
+                                        @Html.ActionLink((i + 1).ToString(), "Llist", new { page = (i + 1).ToString(), pagesize = "12" })
+                                    </li>
+                                }
+                                if ((int)ViewBag.current == (int)ViewBag.pages)
+                                {
+                                    <li class="disabled">
+                                        <a>...</a>
+                                        @*@Html.ActionLink("...", "List", new { page = ViewBag.pages.ToString(), pagesize = "8" })*@
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        @Html.ActionLink("...", "Llist", new { page = ((int)ViewBag.current + 1).ToString(), pagesize = "12" })
+                                    </li>
+                                }
+                            }
+                            else
+                            {
+                                for (int i = (ViewBag.current - 1) / 12 * 10; i < (Math.Ceiling((decimal)ViewBag.current / 12) * 10 > ViewBag.pages ? ViewBag.pages : Math.Ceiling((decimal)
+
+                                ViewBag.current / 12) * 10); i++)
+                                {
+                                    <li class="@((i + 1) == ViewBag.current ? "people" : string.Empty)">
+                                        @Html.ActionLink((i + 1).ToString(), "Llist", new { page = (i + 1).ToString(), pagesize = "12" })
+                                    </li>
+                                }
+                            }
+                            @if ((int)ViewBag.current == (int)ViewBag.pages)
+                            {
+                                <li class="disabled">
+                                    <a>下一页</a>
+                                </li>
+                                <li class="disabled">
+                                    <a>末页</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    @Html.ActionLink("下一页", "Llist", new { page = ((int)ViewBag.current + 1).ToString(), pagesize = "12" })
+                                </li>
+                                <li>
+                                    @Html.ActionLink("末页", "Llist", new { page = ((int)ViewBag.pages).ToString(), pagesize = "12" })
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}

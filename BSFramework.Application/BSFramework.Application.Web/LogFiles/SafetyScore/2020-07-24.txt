@@ -1,0 +1,36 @@
+2020-07-24 11:00:48 用户：哈士奇  id：ff0a90c3-026e-4178-b807-a04d2e0a4f08开始编辑积分管理数据442fea4a-9f88-454f-a530-dbec430ea768 
+ {"Id":null,"RuleId":null,"UserName":"阿拉斯加","UserId":"a5132617-c070-1be2-87e7-bdd8ac525550","Gender":null,"Score":1.0,"Area":"1","Reasons":"21312","ScoreType":null,"DeptId":null,"DeptName":null,"DeptCode":null,"CreateUserId":null,"CreateUserName":null,"CreateDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null,"ModifyDate":"0001-01-01T00:00:00"} 
+------------------------------------------------------------
+2020-07-24 11:04:07 用户：哈士奇  id：ff0a90c3-026e-4178-b807-a04d2e0a4f08开始编辑积分管理数据279ad559-66fa-4e3a-8405-9350e810d892 
+ {"Id":null,"RuleId":null,"UserName":"阿拉斯加","UserId":"a5132617-c070-1be2-87e7-bdd8ac525550","Gender":null,"Score":1.0,"Area":"1","Reasons":"1111","ScoreType":null,"DeptId":null,"DeptName":null,"DeptCode":null,"CreateUserId":null,"CreateUserName":null,"CreateDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null,"ModifyDate":"0001-01-01T00:00:00"} 
+------------------------------------------------------------
+2020-07-24 16:36:54 用户：超级管理员  id：System开始编辑积分管理数据55e2b1b3-492f-4f07-afb1-06cf7dd45d7d 
+ {"Id":"55e2b1b3-492f-4f07-afb1-06cf7dd45d7d","RuleId":null,"UserName":"边牧","UserId":"e3501745-e40e-1022-4571-8f777e3fa02a","Gender":null,"Score":0.8,"Area":null,"Reasons":"爸爸\n呃呃呃","ScoreType":null,"DeptId":null,"DeptName":null,"DeptCode":null,"CreateUserId":null,"CreateUserName":null,"CreateDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null,"ModifyDate":"0001-01-01T00:00:00"} 
+------------------------------------------------------------
+2020-07-24 16:40:25 用户：超级管理员  id：System开始编辑积分管理数据41d40c13-e8b6-44bb-9588-2d86e2db1928 
+ {"Id":"41d40c13-e8b6-44bb-9588-2d86e2db1928","RuleId":null,"UserName":"边牧","UserId":"e3501745-e40e-1022-4571-8f777e3fa02a","Gender":null,"Score":0.8,"Area":null,"Reasons":"爸爸\n呃呃呃","ScoreType":null,"DeptId":null,"DeptName":null,"DeptCode":null,"CreateUserId":null,"CreateUserName":null,"CreateDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null,"ModifyDate":"0001-01-01T00:00:00"} 
+------------------------------------------------------------
+2020-07-24 16:41:06 用户：超级管理员  id：System开始编辑积分管理数据63327083-ad1e-43b4-b37d-1ab6e2dfca98 
+ {"Id":"63327083-ad1e-43b4-b37d-1ab6e2dfca98","RuleId":null,"UserName":"泰迪","UserId":"08dbc037-9413-fd7f-c3e2-fb3dae425d43","Gender":null,"Score":3.0,"Area":null,"Reasons":"登记重大隐患（未整改）","ScoreType":null,"DeptId":null,"DeptName":null,"DeptCode":null,"CreateUserId":null,"CreateUserName":null,"CreateDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null,"ModifyDate":"0001-01-01T00:00:00"} 
+------------------------------------------------------------
+2020-07-24 16:44:52 用户：超级管理员  id：System开始编辑积分管理数据0420acde-319b-482c-8b7a-d82356f2b92e 
+ {"Id":"0420acde-319b-482c-8b7a-d82356f2b92e","RuleId":null,"UserName":"泰迪","UserId":"08dbc037-9413-fd7f-c3e2-fb3dae425d43","Gender":null,"Score":3.0,"Area":null,"Reasons":"登记重大隐患（未整改）","ScoreType":null,"DeptId":null,"DeptName":null,"DeptCode":null,"CreateUserId":null,"CreateUserName":null,"CreateDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null,"ModifyDate":"0001-01-01T00:00:00"} 
+------------------------------------------------------------
+2020-07-24 16:45:10 用户：超级管理员  id：System开始编辑积分管理数据dceeba05-3905-4da0-9a25-c5c8fd25bdb2 
+ {"Id":"dceeba05-3905-4da0-9a25-c5c8fd25bdb2","RuleId":null,"UserName":"马勇","UserId":"33e94e37-f016-4932-b061-6c9524e142c4","Gender":null,"Score":2.0,"Area":null,"Reasons":"登记违章","ScoreType":null,"DeptId":null,"DeptName":null,"DeptCode":null,"CreateUserId":null,"CreateUserName":null,"CreateDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null,"ModifyDate":"0001-01-01T00:00:00"} 
+------------------------------------------------------------
+2020-07-24 16:48:00 用户：超级管理员  id：System开始编辑积分管理数据52dc9614-2dba-4a10-ba3e-01226ac36387 
+ {"Id":"52dc9614-2dba-4a10-ba3e-01226ac36387","RuleId":null,"UserName":"马勇","UserId":"33e94e37-f016-4932-b061-6c9524e142c4","Gender":null,"Score":2.0,"Area":null,"Reasons":"登记违章","ScoreType":null,"DeptId":null,"DeptName":null,"DeptCode":null,"CreateUserId":null,"CreateUserName":null,"CreateDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null,"ModifyDate":"0001-01-01T00:00:00"} 
+------------------------------------------------------------
+2020-07-24 16:48:15 用户：超级管理员  id：System开始编辑积分管理数据2e553f95-8b9c-4525-9416-de03ff07d357 
+ {"Id":"2e553f95-8b9c-4525-9416-de03ff07d357","RuleId":null,"UserName":"马勇","UserId":"33e94e37-f016-4932-b061-6c9524e142c4","Gender":null,"Score":2.0,"Area":null,"Reasons":"登记违章","ScoreType":null,"DeptId":null,"DeptName":null,"DeptCode":null,"CreateUserId":null,"CreateUserName":null,"CreateDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null,"ModifyDate":"0001-01-01T00:00:00"} 
+------------------------------------------------------------
+2020-07-24 16:51:37 用户：超级管理员  id：System开始编辑积分管理数据abc2773d-1ae9-4e76-bfc4-5519c2fa745c 
+ {"Id":"abc2773d-1ae9-4e76-bfc4-5519c2fa745c","RuleId":null,"UserName":"边牧","UserId":"e3501745-e40e-1022-4571-8f777e3fa02a","Gender":null,"Score":2.0,"Area":null,"Reasons":"班前一题","ScoreType":null,"DeptId":null,"DeptName":null,"DeptCode":null,"CreateUserId":null,"CreateUserName":null,"CreateDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null,"ModifyDate":"0001-01-01T00:00:00"} 
+------------------------------------------------------------
+2020-07-24 16:51:46 用户：超级管理员  id：System开始编辑积分管理数据753baebe-481f-4083-8a7f-cb3c50237d32 
+ {"Id":"753baebe-481f-4083-8a7f-cb3c50237d32","RuleId":null,"UserName":"边牧","UserId":"e3501745-e40e-1022-4571-8f777e3fa02a","Gender":null,"Score":2.0,"Area":null,"Reasons":"班前一题","ScoreType":null,"DeptId":null,"DeptName":null,"DeptCode":null,"CreateUserId":null,"CreateUserName":null,"CreateDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null,"ModifyDate":"0001-01-01T00:00:00"} 
+------------------------------------------------------------
+2020-07-24 16:51:53 用户：超级管理员  id：System开始编辑积分管理数据901ed000-e59e-4fe6-87ed-0a6767c6253e 
+ {"Id":"901ed000-e59e-4fe6-87ed-0a6767c6253e","RuleId":null,"UserName":"边牧","UserId":"e3501745-e40e-1022-4571-8f777e3fa02a","Gender":null,"Score":2.0,"Area":null,"Reasons":"班前一题","ScoreType":null,"DeptId":null,"DeptName":null,"DeptCode":null,"CreateUserId":null,"CreateUserName":null,"CreateDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null,"ModifyDate":"0001-01-01T00:00:00"} 
+------------------------------------------------------------

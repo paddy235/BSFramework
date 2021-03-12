@@ -1,0 +1,135 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script type="text/javascript">
+    var number = '@ViewBag.number';
+    var username='@ViewBag.username'
+    $(function () {
+        InitialPage();
+    });
+    //初始化数据
+    function InitialPage() {
+        $("#con").height($(top.window).height()-200);
+        $.post("GetListJson", function (data) {
+            var json = eval("("+data+")");
+            if (json != null) {
+                if (json.list.length > 0) {
+                    //var title = json.data.title == null ? "" : json.data.title;
+                    $("#title").html("本月已参加活动次数：" + '<a href="#" style="color:blue;" onclick="btn()">' + number + '</a> 次');
+                    //$("#time").text(" 活动时间：" + json.data.time);
+                var html="";
+                $(json.list).each(function (i, item) {
+                    html += '<div class="container-box" style="float:left;">';
+                    html += '<div class="group-text" style="height:20px;">' + item.fullname + '</div>';
+                    if (item.leader == null) {
+                        if (item.state == "Ready") {
+                            html += '<div class="group-box-not" onclick="orderGroup(\'' + item.groupid + '\',\'' + item.activityid + '\',this)" title="点击进行预约" style="cursor:pointer;"><div style="padding:20px;" id="alreadyId">预约中</div>';
+                        } else {
+                            html += '<div class="group-box-not"  title="无法预约" style="cursor:pointer;"><div class="group-user" >无法预约</div>';
+                        }                     
+                    } else {
+                        if (item.state == "Ready") {
+                            if (item.leader.indexOf(username) == -1) {
+                                html += '<div class="group-box-not" onclick="orderGroup(\'' + item.groupid + '\',\'' + item.activityid + '\',this)" title="点击进行预约" style="cursor:pointer;"><span ><div style="padding:20px;" id="alreadyId">' + item.leader + '</div></span>';
+                            } else {
+                                html += '<div class="group-box-not"  title="已经预约" style="cursor:pointer;background-color:#999"><span><div style="padding:20px;" id="alreadyId">' + item.leader + '</div></span>';
+                            }
+                            
+                        } else {
+                            html += '<div class="group-box-not"  title="无法预约" style="cursor:pointer;"><div style="padding:20px;" id="alreadyId" >无法预约</div>';
+                        }
+                        //html += '<div class="group-box" title="已经预约"><div class="group-user">' + item.leader + '</div>';
+                    }
+                    html += '</div><div class="group-text" style="height:20px;">'
+                    var year=new Date(item.planstarttime).getFullYear();
+                    if (year>2000) {
+                        html += '<br />' + item.planstarttime.replace("T", " ").replace(":00","") + '';
+                    }
+                    html += "</div></div>";
+                });
+                $("#container").html(html);
+                }
+                else {
+                    $("#container").css({"text-align":"center","margin-top":"50px"}).html("对不起，暂无数据！");
+                }
+            }
+            else {
+                $("#container").css({ "text-align": "center", "margin-top": "50px" }).html("对不起，暂无数据！");
+            }
+            
+        });
+    }
+    function orderGroup(gId, sId,obj) {
+        $.ConfirmAjax({
+            msg: "确定进行预约吗？",
+            url: "SaveForm",
+            param: { groupId: gId, sId: sId },
+            success: function (data) {
+                $(obj).css({ "background-color": ":#999", "cursor": "default" });
+                $(obj).attr("title", "已经预约");
+                var userName = "@BSFramework.Application.Code.OperatorProvider.Provider.Current().UserName";
+                $(obj).find("#alreadyId").text(data.resultdata);
+                $(obj).prop("disable", true); $(obj).removeAttr("onclick");
+            }
+        });
+    }
+    function btn()
+    {
+        layer.open({
+            id: 'Show',
+            title: '参加活动次数列表',
+            type: 2,
+            area: ['1000px', '600px'],
+            content: '@Url.Action("Detail")'
+        })
+    }
+</script>
+<style type="text/css">
+    body{
+        background-color:#fff;
+    }
+    .group-box-not {
+        background-color: #f1f1f1;
+        /*float: left;*/
+        width: 130px;
+        height: 130px;
+        border-radius: 60%;
+        text-align: center;
+        vertical-align: middle;
+        border:1px solid gray;
+    }
+    .group-box {
+        background-color: #999;
+        /*float: left;*/
+        width: 130px;
+        height: 130px;
+        border-radius: 60%;
+        text-align: center;
+        vertical-align: middle;
+    }
+    .container-box {
+        margin: 10px;
+        float: left;
+    }
+    .group-text {
+        width: 130px;
+        text-align: center;
+    }
+    .group-user {
+        line-height:130px;
+    }
+</style>
+<div>
+    <div class="row" style="font-size:16px; margin:10px;">
+        <div class="col-md-3" id="title"></div>
+        <div class="col-md-5" id="time"></div>
+    </div>
+    <div class="row" style="width:99%; height:100%;border:1px solid #eee;" id="con">
+        <div class="col-sm-12" id="container">
+            <div>正在加载数据，请稍后……</div>
+        </div>
+    </div>
+</div>
+

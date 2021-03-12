@@ -1,0 +1,122 @@
+﻿@model BSFramework.Application.Entity.EducationManage.EduPlanVerifyEntity
+@{
+    ViewBag.Title = "Verify";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+
+<script src="~/Content/scripts/business/Common.js" type="text/javascript"></script>
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.url.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/layui/layui.all.js")"></script>
+
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/layui/layui.all.js")"></script>
+<script>
+    var userName = '@ViewBag.userName';
+    var userId = '@ViewBag.userId';
+    var id = '@ViewBag.Id';
+    var iframeId = '@ViewBag.iframeId';
+    $(function () {
+        jQuery("#VerifyPerson").val(userName);
+        jQuery("#PlanId").val(id);
+        jQuery('#yes').change(fn$check);
+        jQuery('#no').change(fn$check);
+
+        fn$check();
+    })
+    function fn$check() {
+        var approve = jQuery('input[name="VerifyResult"]:checked').val();
+        if (approve == "0") {
+            jQuery('#VerifyContent').parent().hide();
+            jQuery('#VerifyContent').parent().prev().hide();
+
+        } else {
+            jQuery('#VerifyContent').parent().show();
+            jQuery('#VerifyContent').parent().prev().show();
+
+            //jQuery('#ApproveReason').attr('isvalid', 'yes');
+            //jQuery('#ApproveReason').attr('checkexpession', 'NotNull');
+        }
+    }
+    function AcceptClick() {
+        if(!valid()) return false;
+        var json = jQuery('#form1').serializeJSON();
+  
+        $.SaveForm({
+            url: '@Url.Action("SaveEduVerify")',
+            param: json,
+            loading: "正在保存数据...",
+            success: function () {
+                var iframeId = jQuery.getUrlArgs('iframeId');
+                top.frames[iframeId].jQuery("#lr-edit").attr('disabled', true);
+                top.frames[iframeId].jQuery("#lr-edit").click(function () { });
+                top.frames[iframeId].jQuery("#grid1").trigger("reloadGrid");
+            },
+        })
+    }
+    function valid() {
+        var approve = jQuery('input[name="VerifyResult"]:checked').val();
+        if (approve == "1")
+        {
+            var content = $("#VerifyContent").val();
+            if (content == "")
+            {
+                dialogMsg('请输入审核意见！', 0);
+                return false;
+            }
+        }
+        return true;
+    }
+</script>
+<style>
+    ul li {
+    float:left;
+    width:120px;
+    }
+</style>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right:50px;">
+            @Html.HiddenFor(x => x.PlanId, new { @class = "form-control", @readonly = "readonly" })
+            <table class="form" style="table-layout: auto;">
+                <tr>
+                    <td class="formTitle" valign="middle">审核结论</td>
+                    <td class="formValue" colspan="3">
+                        <ul >
+                            <li>
+                                <input type="radio" value="0" id="yes" name="VerifyResult" checked="checked" /><label for="yes">审核通过</label>
+                            </li>
+                            <li>
+                                <input type="radio" value="1" id="no" name="VerifyResult" /><label for="no">审核不通过</label>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr id="content">
+                    <td class="formTitle" valign="middle">审核意见<font face="宋体">*</font></td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.VerifyContent, new { @class = "form-control", @style = "height:120px;", maxlength = 200 })
+                    </td>
+                </tr>
+                <tr id="a">
+                    <th class="formTitle" valign="middle">审核人</th>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.VerifyPerson, new { @class = "form-control", disabled = "disabled", @readonly = "readonly" })
+                    </td>
+                    <th class="formTitle" valign="middle">审核时间</th>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.VerifyDate, new { @class = "form-control", disabled = "disabled", @onfocus = "WdatePicker();", Value = @DateTime.Now.ToString("yyyy-MM-dd HH:mm") })
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="ExpandInfo" class="tab-pane">
+            <div class="app_layout app_preview" style="border-top: 1px solid #ccc;" id="frmpreview"></div>
+        </div>
+    </div>
+</div>

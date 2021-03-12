@@ -1,0 +1,20 @@
+﻿<script>
+    /// <summary>
+    /// 选择部门
+    /// </summary>
+    ///<param name="checkMode">单选：single；多选:multiple</param>
+    ///<param name="category">厂组，部门，班组；逗号分割；缺失表示所有</param>
+    /// <param name="checkMode">单选或多选，0:单选，1:多选</param>
+    function selectDepartment(checkMode, category, callback) {
+        return dialogOpen({
+            id: "Department",
+            title: "选择部门",
+            url: encodeURI('/..@Url.Action("Select", "Department", new { area = "BaseManage" })?checkMode=' + (checkMode || 'single') + '&category=' + (category || '')),
+            width:  "400px",
+            height: ($(top.window).height() - 200) + "px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick(callback);
+            }
+        });
+    }
+</script>

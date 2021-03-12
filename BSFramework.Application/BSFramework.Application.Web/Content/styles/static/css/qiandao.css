@@ -1,0 +1,72 @@
+@charset "utf-8";
+body{margin:0;padding:0;}
+
+.sign ul{
+    margin:0;padding:0;
+}
+.sign li{
+    list-style: none;
+}
+.sign{
+    padding:10px 20px;
+    margin:0;
+}
+.sign .my-nav li{
+    border-bottom:1px solid #cad3df;
+    line-height: 50px;
+    padding-left:66px;
+    font-size:16px;
+    color:#374757;
+    background: url("../images/sign-icon.png") no-repeat 10px bottom;
+}
+
+.sign .my-nav li.active{
+    color:#fff;
+    background: url("../images/sign-icon.png") no-repeat 10px top #3669e1;
+}
+
+/*人员状态*/
+.my-search-md{
+    padding-right:80px;
+    position: relative;
+}
+.my-search-md button,
+.my-search-md input{
+    float: left;
+}
+.my-search-md input{
+    width:100%;
+}
+.my-search-md button{
+    position: absolute;
+    width:80px;
+    background: url("../images/search-icon-blue.png") no-repeat left center;
+    padding-left:20px;
+    top:0;
+    right:0;
+}
+.my-tabs .tab-item{
+    display: none;
+}
+.my-tabs .tab-item span{
+    position: relative;
+}
+.my-tabs .tab-item button {
+    position: absolute;
+    border:none;
+    top:50%;
+    margin-top:-11px;
+    right:20px;
+    text-indent:-10000em;
+    overflow: hidden;
+    height:21px;
+    width:21px;
+    background: url("../images/icon-16.png") center center no-repeat;
+}
+.my-tabs .tab-item span.on{
+    background: #3669e1;
+    color:#fff;
+}
+.my-tabs .tab-item span.on button{
+    background-image: url("../images/icon-17.png");
+}

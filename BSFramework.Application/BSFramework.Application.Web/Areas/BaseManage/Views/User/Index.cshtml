@@ -1,0 +1,562 @@
+﻿@{
+    ViewBag.Title = "用户管理";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<script>
+    var _parentId = "";
+    var _isOrg = "";
+    var userId = top.currUserId; //当前用户Id
+    var deptCode = top.currUserDeptCode;//当前用户所属部门Code
+    var orgCode = top.currUserOrgCode;//当前用户所属机构Code
+    var deptid = "@ViewBag.deptid";
+    $(function () {
+        InitialPage();
+        GetTree();
+        GetGrid();
+    });
+    //初始化页面
+    function InitialPage() {
+        $('#layout').layout({
+            applyDemoStyles: false,
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $("#itemTree").css('height', $(window).height() - 50);
+                $("#gridTable").setGridHeight($(window).height() - 170);
+            }, 200);
+            e.stopPropagation();
+        });
+
+        //resize重设(表格、树形)宽高
+        //$(window).resize(function (e) {
+        //    window.setTimeout(function () {
+        //        $('#gridTable').setGridWidth(($('.gridPanel').width()));
+        //        $("#gridTable").setGridHeight($(window).height() - 141.5);
+        //        $("#itemTree").setTreeHeight($(window).height());
+        //    }, 200);
+        //    e.stopPropagation();
+        //});
+    }
+
+    //加载组织机构树
+    function GetTree() {
+        var item = {
+            height: $(window).height() - 50,
+            url: "@Url.Action("GetDeptTreeJson")",
+            onnodeclick: function (item) {
+                deptid = item.id;
+                _parentId = item.EnCode;
+                _isOrg = item.Sort;
+                $('#btn_Search').trigger("click");
+            }
+        };
+        //初始化
+        $("#itemTree").treeview(item);
+    }
+
+    //加载表格
+    function GetGrid() {
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            url: "@Url.Action("GetPageListJson")",
+            datatype: "json",
+            height: $(window).height() - 170,
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'UserId', hidden: true },
+               { label: '', name: 'departmentcode', hidden: true }, { label: '', name: 'organizecode', hidden: true },
+                //{
+                //    label: '操作', name: 'Oper', width: 135, align: 'center', sortable: false
+                //},
+                { label: '账户', name: 'Account', index: 'Account', width: 130, align: 'center' },
+
+                { label: '姓名', name: 'RealName', index: 'RealName', width: 135, align: 'center' },
+                {
+                    label: '性别', name: 'Gender', index: 'Gender', width: 75, align: 'center',
+                    formatter: function (cellvalue, options, rowObject) {
+                        return cellvalue == 1 ? "男" : "女";
+                    }
+                },
+                { label: '手机', name: 'Mobile', index: 'Mobile', width: 140, align: 'center' },
+                //{
+                //    label: '企业', name: 'OrganizeName', index: 'OrganizeName', width: 250, align: 'center'
+
+                //},
+                {
+                    label: '部门', name: 'DepartmentName', index: 'DepartmentName', width: 180, align: 'center'
+
+                },
+                //{ label: '岗位', name: 'dutyname', index: 'DutyName', width: 100, align: 'center' },
+                {
+                    label: '角色', name: 'RoleName', index: 'RoleName', width: 220, align: 'center'
+                },
+
+                {
+                    label: "状态", name: "EnabledMark", index: "EnabledMark", width: 50, align: "center",
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (cellvalue == 1) {
+                            return '<span onclick=\"btn_disabled(\'' + rowObject.userid + '\')\" class=\"label label-success\" style=\"cursor: pointer;\">正常</span>';
+                        } else if (cellvalue == 0) {
+                            return '<span onclick=\"btn_enabled(\'' + rowObject.userid + '\')\" class=\"label label-default\" style=\"cursor: pointer;\">禁用</span>';
+                        }
+                    }
+                }
+            ],
+            viewrecords: true,
+            rowNum: 20,
+            // rowList: [30, 50, 100],
+            pager: "#gridPager",
+            sortname: 'createdate',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            postData: { deptid: deptid },
+            onSelectRow: function () {
+                selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            },
+            loadError: function (xhr, status, error) {
+                //top.location.href = "../../Login/Index?Login_Error=1";
+            }
+            //gridComplete: function () {
+            //    $("#" + this.id).setSelection(selectedRowIndex, false);
+            //    var rows = $gridTable.jqGrid("getRowData");//获取当前页记录行数据
+            //    //查询用户对该模块的数据操作权限
+            //    $.post(top.contentPath + "/AuthorizeManage/PermissionJob/GetDataAuthority", { __RequestVerificationToken: $("input[name='__RequestVerificationToken']").val() }, function (data) {
+            //        var jsonArr = eval("(" + data + ")");
+            //        $(rows).each(function (i, item) {
+            //            var uId = item.userid;
+            //            var dCode = item.departmentcode; //获取记录创建人的所属部门Code
+            //            var oCode = item.organizecode;  //获取记录创建人的所属机构Code
+            //            var btns = $("td[aria-describedby='gridTable_Oper']").eq(i).children();//获取操作列中定义的操作按钮
+            //            var html = "";
+            //            //如果操作列中没有定义任何按钮则根据系统权限设置自动绑定操作按钮
+            //            if (btns.length == 0) {
+            //                $(jsonArr).each(function (j, item1) {
+            //                    var authType = parseInt(item1.authorizetype);//获取数据操作权限范围.1：本人,2：本部门，3：本部门及下属部门，4：本机构，5：全部
+            //                    //去除图片样式效果、绑定方法中增加参数（避免选中其他行，点击操作另外的行，形成错觉）
+            //                    switch (authType) {
+            //                        //本用户
+            //                        case 1:
+            //                            if (top.currUserId == uId) {
+            //                                html += "<a href=\"javascript:" + item1.actionname + "('"+uId+"')\" title=\"" + item1.fullname + "\">" + item1.fullname + "</a>";//<i class=\"" + item1.faimage + "\"></i>
+            //                            }
+            //                            break;
+            //                            //本部门
+            //                        case 2:
+            //                            if (deptCode == dCode) {
+            //                                html += "<a href=\"javascript:" + item1.actionname + "('" + uId + "')\" title=\"" + item1.fullname + "\">" + item1.fullname + "</a>";//<i class=\"" + item1.faimage + "\"></i>
+            //                            }
+            //                            break;
+            //                            //本子部门
+            //                        case 3:
+            //                            if (dCode.indexOf(deptCode) >= 0) {
+            //                                html += "<a href=\"javascript:" + item1.actionname + "('" + uId + "')\" title=\"" + item1.fullname + "\">" + item1.fullname + "</a>";//<i class=\"" + item1.faimage + "\"></i>
+            //                            }
+            //                            break;
+            //                            //本机构
+            //                        case 4:
+            //                            if (oCode == orgCode) {
+            //                                html += "<a href=\"javascript:" + item1.actionname + "('" + uId + "')\" title=\"" + item1.fullname + "\">" + item1.fullname + "</a>";//<i class=\"" + item1.faimage + "\"></i>
+            //                            }
+            //                            break;
+            //                        case 5:
+            //                            html += "<a href=\"javascript:" + item1.actionname + "('" + uId + "')\" title=\"" + item1.fullname + "\">" + item1.fullname + "</a>";//<i class=\"" + item1.faimage + "\"></i>
+            //                            break;
+            //                    }
+
+
+            //                });
+
+            //                $("td[aria-describedby='gridTable_Oper']").eq(i).html(html);
+            //            } else {
+
+            //                html = "";
+            //                //遍历用户对该模块的数据操作权限
+            //                $(jsonArr).each(function (j, item1) {
+            //                    html += item1.encode + ",";
+            //                    var authType = item1.authorizetype;//获取数据操作权限范围.1：本人,2：本部门，3：本部门及下属部门，4：本机构，5：全部
+            //                    switch (authType) {
+            //                        //本用户
+            //                        case 1:
+            //                            if (currUserId != uId) {
+            //                                $(btns).find("a[name='" + item1.itemcode + "']").remove();
+            //                            }
+            //                            break;
+            //                            //本部门
+            //                        case 2:
+            //                            if (deptCode != dCode) {
+            //                                $(btns).find("a[name='" + item1.itemcode + "']").remove();
+            //                            }
+            //                            break;
+            //                            //本子部门
+            //                        case 3:
+            //                            if (dCode.indexOf(deptCode) < 0) {
+            //                                $(btns).find("a[name='" + item1.itemcode + "']").remove();
+            //                            }
+            //                            break;
+            //                            //本机构
+            //                        case 4:
+            //                            if (oCode != orgCode) {
+            //                                $(btns).find("a[name='" + item1.itemcode + "']").remove();
+            //                            }
+            //                            break;
+            //                    }
+            //                });
+
+            //                $(btns).each(function (j, dom) {
+            //                    if (html.indexOf(dom.attr("name")) < 0) {
+            //                        $(dom).remove();
+            //                    }
+            //                });
+            //            }
+
+            //        });
+            //    });
+            //}
+        });
+        //$gridTable.authorizeColModel()
+        //查询条件
+        $("#queryCondition .dropdown-menu li").click(function () {
+            var text = $(this).find('a').html();
+            var value = $(this).find('a').attr('data-value');
+            $("#queryCondition .dropdown-text").html(text).attr('data-value', value)
+        });
+        //查询事件
+        $("#btn_Search").click(function () {
+            var queryJson = {
+                deptid : deptid,
+                name: $("#name").val(),
+                account: $("#account").val(),
+            }
+            $gridTable.jqGrid('setGridParam', {
+                postData: queryJson, page: 1
+            }).trigger('reloadGrid');
+        });
+        //查询回车
+        $('#txt_Keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+    }
+    ////新增
+    //function add() {
+    //    dialogOpen({
+    //        id: "Form",
+    //        title: '添加用户',
+    //        url: '/BaseManage/User/Form',
+    //        width: "800px",
+    //        height: "450px",
+    //        //btn: null,
+    //        callBack: function (iframeId) {
+    //            top.document.getElementById(iframeId).contentWindow.AcceptClick();
+    //        }
+    //    });
+    //};
+    //查看
+    function show() {
+        var keyValue = $("#gridTable").jqGridRowValue("UserId");
+        if (checkedRow(keyValue)) {
+            dialogOpen({
+                id: "Detail",
+                title: '查看用户信息',
+                url: '/BaseManage/User/Detail?action=show&keyValue=' + keyValue,
+                width: "1000px",
+                height: "850px",
+                btn: null,
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        }
+    }
+    function viewface() {
+        var userid = $("#gridTable").jqGridRowValue("UserId");
+        if (userid) {
+            dialogOpen({
+                id: "Form",
+                title: '查看人脸',
+                url: '/..@Url.Action("ViewFace")/' + userid,
+                width: "800px",
+                height: "800px",
+                //btn: null,
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        } else {
+            dialogMsg('请选择用户！', 0);
+        } }
+    //编辑
+    function edit() {
+        var keyValue = $("#gridTable").jqGridRowValue("UserId");
+        if (checkedRow(keyValue)) {
+            dialogOpen({
+                id: "Form",
+                title: '修改用户',
+                url: '/BaseManage/User/Form?keyValue=' + keyValue,
+                width: "800px",
+                height: "450px",
+                //btn: null,
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        }
+    }
+    //删除
+    function del() {
+        var keyValue = $("#gridTable").jqGridRowValue("UserId");
+        if (keyValue) {
+            $.RemoveForm({
+                url: "../../BaseManage/User/RemoveForm",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#gridTable").trigger("reloadGrid");
+                }
+            })
+        } else {
+            dialogMsg('请选择需要删除的用户！', 0);
+        }
+    }
+    //重置密码
+    function revisepassword() {
+        var keyValue = $("#gridTable").jqGridRowValue("UserId");
+        var Account = $("#gridTable").jqGridRowValue("Account");
+        var RealName = $("#gridTable").jqGridRowValue("RealName");
+        if (checkedRow(keyValue)) {
+            dialogOpen({
+                id: "RevisePassword",
+                title: '重置密码',
+                url: '/BaseManage/User/RevisePassword?keyValue=' + keyValue + "&Account=" + escape(Account) + '&RealName=' + encodeURIComponent(RealName),
+                width: "500px",
+                height: "260px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        }
+    }
+    //导出
+    function exported() {
+        var condition = $("#queryCondition").find('.dropdown-text').attr('data-value');
+        var keyword = $("#txt_Keyword").val();
+        var code = _parentId;
+        var isOrg = _isOrg;
+        location.href = "../../BaseManage/User/ExportUserList?condition=" + condition + "&keyword=" + keyword + "&code=" + code + "&isOrg=" + isOrg;
+    }
+    //禁用
+    function disabled(keyValue) {
+        if (keyValue == undefined) {
+            keyValue = $("#gridTable").jqGridRowValue("userid");
+        }
+        if (checkedRow(keyValue)) {
+            $.ConfirmAjax({
+                msg: "注：您确定要【禁用】账户？",
+                url: "../../BaseManage/User/DisabledAccount",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#gridTable").trigger("reloadGrid");
+                }
+            })
+        }
+    }
+    //启用
+    function enabled(keyValue) {
+        if (keyValue == undefined) {
+            keyValue = $("#gridTable").jqGridRowValue("userid");
+        }
+        if (checkedRow(keyValue)) {
+            $.ConfirmAjax({
+                msg: "注：您确定要【启用】账户？",
+                url: "../../BaseManage/User/EnabledAccount",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#gridTable").trigger("reloadGrid");
+                }
+            })
+        }
+    }
+    //用户授权
+    function authorize() {
+        var keyValue = $("#gridTable").jqGridRowValue("userid");
+        var RealName = $("#gridTable").jqGridRowValue("realname");
+        if (checkedRow(keyValue)) {
+            dialogOpen({
+                id: "AllotAuthorize",
+                title: '用户授权 - ' + RealName,
+                url: '/AuthorizeManage/PermissionJob/AllotAuthorizeNew?authorizeType=5&objectId=' + keyValue,
+                width: ($(window).width() - 100) + 'px',
+                height: ($(top.window).height() - 80) + "px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        }
+    }
+    //IP过滤
+    function ipfilter() {
+        var keyValue = $("#gridTable").jqGridRowValue("userid");
+        var FullName = $("#gridTable").jqGridRowValue("realname");
+        if (checkedRow(keyValue)) {
+            dialogOpen({
+                id: "FilterIP",
+                title: 'TCP/IP 地址访问限制 - ' + FullName,
+                url: '/AuthorizeManage/FilterIP/Index?objectId=' + keyValue + '&objectType=Uesr',
+                width: "600px",
+                height: "400px",
+                btn: null
+            });
+        }
+    }
+    //时段过滤
+    function timefilter() {
+        var keyValue = $("#gridTable").jqGridRowValue("userid");
+        var FullName = $("#gridTable").jqGridRowValue("realname");
+        if (checkedRow(keyValue)) {
+            dialogOpen({
+                id: "FilterTime",
+                title: '时段访问过滤 - ' + FullName,
+                url: '/AuthorizeManage/FilterTime/Index?objectId=' + keyValue + '&objectType=Uesr',
+                width: "640px",
+                height: "480px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        }
+    }
+    //导入
+    var idx;
+    var isImport = false;
+    function importData() {
+        idx = dialogOpen({
+            id: "Import",
+            title: '导入人员',
+            url: '/BaseManage/User/Import',
+            width: "500px",
+            height: "450px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            },
+            cancel: function (index) {
+                if (isImport) {
+                    isImport = false;
+                    $("#gridTable").jqGrid('setGridParam', {
+                        postData: { keyWord: "" }
+                    }).trigger('reloadGrid');
+                }
+
+            }
+        });
+    }
+</script>
+
+
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                <div class="col-md-10">
+                    组织机构
+                </div>
+                <div class="col-md-2 text-right" style="padding-right:8px;">
+                    <i class="fa fa-arrow-left" onclick="setBar(this)" style="cursor:pointer;" title="展开/收起"></i>
+                </div>
+            </div>
+            <div id="itemTree"></div>
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title">用户信息</div>
+            <div class="titlePanel">
+                <div class="title-search">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label for="team">姓名</label>
+                            <input type="text" class="form-control" id="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="status">账号</label>
+                            <input type="text" class="form-control" id="account">
+                        </div>
+                        <div class="form-group">
+                            <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                        </div>
+                    </div>
+
+                    @*<table>
+                            <tr>
+                                <td>
+                                    <div id="queryCondition" class="btn-group">
+                                        <a class="btn btn-default dropdown-text" data-toggle="dropdown">选择条件</a>
+                                        <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a data-value="Account">账户</a></li>
+                                            <li><a data-value="RealName">姓名</a></li>
+                                            <li><a data-value="Mobile">手机</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td style="padding-left: 2px;">
+                                    <input id="txt_Keyword" type="text" class="form-control" placeholder="请输入要查询关键字" style="width: 200px;" />
+                                </td>
+                                <td style="padding-left: 5px;">
+                                    <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                                </td>
+                            </tr>
+                        </table>*@
+                </div>
+                <div class="toolbar">
+                    <div class="btn-group">
+                        <a id="replace" class="btn btn-default" onclick="reload();"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+                        <a id="viewface" class="btn btn-default" onclick="viewface()"><i class="fa fa-list-alt"></i>&nbsp;人脸</a>
+                        <a id="show" class="btn btn-default" onclick="show()"><i class="fa fa-list-alt"></i>&nbsp;详细</a>
+                        @*<a id="add" class="btn btn-default" onclick="add()"><i class="fa fa-plus"></i>&nbsp;新增</a>*@
+                        <a id="edit" class="btn btn-default" onclick="edit()"><i class="fa fa-pencil-square-o"></i>&nbsp;编辑</a>
+                        <a id="delete" class="btn btn-default" onclick="del()"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+                        <a id="revisepassword" class="btn btn-default" onclick="revisepassword()"><i class="fa fa-key"></i>&nbsp;重置密码</a>
+                        @*<a id="more" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-reorder"></i>&nbsp;更多<span class="caret"></span>
+                            </a>*@
+                        <ul class="dropdown-menu pull-right">
+                            @*<li id="import"><a onclick="importData()"><i></i>&nbsp;导入</a></li>*@
+                            <li id="export"><a onclick="exported()"><i></i>&nbsp;导出Excel</a></li>
+                            <li id="disabled"><a onclick="disabled()"><i></i>&nbsp;禁用账户</a></li>
+                            <li id="enabled"><a onclick="enabled()"><i></i>&nbsp;启用账户</a></li>
+                        </ul>
+                    </div>
+                    @*<div class="btn-group">
+                            <a id="authorize" class="btn btn-default" onclick="authorize()"><i class="fa fa-gavel"></i>&nbsp;用户权限</a>
+                            <a id="appfilter" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-filter"></i>&nbsp;访问过滤<span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                <li id="ipfilter"><a onclick="ipfilter()"><i></i>&nbsp;IP过滤</a></li>
+                                <li id="timefilter"><a onclick="timefilter()"><i></i>&nbsp;时段过滤</a></li>
+                            </ul>
+                        </div>*@
+                    <script>$('.toolbar').authorizeButton()</script>
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="gridTable"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+

@@ -1,0 +1,201 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+@section Scripts {
+    <script>
+        var deptid = '@Html.Raw(ViewBag.deptid)', approvestatus = @Html.Raw(ViewBag.approvestatus);
+        jQuery(function () {
+            $('#layout').layout({
+                west: {
+                    size: 300
+                },
+                onresize: function () {
+                    $(window).resize()
+                }
+            });
+
+            $(window).resize(function (e) {
+                window.setTimeout(function () {
+
+                    $("#grid").setGridHeight($(window).height() - 170);
+                }, 200);
+                e.stopPropagation();
+            });
+            $("#departments").height($(window).height() - 50);
+
+            //initTree();
+            initGrid();
+
+        });
+
+        function reload() {
+            jQuery('#key').val('');
+            jQuery('.bbit-tree-selected').removeClass('bbit-tree-selected');
+            deptid = '';
+            fn$query();
+        }
+
+        function initTree() {
+            $("#itemTree").treeview({
+                height: $(window).height() - 50,
+                url: '/..@Url.Action("GetDepartmentTree", "Department", new { area = "BaseManage"})?deptid=' + deptid,
+                onnodeclick: function (item) {
+                    deptid = item.id;
+                    $('#btn_Search').click();
+                }
+            });
+        }
+
+        function initGrid() {
+            jQuery('#grid').jqGrid({
+                url: '@Url.Action("TemplateData")',
+                mtype: 'POST',
+                datatype: "json",
+                height: $(window).height() - 170,
+                autowidth: true,
+                postData: { deptid: deptid },
+                colModel: [
+                    { label: '主键', name: 'ItemId', hidden: true },
+                    {
+                        label: '操作', name: 'action', width: 120, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                            var html = "";
+                            html += "<a href=\"javascript:fn$view('" + rowObject.HumanDangerId + "')\" title=\"查看\" style=\"color:blue;padding-left:0px;\">查看</a> ";
+                            if(rowObject.State == approvestatus)
+                                html += "<a href=\"javascript:fn$approve('" + rowObject.HumanDangerId + "')\" title=\"审核\" style=\"color:blue;padding-left:0px;\">审核</a> ";
+                            return html;
+                        }
+                    },
+                    {
+                        label: "审核状态", name: "State", width: 180, align: "center", sortable: false, formatter: function (cellvalue, options, rowObject) {
+                            switch (cellvalue) {
+                                case 1:
+                                    return '班组审核中'
+                                case 2:
+                                    return '部门审核中'
+                                case 3:
+                                    return '公司审核中'
+                                default:
+                                    return '';
+                            }
+                        }
+                    },
+                    { label: "工作任务", name: "Task", width: 400, align: "center", sortable: false },
+                    { label: "作业区域", name: "TaskArea", width: 300, align: "center", sortable: false },
+                    { label: "适用部门", name: "DeptName", width: 200, align: "center", sortable: false },
+                    { label: "作业性质类型", name: "TaskType", width: 200, align: "center", sortable: false },
+                    { label: "人身伤害风险", name: "DangerLevel", width: 120, align: "center", sortable: false },
+                    //{ label: "操作时间", name: "OperateTime", width: 120, align: "center", sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' } },
+                ],
+                rownumbers: true,
+                rowNum: 20,
+                viewrecords: true,
+                pager: '#gridPager',
+            });
+        }
+
+        function fn$view(id) {
+            dialogOpen({
+                id: "View",
+                title: '查看',
+                url: '/../@Url.Action("Edit4")/' + id,
+                width: "1000px",
+                height: "600px",
+                btn:false
+            });
+        }
+
+        function fn$approve(id) {
+            dialogOpen({
+                id: "View",
+                title: '审核',
+                url: '/../@Url.Action("Edit3")/' + id,
+                width: "1000px",
+                height: "600px",
+                btn:['审核通过并提交'],
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                    dialogClose();
+                }
+            });
+
+        }
+
+        function fn$query() {
+            jQuery('#grid').jqGrid('setGridParam', { postData: { deptid: deptid, name: jQuery('#key').val(), status:jQuery('#status').val()  } }).trigger("reloadGrid");
+        }
+        function onNodeSelected(item) {
+            deptid = item.id;
+           
+            fn$query();
+        }
+
+
+        function fn$refresh() {
+            fn$query();
+        }
+
+        function fn$all() {
+            jQuery('#key').val('');
+            jQuery('#status').val('0');
+            fn$query();
+        }
+    </script>
+}
+
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                <div class="col-md-10">
+                    组织机构
+                </div>
+            </div>
+            <div id="itemTree" style="border: 1px solid #ccc;border-top:none;"></div>
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title">
+                人身风险预控临时库
+            </div>
+            <div class="titlePanel">
+                <div class="title-search">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label for="key">任务名</label>
+                            <input type="text" class="form-control" id="key">
+                        </div>
+                        <div class="form-group">
+                            <label for="status">审核状态</label>
+                            <select class="form-control" id="status">
+                                <option value="0">全部</option>
+                                <option value="1">班组审核中</option>
+                                <option value="2">部门审核中</option>
+                                <option value="3">公司审核中</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <a id="btn_Search" class="btn btn-primary" onclick="fn$query();">
+                                <i class="fa fa-search"></i> 查询
+                            </a>
+                            <a id="btn_SearchAll" class="btn btn-primary" onclick="fn$all();">&nbsp;全部</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="toolbar">
+                    @*<div class="btn-group">
+                            <a id="replace" class="btn btn-default" onclick="reload();"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+                            <a id="association" class="btn btn-default" onclick="association()"><i class="fa fa-gears"></i>&nbsp;预控措施关联同步</a>
+                            <a id="add" class="btn btn-default" onclick="fn$add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+                            <a id="import" class="btn btn-default" onclick="fn$import()"><i class="fa fa-file-excel-o"></i>&nbsp;导入</a>
+                        </div>*@
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="grid"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>

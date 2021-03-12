@@ -1,0 +1,179 @@
+﻿@{
+    ViewBag.Title = "组织机构";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        initialPage();
+        GetGrid();
+    });
+    //重设(表格)宽高
+    function initialPage() {
+        //resize重设(表格、树形)宽高
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#gridTable').setGridWidth(($('.gridPanel').width()));
+                $("#gridTable").setGridHeight($(window).height() - 108.5);
+            }, 200);
+            e.stopPropagation();
+        });
+    }
+    //加载表格
+    function GetGrid() {
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            url: "../../BaseManage/Organize/GetTreeListJson",
+            datatype: "json",
+            height: $(window).height() - 108.5,
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'OrganizeId', hidden: true },
+                 { label: '父键', name: 'ParentId', hidden: true },
+                { label: "公司名称", name: "FullName", width: 300, align: "center", sortable: false },
+                { label: "机构编码", name: "EnCode", width: 150, align: "center", sortable: false },
+                { label: "中文名称", name: "ShortName", width: 150, align: "center", sortable: false },
+                { label: "公司性质", name: "Nature", width: 100, align: "center", sortable: false },
+                {
+                    label: "成立时间", name: "FoundedTime", width: 100, align: "center", sortable: false,
+                    formatter: function (cellvalue, options, rowObject) {
+                        return formatDate(cellvalue, 'yyyy-MM-dd');
+                    }
+                },
+                { label: "负责人", name: "Manager", width: 100, align: "center", sortable: false },
+                { label: "经营范围", name: "Fax", width: 200, align: "center", sortable: false },
+                { label: "备注", name: "Description", width: 200, align: "center", sortable: false }
+            ],
+            treeGrid: true,
+            treeGridModel: "nested",
+            ExpandColumn: "EnCode",
+            rowNum: "all",
+            rownumbers: true,
+            onSelectRow: function () {
+                selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            },
+            gridComplete: function () {
+                $("#" + this.id).setSelection(selectedRowIndex, false);
+            }
+        });
+        //查询条件设置
+        $("#queryCondition .dropdown-menu li").click(function () {
+            var text = $(this).find('a').html();
+            var value = $(this).find('a').attr('data-value');
+            $("#queryCondition .dropdown-text").html(text).attr('data-value', value)
+        });
+        //查询事件
+        $("#btn_Search").click(function () {
+            $gridTable.jqGrid('setGridParam', {
+                postData: {
+                    condition: $("#queryCondition").find('.dropdown-text').attr('data-value'),
+                    keyword: $("#txt_Keyword").val()
+                }
+            }).trigger('reloadGrid');
+        });
+        //查询回车事件
+        $('#txt_Keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+    }
+    //新增
+    function add() {
+        var ParentId = $("#gridTable").jqGridRowValue("OrganizeId");
+        dialogOpen({
+            id: "Form",
+            title: '添加机构',
+            url: '/BaseManage/Organize/Form?ParentId=' + ParentId,
+            width: "750px",
+            height: "500px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    };
+    //编辑
+    function edit() {
+        var keyValue = $("#gridTable").jqGridRowValue("OrganizeId");
+        if (checkedRow(keyValue)) {
+            dialogOpen({
+                id: "Form",
+                title: '修改机构',
+                url: '/BaseManage/Organize/Form?keyValue=' + keyValue,
+                width: "750px",
+                height: "500px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        }
+    }
+    //删除
+    function del() {
+        var keyValue = $("#gridTable").jqGridRowValue("OrganizeId");
+        var parentValue = $("#gridTable").jqGridRowValue("ParentId");
+        //if (parentValue != "0") {
+            if (keyValue) {
+                $.RemoveForm({
+                    url: "../../BaseManage/Organize/RemoveForm",
+                    param: { keyValue: keyValue },
+                    success: function (data) {
+                        if (data.message == "删除成功。") {
+
+                            $("#gridTable").resetSelection();
+                            $("#gridTable").trigger("reloadGrid");
+                        } else
+                        {
+                            dialogMsg('该机构存在子部门，无法删除！', 0);
+                        }
+                    }
+                })
+            } else {
+                dialogMsg('请选择需要删除的数据项！', 0);
+            }
+        //}
+        //else {
+        //    dialogMsg('根节点项数据无法删除！', 0);
+        //}
+
+    }
+</script>
+
+<div class="titlePanel">
+    <div class="title-search">
+        <table>
+            <tr>
+                <td>
+                    <div id="queryCondition" class="btn-group">
+                        <a class="btn btn-default dropdown-text" data-toggle="dropdown">选择条件</a>
+                        <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a data-value="FullName">公司名称</a></li>
+                            <li><a data-value="EnCode">外文名称</a></li>
+                            <li><a data-value="ShortName">中文名称</a></li>
+                            <li><a data-value="Manager">负责人</a></li>
+                        </ul>
+                    </div>
+                </td>
+                <td style="padding-left: 2px;">
+                    <input id="txt_Keyword" type="text" class="form-control" placeholder="请输入要查询关键字" style="width: 200px;" />
+                </td>
+                <td style="padding-left: 5px;">
+                    <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="toolbar">
+        <div class="btn-group">
+            <a id="replace" class="btn btn-default" onclick="reload();"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+            <a id="add" class="btn btn-default" onclick="add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+            <a id="edit" class="btn btn-default" onclick="edit()"><i class="fa fa-pencil-square-o"></i>&nbsp;编辑</a>
+            <a id="delete" class="btn btn-default" onclick="del()"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+        </div>
+        <script>$('.toolbar').authorizeButton()</script>
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="gridTable"></table>
+</div>

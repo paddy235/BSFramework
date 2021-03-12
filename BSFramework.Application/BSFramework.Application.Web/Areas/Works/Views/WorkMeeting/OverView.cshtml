@@ -1,0 +1,44 @@
+﻿@model IList<BSFramework.Entity.WorkMeeting.WorkmeetingEntity>
+@{
+    ViewBag.Title = "ViewJobs";
+}
+<style>
+    .mylist {
+        overflow: auto;
+    }
+
+        .mylist li {
+            list-style: none;
+            float: left;
+            font-size: 14px;
+            text-align: center;
+            margin: 10px 20px;
+            width: 80px;
+        }
+
+            .mylist li .li-value {
+                border: 1px solid gray;
+                border-radius: 40px 40px;
+                line-height: 80px;
+                width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .mylist li .li-title {
+                width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+</style>
+<ul class="mylist">
+    @for (int i = 0; i < (Model.Count() > 12 ? 12 : Model.Count()); i++)
+    {
+        <li>
+            <div class="li-value">@Html.Raw(Model[i].MeetingPerson)</div>
+            <div class="li-title" title="@Html.Raw(Model[i].MeetingId)">@Html.Raw(Model[i].MeetingId)</div>
+        </li>
+    }
+</ul>

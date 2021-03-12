@@ -1,0 +1,91 @@
+﻿@model BSFramework.Entity.WorkMeeting.CultureTemplateItemEntity
+
+@{
+    ViewBag.Title = "考评标准类别";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<script src="~/Content/scripts/business/Common.js" type="text/javascript"></script>
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+@System.Web.Optimization.Styles.Render("~/Content/scripts/plugins/jqgrid/css")
+@System.Web.Optimization.Scripts.Render("~/Content/scripts/plugins/jqgrid/js")
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.url.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/ckeditor/ckeditor.js")"></script>
+
+<script>
+
+    function fn$select() {
+        var select = 'single';
+        showModa('/..@Url.Action("DeptSelect", "Department", new { area = "BaseManage" })', '选择部门', '300px', '600px', { select: select, category: '省级,厂级,部门,班组' }, fn$selectover);
+    }
+
+    function fn$selectover(nodes) {
+        if (nodes) {
+            if (jQuery.type(nodes) == 'array') {
+                var str = '';
+                jQuery.each(nodes, function (i, o) {
+                    str += o.text + '|'
+                });
+                jQuery('#GroupId').val(str.replace(/\|$/, ''));
+            } else {
+                jQuery('#GroupName').val(nodes.text);
+                jQuery('#GroupId').val(nodes.value);
+            }
+        }
+    }
+
+    function AcceptClick(callback) {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+
+        editor = CKEDITOR.instances.CultureContent;
+        var id = '@Html.Raw(ViewBag.id)';
+
+        if (callback) callback(id, jQuery('#ContentSubject').val(), editor.getData());
+
+        @*$.SaveForm({
+            url: '@Url.Action("Edit")' + "/" + json.CategoryId,
+            param: json,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().fn$refreshtree(jQuery('#pcid').val());
+            }
+        })*@
+
+        dialogClose();
+    }
+
+
+    jQuery(function () {
+        CKEDITOR.replace('CultureContent');
+    });
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right:30px;">
+            <table class="form">
+                <tr>
+                    <td class="formTitle">板块</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.ContentSubject, new { @class = "form-control", placeholder = "请输入文件墙主题", isvalid = "yes", checkexpession = "NotNull" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">内容<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @Html.TextAreaFor(x => x.CultureContent, new { @class = "form-control", rows = 5 })
+                    </td>
+                </tr>
+            </table>
+            <table id="grid"></table>
+            <div id="gridPager"></div>
+        </div>
+        <div id="ExpandInfo" class="tab-pane">
+            <div class="app_layout app_preview" style="border-top: 1px solid #ccc;" id="frmpreview"></div>
+        </div>
+    </div>
+</div>
+

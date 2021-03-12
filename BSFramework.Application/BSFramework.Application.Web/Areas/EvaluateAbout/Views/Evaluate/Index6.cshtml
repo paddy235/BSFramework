@@ -1,0 +1,183 @@
+﻿
+@using BSFramework.Entity.EvaluateAbout
+
+@model IList<BSFramework.Entity.EvaluateAbout.EvaluateCalcEntity>
+@{
+    ViewBag.Title = "考评";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    jQuery(function () {
+        selectchange();
+
+    })
+
+    function updateTable(result) {
+
+        $("#tables tr:gt(0)").empty();
+        $("#tables tr").not(':eq(0)').empty();
+
+        $("#table").find("tr").removeClass()
+        var _html = '';
+        for (var i = 0; i < result.length; i++) {
+            if (result[i].ActualScore != result[i].Score) {
+                _html += '<tr>'
+                _html += '<td>' + (i + 1) + '</td>'
+                _html += '<td class="text-left">' + result[i].ItemContent + '</td>'
+                if (result[i].EvaluateContent == undefined) {
+                    _html += '<td class="text-left"></td>'
+
+                } else {
+                    _html += '<td class="text-left">' + result[i].EvaluateContent + '</td>'
+
+                }
+                _html += '<td>' + result[i].Score + '</td>'
+                if (result[i].Score == result[i].ActualScore) {
+                    _html += '<td><span >' + result[i].ActualScore + '</span></td>'
+
+                } else {
+                    _html += '<td><span class="c-red">' + result[i].ActualScore + '</span></td>'
+
+                }
+                _html += '</tr>';
+            }
+        }
+        $("#table").append(_html);
+    }
+    function selectchange() {
+        $("#season1").on('change', function (e, data) {
+            var id = $(this).find("option:selected").val();
+            var CategoryId = $("#season2").find("option:selected").val();
+            $.ajax({
+                url: '/..@Url.Action("GetScoreItem")?id=' + id + "&CategoryId=" + CategoryId,
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (result) {
+                    updateTable(result);
+                }
+            });
+
+        });
+        $("#season2").on('change', function (e, data) {
+            var id = $("#season1").find("option:selected").val();
+            var CategoryId = $(this).find("option:selected").val();
+            $.ajax({
+                url: '/..@Url.Action("GetScoreItem")?id=' + id + "&CategoryId=" + CategoryId,
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (result) {
+                    updateTable(result);
+                }
+            });
+
+        });
+    }
+
+</script>
+
+<div class="main-content">
+    <div class="container-fluid bs-box">
+        <div class="bs-header">
+            <div class="title">
+                <a href="@Url.Action("Index3")">
+                    <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+                    考评详情
+                </a>
+            </div>
+        </div>
+        <div  class="bg-e3ebfd pd-10 my-body">
+            <div style="background-color:white;">
+                <div class="mg-t-10 mg-b-10">
+                    <label class="mg-l-30">考评时间</label>
+                    <span class="my-select" style="width:260px;">
+                        <select id="season1" style="border:0px solid gray; border-bottom-width:1px;">
+                            @{
+                                var evaluations = ViewBag.evaluations as IList<EvaluateEntity>;
+                                var name = ViewBag.name as string;
+                                foreach (var item in evaluations)
+                                {
+                                    if (item.EvaluateSeason == name)
+                                    {
+                                        <option value="@Html.Raw(item.EvaluateId)" selected="selected">@Html.Raw(item.EvaluateSeason)</option>
+
+                                    }
+                                    else
+                                    {
+                                        <option value="@Html.Raw(item.EvaluateId)">@Html.Raw(item.EvaluateSeason)</option>
+
+                                    }
+                                }
+                            }
+                        </select>
+                        <span class="icon"></span>
+                    </span>
+
+                    <label class="mg-l-30">单项要素</label>
+                    <span class="my-select" style="width:260px;">
+                        <select id="season2" style="border:none;border-bottom:1px solid #b0b8c1;">
+                            @{
+                                var categories = ViewBag.categories as IList<EvaluateCategoryEntity>;
+                                <option value="">全部</option>
+                                foreach (var item in categories)
+                                {
+                                    <option value="@Html.Raw(item.CategoryId)">@Html.Raw(item.Category)</option>
+                                }
+                            }
+                        </select>
+                        <span class="icon"></span>
+                    </span>
+                </div>
+                <div>
+                    <table id="tables" class="table text-center table-striped vertical" style="0border-top:1px solid #e3ebfd;border-bottom:1px solid #e3ebfd;">
+                        <thead>
+                            <tr>
+                                <th width="8%">序号</th>
+                                <th width="40%">考评标准</th>
+                                <th>扣分原因</th>
+                                <th width="8%">标准分</th>
+                                <th width="8%">得分</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table">
+                            @{
+                                var ScoreItem = ViewBag.scoreitem as IList<EvaluateScoreItemEntity>;
+                                int i = 1;
+                                foreach (var item in ScoreItem)
+                                {
+                                    if (item.ActualScore != item.Score) { 
+                                    <tr>
+                                        <td>@i</td>
+                                        <td class="text-left">
+                                            @Html.Raw(item.ItemContent)
+                                        </td>
+                                        <td class="text-left">@Html.Raw(item.Reason)</td>
+                                        <td>@Html.Raw(item.Score)</td>
+                                        @if (item.ActualScore == item.Score)
+                                        {
+                                            <td><span>@Html.Raw(item.ActualScore)</span></td>
+                                        }
+                                        else
+                                        {
+                                            <td><span class="c-red">@Html.Raw(item.ActualScore)</span></td>
+
+
+                                        }
+                                    </tr>
+                                    i = i + 1;
+                                    }
+                                }
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+        </div>
+        <footer class="main-footer">
+            武汉博晟安全技术股份有限公司   版权所有
+        </footer>
+    </div>
+</div>

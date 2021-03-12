@@ -1,0 +1,694 @@
+﻿@model BSFramework.Application.Entity.EmergencyManage.EmergencyReportEntity
+@{
+    ViewBag.Title = "drillReady";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    .Validform_checktip {
+        text-align: center;
+        font-size: 12px;
+        line-height: 20px;
+    }
+
+    .Validform_wrong {
+        color: red;
+    }
+
+    #mypeople li {
+        line-height: 55px;
+    }
+
+        #mypeople li.on {
+            background-position: 10px top;
+            background-color: #3669e1;
+            color: #fff;
+        }
+
+    .addr.sign .my-nav li {
+        background: none;
+        text-align: center;
+        padding-left: 0;
+    }
+
+        .addr.sign .my-nav li.on {
+            background: #3669e1;
+            color: #fff;
+        }
+
+    textarea {
+        width: 100%;
+        /*border: 2px solid #e3ebfd;*/
+        border: 0;
+        outline: none;
+        padding: 5px;
+        resize: none;
+        height: 165px;
+        line-height: 20px;
+    }
+
+    .appoint {
+        width: 95%;
+        display: flex;
+        flex-wrap: wrap;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .appoint li {
+            width: 33%;
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            line-height: 36px;
+            margin-top: 20px;
+        }
+
+        .appoint h1 {
+            width: 23%;
+            font-size: 20px;
+            color: #000000;
+            font-weight: 700;
+        }
+
+
+        .appoint input, .appoint select {
+            width: 144%;
+            border: 0;
+            font-size: 16px;
+            border-bottom: 1px solid #e3ebfd;
+        }
+
+    .final li {
+        width: 100%;
+    }
+
+    .final h1 {
+        width: 7.5%;
+    }
+
+    .final input {
+        width: 86%;
+    }
+
+    .final li:last-child {
+        align-items: flex-start;
+    }
+
+        .final li:last-child h1 {
+            margin: 0;
+        }
+
+    .final li > div {
+        width: 86%;
+        border: 2px solid #3669e1;
+        height: 184px;
+        padding: 20px;
+        line-height: 50px;
+        font-size: 20px;
+    }
+
+    .clearAll {
+        width: 6%;
+        line-height: 50px;
+        text-align: center;
+        border: 2px solid #3669e1;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+    }
+
+    .meeting {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .tit {
+        display: flex;
+        justify-content: space-between;
+        font-size: 20px;
+        line-height: 40px;
+        margin-bottom: 12px;
+        font-weight: 700;
+        color: #000000;
+    }
+
+        .tit img {
+            width: 30px;
+            height: 30px;
+        }
+
+    .meeting li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        width: 40%;
+        color: #3669e1;
+        height: 52px;
+    }
+
+    .final li {
+        align-items: flex-start;
+    }
+
+        .final li > div {
+            height: auto;
+            min-height: 180px;
+            line-height: 30px;
+            border-color: #e3ebfd;
+            font-size: 16px;
+        }
+
+    .appoint h1 {
+        font-size: 16px;
+    }
+</style>
+<!-- Content Wrapper. Contains page content -->
+<div class="main-content details">
+    <div class="container-fluid">
+        <div class="clearfix mg-b-10">
+            <div class="title" style="display: flex;justify-content: space-between;">
+                <a href="javascript:;">
+                    演练准备
+                </a>
+
+                <img src="@Url.Content("~/Content/styles/static/images/drill_btn.png")" onclick="Go()" alt="">
+
+            </div>
+        </div>
+        <div class="bg-e3ebfd pd-10 warp">
+            <div>
+                <div class="body">
+                    <div class="pd-20 bg-fff ">
+                        <ul class="appoint">
+                            <li>
+                                <h1>演练名称</h1>
+                                <div>
+                                    @Html.TextBoxFor(x => x.emergencyreportname, new { nullmsg = "不能为空", datatype = "s1-100", placeholder = "请填写演练名称" })
+                                </div>
+                            </li>
+                            <li>
+                                <h1>演练形式</h1>
+                                <div>
+                                    @Html.HiddenFor(x => x.rehearsetypeid)
+                                    @Html.TextBoxFor(x => x.rehearsetype, new { nullmsg = "不能为空", datatype = "s1-100", placeholder = "请选择演练形式" })
+                                </div>
+                            </li>
+                            <li>
+                                <h1>演练时间</h1>
+                                <div>
+                                    @Html.TextBoxFor(x => x.planstarttime, "{0:yyyy-MM-dd HH:mm}", new { @class = "datetime", nullmsg = "不能为空", datatype = "*", placeholder = "请选择" })
+                                </div>
+                            </li>
+                            <li>
+                                <h1>主持人</h1>
+                                <div>
+                                    <input type="hidden" id="people1" name="people1" value="@Model.chairpersonid" />
+                                    @Html.TextBoxFor(x => x.chairperson, new { nullmsg = "不能为空", datatype = "*", placeholder = "请选择主持人" })
+                                </div>
+                            </li>
+                            <li>
+                                <h1>演练地点</h1>
+                                <div>
+                                    @Html.TextBoxFor(x => x.emergencyplace, new { nullmsg = "不能为空", datatype = "s1-100", placeholder = "请输入活动地点" })
+                                </div>
+                            </li>
+                            <li>
+                                <h1>提醒时间</h1>
+                                <div>
+                                    @Html.TextBoxFor(x => x.alerttype, new { nullmsg = "不能为空", datatype = "s1-100", placeholder = "请选择提醒时间" })
+                                </div>
+                            </li>
+                        </ul>
+                        <ul class="appoint final">
+                            <li>
+                                <h1>参演人员</h1>
+                                <div style="position: relative;">
+                                    @Html.HiddenFor(x => x.PersonId)
+                                    @Html.TextAreaFor(x => x.Persons, new { style = "font-size:23px", onfocus = "this.blur()" })
+                                </div>
+                            </li>
+                            <li>
+                                <h1>应急预案</h1>
+                                <div>
+                                    @Html.HiddenFor(x => x.EmergencyId)
+                                    @Html.TextAreaFor(x => x.emergencyname, new { style = "font-size:23px", onfocus = "this.blur()" })
+                                </div>
+                            </li>
+                            <li>
+                                <h1>演练方案</h1>
+                                <div>
+                                    <div class="bg-fff pd-10 launch-activity-list">
+                                        <div class="clearfix pd-b-20 pd-t-10">
+                                            <label id="path"></label>
+
+                                        </div>
+                                        <div class="clearfix pd-b-20 pd-t-10">
+                                            <div class="pull-left f-18 f-w c-0d0d0d"><a href="@Url.Content("~/Content/export/演练模板.xlsx")" download="演练模板">模板下载</a></div>
+                                            <div class="pull-right add">
+                                                <input id="filebox" type="file" style="opacity:0;" name="file" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*@Html.TextAreaFor(x => x.emergencyplan, new { style = "font-size:23px", onfocus = "this.blur()" })*@
+                                </div>
+
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="main-footer">
+        武汉博晟安全技术股份有限公司   版权所有
+    </footer>
+</div>
+<!-- /.content-wrapper -->
+<div class="sign addr" style="display:none;" id="myrehearsetype">
+    <ul class="nav my-nav" style="text-align:center;">
+        @{
+
+            var get = ViewBag.rehearsetype as List<SelectListItem>;
+            foreach (var item in get)
+            {
+                <li data-id="@Html.Raw(item.Value)">@Html.Raw(item.Text)</li>
+            }
+
+        }
+    </ul>
+</div>
+<div class="sign" style="display:none;" id="mypeople">
+    <ul class="nav my-nav">
+        @for (int i = 0; i < Model.EmergencyPersons.Count; i++)
+        {
+            <li data-id="@Html.Raw(Model.EmergencyPersons[i].PersonId)">@Html.Raw(Model.EmergencyPersons[i].Person)</li>
+        }
+    </ul>
+</div>
+<div class="sign addr" style="display:none;" id="myemergencyplan">
+    <ul class="nav my-nav" style="text-align:center;">
+        @{
+            @*var emergencyplan = ViewBag.emergencyplan as List<SelectListItem>;
+                foreach (var item in emergencyplan)
+                {
+                    <li data-id="@Html.Raw(item.Value)">@Html.Raw(item.Text)</li>
+
+                }*@
+
+
+        }
+    </ul>
+</div>
+
+<div class="sign addr" style="display:none;" id="myemergencyName">
+    <ul class="nav my-nav" style="text-align:center;">
+        @{
+
+            var emergencyName = ViewBag.emergencyName as List<SelectListItem>;
+            foreach (var item in emergencyName)
+            {
+                <li data-id="@Html.Raw(item.Value)">@Html.Raw(item.Text)</li>
+            }
+
+        }
+    </ul>
+</div>
+
+<div class="sign addr" style="display:none;" id="myplace">
+    <ul class="nav my-nav" style="text-align:center;">
+        <li>班组办公室</li>
+        <li>班组学习室</li>
+        <li>会议室一</li>
+        <li>其他</li>
+    </ul>
+</div>
+
+
+
+<div class="sign addr" style="display:none;" id="myalert">
+    <ul class="nav my-nav">
+        <li>无提醒</li>
+        <li>准时提醒</li>
+        <li>提前5分钟</li>
+        <li>提前10分钟</li>
+        <li>提前15分钟</li>
+        <li>提前半小时</li>
+        <li>提前1小时</li>
+        <li>提前1天</li>
+        <li>提前2天</li>
+        <li>提前3天</li>
+    </ul>
+</div>
+<div class="sign" style="display:none;" id="users">
+    <ul class="nav my-nav">
+        @for (int i = 0; i < Model.EmergencyPersons.Count; i++)
+        {
+            <li data-id="@Html.Raw(Model.EmergencyPersons[i].PersonId)">
+                @Html.HiddenFor(x => x.EmergencyPersons[i].EmergencyPersonId)
+                @Html.HiddenFor(x => x.EmergencyPersons[i].PersonId)
+                @Html.HiddenFor(x => x.EmergencyPersons[i].Person)
+                <span>@Html.DisplayFor(x => x.EmergencyPersons[i].Person)</span>
+                <span class="my-radio @(Model.EmergencyPersons[i].IsSigned ? "on" : string.Empty)"></span>
+            </li>
+        }
+    </ul>
+    <div class="text-center mg-t-10">
+        <button class="btn bg-3669e1 c-fff" style="width:200px;">确定</button>
+    </div>
+</div>
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/launch-activity.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/app.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/before.css")" />
+<script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/base.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script>
+    var item;
+
+    function Go() {
+        if (!jQuery('#emergencyreportname').val()) {
+            layer.msg('请填写演练名称');
+            return;
+        }
+        if (!jQuery('#rehearsetype').val()) {
+            layer.msg('请选择演练形式');
+            return;
+        }
+        if (!jQuery('#planstarttime').val()) {
+            layer.msg('请选择演练时间');
+            return;
+        }
+        if (!jQuery('#chairperson').val()) {
+            layer.msg('请选择主持人');
+            return;
+        } if (!jQuery('#emergencyplace').val()) {
+            layer.msg('请选择演练地点');
+            return;
+        }
+        if (!jQuery('#alerttype').val()) {
+            layer.msg('请选择提醒时间');
+            return;
+        }
+        if (!jQuery('#Persons').val()) {
+            layer.msg('请选择参与人员');
+            return;
+        }
+        if (!jQuery('#emergencyname').val()) {
+            layer.msg('请选择应急预案');
+            return;
+        }
+        //if (!jQuery('#emergencyplan').val()) {
+        //    layer.msg('请选择演练方案');
+        //    return;
+        //}
+        var data = new Object();
+        var dataJson = new Object();
+        data["EmergencyReportId"] = '@ViewBag.EmergencyReportId';
+        data["emergencyreportname"] = jQuery('#emergencyreportname').val();
+        data["rehearsetype"] = jQuery('#rehearsetype').val();
+        data["rehearsetypeid"] = jQuery('#rehearsetypeid').val();
+        data["planstarttime"] = jQuery('#planstarttime').val();
+        data["chairpersonid"] = jQuery('#people1').val();
+        data["chairperson"] = jQuery('#chairperson').val();
+        data["emergencyplace"] = jQuery('#emergencyplace').val();
+        data["alerttype"] = jQuery('#alerttype').val();
+        data["PersonId"] = jQuery('#PersonId').val();
+        data["Persons"] = jQuery('#Persons').val();
+        data["EmergencyId"] = jQuery('#EmergencyId').val();
+        data["emergencyname"] = jQuery('#emergencyname').val();
+        dataJson["entity"] = JSON.stringify(data);
+        $.ajax({
+            url: '/..@Url.Action("drillReadyGo")',
+            data: dataJson,
+            type: "post",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.message == "成功") {
+                    window.location.href = "@Url.Action("drillObjective")?EmergencyReportId=@ViewBag.EmergencyReportId";
+                } else {
+                    layer.msg(data.message);
+                }
+            },
+            error: function (data) {
+                layer.msg(data);
+
+            }
+        });
+    }
+    function fn$date() {
+        $('.datetime').each(function () {
+            var id = $(this).attr('id');
+            layui.use('laydate', function () {
+                var laydate = layui.laydate;
+                laydate.render({
+                    elem: '#' + id,
+                    type: 'datetime',
+                    format: 'yyyy-MM-dd HH:mm'
+                });
+            });
+        });
+    }
+    jQuery('#emergencyname').click(function () {
+        var size = jQuery('#myemergencyName li').size();
+        var h = 56 * (size + 1) + 10;
+        var winH = $(window).height();
+        if (h > winH - 100) {
+            h = winH - 100
+        }
+
+        layer.open({
+            area: ['300px', h + 'px'],
+            title: '应急预案',
+            type: 1,
+            content: $('#myemergencyName')
+        });
+    });
+
+    jQuery('#myemergencyName li').click(function () {
+        jQuery('#myemergencyName li').removeClass('on');
+        jQuery(this).addClass('on');
+        var id = jQuery(this).data('id');
+        //jQuery('#myemergencyplan li').each(
+        //    function () {
+        //        var one = this.dataset.id;
+        //        if (one == id) {
+        //            var mytext = jQuery(this).text();
+        //            jQuery('#emergencyplan').val();
+        //            jQuery('#emergencyplan').val(mytext);
+        //        }
+        //    }
+        //    );
+        jQuery('#EmergencyId').val(id);
+        jQuery('#emergencyname').val(jQuery(this).text());
+        layer.closeAll()
+    });
+
+
+    jQuery('#Persons').click(function () {
+        var size = jQuery('#users li').size();
+        var h = 52 * (size + 1) + 60;
+        var winH = $(window).height();
+        if (h > winH - 100) {
+            h = winH - 100
+        }
+
+        layer.open({
+            area: ['300px', h + 'px'],
+            title: '选择参加人员',
+            type: 1,
+            content: $('#users'),
+            end() {
+                $('#users').hide();
+            }
+        });
+    });
+
+    jQuery('.my-radio').click(function () {
+        if (jQuery(this).hasClass('on')) {
+            jQuery(this).prev().prev().val('False');
+            jQuery(this).removeClass('on');
+        }
+        else {
+            jQuery(this).prev().prev().val('True');
+            jQuery(this).addClass('on');
+        }
+
+        var names = '', userids = '';
+        jQuery('#users li span.on').each(function () {
+            userids += jQuery(this).parent().data('id') + ','
+            names += jQuery(this).prev().text() + ','
+        });
+
+        jQuery('#PersonId').val(userids.replace(/,$/, ''));
+        jQuery('#Persons').val(names.replace(/,$/, ''));
+    });
+    jQuery('#users button').click(function () {
+        layer.closeAll();
+        return false;
+    });
+
+    jQuery('#emergencyplace').click(function () {
+        var size = jQuery('#myplace li').size();
+        var h = 56 * (size + 1) + 10;
+        var winH = $(window).height();
+        if (h > winH - 100) {
+            h = winH - 100
+        }
+
+        layer.open({
+            area: ['300px', h + 'px'],
+            title: '活动地点',
+            type: 1,
+            content: $('#myplace')
+        });
+    });
+
+    jQuery('#myplace li').click(function () {
+        jQuery('#myplace li').removeClass('on');
+        jQuery(this).addClass('on');
+        jQuery('#emergencyplace').val(jQuery(this).text());
+        layer.closeAll()
+    });
+
+    jQuery('#rehearsetype').click(function () {
+        var size = jQuery('#myrehearsetype li').size();
+        var h = 56 * (size + 1) + 10;
+        var winH = $(window).height();
+        if (h > winH - 100) {
+            h = winH - 100
+        }
+
+        layer.open({
+            area: ['300px', h + 'px'],
+            title: '演练形式',
+            type: 1,
+            content: $('#myrehearsetype')
+        });
+    });
+
+    jQuery('#myrehearsetype li').click(function () {
+        jQuery('#myrehearsetype li').removeClass('on');
+        jQuery(this).addClass('on');
+        jQuery('#rehearsetype').val(jQuery(this).text());
+        jQuery('#rehearsetypeid').val(jQuery(this).data('id'));
+        layer.closeAll()
+    });
+
+
+    jQuery('#alerttype').click(function () {
+        var size = jQuery('#myalert li').size();
+        var h = 56 * (size + 1) + 10;
+        var winH = $(window).height();
+        if (h > winH - 100) {
+            h = winH - 100
+        }
+
+        layer.open({
+            area: ['300px', h + 'px'],
+            title: '提醒时间',
+            type: 1,
+            content: $('#myalert')
+        });
+    });
+
+    jQuery('#myalert li').click(function () {
+        jQuery('#myalert li').removeClass('on');
+        jQuery(this).addClass('on');
+        jQuery('#alerttype').val(jQuery(this).text());
+
+        layer.closeAll();
+    });
+
+    $(function () {
+        fn$date();
+        $('.main-sidebar,.main-content').niceScroll({
+            autohidemode: false
+        });
+        $('.table-today tr').hover(function () {
+            $(this).addClass('hover');
+        }, function () {
+            $(this).removeClass('hover');
+        });
+        $('.table-today tr').click(function () {
+            $(this).toggleClass('actives');
+        })
+        console.log($('.user').innerWidth())
+        $('.user>.dropdown-menu').css({
+            left: $('.user').innerWidth() - $('.user>.dropdown-menu').width() - 65
+        });
+        $('.list-item').hover(function () {
+            $(this).children('div').stop().animate({
+                top: 0
+            }, 500);
+        }, function () {
+            $(this).children('div').stop().animate({
+                top: '194px'
+            }, 500);
+        })
+    })
+    jQuery('#filebox').change(uploadFile);
+
+    function uploadFile() {
+        var myform = new FormData();
+        myform.append('file', $('#filebox')[0].files[0]);
+        $.ajax({
+            url: "@Url.Action("ImportEditPush")?keyvalue=@ViewBag.EmergencyReportId",
+            type: 'post',
+        dataType: 'json',
+        data: myform,
+        contentType: false,
+        processData: false,
+        clearForm: true,
+        success: function (data) {
+            success = data.success;
+            if (data.success) {
+                var str = data.message.split('.')[0];
+                $("#path").text(data.message);
+                $('#filebox').val("");
+            }
+            else{
+                layer.msg(data.message);
+                $('#filebox').val("");
+            }
+        },
+        error: function (data) {
+        }
+    });
+    }
+    jQuery('#chairperson').click(function () {
+        item = jQuery(this).prev().attr('id');
+
+        jQuery('#mypeople li').removeClass('on');
+        if (jQuery(this).val()) {
+            jQuery('#mypeople [data-id="' + jQuery('#' + item).val() + '"]').addClass('on');
+        }
+
+        var size = jQuery('#mypeople li').size();
+        var h = 56 * (size + 1) + 10;
+        var winH = $(window).height();
+        if (h > winH - 100) {
+            h = winH - 100
+        }
+
+        layer.open({
+            area: ['300px', h + 'px'],
+            title: '选择主持人',
+            type: 1,
+            content: $('#mypeople')
+        });
+    });
+    jQuery('#mypeople li').click(function () {
+        jQuery('#mypeople li').removeClass('on');
+        jQuery(this).addClass('on');
+        jQuery('#' + item).val(jQuery(this).data('id'));
+        jQuery('#' + item).next().val(jQuery(this).text());
+        layer.closeAll();
+    });
+</script>

@@ -1,0 +1,12 @@
+﻿@model IEnumerable<BSFramework.Application.Entity.PublicInfoManage.NewsEntity>
+
+@foreach (var item in Model)
+{
+    <li>
+        <a href="@Url.Action("NewDetail", new { keyValue=@item.NewsId})">
+            <div style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">@Html.Raw(item.FullHead)</div>
+            <span>@Html.Raw(item.ReleaseTime.Value.ToString("yyyy-MM-dd"))</span>
+            <span>@Html.Raw(item.NoticeDept)</span>
+        </a>
+    </li>
+}

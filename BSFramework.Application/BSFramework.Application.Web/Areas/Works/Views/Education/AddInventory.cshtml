@@ -1,0 +1,341 @@
+﻿@model BSFramework.Application.Entity.EducationManage.EduInventoryEntity
+@using BSFramework.Application.Entity.PublicInfoManage
+@{
+    ViewBag.Title = "AddInventory";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")" />
+<script type="text/javascript" src="~/content/scripts/business/common.js"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/hammer.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<style>
+    .imgDiv {
+        display: inline-block;
+        position: relative;
+    }
+
+        .imgDiv .delete {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: 50px;
+            height: 50px;
+            display: none;
+        }
+</style>
+<script>
+    var type = "@Model.EduType";
+    var upfileids = "";
+    
+    var contentPath = '@Url.Content("~")'.substr(0, '@Url.Content("~")'.length - 1);
+    $(function () {
+        //init();
+        $('#uploadFile').change(cp);
+        $('#uploadFile2').change(cp2);
+
+    });
+    function init() {
+        $(".imgDiv").mouseenter(function () {
+            $(this).find(".delete").show();
+        });
+        $(".imgDiv").mouseleave(function () {
+            $(this).find(".delete").hide();
+        });
+    }
+
+    function AcceptClick() { //新增
+        if (!valid()) {
+            return false;
+        }
+        var json = jQuery('#form1').serializeJSON();
+        var url = '/..@Url.Action("SaveEduInventory")';
+       // if (type == "1") url = '/..@Url.Action("SaveEduInventory1")?ids=' + upfileids;
+        $.SaveForm({
+            url: url,
+            param: json,
+            loading: "数据提交中...",
+            success: function (data) {
+                if (data.success) {
+                    $.currentIframe().$("#gridTable").trigger("reloadGrid");
+                } else {
+                }
+            }
+        });
+    }
+    function valid() {
+        debugger;
+        var dept = $("#UseDeptCode").val();
+        if (dept == "") {
+            dialogMsg('请选择使用班组！', 0);
+            return false;
+        }
+        var name = $("#Name").val();
+        var question = $("#Question").val();
+        if (type == "1") {
+            if (name == "") {
+                dialogMsg('课件名称不能为空！', 0);
+                return false;
+            }
+        }
+        if (type == "2") {
+            if (question == "") {
+                dialogMsg('试题内容不能为空！', 0);
+                return false;
+            }
+        }
+        if (type == "6") {
+            if (name == "") {
+                dialogMsg('题目不能为空！', 0);
+                return false;
+            }
+        }
+       
+        return true;
+    }
+    //自制课件附件
+    function cp() {
+        $.ajaxFileUpload({
+            url: "@Url.Action("UploadFileNew")?uptype=1&id=@Model.ID",
+            secureuri: false,
+            fileElementId: 'uploadFile',
+            dataType: 'json',
+            success: function (data) {
+                if (data.message == "1") {
+                    alert("请上传图片！");
+                    $('#uploadFile').change(cp);
+                } else {
+                    if ("@ViewBag.type" == "edit") {
+                        $("#kjname").val(data.resultdata.name);
+                        var name = $("#Name").val();
+                       // if (name == "") {
+                            $("#Name").val(data.resultdata.name);
+                       // }
+                    }
+                    @*else if ("@ViewBag.type" == "add") {
+                        upfileids += data.resultdata.upfileid + ",";
+                        $("#fileids").val(upfileids);
+
+                        var upfilehtml = '<br /><a style="text-decoration:none;color:blue;" href="' + data.resultdata.newpath + '" title="" target="_blank">' + data.resultdata.name + '</a>';
+                        var updv = $("#upfiles");
+                        updv.append(upfilehtml);
+                    }*@
+                    $('#uploadFile').change(cp);
+                }
+            }
+        });
+    }
+    //技术讲课图片
+    function cp2() {
+        $.ajaxFileUpload({
+            url: "@Url.Action("UploadFileNew")?uptype=2&id=@Model.ID",
+            secureuri: false,
+        fileElementId: 'uploadFile2',
+        dataType: 'json',
+        success: function (data) {
+            if (data.message == "1") {
+                var obj = document.getElementById('uploadFile2');
+                obj.outerHTML = obj.outerHTML;
+                alert("请上传GIF,PNG,JPG格式的图片！");
+                $('#uploadFile2').change(cp2);
+            } else {
+                var html = '';
+                var dv = document.getElementById("pics");
+                dv.innerHTML = "";
+                for (var i = 0; i < data.resultdata.files.length; i++) {
+                    html += '<img src="' + data.resultdata.files [i].FilePath+ '" style="width:180px;height:180px;padding-left:20px;"  /><a id="' + data.resultdata.files[i].FileId + '"  style="color:red;font-size:10px;vertical-align:bottom;" onclick="delimg(this.id)">删除</a>';
+                }
+                html += '<input type="file" name="uploadFile2" id="uploadFile2" style="display:none;"><label for="uploadFile2" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                dv.innerHTML = html;
+                $('#uploadFile2').change(cp2);
+            }
+        }
+    });
+    }
+    function delimg(id) {
+        $.ajax({
+            url: '@Url.Action("delimg")',
+            type: 'post',
+            data: { id: id, drugid: '@Model.ID' },
+            loading: "数据提交中...",
+            success: function (data) {
+                var data = JSON.parse(data);
+                var html = '';
+                var dv = document.getElementById("pics");
+                dv.innerHTML = "";
+
+                for (var i = 0; i < data.resultdata.files.length; i++) {
+                    html += '<img src="' + top.location.origin + contentPath + data.resultdata.files[i].FilePath + '" style="width:180px;height:180px;padding-left:20px;"  /><a id="' + data.resultdata.files[i].FileId + '"  style="color:red;font-size:10px;vertical-align:bottom;" onclick="delimg(this.id)">删除</a>';
+                }
+                html += '<input type="file" name="uploadFile2" id="uploadFile2" style="display:none;"><label for="uploadFile2" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                dv.innerHTML = html;
+                $('#uploadFile2').change(cp2);
+            }
+        });
+    }
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style=" padding-right: 30px;">
+            @Html.HiddenFor(x => x.CreateUserId)
+            @Html.HiddenFor(x => x.ID)
+            @Html.HiddenFor(x => x.EduType)
+            @Html.Hidden("fileids")
+            
+            <table class="form">
+                @{
+                    if (Model.EduType == "1")
+                    {
+                        if (ViewBag.type == "edit")
+                        { 
+                        <tr>
+                            <td class="formTitle">名称<font face="宋体">*</font></td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">新增课件<font face="宋体"></font></td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextBoxFor(x => x.kjname, new { @class = "form-control", @readonly = "readonly" })
+                                <input type="file" name="uploadFile" id="uploadFile" style="display:none;">
+                                <label for="uploadFile" style="margin-left:20px;color:blue;text-align:center;vertical-align:middle;font-size:12px;">上传课件</label>
+                            </td>
+                        </tr>
+                        }
+                        else if (ViewBag.type == "add") 
+                        {
+                            <tr>
+                            <td class="formTitle">
+                                新增课件
+                            </td>
+                            <td class="formValue" colspan="3">
+                                <div id="upfiles" class="">
+                                    <input type="file" name="uploadFile" id="uploadFile" style="display:none;">
+                                    <label for="uploadFile" style="margin-left:20px;color:#0094ff;text-align:center;vertical-align:middle;font-size:12px;">上传课件</label>
+                                    </div>
+                            </td>
+                        </tr>
+                        }
+                    }
+                    else if (Model.EduType == "2")
+                    {
+                         if (ViewBag.type == "add")
+                        { 
+                        <tr>
+                    <td class="formTitle" style="width:90px;">适用班组<font face="宋体">*</font></td>
+                    <td class="formValue" colspan="3">
+                        <div class="input-group" style="width:100%;" onclick="selectDept('/../@Url.Action("SelectBZ", "Department", new { area = "BaseManage" })', '@ViewBag.deptid', 1, 0, '选择班组', this.parentNode, 'UseDeptName,UseDeptId,UseDeptCode')">
+                            @*<input id="UseDept" name="UseDept" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" onfocus="this.blur();" />*@
+                            <textarea id="UseDeptName" name="UseDeptName" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" rows="5" onfocus="this.blur();"></textarea>
+                            <span class="input-group-addon" title="选择班组" style="cursor:pointer;">...</span>
+                            <input id="UseDeptId" type="hidden" name="UseDeptId" />
+                            <input id="UseDeptCode" type="hidden" name="UseDeptCode" />
+                        </div>
+                    </td>
+                </tr>
+                }
+                        <tr>
+                            <td class="formTitle">试题内容<font face="宋体">*</font></td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextBoxFor(x => x.Question, new { @class = "form-control" })
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">参考答案</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextAreaFor(x => x.Answer, new { @style = "height:250px;margin-left:5px;", @class = "form-control", placeholder = "" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">
+                                图片
+                            </td>
+                            <td class="formValue" colspan="3">
+                                <div id="pics" class="imgDiv">
+                                    @{
+                        List<FileInfoEntity> files = (List<FileInfoEntity>)ViewBag.pics;
+                        if (files.Count() > 0)
+                        {
+
+                            for (int i = 0; i < files.Count(); i++)
+                            {
+                                <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:200px; height:180px; padding-left:20px;">
+                                        <a id="@files[i].FileId" onclick="delimg(this.id)" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+                            }
+                        }
+                                    }
+                                    <input type="file" name="uploadFile2" id="uploadFile2" style="display:none;"><label for="uploadFile2" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                                </div>
+
+                            </td>
+                        </tr>
+                    }
+                    else if (Model.EduType == "6") 
+                    {
+                        if (ViewBag.type == "add")
+                        { 
+                        <tr>
+                    <td class="formTitle" style="width:90px;">适用班组<font face="宋体">*</font></td>
+                    <td class="formValue" colspan="3">
+                        <div class="input-group" style="width:100%;" onclick="selectDept('/../@Url.Action("SelectBZ", "Department", new { area = "BaseManage" })', '@ViewBag.deptid', 1, 0, '选择班组', this.parentNode, 'UseDeptName,UseDeptId,UseDeptCode')">
+                            @*<input id="UseDept" name="UseDept" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" onfocus="this.blur();" />*@
+                            <textarea id="UseDeptName" name="UseDeptName" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" rows="5" onfocus="this.blur();"></textarea>
+                            <span class="input-group-addon" title="选择班组" style="cursor:pointer;">...</span>
+                            <input id="UseDeptId" type="hidden" name="UseDeptId" />
+                            <input id="UseDeptCode" type="hidden" name="UseDeptCode" />
+                        </div>
+                    </td>
+                </tr>
+                }
+                        <tr>
+                            <td class="formTitle">题目<font face="宋体">*</font></td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">事故现象</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextAreaFor(x => x.Danger, new { @style = "height:200px;margin-left:5px;", @class = "form-control", placeholder = "" })
+                            </td>
+                        </tr>
+                    <tr>
+                            <td class="formTitle">采取措施</td>
+                            <td class="formValue" colspan="3">
+                               @Html.TextAreaFor(x => x.Measure, new { @style = "height:200px;margin-left:5px;", @class = "form-control", placeholder = "" })
+                            </td>
+                        </tr>
+                    }
+                }
+
+
+                <tr>
+                    <td class="formTitle">操作人</td>
+                    <td class="formValue">
+
+                        @Html.TextBoxFor(x => x.CreateUserName, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">操作时间</td>
+                    <td class="formValue">
+
+                        @Html.TextBoxFor(x => x.CreateDate, new { @class = "form-control", @readonly = "readonly", Value = string.Format("{0:yyyy-MM-dd HH:mm}", Model.CreateDate) })
+                    </td>
+                </tr>
+
+
+
+            </table>
+        </div>
+    </div>
+</div>

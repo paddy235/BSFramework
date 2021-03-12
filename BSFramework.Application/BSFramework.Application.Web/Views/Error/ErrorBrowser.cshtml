@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>升级浏览器</title>
+    <!--框架必需end-->
+    <!--bootstrap组件start-->
+    <link href="~/Content/styles/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/scripts/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Content/scripts/bootstrap/bootstrap.min.js"></script>
+    <!--bootstrap组件end-->
+
+    <style type="text/css">
+        body {
+            background-color: #f5f5f5;
+            font-family: 微软雅黑,宋体,Arial,Helvetica,Verdana,sans-serif;
+        }
+
+        .not-support-browser {
+            background-color: #FFFFFF;
+            border: 1px solid #CED0D3;
+            border-radius: 5px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            width: 650px;
+            height: 400px;
+            margin: 100px auto;
+            padding: 0px;
+        }
+
+        .logo {
+            background-color: #4A5B79;
+            color: #FFFFFF;
+            font-size: 18px;
+            font-weight: bold;
+            height: 50px;
+            line-height: 50px;
+        }
+
+        .not-support-browser-contant {
+            color: #666666;
+            font-size: 18px;
+            margin: 35px 25px;
+            text-align: center;
+        }
+
+
+            .not-support-browser-contant ul {
+                display: inline-block;
+                list-style: none outside none;
+                margin: 35px 80px;
+                padding: 0px;
+            }
+
+                .not-support-browser-contant ul li {
+                    float: left;
+                    margin-left: 20px;
+                }
+
+                    .not-support-browser-contant ul li a {
+                        text-decoration: none;
+                    }
+
+                    .not-support-browser-contant ul li img {
+                        width: 64px;
+                        height: 64px;
+                    }
+    </style>
+</head>
+<body>
+    <!-- 内容区 -->
+    <div class="not-support-browser">
+        <div class="logo">
+            &nbsp;&nbsp;升级浏览器
+        </div>
+        <div class="not-support-browser-contant" style="text-decoration:none;">
+
+            <p>
+                亲，您的浏览器版本太低，无法达到最佳用户体验<br />
+                我们强烈推荐您使用以下几种浏览器使用系统
+            </p>
+            <ul>
+                <li>
+                    <a href="https://www.google.com/chrome?hl=en&brand=CHMI" target="_blank" title="下载最新谷歌浏览器">
+                        <i class="fa fa-chrome fa-3x"></i><br />Chrome
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.mozilla.org/en-US/firefox/fx/" target="_blank" title="下载最新火狐浏览器">
+                        <i class="fa fa-firefox fa-3x"></i><br />Firefox
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.apple.com/safari/download/" target="_blank" title="下载最新苹果浏览器">
+                        <i class="fa fa-safari fa-3x"></i>
+                        <br />Safari
+                    </a>
+                </li>
+                @*<li>
+                        <a href="http://www.opera.com/products/" target="_blank">
+                            <i class="fa fa-opera fa-3x"></i>
+                            <br />Opera
+                        </a>
+                    </li>*@
+                <li>
+                    <a href="http://windows.microsoft.com/en-us/internet-explorer/products/ie/home" target="_blank" title="下载最新IE浏览器">
+                        <i class="fa fa-internet-explorer fa-3x"></i>
+                        <br />IE10及以上
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

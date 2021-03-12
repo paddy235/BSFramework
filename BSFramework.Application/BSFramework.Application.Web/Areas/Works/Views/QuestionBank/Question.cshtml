@@ -1,0 +1,499 @@
+﻿@{
+    ViewBag.Title = "EditCard";
+    Layout = "~/Views/Shared/_OrderForm.cshtml";
+}
+
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+<script>
+</script>
+
+<div style="margin-left: 10px; margin-top: 20px; margin-right: 30px;">
+    <table id="from1" class="form">
+
+
+        <tr>
+            <th class="formTitle">题目类型<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <select style="display:inline-block" id="topictype" onchange="typeUpdate(this)">
+                    <option value="单选题">单选题</option>
+                    <option value="多选题">多选题</option>
+                    <option value="判断题">判断题</option>
+                </select>
+                <input id="Id" type="hidden" />
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">关联材料<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <div id="filechckbox" class="checkbox user-select" style="border:1px solid #e3ebfd;">
+
+                </div>
+            </td>
+
+        </tr>
+        <tr>
+            <th class="formTitle">题目<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <textarea id="topictitle" class="form-control" style="height:80px" maxlength="500" checkexpession="NotNull"></textarea>
+            </td>
+
+        </tr>
+        <tr></tr>
+        <tr id="selectQuestion">
+            <th class="formTitle">选项<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <div>
+                    <a id="lr-add" class="btn btn-default" style="float:right" onclick="btn_add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+                    <table class="table" style="border:1px solid #e3ebfd;text-align:center">
+                        <colgroup>
+                            <col style="width:50px;" />
+                            <col style="width:300px;" />
+                            <col style="width:150px;" />
+                        </colgroup>
+                        <tbody id="Answerchckbox"></tbody>
+                    </table>
+                </div>
+
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">答案<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <div id="IsQuestionOne">
+                    <div id="Questionchckbox" class="checkbox user-select" style="border:1px solid #e3ebfd;">
+
+                    </div>
+                </div>
+                <div id="IsQuestionTwo" style="display:none">
+                    <select style="display:inline-block" id="istrue">
+                        <option value="true">正确</option>
+                        <option value="false">错误</option>
+                    </select>
+
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">试题分析</th>
+            <td class="formValue" colspan="3">
+                <textarea id="description" class="form-control" style="height:80px" maxlength="500"></textarea>
+            </td>
+
+        </tr>
+
+    </table>
+
+</div>
+
+
+
+
+
+<script>
+    var keyvalue = request("keyvalue");
+    var outvalue = request("outvalue");
+    var isFile = request("isFlie");
+    var type = request("type");
+    var deleteStr = new Array();
+    var addhtml = "";
+    var addTable = "";
+    var chooseFile = "";
+    $(function () {
+        if (type != "add") {
+
+                $("#Id").val(keyvalue);
+                $("#topictype").attr("disabled", "disabled");
+                $.ajax({
+                    url: "@Url.Action("GetDetail")?keyvalue=" + keyvalue,
+                    type: 'post',
+                    dataType: 'json',
+                    contentType: false,
+                    processData: false,
+                    clearForm: true,
+                    success: function (data) {
+
+
+                        chooseFile = data.fileids;
+                        for (var i = 0; i < data.TheAnswer.length; i++) {
+
+                            addTable += "<tr class='grid-row'><td><lable>" + data.TheAnswer[i].answer + "</lable></td>" +
+                         "<td><input  type='text' class='form-control' value='" + data.TheAnswer[i].description + "' />" +
+                    "</td><td><a name='del' class='c-orange' onclick='deleteTr(this,1);' style='color:orange;cursor:pointer;'>删除</a></td></tr>";
+                            if (data.TheAnswer[i].istrue) {
+                                addhtml += '<label style="padding-top:10px;padding-left:20px"><input name="answerOne" onclick="ckOne(this)" type="checkbox" checked="checked"  value="' + data.TheAnswer[i].answer + '" />' + data.TheAnswer[i].answer + '</label>';
+
+                            } else {
+                                addhtml += '<label style="padding-top:10px;padding-left:20px"><input name="answerOne" onclick="ckOne(this)" type="checkbox"   value="' + data.TheAnswer[i].answer + '" />' + data.TheAnswer[i].answer + '</label>';
+
+                            }
+                        }
+                        jQuery('#Answerchckbox').append(addTable);
+                        jQuery('#Questionchckbox').append(addhtml);
+                        var type = data.topictype;
+                        if (type == "单选题") {
+                            $("#IsQuestionOne").css("display", "");
+                            $("#IsQuestionTwo").css("display", "none");
+                            $("#selectQuestion").css("display", "");
+                            //$("input[name=answerOne]").each(function (i, x) {
+                            //    $(x).attr("checked", false);
+                            //});
+                        } else if (type == "多选题") {
+                            $("#selectQuestion").css("display", "");
+                            $("#IsQuestionOne").css("display", "");
+                            $("#IsQuestionTwo").css("display", "none");
+
+                        }
+                        else if (type == "判断题") {
+                            $("#selectQuestion").css("display", "none");
+                            $("#IsQuestionOne").css("display", "none");
+                            $("#IsQuestionTwo").css("display", "");
+                        }
+                        $("#form1").formDeserialize(data);
+                        getFile();
+                    },
+                    error: function (data) {
+                    }
+                });
+
+        } else {
+            getFile();
+
+            for (var i = 0; i < 4; i++) {
+                btn_add()
+            }
+        }
+
+
+
+    });
+
+    function typeUpdate(o) {
+        var type = o.value;
+        if (type == "单选题") {
+            $("#IsQuestionOne").css("display", "");
+            $("#IsQuestionTwo").css("display", "none");
+            $("#selectQuestion").css("display", "");
+            $("input[name=answerOne]").each(function (i, x) {
+                $(x).attr("checked", false);
+            });
+        } else if (type == "多选题") {
+            $("#selectQuestion").css("display", "");
+            $("#IsQuestionOne").css("display", "");
+            $("#IsQuestionTwo").css("display", "none");
+
+        }
+        else if (type == "判断题") {
+            $("#selectQuestion").css("display", "none");
+            $("#IsQuestionOne").css("display", "none");
+            $("#IsQuestionTwo").css("display", "");
+        }
+    }
+    function ckOne(o) {
+        var cktype = $("#topictype").val();
+        if (cktype == "单选题") {
+            var ck = $(o).attr("checked");
+            if (!ck) {
+                $("input[name=answerOne]").each(function (i, x) {
+                    if (x != o) {
+                        $(x).attr("checked", false);
+                    } else {
+                        $(x).attr("checked", true);
+                    }
+                });
+
+            }
+        } else {
+            $(o).attr("checked", true);
+        }
+    }
+
+    function btn_add() {
+        var ck = true;
+        var code = "";
+        var num = jQuery('#Answerchckbox tr').length + 1;
+        switch (num) {
+            case 1:
+                code = "A";
+                break;
+            case 2:
+                code = "B";
+                break;
+            case 3:
+                code = "C";
+                break;
+            case 4:
+                code = "D";
+                break;
+            case 5:
+                code = "E";
+                break;
+            case 6:
+                code = "F";
+                break;
+            default:
+                ck = false;
+                break
+
+        }
+
+        if (!ck) {
+            dialogMsg('至多添加6个答案！', -1);
+            return;
+        }
+        jQuery('#Answerchckbox').append("<tr class='grid-row'><td><lable>" + code + "</lable></td>" +
+                         "<td><input  type='text' class='form-control'/>" +
+                    "</td><td><a name='del' class='c-orange' onclick='deleteTr(this,1);' style='color:orange;cursor:pointer;'>删除</a></td></tr>")
+        var _html = '<label style="padding-top:10px;padding-left:20px"><input name="answerOne" onclick="ckOne(this)" type="checkbox"   value="' + code + '" />' + code + '</label>';
+        jQuery('#Questionchckbox').append(_html);
+
+
+    }
+    function deleteTr(o, i) {
+        if (i != 1) {
+            deleteStr.push(o.id);
+        }
+
+        jQuery(o).parent().parent().remove();
+        var num = jQuery('input[name=answerOne]').length - 1;
+        jQuery('input[name=answerOne]').each(function (index, item) {
+            if (num == index) {
+                jQuery(item).parent().remove();
+            }
+        });
+        answerSort();
+
+    }
+
+    function answerSort() {
+        jQuery('#Answerchckbox tr').each(function (i, item) {
+            var num = i + 1;
+            switch (num) {
+                case 1:
+                    code = "A";
+                    break;
+                case 2:
+                    code = "B";
+                    break;
+                case 3:
+                    code = "C";
+                    break;
+                case 4:
+                    code = "D";
+                    break;
+                case 5:
+                    code = "E";
+                    break;
+                case 6:
+                    code = "F";
+                    break;
+            }
+            jQuery(item).find("lable").text(code);
+        });
+        jQuery('input[name=answerOne]').each(function (i, item) {
+            var num = i + 1;
+            switch (num) {
+                case 1:
+                    code = "A";
+                    break;
+                case 2:
+                    code = "B";
+                    break;
+                case 3:
+                    code = "C";
+                    break;
+                case 4:
+                    code = "D";
+                    break;
+                case 5:
+                    code = "E";
+                    break;
+                case 6:
+                    code = "F";
+                    break;
+            }
+            jQuery(item).text(code);
+            jQuery(item).val(code);
+        });
+    }
+
+
+
+
+
+    function getFile() {
+        var url = "";
+        url = "@Url.Action("getFile","QuestionBank")?keyValue=" + outvalue;
+        $.ajax({
+            url: url,
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.length > 0) {
+                    var _html = '';
+                    var $ck = $("#filechckbox");
+                    for (var i = 0; i < data.length; i++) {
+                        if (!!chooseFile) {
+                            if (chooseFile.indexOf(data[i].FileId) >= 0) {
+                                _html += '<label style="padding-top:10px;padding-left:20px"><input name="mycheckbox" checked="checked" type="checkbox" data-id="' + data[i].FileId + '"  value="' + data[i].FileName + '" />' + data[i].FileName + data[i].FileExtensions + '</label>';
+
+                            } else {
+                                _html += '<label style="padding-top:10px;padding-left:20px"><input name="mycheckbox"  type="checkbox" data-id="' + data[i].FileId + '"  value="' + data[i].FileName + '" />' + data[i].FileName + data[i].FileExtensions + '</label>';
+
+                            }
+                        } else {
+                            _html += '<label style="padding-top:10px;padding-left:20px"><input name="mycheckbox"  type="checkbox" data-id="' + data[i].FileId + '"  value="' + data[i].FileName + '" />' + data[i].FileName + data[i].FileExtensions + '</label>';
+
+                        }
+
+
+                    }
+                    $ck.append(_html);
+                }
+
+            }
+        });
+    }
+    function checkSet(g) {
+        jQuery('#Timeset input').each(function (i, o) {
+            if (g != o) {
+                jQuery(o).attr("checked", false);
+            } else {
+                setTime = jQuery(g).val();
+            }
+        })
+
+
+    }
+
+    function getTable() {
+        var data = new Array();
+        $("#Answerchckbox input").each(function (i, o) {
+
+
+                data.push(jQuery(this).val())
+
+        })
+        return data
+    }
+    function getCk() {
+        var data = new Array();
+        $("input[name=answerOne]").each(function (i, o)  {
+
+            var ck = $(o).is(":checked");
+            if (ck) {
+            data.push(jQuery(this).val())
+            }
+        })
+        return data
+    }
+    //保存表单;
+    function AcceptClick() {
+        var postData = $("#form1").formSerialize();
+        // postData["deleteStr"] = JSON.stringify(deleteStr);
+        //postData["answer"] = Table;
+        var cktype = $("#topictype").val();
+        var fileStr = "";
+        $("input[name=mycheckbox]").each(function (i, o) {
+            if ($(o).is(":checked")) {
+                fileStr += $(o).attr("data-id") + ",";
+
+            }
+
+        })
+        fileStr = fileStr.substr(0, fileStr.length - 1);
+        if (fileStr.length == 0) {
+            dialogMsg('请选择材料！', -1);
+            return;
+        }
+        var title = $("#topictitle").val();
+        if (!title) {
+            dialogMsg('请填写题目！', -1);
+            return;
+        }
+        postData["outkeyvalue"] = outvalue;
+        postData["fileids"] = fileStr;
+        if (cktype != "判断题") {
+            var cklength = $("#Answerchckbox input").length;
+            if (cklength<3) {
+                dialogMsg('至少需要添加3个选项！', -1);
+                return;
+            }
+            var Table = getTable();
+            var getck = getCk();
+            var TheAnswer = [];
+
+            if (getck.length == 0) {
+                dialogMsg('请选择正确项！', -1);
+                return;
+            }
+            if (cktype == "多选题") {
+                if (getck.length <= 1) {
+                    dialogMsg('多选题选择两个及两个以上答案！', -1);
+                    return;
+                }
+            }
+            for (var i = 1; i <= Table.length; i++) {
+                if ($.trim(Table[i - 1]) == "") {
+                    dialogMsg('答案不能为空！', -1);
+                    return;
+                } else {
+                    var answer = {};
+                    var code = "";
+                    switch (i) {
+                        case 1:
+                            code = "A";
+                            break;
+                        case 2:
+                            code = "B";
+                            break;
+                        case 3:
+                            code = "C";
+                            break;
+                        case 4:
+                            code = "D";
+                            break;
+                        case 5:
+                            code = "E";
+                            break;
+                        case 6:
+                            code = "F";
+                            break;
+
+                    }
+                    $("input[name=answerOne]").each(function (i, o) {
+                        var ck = $(o).is(":checked");
+                        if (ck) {
+                        if ($(o).val() == code) {
+                            answer["istrue"] = true;
+                        }
+                    }
+                    })
+                    postData["outkeyvalue"] = outvalue;
+                    answer["answer"] = code;
+                    answer["description"] = $.trim(Table[i - 1]);
+                    TheAnswer.push(answer);
+                }
+            }
+            postData["TheAnswer"] = TheAnswer;
+        } else {
+            var ck = $("#istrue").val();
+
+            postData["istrue"] = ck;
+
+        }
+        //postData["entity"] = entity;
+        $.SaveForm({
+            url: "@Url.Action("SaveData")",
+            param: { entity: JSON.stringify(postData) },
+            loading: "正在保存数据...",
+            success: function () {
+                top.jQuery('#Form').get(0).contentWindow.GridreloadGrid();
+            }
+        })
+    }
+
+
+
+
+</script>

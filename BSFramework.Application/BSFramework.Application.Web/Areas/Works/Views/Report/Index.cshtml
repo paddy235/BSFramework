@@ -1,0 +1,262 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group a.btn {
+            margin-top: 4px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+    .page {
+        height: 26px;
+        line-height: 24px;
+        border: 1px solid gray;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+        .page li {
+            height: 24px;
+            float: left;
+            padding: 0px 2px;
+        }
+
+    .page-current {
+        background-color: #337ab7;
+        color: white;
+    }
+
+    .ui-jqgrid tr.jqgrow td {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+@section Scripts {
+    <script>
+        var selectedRowIndex;
+
+        jQuery(function () {
+            $(window).resize(function (e) {
+                window.setTimeout(function () {
+                    $('#grid').setGridWidth(($('.gridPanel').width()));
+                    $("#grid").setGridHeight($(window).height() - 140);
+                }, 200);
+                e.stopPropagation();
+            });
+
+            $("#queryCondition .dropdown-menu li").click(function () {
+                var text = $(this).find('a').html();
+                var value = $(this).find('a').attr('data-value');
+                $("#queryCondition .dropdown-text").html(text).attr('data-value', value)
+            });
+
+            jQuery('.page li').click(function () {
+                if (!jQuery(this).hasClass('page-current')) {
+                    jQuery('.page li').removeClass('page-current');
+                    jQuery(this).addClass('page-current');
+                    fn$setcolumn(jQuery('.page-current').data('category'));
+                    fn$query();
+                }
+            });
+
+            jQuery('#grid').jqGrid({
+                autowidth: true,
+                colModel: [
+                    { label: '主键', name: 'ReportId', hidden: true, align: 'center', key: true },
+                    {
+                        label: '操作', name: 'action', width: 80, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                            var html = "";
+                            html += "<a href=\"javascript:fn$detail('" + rowObject.ReportId + "')\" title=\"查看\" style=\"color:blue;padding-left:0px;\">查看</a> ";
+                            return html;
+                        }
+                    },
+                    {
+                        label: '时间', name: 'ReportTime1', index: 'ReportTime1', width: 320, align: 'center', sortable: false
+                    },
+                    { label: '开始时间', name: 'StartTime', index: 'StartTime', width: 180, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }, hidden: true },
+                    { label: '截止时间', name: 'EndTime', index: 'EndTime', width: 180, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }, hidden: true },
+                    { label: '总结类型', name: 'ReportType', index: 'ReportType', width: 100, align: 'center', sortable: false, hidden: true },
+                    { label: '提交人', name: 'ReportUser', index: 'ReportUser', width: 180, align: 'center', sortable: false },
+                    { label: '本周工作总结', name: 'ReportContent', index: 'ReportContent', width: 300, align: 'center', sortable: false },
+                    { label: '本周已完成工作', name: 'Tasks', index: 'Tasks', width: 300, align: 'center', sortable: false, },
+                    { label: '本周未完成工作', name: 'Undo', index: 'Undo', width: 300, align: 'center', sortable: false, },
+                    { label: '下周工作重点', name: 'Plan', index: 'Plan', width: 300, align: 'center', sortable: false, },
+                    { label: '需协调工作', name: 'Cantdo', index: 'Cantdo', width: 300, align: 'center', sortable: false, hidden: true },
+                    {
+                        label: '本月工作内容', name: 'FilePath', index: 'FilePath', width: 300, align: 'center', sortable: false, hidden: true, formatter: function (cellvalue, options, rowObject) {
+                            if (!cellvalue) return '';
+
+                            var html = "";
+                            html += "<a href=\"" + cellvalue + "\" title=\"查看\" style=\"color:blue;padding-left:0px;\">本月工作内容</a> ";
+                            return html;
+                        }
+                    },
+                ],
+                height: $(window).height() - 140,
+                url: '@Url.Action("GetData")',
+                datatype: "json",
+                mtype: 'POST',
+                postData: { category: jQuery('.page li.page-current').data('category') },
+                viewrecords: true,
+                gridview: true,
+                sortable: false,
+                shrinkToFit: true,
+                rowNum: 20,
+                rownumbers: true,
+                pager: "#gridPager",
+                gridComplete: function () {
+                    var gridid = this.id;
+                    $("#" + this.id).setSelection(selectedRowIndex, false);
+                    var rows = $("#" + this.id).jqGrid("getRowData");
+                    jQuery.each(rows, function (i, o) {
+                        $("td[aria-describedby='" + gridid + "_ReportTime1']").eq(i).html(o.StartTime + " ~ " + o.EndTime);
+                    });
+                }
+            });
+        });
+
+
+        function fn$setcolumn(category) {
+            if (category == "月工作总结") {
+                jQuery('#grid').jqGrid('setLabel', 'ReportContent', '本月工作总结');
+                jQuery('#grid').jqGrid('setLabel', 'Plan', '下月工作计划');
+                jQuery('#grid').jqGrid('showCol', 'Cantdo');
+                jQuery('#grid').jqGrid('hideCol', 'Tasks');
+                jQuery('#grid').jqGrid('hideCol', 'Undo');
+                jQuery('#grid').jqGrid('showCol', 'FilePath');
+                jQuery('#grid').jqGrid('setGridWidth', jQuery(window).width() - 22, true);
+            } else {
+                jQuery('#grid').jqGrid('setLabel', 'ReportContent', '本周工作总结');
+                jQuery('#grid').jqGrid('setLabel', 'Plan', '下周工作重点');
+                jQuery('#grid').jqGrid('hideCol', 'Cantdo');
+                jQuery('#grid').jqGrid('showCol', 'Tasks');
+                jQuery('#grid').jqGrid('showCol', 'Undo');
+                jQuery('#grid').jqGrid('hideCol', 'FilePath');
+                jQuery('#grid').jqGrid('setGridWidth', jQuery(window).width() - 6, true);
+            }
+        }
+
+        function fn$query() {
+            var args = { category: jQuery('.page li.page-current').data('category'), start: jQuery('#start').val(), end: jQuery('#end').val(), key: jQuery('#key').val() }
+            jQuery('#grid').jqGrid('setGridParam', { postData: args, page: 1 }).trigger("reloadGrid");
+        }
+
+        function fn$all() {
+            jQuery('#start').val('');
+            jQuery('#end').val('');
+            jQuery('#key').val('');
+            fn$query();
+        }
+
+        function fn$build() {
+            jQuery.post('@Url.Action("Build")', function (data) {
+                jQuery('#btn_Search').click();
+            }, 'json');
+        }
+
+        function fn$detail(id) {
+            var reporttype = jQuery('#grid').jqGrid('getCell', id, 'ReportType');
+            if (reporttype == "周工作总结") {
+                dialogOpen({
+                    id: "Detail",
+                    title: '工作总结详情',
+                    url: '/../@Url.Action("Detail1")/' + id,
+                    width: "800px",
+                    height: "500px",
+                    btn: null,
+                    callBack: function (iframeId) {
+                        top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                    }
+                });
+            } else {
+                dialogOpen({
+                    id: "Detail",
+                    title: '工作总结详情',
+                    url: '/../@Url.Action("Detail2")/' + id,
+                    width: "800px",
+                    height: "500px",
+                    btn: null,
+                    callBack: function (iframeId) {
+                        top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                    }
+                });
+            }
+        }
+
+        function fn$setting() {
+            dialogOpen({
+                id: "Settings",
+                title: '设置',
+                url: '/../@Url.Action("SettingDetail")',
+                width: "900px",
+                height: "300px",
+                //btn: '',
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.fn$ok();
+                }
+            });
+        }
+    </script>
+}
+<div class="titlePanel">
+    <div class="title-search">
+        <div class="form-inline">
+            <div class="form-group">
+                @*<label for="person">总结类型</label>
+                    <select id="category" class="form-control" style="width:120px">
+                        <option>全部</option>
+                        <option>周工作总结</option>
+                        <option>月工作总结</option>
+                    </select>*@
+                <ul class="page">
+                    <li class="page-current" data-category="周工作总结">周工作总结</li>
+                    <li data-category="月工作总结">月工作总结</li>
+                </ul>
+            </div>
+            <div class="form-group">
+                <label for="start">日期</label>
+                <input type="text" class="form-control" id="start" onfocus="WdatePicker();" readonly="readonly">
+                - <input type="text" class="form-control" id="end" onfocus="WdatePicker();" readonly="readonly">
+            </div>
+            <div class="form-group">
+                <label for="key">提交人</label>
+                <input type="text" class="form-control" id="key">
+            </div>
+            <div class="form-group">
+                <a id="btn_Search" class="btn btn-primary" onclick="fn$query();"><i class="fa fa-search"></i>查询</a>
+                <a id="build" class="btn btn-primary" onclick="fn$all();"><i class="fa fa-search"></i>全部</a>
+            </div>
+        </div>
+    </div>
+    <div class="toolbar">
+        <div class="btn-group">
+            @*<a id="add" class="btn btn-default" onclick="fn$add()"><i class="fa fa-plus"></i>&nbsp;新增</a>*@
+            <a id="setting" class="btn btn-default" onclick="fn$setting()"><i class="fa fa-cog"></i>&nbsp;设置</a>
+        </div>
+        @*<div class="btn-group">
+                <a id="lr-delete11" class="btn btn-default" onclick="btn_delete()"><i class="fa fa-sitemap"></i>&nbsp;组织架构图</a>
+            </div>*@
+        <script>$('.toolbar').authorizeButton()</script>
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="grid"></table>
+    <div id="gridPager"></div>
+</div>

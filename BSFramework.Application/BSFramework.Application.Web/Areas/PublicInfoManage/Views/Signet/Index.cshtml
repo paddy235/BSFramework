@@ -1,0 +1,48 @@
+﻿@{
+    ViewBag.Title = "电子盖章";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<link href="~/Content/styles/framework-bill.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/signet/jquery.zsign.js"></script>
+<link href="~/Content/scripts/plugins/signet/jquery.zsign.css" rel="stylesheet" />
+<script>
+    $(function () {
+      
+        $(".price-box").zSign({ img: '/Content/scripts/plugins/signet/signet.gif' });
+    })
+</script>
+<div class="price-box">
+    <div class="price-title">
+         
+    </div>
+    <div class="price-subtitle">
+        
+    </div>
+    <div class="price-title">
+        
+    </div>
+    <div class="price-info">
+       
+    </div>
+    <div class="price-table">
+        
+    </div>
+    <div class="price-info">
+        <table class="form">
+            <tr>
+                <th class="formTitle">日&nbsp;&nbsp;&nbsp;&nbsp;期：</th>
+                <td class="formValue">
+                    <input type="text" class="form-control" style="width: 150px" />
+                </td>
+            </tr>
+        </table>
+        <table class="form">
+            <tr>
+                <th class="formTitle">签&nbsp;&nbsp;&nbsp;&nbsp;字：</th>
+                <td class="formValue">
+                    <input type="text" class="form-control" style="width: 150px" />
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

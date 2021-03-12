@@ -1,0 +1,1192 @@
+﻿@model BSFramework.Application.Entity.PeopleManage.PeopleEntity
+@using BSFramework.Application.Entity.LllegalManage
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/person.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/app.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/record.css")" />
+<script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>
+<script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<link rel="stylesheet" href="@Url.Content("~/Content/scripts/plugins/bootstrap-select/bootstrap-select.min.css")" />
+<script src="@Url.Content("~/Content/scripts/plugins/bootstrap-select/bootstrap-select.min.js")"></script>
+<script>
+    $(function () {
+        //获取菜单(菜单控制)
+        InitMenu($("ul"), undefined);
+    })
+    var keyValue = '@ViewBag.Id';
+    $(document).keydown(function (event) {
+        switch (event.keyCode) {
+            case 13: return false;
+        }
+    });
+
+    $(function () {
+        $("#quartersel").change(function () {
+            var val = $("#quartersel").val();
+            $("#Planer").val(val);
+            $(".selectpicker").selectpicker("refresh");
+            var quar = $("button[data-id='quartersel']").attr("title");
+            $("#Quarters").val(quar);
+        });
+        //$(".selectpicker").selectpicker("refresh");
+        var q = '@Model.Planer';
+        var arr = q.split(',');
+        $("#quartersel").selectpicker('val', arr);
+
+        var name = $('#RoleDutyId option:selected').text();
+        $("#RoleDutyName").val(name);
+        $("#RoleDutyId").change(function () {
+
+            name = $('#RoleDutyId option:selected').text();
+            $("#RoleDutyName").val(name);
+        });
+        //根据index，默认选中选项卡
+        @*alert(@ViewBag.index);
+        var $this = $(this);
+        var index = 2;
+        $this.addClass('active').siblings('li').removeClass('active');
+        $('.show-div>div').eq(index).show().siblings('div').hide();*@
+        var idc = $('#IdentityNo').val();
+        //if (idc) {
+        //    $('#IdentityNo').attr('readonly', 'readonly');
+        //}
+        if ('@ViewBag.Tel' != '0') {
+
+            //alert('手机号已存在，请重新输入！');
+            return;
+
+        }
+        if ('@ViewBag.labour' != '0') {
+
+            //alert('工号已存在，请重新输入！');
+            return;
+        }
+        if ('@ViewBag.Show' == 'init') {
+            $('#IdentityNo').val(idc.substring(0, 6) + '************');
+        }
+        if ('@ViewBag.Result' != '0') {   //新增成功
+            $('#modal23').modal('show');
+
+        }
+        $('#uploadFile').change(cp);
+        jQuery('.sf').Validform({
+            tiptype: 3
+        });
+        $('.main-content').niceScroll({
+            autohidemode: false
+        });
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#Birthday',
+                type: 'date'
+            });
+            laydate.render({
+                elem: '#EntryDate',
+                type: 'date'
+            });
+        })
+
+        $(window).resize(function () {
+            setW();
+        }).trigger('resize');
+    });
+    //z设置高度
+    function setW() {
+        var h = $(window).height();
+        $('.body').css('min-height', h - 270);
+    }
+
+    function cp() {
+        $.ajaxFileUpload({
+            url: "@Url.Action("UploadFile")",
+            secureuri: false,
+            fileElementId: 'uploadFile',
+            dataType: 'json',
+            success: function (data) {
+                if (top.document.getElementById('photo') != undefined) {
+
+                    top.document.getElementById('photo').src = top.contentPath + data.resultdata;
+                }
+                document.getElementById('uploadPreview').src = top.contentPath + data.resultdata;
+                $("#tempImageSrc").val(top.location.origin + top.contentPath + data.resultdata);
+                $('#uploadFile').change(cp);
+            }
+        });
+    }
+    function t2() {
+        $('#modal7').modal('hide');
+        $('#modal4').modal('show');
+    };
+    function t1() {
+        $('#modal5').modal('hide');
+        $('#modal6').modal('show');
+    };
+    function rew() {
+        $('#modal5').modal('show');
+        var pwd = '@ViewBag.Pwd';
+        var md5pwd = $.md5(pwd);
+        //var t = window.setTimeout(t1, 3000);
+        //window.clearTimeout(t);
+        $.ajax({
+            url: '@Url.Action("Reset")',
+            type: 'post',
+            data: { id: keyValue, pwd: md5pwd,npwd:pwd },
+            success: function (data) {
+
+                $('#modal5').modal('hide');
+                $('#modal6').modal('show');
+            }
+        });
+
+
+    }
+
+    function showm3() {
+        $('#modal3').modal('show');
+    }
+    function changepwd1() {
+        var npwd = $('#NewPassword1').val();
+        var rpwd = $('#ReNewPassword').val();
+        if (npwd != rpwd) {
+            alert('两次输入的密码不相同，请重新输入！');
+            return;
+        } else {
+            $('#modal3').modal('hide');
+            $('#modal4').modal('show');
+            npwd = $.md5(npwd);
+            //var t = window.setTimeout(t2, 3000);
+            //window.clearTimeout(t);
+            //setInterval(function () {
+            //    $('#modal7').modal('show');
+            //    $('#modal4').modal('hide');
+            //}, 3000);
+            $.ajax({
+                url: '@Url.Action("ChangeForm")',
+                type: 'post',
+                data: { id: keyValue, pwd: npwd, npwd: rpwd },
+                success: function (data) {
+                        $('#modal7').modal('show');
+                        $('#modal4').modal('hide');
+
+                }
+            });
+        }
+
+    }
+    function setbir() {
+        var val = $('#IdentityNo').val();
+        var ndate = new Date();
+        var nyear = ndate.getFullYear();
+        var nmonth = ndate.getMonth() + 1;
+        var nday = ndate.getDate();
+        if (val != "" && val.length > 14) {
+            var year = val.substr(6, 4);
+            var mon = val.substr(10, 2);
+            var day = val.substr(12, 2);
+            if (parseInt(mon) <= 12 && parseInt(day) <= 31 && parseInt(mon) > 0 && parseInt(day) > 0) {
+
+                var bir = year + '-' + mon + '-' + day;
+                $('#Birthday').val(bir);
+
+                var age = nyear - parseInt(year);
+                if (nmonth == parseInt(mon)) {
+                    var daydif = nday - parseInt(day);
+                    if (daydif < 0) {
+                        age = age - 1;
+                    }
+                } else {
+                    var mondif = nmonth - parseInt(mon);
+                    if (mondif < 0) {
+                        age = age - 1;
+                    }
+                }
+                $('#Age').val(age);
+            } else {
+                $('#modal28').modal('show');
+            }
+        }
+    }
+    function finalvalid()
+    {
+        var tel = $('#LinkWay').val();
+        if (tel) {
+            $.ajax({
+                url: '@Url.Action("ValidTel")',
+                type: 'post',
+                data: { tel: tel },
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.resultdata.tel == "1")
+                    {
+                        $('#LinkWay').val('');
+                        $('#modal35').modal('show');
+                       // r= false;
+                    }
+                }
+            });
+        }
+    }
+    function valid() {
+        var r = true;
+        //var a = parseInt($('#WorkAge').val());
+        //var b = parseInt($('#CurrentWorkAge').val());
+        //if (b > a) {
+        //    r = false;
+        //    $('#modal22').modal('show');
+
+        //}
+        //var sex = $('#Sex').val();
+        //if (sex == "请选择") {
+        //    r = false;
+        //    $('#modal22').modal('show');
+        //}
+        //var age = parseInt($('#WorkAge').val());
+        //if()
+        return r;
+    }
+</script>
+<style type="text/css">
+    label span {
+        padding-left: 5px;
+        color: red;
+    }
+
+    select {
+        width: 150px;
+        height: 40px;
+    }
+
+        select option {
+            text-align: center;
+            font-size: 18px;
+        }
+
+    .my-input {
+        padding: 10px;
+    }
+
+    .file input {
+        position: absolute;
+        font-size: 100px;
+        right: 0;
+        top: 0;
+        opacity: 0;
+        cursor: pointer !important;
+    }
+
+    .file:hover {
+        text-decoration: none;
+        cursor: pointer !important;
+    }
+
+    .my-input {
+        padding: 0px 0px 0px 10px;
+    }
+
+        .my-input input[type="text"] {
+            position: relative;
+            z-index: 100;
+            background: none;
+        }
+
+    /* bootstrap-select 修改下拉框宽度及样式 */
+    .btn-group > .btn:first-child {
+        margin-left: 0;
+        border: none;
+        border-bottom: 2px solid #e3ebfd;
+    }
+
+    .bootstrap-select {
+        /*width: 220px;\9*/
+    }
+
+        .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+            /*width: 220px;*/
+            width: 100%;
+        }
+</style>
+
+<div class="main-content">
+    <div class="container-fluid" style="height:100%;">
+        @using (Html.BeginForm("Edit", "People", FormMethod.Post, new { @class = "sf", enctype = "multipart/form-data", @id = "upimg" }))
+        {
+            @Html.HiddenFor(x => x.BZCode);
+            @Html.HiddenFor(x => x.BZID);
+            @Html.HiddenFor(x => x.DeptCode);
+            @Html.HiddenFor(x => x.DeptId);
+            @Html.HiddenFor(x => x.DeptName);
+            @Html.HiddenFor(x => x.BZName);
+            @Html.Hidden("tempImageSrc");
+            @Html.HiddenFor(x => x.ID);
+            @Html.HiddenFor(x => x.Planer);
+            @Html.HiddenFor(x => x.RoleDutyName);
+
+            <div>
+                <div class="" style="overflow: hidden;">
+                    <div class="pull-left title">
+                        <a class="pull-left" href="@Url.Action("List", "People", new { page = 1, pagesize = 12 })"><img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">成员详情</a>
+
+                    </div>
+                </div>
+            </div>
+            <div class="bg-e3ebfd pd-10 my-body ">
+                <div class="bg-fff peccancy-list">
+                    <div class="body">
+                        <div class="tab-toggle">
+                            <ul class="nav nav-tabs" style="height:60px;">
+                                <li code="people_info" class="active"><a href="javascript:;">基础信息</a></li>
+                                <li code="people_train"><a href="javascript:;">培训档案</a></li>
+                                <li code="people_lllegal"><a href="javascript:;">违章档案</a></li>
+                                <li code="people_health"><a href="javascript:;">职业健康档案</a></li>
+                                <li code="people_other"><a href="javascript:;">其他档案</a></li>
+                            </ul>
+                            <div class="show-div" id="showcontent">
+                                <div class="bg-fff pd-20" style="display: block; ">
+                                    <div class="clearfix">
+                                        <div class="pull-left w-48- bd-2r-e3ebfd">
+                                            <div class="clearfix mg-b-20">
+                                                <table>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="clearfix mg-b-20" style="margin-left:100px;">
+                                                                <div class="file" style="width:102px; height: 126px;float:left;margin-top:18px;">
+                                                                    @if (string.IsNullOrEmpty(Model.Photo))
+                                                                    {
+                                                                        <img id="uploadPreview" style="width: 102px; height: 126px; " src="@Url.Content("~/Content/styles/static/images/user-icon.png")" />
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <img id="uploadPreview" style="width: 102px; height: 126px; " src="@Model.Photo" />
+                                                                    }
+                                                                    <input type="file" name="uploadFile" id="uploadFile" style="display:none;">
+                                                                </div>
+                                                                @if (ViewBag.Show == "init")
+                                                                {
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    <div style="float:left;margin-top:58px;margin-left:10px;">
+                                                                        <div style=" height:35px;width:70px;background-color:#3669e1;text-align:center;vertical-align:middle;margin-left:10px;">
+
+                                                                            <label for="uploadFile" style="margin-top:8px;height:100%;color:white;text-align:center;vertical-align:middle;font-size:11px;">上传照片</label>
+                                                                            @*<input type="hidden" id="tempImageSrc" />*@
+                                                                        </div>
+                                                                        <div>
+                                                                            <p style="color:gray;margin-top:5px; font-size:10px;">最佳尺寸：102*126</p>
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            @if (ViewBag.qr == "")
+                                                            {
+                                                                @*<div class="pull-left pd-8 bd-2-e3ebfd mg-l-30">
+                                                                        <img style="width: 126px; height: 126px;" id="erweima" src="@Url.Content("~/Content/styles/static/images/erweima.png")" alt="">
+                                                                    </div>*@
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="pull-left pd-8 bd-2-e3ebfd mg-l-30">
+                                                                    <img style="width: 126px; height: 126px;" id="erweima" src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = ViewBag.qr, area = "PublicInfoManage" })" alt="">
+                                                                </div>
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+
+                                            <div class="my-form-control">
+                                                <label>姓名<span>*</span></label>
+                                                <div>
+                                                    @Html.TextBoxFor(x => x.Name, new { nullmsg = "不能为空", datatype = "s1-100", placeholder = "请输入姓名" })
+
+                                                </div>
+                                            </div>
+                                            <div class="my-form-control">
+                                                <label>性别<span>*</span></label>
+                                                <div>
+                                                    @if (ViewBag.Show == "init")
+                                                    {
+                                                        @Html.TextBoxFor(x => x.Sex, Model.Sex == null ? "" : Model.Sex)
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.DropDownListFor(x => x.Sex, new SelectList(new string[] { "男", "女" }))
+                                                        @*//<input type="radio" value="1" id="man" name="Gender" />&nbsp;<label for="man">男</label>&nbsp;&nbsp;&nbsp;
+                                                            //<input type="radio" value="0" id="woman" name="Gender" />&nbsp;<label for="woman">女</label>*@
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="my-form-control">
+                                                <label>身份证号<span>*</span></label>
+                                                <div>
+                                                    @Html.TextBoxFor(x => x.IdentityNo, new { nullmsg = "不能为空", datatype = "idcard", maxlength = "18", placeholder = "请输入身份证号", @onchange = "setbir();" })
+                                                </div>
+                                            </div>
+
+                                            <div class="my-form-control">
+                                                <label>出生日期<span>*</span></label>
+                                                <div>
+
+                                                    @if (ViewBag.Show == "init")
+                                                    {
+                                                        @Html.TextBox("B", Model.Birthday.ToString("yyyy-MM-dd"))
+                                                    }
+                                                    else
+                                                    {
+                                                        @*<span class="my-input mg-r-15" style="padding:0px 0px 0px 10px; width:165px; height:52px;">*@
+                                                        @Html.TextBox("Birthday", Model.Birthday.ToString("yyyy-MM-dd"), new { style = "width:90%" })
+                                                        <img style="width:35px;padding-top:5px;height:38px;" src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                                                        @*</span>*@
+                                                    }
+
+
+                                                </div>
+                                            </div>
+
+
+                                            <div class="my-form-control">
+                                                <label>政治面貌<span>*</span></label>
+                                                <div>
+                                                    @if (ViewBag.Show == "init")
+                                                    {
+                                                        @Html.TextBoxFor(x => x.Visage, Model.Visage == null ? "" : Model.Visage)
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.DropDownListFor(x => x.Visage, new SelectList(new string[] { "中共党员", "共青团员", "民主党派", "群众" }))
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="my-form-control">
+                                                <label>手机号码<span>*</span></label>
+                                                <div>
+                                                    @Html.TextBoxFor(x => x.LinkWay, new { nullmsg = "不能为空", datatype = "m", maxlength = "11", placeholder = "请输入手机号码", @onchange = "finalvalid();" })
+                                                </div>
+                                            </div>
+                                            <div class="my-form-control" style="height:48px;">
+                                                <label>职务<span>*</span></label>
+                                                <div>
+                                                    @if (ViewBag.Show == "init")
+                                                    {
+                                                        @Html.TextBoxFor(x => x.Quarters, Model.Quarters == null ? "" : Model.Quarters)
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.DropDownList("quartersel", ViewData["qddl"] as SelectList, new { @multiple = "multiple", @class = "selectpicker" })
+                                                        @Html.HiddenFor(x => x.Quarters);
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="my-form-control">
+                                                <label>岗位<span>*</span></label>
+                                                <div>
+                                                    @if (ViewBag.Show == "init")
+                                                    {
+                                                        @Html.TextBoxFor(x => x.RoleDutyName, Model.RoleDutyName == null ? "" : Model.RoleDutyName)
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.DropDownListFor(x => x.RoleDutyId, ViewData["roles"] as SelectList)
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="my-form-control">
+                                                <label>民族</label>
+                                                <div>
+                                                    @if (ViewBag.Show == "init")
+                                                    {
+                                                        @Html.TextBoxFor(x => x.Folk, Model.Folk == null ? "" : Model.Folk)
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.DropDownListFor(x => x.Folk, ViewData["minzu"] as SelectList)
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="my-form-control">
+                                                <label>年龄</label>
+                                                <div>
+                                                    @Html.TextBoxFor(x => x.Age, new { placeholder = "请输入年龄", @onchange = "valid();", maxlength = "2" })
+                                                    @*@Html.ValidationMessageFor(model => model.Age, "请输入正确的年龄！")*@
+                                                </div>
+                                            </div>
+                                            <div class="my-form-control">
+                                                <label>籍贯</label>
+                                                <div>
+                                                    @if (ViewBag.Show == "init")
+                                                    {
+                                                        @Html.TextBoxFor(x => x.Native, Model.Native == null ? "" : Model.Native)
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.DropDownListFor(x => x.Native, ViewData["Provins"] as SelectList)
+                                                    }
+                                                </div>
+                                            </div>
+
+                                            <div class="my-form-control">
+                                                <label>原始学历</label>
+                                                <div>
+                                                    @if (ViewBag.Show == "init")
+                                                    {
+                                                        @Html.TextBoxFor(x => x.OldDegree, Model.OldDegree == null ? "" : Model.OldDegree)
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.DropDownListFor(x => x.OldDegree, new SelectList(new string[] { "请选择", "小学", "初中", "中专", "高中", "大专", "本科", "硕士", "博士", "博士后" }))
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="my-form-control">
+                                                <label>后期学历</label>
+                                                <div>
+                                                    @if (ViewBag.Show == "init")
+                                                    {
+                                                        @Html.TextBoxFor(x => x.NewDegree, Model.NewDegree == null ? "" : Model.NewDegree)
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.DropDownListFor(x => x.NewDegree, new SelectList(new string[] { "请选择", "小学", "初中", "中专", "高中", "大专", "本科", "硕士", "博士", "博士后" }))
+                                                    }
+                                                </div>
+                                            </div>
+
+                                            <div class="my-form-control">
+                                                <label>家庭住址</label>
+                                                <div>
+                                                    @Html.TextBoxFor(x => x.Address, new { placeholder = "请输入家庭地址" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="pull-right w-50-">
+                                            <div class="my-form-control">
+                                                <label>工号</label>
+                                                <div>
+                                                    @Html.TextBoxFor(x => x.LabourNo, new { placeholder = "请输入工号" })
+                                                </div>
+                                            </div>
+
+                                            <div class="my-form-control">
+                                                <label>部门</label>
+                                                <div>
+                                                    @Html.TextBox("newdeptname", Model.DeptName + " / " + Model.BZName, new { placeholder = "", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                            @*<div class="my-form-control" style="display:none;">
+                                                    <label>所属班组</label>
+                                                    <div>
+                                                        @Html.TextBoxFor(x => x.BZName, new { placeholder = "", @readonly = "readonly" })
+                                                    </div>
+                                                </div>*@
+                                            <div class="my-form-control">
+                                                <label>技术等级</label>
+                                                <div>
+                                                    @if (ViewBag.Show == "init")
+                                                    {
+                                                        @Html.TextBoxFor(x => x.TecLevel, Model.TecLevel == null ? "" : Model.TecLevel)
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.DropDownListFor(x => x.TecLevel, new SelectList(new string[] { "请选择", "初级", "中级", "高级", "技师", "高级技师" }))
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="my-form-control">
+                                                <label>职称</label>
+                                                <div>
+                                                    @if (ViewBag.Show == "init")
+                                                    {
+                                                        @Html.TextBoxFor(x => x.JobName, Model.JobName == null ? "" : Model.JobName)
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.DropDownListFor(x => x.JobName, ViewData["Job"] as SelectList)
+                                                    }
+                                                </div>
+                                            </div>
+
+                                            <div class="my-form-control">
+                                                <label>工种</label>
+                                                <div>
+                                                    @if (ViewBag.Show == "init")
+                                                    {
+                                                        @Html.TextBoxFor(x => x.WorkKind, Model.WorkKind == null ? "" : Model.WorkKind)
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.DropDownListFor(x => x.WorkKind, ViewData["wKind"] as SelectList)
+                                                    }
+                                                </div>
+                                            </div>
+                                            @*<div class="my-form-control">
+                                                    <label>工龄</label>
+                                                    <div>
+                                                        @Html.TextBoxFor(x => x.WorkAge, new { placeholder = "请输入工龄" })
+
+
+                                                    </div>
+                                                </div>*@
+                                            <div class="my-form-control">
+                                                <label>工种工龄</label>
+                                                <div>
+                                                    @Html.TextBoxFor(x => x.CurrentWorkAge, new { placeholder = "请输入工种工龄", @onchange = "valid();", maxlength = "2" })
+
+
+                                                </div>
+                                            </div>
+                                            <div class="my-form-control">
+                                                <label style="line-height:25px;">入厂（职）时间</label>
+                                                <div>
+
+                                                    @if (ViewBag.Show == "init")
+                                                    {
+                                                        @Html.TextBox("E", Model.EntryDate.ToString("yyyy-MM-dd"))
+                                                    }
+                                                    else
+                                                    {
+                                                        @*<span class="my-input mg-r-15" style="padding:0px 0px 0px 10px; width:165px; height:52px;">*@
+                                                        @Html.TextBox("EntryDate", Model.EntryDate.ToString("yyyy-MM-dd"), new { style = "width:90%" })
+                                                        <img style="width:35px;padding-top:5px;height:38px;" src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                                                        @*</span>*@
+                                                    }
+
+
+                                                </div>
+                                            </div>
+                                            <div class="my-form-control">
+                                                <label>健康状况</label>
+                                                <div>
+                                                    @if (ViewBag.Show == "init")
+                                                    {
+                                                        @Html.TextBoxFor(x => x.HealthStatus, Model.HealthStatus == null ? "" : Model.HealthStatus)
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.DropDownListFor(x => x.HealthStatus, new SelectList(new string[] { "请选择", "良好", "一般", "不良" }))
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="my-form-control">
+                                                <label>血型</label>
+                                                <div>
+                                                    @if (ViewBag.Show == "init")
+                                                    {
+                                                        @Html.TextBoxFor(x => x.Remark, Model.Remark == null ? "" : Model.Remark)
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.DropDownListFor(x => x.Remark, new SelectList(new string[] { "请选择", "A", "B", "AB", "O" }))
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="my-form-control">
+                                                <label style="line-height:25px;">是否为特种作业人员</label>
+                                                <div>
+                                                    @if (ViewBag.Show == "init")
+                                                    {
+                                                        @Html.TextBoxFor(x => x.IsSpecial, Model.IsSpecial == null ? "" : Model.IsSpecial)
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.DropDownListFor(x => x.IsSpecial, new SelectList(new string[] { "否", "是" }))
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="my-form-control">
+                                                <label style="line-height:25px;">是否为特种设备作业人员</label>
+                                                <div>
+                                                    @if (ViewBag.Show == "init")
+                                                    {
+                                                        @Html.TextBoxFor(x => x.IsSpecialEquipment, Model.IsSpecialEquipment == null ? "" : Model.IsSpecialEquipment)
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.DropDownListFor(x => x.IsSpecialEquipment, new SelectList(new string[] { "否", "是" }))
+                                                    }
+                                                </div>
+                                            </div>
+                                            @*<div class="clearfix">
+                                                    <div class="pull-left w-48-">
+                                                        <div class="my-form-control">
+                                                            <label>指纹录入</label>
+                                                            <div class="pd-t-60">
+                                                                <img src="~/Content/static/images/temp/zhiwen.png" alt="">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="pull-left w-48-">
+                                                        <div class="my-form-control">
+                                                            <label>电子签名</label>
+                                                            <div class="pd-t-60">
+                                                                <img src="~/Content/static/images/temp/qianming.png" alt="">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>*@
+                                            @if (ViewBag.Show == "init")
+                                            {
+                                                @*<div class="text-right mg-b-10" id="ed">
+                                                        <button class="my-btn bd-3669e1 c-3669e1 bg-fff" onclick="rew(); return false;">重置密码</button>&nbsp; &nbsp; &nbsp;
+                                                        <button class="my-btn bd-3669e1 c-3669e1 bg-fff" onclick="showm3(); return false;">修改密码</button>&nbsp; &nbsp; &nbsp;
+                                                    </div>*@
+                                            }
+                                            else
+                                            {
+                                                <div class="text-right mg-b-10" id="ed">
+                                                    @*<button type="button" onclick="FingerEntry();" class="my-btn bg-3669e1">录入指纹</button>
+                                                        <button type="button" onclick="FaceEntry();" class="my-btn bg-3669e1">录入人脸</button>*@
+                                                    <button class="my-btn bd-3669e1 c-3669e1 bg-fff" onclick="rew(); return false;">重置密码</button>&nbsp; &nbsp; &nbsp;
+                                                    <button class="my-btn bd-3669e1 c-3669e1 bg-fff" onclick="showm3(); return false;">修改密码</button>&nbsp; &nbsp; &nbsp;
+                                                    <button type="submit" class="my-btn bg-3669e1">保存</button>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <iframe id="pxfrm" style="width:100%;height:700px;border:none;padding:0px;margin:0px;" src=@(ViewData["EduPageUrl"] + "/page/businesspage/UserRecord/trainstat_search.aspx?data=" + ViewData["valCode"])></iframe>
+
+                                </div>
+                                <div>
+                                    <iframe id="llfrm" style="width:100%;height:700px;border:none;padding:0px;margin:0px;" src="@Url.Action("GetLList", new { id = @Model.ID, page = 1, pagesize = 12 })"></iframe>
+                                </div>
+                                <div>
+                                    <table class="table text-center table-striped no-mg vertical">
+                                        <thead>
+                                            <tr>
+                                                <th width="10%" class="bg-fff">序号</th>
+                                                <th width="60%" class="bg-fff">名称</th>
+                                                <th width="30%" class="bg-fff">操作</th>
+                                            </tr>
+                                        </thead>
+
+                                    </table>
+                                </div>
+                                <div>
+                                    <table class="table text-center table-striped no-mg vertical">
+                                        <thead>
+                                            <tr>
+                                                <th width="10%" class="bg-fff">序号</th>
+                                                <th width="10%" class="bg-fff">证书名称</th>
+                                                <th width="10%" class="bg-fff">证书编号</th>
+                                                <th width="10%" class="bg-fff">发证日期</th>
+                                                <th width="10%" class="bg-fff">复审日期</th>
+                                                <th width="10%" class="bg-fff">有效日期</th>
+                                                <th width="20%" class="bg-fff">操作</th>
+                                            </tr>
+                                        </thead>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="main-footer">
+                武汉博晟安全技术股份有限公司   版权所有
+            </footer>
+        }
+    </div>
+</div>
+}
+
+<script>
+    $(function () {
+        $("#Age,#WorkAge,#CurrentWorkAge").keyup(function () {
+            if (this.value.length == 1) { this.value = this.value.replace(/[^1-9]/g, '') } else { this.value = this.value.replace(/\D/g, '') }
+        });
+        //$("#Age,#WorkAge,#CurrentWorkAge").afterpaste(function () {
+        //    if (this.value.length == 1) { this.value = this.value.replace(/[^1-9]/g, '') } else { this.value = this.value.replace(/\D/g, '') }
+        //});
+
+    });
+</script>
+<div class="modal fade launch-modal" id="modal3" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">修改密码</h4>
+            </div>
+            <div class="modal-body">
+                <table class="form" style="margin-top: 20px;">
+                    @*<tr>
+                            <td class="formTitle" style="height: 20px;"></td>
+                            <td>
+                                <p style="color: #959393; padding-left: 8px;">为了保护您的帐号安全，操作前请您进行安全验证</p>
+                            </td>
+                        </tr>*@
+                    @*<tr>
+                            <td class="formTitle">旧密码<font face="宋体">*</font></td>
+                            <td class="formValue">
+                                <input id="OldPassword" type="password" class="form-control input-profile" style="float: left;" />
+                                <div style="width: 250px; float: left"></div>
+                            </td>
+                        </tr>*@
+                    <tr>
+                        <td class="formTitle">新密码<font face="宋体">*</font></td>
+                        <td class="formValue">
+                            <input id="NewPassword1" type="password" class="form-control input-profile" style="float: left;" />
+                            <div style="width: 180px; float: left"></div>
+                        </td>
+                    </tr>
+                    <tr style="height:35px;"></tr>
+                    <tr>
+                        <td class="formTitle">重复新密码<font face="宋体">*</font></td>
+                        <td class="formValue">
+                            <input id="ReNewPassword" type="password" class="form-control input-profile" style="float: left;" />
+                            <div style="width: 180px; float: left"></div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="text-center mg-t-20 mg-b-20">
+
+                    <button class="my-btn bg-3669e1" onclick="changepwd1(); return false;">确认</button>
+                    <button class="my-btn bd-3669e1 c-3669e1 bg-fff" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade launch-modal" id="modal4" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">修改密码</h4>
+            </div>
+            <div class="modal-body">
+                <h2>修改中，请稍后 . . .</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade launch-modal" id="modal5" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">重置密码</h4>
+            </div>
+            <div class="modal-body">
+                <h2>重置中，请稍后 . . .</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade launch-modal" id="modal6" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content" style="height:200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">重置密码</h4>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>操作成功，请牢记您的新密码！</h4>
+            </div>
+            <div class="text-center mg-t-10" style="margin-top:10px;">
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" data-dismiss="modal">完成</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade launch-modal" id="modal7" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content" style="height:200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">修改密码</h4>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>修改成功，请牢记您的新密码！</h4>
+            </div>
+            <div class="text-center mg-t-10" style="margin-top:10px;">
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" data-dismiss="modal">完成</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade launch-modal" id="modal23" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content" style="height:200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">修改</h4>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>保存成功！</h4>
+            </div>
+            <div class="text-center mg-t-10" style="margin-top:10px;">
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" data-dismiss="modal">完成</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade launch-modal" id="modal22" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content" style="height:200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">验证输入</h4>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>工种工龄不能大于工龄！</h4>
+            </div>
+            <div class="text-center mg-t-10" style="margin-top:10px;">
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" data-dismiss="modal">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade launch-modal" id="modal35" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content" style="height:200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">验证输入</h4>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>手机号已存在请重新输入！</h4>
+            </div>
+            <div class="text-center mg-t-10" style="margin-top:10px;">
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" data-dismiss="modal">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade launch-modal" id="modal28" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content" style="height:200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">验证输入</h4>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>请输入正确的身份证号！</h4>
+            </div>
+            <div class="text-center mg-t-10" style="margin-top:10px;">
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" data-dismiss="modal">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade launch-modal" id="modal24" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content" style="height:200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">验证输入</h4>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>请选择性别！</h4>
+            </div>
+            <div class="text-center mg-t-10" style="margin-top:10px;">
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" data-dismiss="modal">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade launch-modal" id="modal25" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content" style="height:200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">验证输入</h4>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>请选择岗位！</h4>
+            </div>
+            <div class="text-center mg-t-10" style="margin-top:10px;">
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" data-dismiss="modal">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade launch-modal" id="modal26" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content" style="height:200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">验证输入</h4>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>请选择性别！</h4>
+            </div>
+            <div class="text-center mg-t-10" style="margin-top:10px;">
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" data-dismiss="modal">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade launch-modal" id="modal27" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content" style="height:200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">验证输入</h4>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>请选择政治面貌！</h4>
+            </div>
+            <div class="text-center mg-t-10" style="margin-top:10px;">
+                <button class="btn bg-3669e1 c-fff" style="width:200px;" data-dismiss="modal">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="div1" class="text-center c-0d0d0d f-18 pd-t-20 pd-b-20" style="display:block;">
+    <div style="height: 294px; line-height: 294px; background: url(../../Content/images/init-bg.png) center center no-repeat; font-size: 24px; color: #888888; text-align: center; ">
+        请将您的手指按在感应区域
+    </div>
+</div>
+
+@*<script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>*@
+
+@*<script src="@Url.Content("~/Content/scripts/bootstrap/bootstrap.min.js")"></script>*@
+<script src="@Url.Content("~/Content/scripts/nicescroll/nicescroll.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script>
+    $(function () {
+
+        $('.main-sidebar,.main-content').niceScroll({
+            autohidemode: false
+        });
+        $('.table-today tr').hover(function () {
+            $(this).addClass('hover');
+        }, function () {
+            $(this).removeClass('hover');
+        });
+        $('.table-today tr').click(function () {
+            $(this).toggleClass('actives');
+        })
+        console.log($('.user').innerWidth())
+        $('.user>.dropdown-menu').css({
+            left: $('.user').innerWidth() - $('.user>.dropdown-menu').width() - 65
+        });
+        $('.list-item').hover(function () {
+            $(this).children('div').stop().animate({
+                top: 0
+            }, 500);
+        }, function () {
+            $(this).children('div').stop().animate({
+                top: '194px'
+            }, 500);
+        });
+        //$('#tab li').click(function () {
+
+        //    var index = $(this).index();
+        //    $(this).addClass('active').siblings().removeClass('active');
+        //    $('.tab-item ').eq(index).addClass('show').siblings().removeClass('show');
+        //});
+        $('.nav li').click(function () {
+            var $this = $(this);
+            var index = $this.index();
+            $this.addClass('active').siblings('li').removeClass('active');
+            $('.show-div>div').eq(index).show().siblings('div').hide();
+        })
+    });
+
+    /**
+        指纹录入
+    */
+    function FingerEntry() {
+        //弹出提示对话框，提示用户正确放置身份证
+        iframeIndex = layer.open({
+            type: 1,
+            title: '提示',
+            content: $('#div1'),
+            area: ['500px', '420px']
+        });
+
+        //主动读取壳子的返回信息
+        GetFingerInfo();
+    }
+
+    //定时执行句柄
+    var fingerEntryHandler = null;
+    //获取指纹信息
+    function GetFingerInfo() {
+        fingerEntryHandler = setTimeout(function () {
+            var finger = JsObj.ReadCard();
+            if (finger.length > 0) {
+                GetFingerInfoSuccess(finger);
+                clearTimeout(idCardHandler);
+            }
+            else {
+                GetFingerInfo();
+            }
+
+        }, 100);
+    }
+
+    //获取指纹信息成功后的处理
+    function GetFingerInfoSuccess(finger) {
+        var userId = document.getElementById("ID").value;
+        $.ajax({
+            url:"../../People/UpdateUserFinger",
+            data: { finger: finger, userId: userId },
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                layer.close(iframeIndex);
+                layer.alert(data.message);
+            },
+            error: function ()
+            {
+                layer.close(iframeIndex);
+                layer.alert("上传指纹特征失败，请重试！");
+            }
+        });
+    }
+
+    /**
+        人脸录入
+    */
+    function FaceEntry() {
+        //调用人脸录入API
+        finger = JsObj.ReadCard();
+    }
+
+</script>

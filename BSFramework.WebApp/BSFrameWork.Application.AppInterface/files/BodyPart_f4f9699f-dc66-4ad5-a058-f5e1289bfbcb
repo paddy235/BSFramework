@@ -1,0 +1,507 @@
+Error: 2019-09-25 09:14:45-1569374085763
+Login Request
+java.net.ConnectException: Failed to connect to /192.168.1.155:8899
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.java:240)
+	at okhttp3.internal.connection.RealConnection.connect(RealConnection.java:158)
+	at okhttp3.internal.connection.StreamAllocation.findConnection(StreamAllocation.java:256)
+	at okhttp3.internal.connection.StreamAllocation.findHealthyConnection(StreamAllocation.java:134)
+	at okhttp3.internal.connection.StreamAllocation.newStream(StreamAllocation.java:113)
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.java:42)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121)
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.java:93)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121)
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.java:93)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147)
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.java:125)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121)
+	at com.bossien.module.common.http.HttpCommonInterceptor.intercept(HttpCommonInterceptor.java:105)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121)
+	at com.bossien.bossienlib.http.UserAgentInterceptor.intercept(UserAgentInterceptor.java:33)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121)
+	at okhttp3.RealCall.getResponseWithInterceptorChain(RealCall.java:200)
+	at okhttp3.RealCall.execute(RealCall.java:77)
+	at retrofit2.OkHttpCall.execute(OkHttpCall.java:180)
+	at retrofit2.adapter.rxjava2.CallExecuteObservable.subscribeActual(CallExecuteObservable.java:41)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at retrofit2.adapter.rxjava2.BodyObservable.subscribeActual(BodyObservable.java:34)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableSubscribeOn$SubscribeTask.run(ObservableSubscribeOn.java:96)
+	at io.reactivex.Scheduler$DisposeTask.run(Scheduler.java:579)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.run(ScheduledRunnable.java:66)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.call(ScheduledRunnable.java:57)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:152)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:265)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1112)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:587)
+	at java.lang.Thread.run(Thread.java:818)
+Caused by: java.net.ConnectException: failed to connect to /192.168.1.155 (port 8899) after 20000ms: isConnected failed: ECONNREFUSED (Connection refused)
+	at libcore.io.IoBridge.isConnected(IoBridge.java:238)
+	at libcore.io.IoBridge.connectErrno(IoBridge.java:171)
+	at libcore.io.IoBridge.connect(IoBridge.java:122)
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:183)
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:456)
+	at java.net.Socket.connect(Socket.java:882)
+	at okhttp3.internal.platform.AndroidPlatform.connectSocket(AndroidPlatform.java:70)
+	at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.java:238)
+	... 38 more
+Caused by: android.system.ErrnoException: isConnected failed: ECONNREFUSED (Connection refused)
+	at libcore.io.IoBridge.isConnected(IoBridge.java:223)
+	... 45 more
+
+
+Debug: 2019-09-25 09:15:03-1569374103131
+LaunchActivity
+LaunchActivity
+
+Error: 2019-09-25 09:22:36-1569374556303
+Login Request
+java.net.SocketTimeoutException
+	at java.net.PlainSocketImpl.read(PlainSocketImpl.java:488)
+	at java.net.PlainSocketImpl.access$000(PlainSocketImpl.java:37)
+	at java.net.PlainSocketImpl$PlainSocketInputStream.read(PlainSocketImpl.java:237)
+	at okio.Okio$2.read(Okio.java:139)
+	at okio.AsyncTimeout$2.read(AsyncTimeout.java:237)
+	at okio.RealBufferedSource.indexOf(RealBufferedSource.java:345)
+	at okio.RealBufferedSource.readUtf8LineStrict(RealBufferedSource.java:217)
+	at okhttp3.internal.http1.Http1Codec.readHeaderLine(Http1Codec.java:212)
+	at okhttp3.internal.http1.Http1Codec.readResponseHeaders(Http1Codec.java:189)
+	at okhttp3.internal.http.CallServerInterceptor.intercept(CallServerInterceptor.java:88)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147)
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.java:45)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121)
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.java:93)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121)
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.java:93)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147)
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.java:125)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121)
+	at com.bossien.module.common.http.HttpCommonInterceptor.intercept(HttpCommonInterceptor.java:105)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121)
+	at com.bossien.bossienlib.http.UserAgentInterceptor.intercept(UserAgentInterceptor.java:33)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121)
+	at okhttp3.RealCall.getResponseWithInterceptorChain(RealCall.java:200)
+	at okhttp3.RealCall.execute(RealCall.java:77)
+	at retrofit2.OkHttpCall.execute(OkHttpCall.java:180)
+	at retrofit2.adapter.rxjava2.CallExecuteObservable.subscribeActual(CallExecuteObservable.java:41)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at retrofit2.adapter.rxjava2.BodyObservable.subscribeActual(BodyObservable.java:34)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableSubscribeOn$SubscribeTask.run(ObservableSubscribeOn.java:96)
+	at io.reactivex.Scheduler$DisposeTask.run(Scheduler.java:579)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.run(ScheduledRunnable.java:66)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.call(ScheduledRunnable.java:57)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:152)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:265)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1112)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:587)
+	at java.lang.Thread.run(Thread.java:818)
+
+
+Debug: 2019-09-25 09:32:15-1569375135724
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 09:33:44-1569375224960
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 09:34:50-1569375290680
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 10:04:18-1569377058535
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 10:13:25-1569377605654
+LaunchActivity
+LaunchActivity
+
+Error: 2019-09-25 10:55:53-1569380153389
+Login Request
+java.lang.RuntimeException: 获取数据失败获取模块信息获取数据失败
+	at com.bossien.launch.worker.ConfigUpdateWorker.lambda$null$0(ConfigUpdateWorker.java:116)
+	at com.bossien.launch.worker.-$$Lambda$ConfigUpdateWorker$4c9YnBA2jWZ_WeIz48A5A2kcKOk.apply(lambda)
+	at io.reactivex.internal.functions.Functions$Array2Func.apply(Functions.java:529)
+	at io.reactivex.internal.functions.Functions$Array2Func.apply(Functions.java:516)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.drain(ObservableZip.java:197)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipObserver.onNext(ObservableZip.java:276)
+	at io.reactivex.internal.operators.observable.ObservableMap$MapObserver.onNext(ObservableMap.java:64)
+	at retrofit2.adapter.rxjava2.BodyObservable$BodyObserver.onNext(BodyObservable.java:51)
+	at retrofit2.adapter.rxjava2.BodyObservable$BodyObserver.onNext(BodyObservable.java:37)
+	at retrofit2.adapter.rxjava2.CallExecuteObservable.subscribeActual(CallExecuteObservable.java:43)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at retrofit2.adapter.rxjava2.BodyObservable.subscribeActual(BodyObservable.java:34)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableScalarXMap$ScalarXMapObservable.subscribeActual(ObservableScalarXMap.java:166)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableMap.subscribeActual(ObservableMap.java:33)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableMap.subscribeActual(ObservableMap.java:33)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.subscribeInner(ObservableFlatMap.java:165)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.onNext(ObservableFlatMap.java:139)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.drain(ObservableZip.java:205)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipObserver.onNext(ObservableZip.java:276)
+	at io.reactivex.internal.operators.observable.ObservableScalarXMap$ScalarDisposable.run(ObservableScalarXMap.java:248)
+	at io.reactivex.internal.operators.observable.ObservableJust.subscribeActual(ObservableJust.java:35)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap.subscribeActual(ObservableFlatMap.java:55)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableOnErrorNext.subscribeActual(ObservableOnErrorNext.java:38)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.subscribeInner(ObservableFlatMap.java:165)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.onNext(ObservableFlatMap.java:139)
+	at io.reactivex.internal.operators.observable.ObservableOnErrorNext$OnErrorNextObserver.onNext(ObservableOnErrorNext.java:68)
+	at io.reactivex.internal.operators.observable.ObservableMap$MapObserver.onNext(ObservableMap.java:64)
+	at io.reactivex.internal.operators.observable.ObservableObserveOn$ObserveOnObserver.drainNormal(ObservableObserveOn.java:200)
+	at io.reactivex.internal.operators.observable.ObservableObserveOn$ObserveOnObserver.run(ObservableObserveOn.java:252)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.run(ScheduledRunnable.java:66)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.call(ScheduledRunnable.java:57)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:152)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:265)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1112)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:587)
+	at java.lang.Thread.run(Thread.java:818)
+
+
+Debug: 2019-09-25 10:56:32-1569380192876
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 11:36:30-1569382590464
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 17:08:01-1569402481639
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 17:22:36-1569403356515
+LaunchActivity
+LaunchActivity
+
+Error: 2019-09-25 17:25:16-1569403516398
+Login Request
+retrofit2.adapter.rxjava2.HttpException: HTTP 500 Internal Server Error
+	at retrofit2.adapter.rxjava2.BodyObservable$BodyObserver.onNext(BodyObservable.java:54)
+	at retrofit2.adapter.rxjava2.BodyObservable$BodyObserver.onNext(BodyObservable.java:37)
+	at retrofit2.adapter.rxjava2.CallExecuteObservable.subscribeActual(CallExecuteObservable.java:43)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at retrofit2.adapter.rxjava2.BodyObservable.subscribeActual(BodyObservable.java:34)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableSubscribeOn$SubscribeTask.run(ObservableSubscribeOn.java:96)
+	at io.reactivex.Scheduler$DisposeTask.run(Scheduler.java:579)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.run(ScheduledRunnable.java:66)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.call(ScheduledRunnable.java:57)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:152)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:265)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1112)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:587)
+	at java.lang.Thread.run(Thread.java:818)
+
+
+Error: 2019-09-25 17:27:10-1569403630679
+Login Request
+retrofit2.adapter.rxjava2.HttpException: HTTP 500 Internal Server Error
+	at retrofit2.adapter.rxjava2.BodyObservable$BodyObserver.onNext(BodyObservable.java:54)
+	at retrofit2.adapter.rxjava2.BodyObservable$BodyObserver.onNext(BodyObservable.java:37)
+	at retrofit2.adapter.rxjava2.CallExecuteObservable.subscribeActual(CallExecuteObservable.java:43)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at retrofit2.adapter.rxjava2.BodyObservable.subscribeActual(BodyObservable.java:34)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableSubscribeOn$SubscribeTask.run(ObservableSubscribeOn.java:96)
+	at io.reactivex.Scheduler$DisposeTask.run(Scheduler.java:579)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.run(ScheduledRunnable.java:66)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.call(ScheduledRunnable.java:57)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:152)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:265)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1112)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:587)
+	at java.lang.Thread.run(Thread.java:818)
+
+
+Debug: 2019-09-25 17:30:06-1569403806709
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 17:37:33-1569404253005
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 17:40:36-1569404436480
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 17:46:03-1569404763241
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 17:50:42-1569405042929
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 18:02:32-1569405752365
+LaunchActivity
+LaunchActivity
+
+Info: 2019-09-25 18:02:56-1569405776620
+Upload Process
+resume
+
+Info: 2019-09-25 18:02:56-1569405776621
+Upload Process
+resume
+
+Info: 2019-09-25 18:02:57-1569405777916
+Upload Process
+{}
+
+Info: 2019-09-25 18:02:57-1569405777916
+Upload Process
+{}
+
+Info: 2019-09-25 18:03:01-1569405781560
+Upload Process
+pause
+
+Info: 2019-09-25 18:03:01-1569405781562
+Upload Process
+pause
+
+Info: 2019-09-25 18:03:01-1569405781974
+Upload Process
+destroy
+
+Info: 2019-09-25 18:03:01-1569405781975
+Upload Process
+destroy
+
+Info: 2019-09-25 18:03:02-1569405782653
+Upload Process
+resume
+
+Info: 2019-09-25 18:03:02-1569405782654
+Upload Process
+resume
+
+Info: 2019-09-25 18:03:03-1569405783198
+Upload Process
+{}
+
+Info: 2019-09-25 18:03:03-1569405783199
+Upload Process
+{}
+
+Info: 2019-09-25 18:03:04-1569405784162
+Upload Process
+pause
+
+Info: 2019-09-25 18:03:04-1569405784163
+Upload Process
+pause
+
+Info: 2019-09-25 18:03:04-1569405784574
+Upload Process
+destroy
+
+Info: 2019-09-25 18:03:04-1569405784576
+Upload Process
+destroy
+
+Debug: 2019-09-25 18:06:56-1569406016364
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 18:07:16-1569406036352
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 18:40:50-1569408050418
+LaunchActivity
+LaunchActivity
+
+Info: 2019-09-25 18:45:09-1569408309415
+BaseApplication
+onTrimMemory ... level:20
+
+Debug: 2019-09-25 18:52:10-1569408730544
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 18:55:43-1569408943209
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 18:56:16-1569408976100
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 18:57:12-1569409032566
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 19:41:20-1569411680413
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 19:50:56-1569412256611
+LaunchActivity
+LaunchActivity
+
+Error: 2019-09-25 19:51:34-1569412294803
+crash_handler
+io.reactivex.exceptions.OnErrorNotImplementedException: Calling startActivity() from outside of an Activity  context requires the FLAG_ACTIVITY_NEW_TASK flag. Is this really what you want?
+	at io.reactivex.internal.functions.Functions$OnErrorMissingConsumer.accept(Functions.java:704)
+	at io.reactivex.internal.functions.Functions$OnErrorMissingConsumer.accept(Functions.java:701)
+	at io.reactivex.internal.observers.LambdaObserver.onError(LambdaObserver.java:77)
+	at io.reactivex.internal.observers.LambdaObserver.onNext(LambdaObserver.java:67)
+	at com.uber.autodispose.HalfSerializer.onNext(HalfSerializer.java:129)
+	at com.uber.autodispose.AutoDisposingObserverImpl.onNext(AutoDisposingObserverImpl.java:81)
+	at io.reactivex.observers.SerializedObserver.onNext(SerializedObserver.java:113)
+	at io.reactivex.internal.operators.observable.ObservableThrottleFirstTimed$DebounceTimedObserver.onNext(ObservableThrottleFirstTimed.java:82)
+	at com.bossien.module.support.main.utils.rx.RecyclerAdapterViewItemClickObservable$Listener.onItemClick(RecyclerAdapterViewItemClickObservable.java:49)
+	at com.bossien.bossienlib.base.adapter.CommonRecyclerAdapter.lambda$initItemClicks$0(CommonRecyclerAdapter.java:59)
+	at com.bossien.bossienlib.base.adapter.-$$Lambda$CommonRecyclerAdapter$oNpoUYgk_nMMqcSby6lahMK2Kso.onClick(lambda)
+	at android.view.View.performClick(View.java:4780)
+	at android.view.View$PerformClick.run(View.java:19866)
+	at android.os.Handler.handleCallback(Handler.java:739)
+	at android.os.Handler.dispatchMessage(Handler.java:95)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+Caused by: android.util.AndroidRuntimeException: Calling startActivity() from outside of an Activity  context requires the FLAG_ACTIVITY_NEW_TASK flag. Is this really what you want?
+	at android.app.ContextImpl.startActivity(ContextImpl.java:1246)
+	at android.app.ContextImpl.startActivity(ContextImpl.java:1233)
+	at android.content.ContextWrapper.startActivity(ContextWrapper.java:323)
+	at com.bossien.module.setting.view.dialog.otherapp.OtherAppPresenter.jumpApp(OtherAppPresenter.java:81)
+	at com.bossien.module.setting.view.dialog.otherapp.OtherAppPresenter.onItemClick(OtherAppPresenter.java:70)
+	at com.bossien.module.setting.view.dialog.otherapp.OtherAppFragment.lambda$initData$0(OtherAppFragment.java:61)
+	at com.bossien.module.setting.view.dialog.otherapp.-$$Lambda$OtherAppFragment$yV9n11uH88VyEg8UllwmYE6aFQ8.accept(lambda)
+	at io.reactivex.internal.observers.LambdaObserver.onNext(LambdaObserver.java:63)
+	... 17 more
+
+
+Debug: 2019-09-25 19:51:37-1569412297596
+LaunchActivity
+LaunchActivity
+
+Info: 2019-09-25 19:58:25-1569412705209
+BaseApplication
+onTrimMemory ... level:5
+
+Debug: 2019-09-25 19:58:27-1569412707735
+LaunchActivity
+LaunchActivity
+
+Error: 2019-09-25 20:01:03-1569412863601
+crash_handler
+io.reactivex.exceptions.OnErrorNotImplementedException: Calling startActivity() from outside of an Activity  context requires the FLAG_ACTIVITY_NEW_TASK flag. Is this really what you want?
+	at io.reactivex.internal.functions.Functions$OnErrorMissingConsumer.accept(Functions.java:704)
+	at io.reactivex.internal.functions.Functions$OnErrorMissingConsumer.accept(Functions.java:701)
+	at io.reactivex.internal.observers.LambdaObserver.onError(LambdaObserver.java:77)
+	at io.reactivex.internal.observers.LambdaObserver.onNext(LambdaObserver.java:67)
+	at com.uber.autodispose.HalfSerializer.onNext(HalfSerializer.java:129)
+	at com.uber.autodispose.AutoDisposingObserverImpl.onNext(AutoDisposingObserverImpl.java:81)
+	at io.reactivex.observers.SerializedObserver.onNext(SerializedObserver.java:113)
+	at io.reactivex.internal.operators.observable.ObservableThrottleFirstTimed$DebounceTimedObserver.onNext(ObservableThrottleFirstTimed.java:82)
+	at com.bossien.module.support.main.utils.rx.RecyclerAdapterViewItemClickObservable$Listener.onItemClick(RecyclerAdapterViewItemClickObservable.java:49)
+	at com.bossien.bossienlib.base.adapter.CommonRecyclerAdapter.lambda$initItemClicks$0(CommonRecyclerAdapter.java:59)
+	at com.bossien.bossienlib.base.adapter.-$$Lambda$CommonRecyclerAdapter$oNpoUYgk_nMMqcSby6lahMK2Kso.onClick(lambda)
+	at android.view.View.performClick(View.java:4780)
+	at android.view.View$PerformClick.run(View.java:19866)
+	at android.os.Handler.handleCallback(Handler.java:739)
+	at android.os.Handler.dispatchMessage(Handler.java:95)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+Caused by: android.util.AndroidRuntimeException: Calling startActivity() from outside of an Activity  context requires the FLAG_ACTIVITY_NEW_TASK flag. Is this really what you want?
+	at android.app.ContextImpl.startActivity(ContextImpl.java:1246)
+	at android.app.ContextImpl.startActivity(ContextImpl.java:1233)
+	at android.content.ContextWrapper.startActivity(ContextWrapper.java:323)
+	at com.bossien.module.setting.view.dialog.otherapp.OtherAppPresenter.jumpApp(OtherAppPresenter.java:95)
+	at com.bossien.module.setting.view.dialog.otherapp.OtherAppPresenter.onItemClick(OtherAppPresenter.java:84)
+	at com.bossien.module.setting.view.dialog.otherapp.OtherAppFragment.lambda$initData$0(OtherAppFragment.java:61)
+	at com.bossien.module.setting.view.dialog.otherapp.-$$Lambda$OtherAppFragment$yV9n11uH88VyEg8UllwmYE6aFQ8.accept(lambda)
+	at io.reactivex.internal.observers.LambdaObserver.onNext(LambdaObserver.java:63)
+	... 17 more
+
+
+Debug: 2019-09-25 20:01:06-1569412866403
+LaunchActivity
+LaunchActivity
+
+Info: 2019-09-25 20:03:08-1569412988182
+BaseApplication
+onTrimMemory ... level:5
+
+Debug: 2019-09-25 20:03:10-1569412990641
+LaunchActivity
+LaunchActivity
+
+Info: 2019-09-25 20:03:25-1569413005528
+BaseApplication
+onTrimMemory ... level:20
+
+Info: 2019-09-25 20:04:59-1569413099936
+BaseApplication
+onTrimMemory ... level:20
+
+Debug: 2019-09-25 20:06:48-1569413208969
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 20:08:42-1569413322892
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 20:12:27-1569413547661
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-25 20:20:32-1569414032403
+LaunchActivity
+LaunchActivity
+
+Info: 2019-09-25 20:21:37-1569414097887
+BaseApplication
+onTrimMemory ... level:20
+
+Debug: 2019-09-25 20:22:01-1569414121582
+LaunchActivity
+LaunchActivity
+
+Info: 2019-09-25 20:22:25-1569414145464
+BaseApplication
+onTrimMemory ... level:20
+

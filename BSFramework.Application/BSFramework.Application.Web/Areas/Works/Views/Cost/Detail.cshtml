@@ -1,0 +1,177 @@
+﻿@model BSFramework.Application.Entity.BudgetAbout.CostRecordEntity
+
+@{
+    ViewBag.Title = "考评标准";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<script src="~/Content/scripts/business/Common.js" type="text/javascript"></script>
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.url.js")"></script>
+<style>
+    /*.form .formTitle {
+        width: 130px;
+    }*/
+</style>
+<script>
+    function fn$ok() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+
+        if (!jQuery('#importfile').val()) {
+            dialogMsg('请选择文件！', 2);
+            return false;
+        }
+
+        Loading(true, "导入中……");
+
+        var form1 = document.querySelector('#form1');
+        jQuery.ajax({
+            url: '@Url.Action("DoImport")',
+            type: 'POST',
+            dataType: 'json',
+            data: new FormData(form1),
+            processData: false,
+            contentType: false,
+            success: function (data, status) {
+                Loading(false);
+
+                if (data.type == 3) {
+                    dialogAlert(data.message, -1);
+                } else {
+                    dialogMsg(data.message, 1);
+                    $.currentIframe().fn$refresh();
+                    dialogClose();
+                }
+            }
+        });
+    }
+
+    jQuery(function () {
+        jQuery('.numbox').keydown(function (e) {
+            if (e.keyCode == 8 || e.keyCode == 9 || (e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode == 110 || e.keyCode == 190) {
+                if (e.key == '.') {
+                    if (jQuery(this).val().indexOf(e.key) >= 0)
+                        return false;
+                    else if (!jQuery(this).val())
+                        return false;
+                }
+            } else {
+                return false;
+            }
+        });
+
+        jQuery('.numbox').change(function () {
+            var value = jQuery(this).val();
+            if (value.startsWith('0')) {
+                if (value == '0.')
+                    jQuery(this).val(value.substring(0, 1));
+                else if (!value.startsWith('0.'))
+                    jQuery(this).val(value.substring(1));
+            }
+            else if (value.startsWith('.')) {
+                if (value == '.')
+                    jQuery(this).val('0');
+                else
+                    jQuery(this).val('0' + value);
+
+            } else if (!value)
+                jQuery(this).val('0');
+
+            var total = 0;
+            jQuery('.numbox').each(function () {
+                total = total += parseFloat(jQuery(this).val());
+            });
+            jQuery('#Total').val(total);
+        });
+
+        jQuery('#Category').change(function () {
+            fn$init();
+        });
+
+        fn$init();
+
+        var now = new Date();
+        jQuery('#RecordMonth').append('<option value="' + now.getFullYear() + '/' + (now.getMonth() + 1) + '/1' + '">' + now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + '</option>');
+        for (var i = 0; i < 11; i++) {
+            now = new Date(now.setMonth(now.getMonth() - 1));
+            jQuery('#RecordMonth').append('<option value="' + now.getFullYear() + '/' + (now.getMonth() + 1) + '/1' + '">' + now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + '</option>');
+        }
+    });
+
+    function fn$init() {
+        if (jQuery('#Category').val() == '材料费') {
+            jQuery('#template1').show();
+            jQuery('#template2').hide();
+        } else {
+            jQuery('#template1').hide();
+            jQuery('#template2').show();
+        }
+    }
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right:30px;">
+            @Html.HiddenFor(x => x.RecordId)
+            @Html.HiddenFor(x => x.RecordTime)
+            <table class="form">
+                <tr>
+                    <td class="formTitle">时间</td>
+                    <td class="formValue">
+                        @*@Html.TextBoxFor(x => x.RecordMonth, string.Format("{0:yyyy年M月}", Model.RecordMonth), new { @class = "form-control", placeholder = "时间", onfocus = "this.blur()", checkexpession = "NotNull" })*@
+                        <select id="RecordMonth" name="RecordMonth" class="form-control"></select>
+                    </td>
+                    <td class="formTitle">提交人</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.RecordUser, new { @class = "form-control", onfocus = "this.blur()" })
+                        @Html.HiddenFor(x => x.RecordUserId)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">费用类型</td>
+                    <td class="formValue">
+                        @Html.DropDownListFor(x => x.Category, ViewData["categories"] as List<SelectListItem>, new { @class = "form-control" })
+                    </td>
+
+                    <td class="formTitle">提交单位</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.RecordDept, new { @class = "form-control", placeholder = "提交单位", isvalid = "yes", checkexpession = "NotNull", onfocus = "this.blur()" })
+                        @Html.HiddenFor(x => x.RecordDeptId)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">专业</td>
+                    <td class="formValue">
+                        @Html.DropDownListFor(x => x.professional, ViewData["professionals"] as List<SelectListItem>, new { @class = "form-control" })
+                    </td>
+
+                    <td class="formTitle"></td>
+                    <td class="formValue">
+                      
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">导入文件<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        <input type="file" value="选择文件" name="importfile" id="importfile" required />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">获取模板</td>
+                    <td class="formValue" id="template1">
+                        <a href="@Url.Content("~/Content/export/材料费用导入模板.xlsx")" style="color:blue;">下载模板</a>
+                    </td>
+                    <td class="formValue" id="template2">
+                        <a href="@Url.Content("~/Content/export/修理费用导入模板.xlsx")" style="color:blue;">下载模板</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="ExpandInfo" class="tab-pane">
+            <div class="app_layout app_preview" style="border-top: 1px solid #ccc;" id="frmpreview"></div>
+        </div>
+    </div>
+</div>

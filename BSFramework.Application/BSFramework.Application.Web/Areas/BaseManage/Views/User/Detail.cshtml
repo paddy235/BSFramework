@@ -1,0 +1,345 @@
+﻿@{
+    ViewBag.Title = "查看详情";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<script>
+    var keyValue = request('keyValue');
+    var rqaction = request('action');
+    var instanceId = "";
+    var formId = "";
+    $(function () {
+        initControl();
+        GetGrid();
+    })
+    //初始化控件
+    function initControl() {
+        //公司
+        $("#OrganizeId").ComboBoxTree({
+            url: top.contentPath + "/BaseManage/Organize/GetTreeJson",
+            description: "==请选择==",
+            height: "200px",
+            allowSearch: true,
+        }).bind("change", function () {
+            var value = $(this).attr('data-value');
+            //加载部门
+            $("#DepartmentId").ComboBoxTree({
+                url: top.contentPath + "/BaseManage/Department/GetTreeJson?organizeId=" + value,
+                description: "==请选择==",
+                allowSearch: true
+            });
+
+            $("#RoleId").ComboBox({
+                url: top.contentPath + "/BaseManage/Role/GetListJson?organizeId=" + value,
+                id: "RoleId",
+                text: "FullName",
+                description: "==请选择==",
+                allowSearch: true
+            });
+            //加载岗位
+            //$("#DutyId").ComboBox({
+            //    url: top.contentPath + "/BaseManage/Post/GetListJson?organizeId=" + value,
+            //    id: "RoleId",
+            //    text: "FullName",
+            //    description: "==请选择==",
+            //    allowSearch: true
+            //});
+        });
+        //部门
+        $("#DepartmentId").ComboBoxTree({
+            description: "==请选择==",
+            height: "200px",
+            allowSearch: true
+        }).bind("change", function () {
+            var value = $(this).attr('data-value');
+            //加载职位
+            //$("#PostId").ComboBox({
+            //    url: top.contentPath + "/BaseManage/Job/GetListJson?organizeId=" + value,
+            //    id: "RoleId",
+            //    text: "FullName",
+            //    description: "==请选择==",
+            //    allowSearch: true
+            //});
+            //加载主管
+            //$("#ManagerId").ComboBox({
+            //    url: top.contentPath + "/BaseManage/User/GetListJson?departmentId=" + value,
+            //    id: "UserId",
+            //    text: "RealName",
+            //    title: "Account",
+            //    description: "==请选择==",
+            //    allowSearch: true
+            //});
+        });
+        //岗位
+        //$("#DutyId").ComboBox({
+        //    description: "==请选择==",
+        //    height: "200px",
+        //    allowSearch: true
+        //});
+        //角色
+        $("#RoleId").ComboBox({
+            description: "==请选择==",
+            height: "200px",
+            allowSearch: true
+        });
+        //职位
+        //$("#PostId").ComboBox({
+        //    description: "==请选择==",
+        //    height: "200px",
+        //    allowSearch: true
+        //});
+        //主管
+        //$("#ManagerId").ComboBox({
+        //    description: "==请选择==",
+        //    height: "200px",
+        //    allowSearch: true
+        //});
+        //性别
+        //$("#Gender").ComboBox({
+        //    description: "==请选择==",
+        //});
+        //加载自定义表单
+        var moduleId = top.$.cookie('currentmoduleId');
+
+        //获取表单
+        if (!!keyValue) {
+
+            $.SetForm({
+                url: top.contentPath + "/BaseManage/User/GetFormJson",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#form1").formDeserialize(data);
+                    $("#Password").val("******").attr('disabled', 'disabled');
+                    $("#DutyId").ComboBoxSetValue(data.OrganizeId);
+                    $("#OrganizeId").trigger("change");
+                    $("#DepartmentId").ComboBoxTreeSetValue(data.DepartmentId).trigger("change");
+                    //$("#DutyId").ComboBoxSetValue(data.DutyId);
+                    $("#RoleId").ComboBoxSetValue(data.RoleId);
+                    //$('#RoleName').val($("#RoleId").attr('data-text'));
+                    //$("#PostId").ComboBoxSetValue(data.PostId);
+                    //$("#ManagerId").ComboBoxSetValue(data.ManagerId);
+                    //$("#Birthday").val(formatDate(data.Birthday, "yyyy-MM-dd"));
+                    
+                    if (rqaction == "view") {
+                        parent.$(".layui-layer-btn").css("display", "none");
+                    }
+                    if (data.Gender==1)
+                    {
+                        $("#man").attr("checked",true);
+                    }
+                    else {
+                        $("#woman").attr("checked", true);
+                    }
+
+                    $("#form1").find('.form-control,.ui-select,input').attr('disabled', 'disabled');
+                }
+            });
+        }
+
+
+    }
+
+    function GetGrid() {
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTableL');
+        $gridTable.jqGrid({
+            url: "../../BaseManage/User/GetLegalsJson?userid=" + keyValue,
+            datatype: "json",
+            height: $(window).height() - 170,
+            autowidth: true,
+            colModel: [
+               { label: '主键', name: 'id', hidden: true },
+                {
+                    label: '违章时间', name: 'lllegaltime', index: 'LllegalTime', width: 155, align: 'center',
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                },
+
+                { label: '违章地点', name: 'lllegaladdress', index: 'LllegalAddress', width: 185, align: 'center' },
+                { label: '违章类型', name: 'lllegaltype', index: 'LllegalType', width: 160, align: 'center' },
+                {
+                    label: '违章描述', name: 'lllegaldescribe', index: 'LllegalDescribe', width: 250, align: 'center'
+
+                },
+                {
+                    label: '违章部门', name: 'lllegaldepart', index: 'LllegalDepart', width: 180, align: 'center'
+
+                }
+            ],
+            viewrecords: true,
+            rowNum: 12,
+            // rowList: [30, 50, 100],
+            pager: "#gridPager",
+            sortname: 'lllegaltime',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            onSelectRow: function () {
+                selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            },
+            //loadError: function (xhr, status, error) {
+            //    top.location.href = "../../Login/Index?Login_Error=1";
+            //}
+        });
+        //$gridTable.authorizeColModel()
+        //查询条件
+        $("#queryCondition .dropdown-menu li").click(function () {
+            var text = $(this).find('a').html();
+            var value = $(this).find('a').attr('data-value');
+            $("#queryCondition .dropdown-text").html(text).attr('data-value', value)
+        });
+        //查询事件
+        $("#btn_Search").click(function () {
+            var queryJson = {
+                condition: $("#queryCondition").find('.dropdown-text').attr('data-value'),
+                keyword: $("#txt_Keyword").val(),
+                code: _parentId,
+                isOrg: _isOrg
+            }
+            $gridTable.jqGrid('setGridParam', {
+                postData: { queryJson: JSON.stringify(queryJson) }, page: 1
+            }).trigger('reloadGrid');
+        });
+        //查询回车
+        $('#txt_Keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+    }
+</script>
+
+<div style="margin-left: 10px; margin-right: 10px;">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#BaseInfo" data-toggle="tab">基本信息</a></li>
+        @*<li><a href="#LInfo" data-toggle="tab">违章信息</a></li>*@
+        <li><a href="#EduInfo" data-toggle="tab">培训信息</a></li>
+    </ul>
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style=" padding-right: 30px;">
+            <table class="form">
+                <tr>
+                    <td class="formTitle">账户<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        <input id="Account" type="text" onblur="$.ExistField(this.id,top.contentPath + '/BaseManage/User/ExistAccount')" class="form-control" placeholder="请输入账户" isvalid="yes" checkexpession="NotNull" />
+                    </td>
+                    <td class="formTitle">密码<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        <input id="Password" type="text" class="form-control" placeholder="请输入密码" isvalid="yes" checkexpession="NotNull" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">企业<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        <div id="OrganizeId" type="selectTree" class="ui-select" isvalid="yes" checkexpession="NotNull"></div>
+                    </td>
+                    <td class="formTitle">部门<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        <div id="DepartmentId" type="selectTree" class="ui-select" isvalid="yes" checkexpession="NotNull"></div>
+                    </td>
+                </tr>
+
+                @*<tr>
+
+                        <td class="formTitle">主管</td>
+                        <td class="formValue">
+                            <div id="ManagerId" type="select" class="ui-select"></div>
+                        </td>
+                    </tr>*@
+                <tr>
+                    @*<td class="formTitle">工号</td>
+                        <td class="formValue">
+                            <input id="EnCode" type="text" class="form-control" />
+                        </td>*@
+                    <td class="formTitle">姓名<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        <input id="RealName" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" />
+                    </td>
+                    <td class="formTitle">角色<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        <input id="RoleName" type="text" class="form-control" placeholder="请选择角色" isvalid="yes" checkexpession="NotNull" readonly />
+                        @*<span class="input-button" onclick="sel();" title="选取图标">...</span>*@
+                        <input id="RoleId" type="hidden" />
+                        @*<div id="RoleId" type="select" class="ui-select"></div>*@
+                    </td>
+                </tr>
+                <tr>
+                    @*<td class="formTitle">岗位</td>
+                        <td class="formValue">
+                            <div id="DutyId" type="select" class="ui-select"></div>
+                        </td>*@
+                    <td class="formTitle">手机<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        <input id="Mobile" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" />
+                    </td>
+                    <td class="formTitle">性别</td>
+                    <td class="formValue Gender">
+                        <input type="radio" value="1" id="man" name="Gender" />&nbsp;<label for="man">男</label>&nbsp;&nbsp;&nbsp;
+                        <input type="radio" value="0" id="woman" name="Gender" />&nbsp;<label for="woman">女</label>
+                    </td>
+                    @*<td class="formTitle">职位</td>
+                        <td class="formValue">
+                            <div id="PostId" type="select" class="ui-select"></div>
+                        </td>*@
+                </tr>
+                @*<tr>
+                        
+                        <td class="formTitle">生日</td>
+                        <td class="formValue">
+                            <input id="Birthday" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker()" />
+                        </td>
+                    </tr>*@
+                <tr>
+
+                    @*<td class="formTitle">电话</td>
+                        <td class="formValue">
+                            <input id="Telephone" type="text" class="form-control" />
+                        </td>*@
+                </tr>
+                @*<tr>
+                        <td class="formTitle">邮箱</td>
+                        <td class="formValue">
+                            <input id="Email" type="text" class="form-control" />
+                        </td>
+
+                        <td class="formTitle">微信</td>
+                        <td class="formValue">
+                            <input id="WeChat" type="text" class="form-control" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="formTitle">QQ</td>
+                        <td class="formValue">
+                            <input id="OICQ" type="text" class="form-control" />
+                        </td>
+                        <td class="formTitle">MSN</td>
+                        <td class="formValue">
+                            <input id="MSN" type="text" class="form-control" />
+                        </td>
+                    </tr>*@
+                @*<tr>
+                        <th class="formTitle" valign="top" style="padding-top: 4px;">
+                            备注
+                        </th>
+                        <td class="formValue" colspan="3">
+                            <textarea id="Description" class="form-control" style="height: 50px;"></textarea>
+                        </td>
+                    </tr>*@
+            </table>
+        </div>
+        @*<div id="LInfo" class="tab-pane">
+            <div class="gridPanel">
+                <table id="gridTableL"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>*@
+
+        <div id="EduInfo" class="tab-pane">
+            <iframe id="pxfrm" style="width:100%;height:700px;border:none;padding:0px;margin:0px;" src=@(ViewData["EduPageUrl"] + "/page/businesspage/UserRecord/trainstat_search.aspx?data=" + ViewData["valCode"])></iframe>
+        </div>
+    </div>
+</div>
+

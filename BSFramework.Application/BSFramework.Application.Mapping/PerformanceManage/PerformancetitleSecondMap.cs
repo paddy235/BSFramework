@@ -1,0 +1,24 @@
+﻿using BSFramework.Application.Entity.PerformanceManage;
+using System.Data.Entity.ModelConfiguration;
+
+namespace BSFramework.Application.Mapping.PerformanceManage
+{
+   public class PerformancetitleSecondMap : EntityTypeConfiguration<PerformancetitleSecondEntity>
+    {
+        public PerformancetitleSecondMap() {
+
+            #region 表、主键
+            //表
+            this.ToTable("WG_PERFORMANCETITLE_SECOND");
+            //主键
+            this.HasKey(t => t.titleid);
+            #endregion
+
+            #region 配置关系
+            #endregion
+
+        }
+
+
+    }
+}

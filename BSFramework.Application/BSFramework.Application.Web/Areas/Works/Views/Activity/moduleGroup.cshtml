@@ -1,0 +1,97 @@
+﻿@{
+    ViewBag.Title = "moduleGroup";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+
+<script>
+    var moduleListStr = request('moduleListStr');
+    $(function () {
+        initControl();
+
+
+    })
+    //初始化控件
+    function initControl() {
+        //选择类别
+        @*$("#DepartmentData").ComboBoxTree({
+            url: "/..@Url.Action("DepartmentSelectData")",
+            description: "==请选择==",
+            height: "260px",
+            allowSearch: false
+        });*@
+        //选择时
+
+        $.ajax({
+            url: "../../SystemManage/DataItemDetail/GetDataItemListJson?EnCode=EvaluateDept",
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.length > 0) {
+                    var _html = '';
+                    var $ck = $("#GroupCheck");
+                    var moduleList = moduleListStr.split(',');
+                    for (var i = 0; i < data.length; i++) {
+                        var check = true;
+                        for (var j = 0; j < moduleList.length; j++) {
+                            var module = moduleList[j];
+                            if (data[i].ItemValue == module) {
+                                check = false;
+
+                            }
+
+                        }
+                        if (check) {
+                            _html += '<label><input name="mycheckbox" type="checkbox" data-id="' + data[i].ItemValue + '"  value="' + data[i].ItemValue + '" />' + data[i].ItemName + '</label>';
+
+                        } else {
+                            _html += '<label><input name="mycheckbox" type="checkbox" checked="checked" data-id="' + data[i].ItemValue + '"  value="' + data[i].ItemValue + '" />' + data[i].ItemName + '</label>';
+
+                        }
+
+                    }
+                    $ck.append(_html);
+                }
+
+            }
+        });
+
+    }
+
+    function AcceptClick(callback) {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var data = [];
+
+
+        var obj = $("[name=mycheckbox]");
+        var lab = $("label");
+        for (var i = 0; i < obj.length; i++) {
+            if (obj[i].checked) {
+                var dataJson = new Object();
+                dataJson["ItemValue"] = obj[i].value;
+                dataJson["ItemName"] = lab[i].innerText;
+                data.push(dataJson);
+            }
+        }
+        callback(data);
+        dialogClose();
+    }
+</script>
+<div style="margin-left: 10px; margin-top: 20px; margin-right: 30px;">
+    <table class="form">
+        <tr>
+            <th class="formTitle">模块列表</th>
+
+            <td class="formValue">
+                <div id="GroupCheck" class="checkbox user-select">
+
+                </div>
+                @*<div id="DepartmentData" type="selectTree" class="ui-select">
+                    </div>*@
+            </td>
+        </tr>
+    </table>
+</div>

@@ -1,0 +1,206 @@
+﻿@model BSFramework.Application.Web.Areas.SystemManage.Models.DistrictPersonModel
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<script src="~/Content/scripts/business/common.js"></script>
+<script src="~/Content/scripts/jquery/jquery.serializeJSON.min.js"></script>
+<script src="~/Content/scripts/jquery/jquery.url.js"></script>
+@Html.Partial("DepartmentSelect")
+@Html.Partial("DistrictSelect")
+@Html.Partial("UserSelect")
+<script>
+    var json = '@Html.Raw(ViewBag.gridData)';
+    var categoriesJson = '@Html.Raw(ViewBag.categories)';
+    var categories = JSON.parse(categoriesJson || '[]');
+    var deptid;
+    var lastSel;
+    jQuery(function () {
+        var fn = jQuery.getUrlArgs('fn');
+        if (fn == 'edit') {
+            jQuery('#DistrictName').attr('readonly', true);
+            jQuery('#DistrictName').removeAttr('onclick');
+
+        }
+
+        jQuery('#DistrictCode').attr('readonly', true);
+
+        var gridData = JSON.parse(json);
+        var selectHtml = '';
+        var ary_options = [];
+        jQuery.each(categories, function (i, o) {
+            ary_options.push(o.Key + ':' + o.Value);
+        });
+        selectHtml = ary_options.join(';');
+        jQuery('#grid').jqGrid({
+            rownumbers: true,
+            height: $(window).height() - 200,
+            autowidth: true,
+            datatype: 'local',
+            rowNum: 100,
+            colModel: [
+                { name: 'DistrictPersonId', hidden: true },
+                { name: 'DutyUserId', hidden: true },
+                { name: 'DutyDepartmentId', hidden: true },
+                { name: 'CategoryId', hidden: true },
+                { name: 'CategoryName', label: '责任人类别', width: 200, align: 'center', sortable: false, editable: true, edittype: 'select', editoptions: { value: selectHtml } },
+                { name: 'DutyDepartmentName', label: '部门', align: 'center', editable: true, sortable: false },
+                { name: 'DutyUser', label: '责任人', align: 'center', editable: true, sortable: false },
+                { name: 'Phone', label: '联系电话', align: 'center', editable: true, sortable: false },
+                { name: 'Cycle', label: '周期', align: 'center', editable: true, edittype: 'select', editoptions: { value: ': ;每天:每天;每周:每周;每月:每月' }, sortable: false }
+            ],
+            data: gridData,
+            onSelectRow: function (id) {
+                if (id && id != lastSel) {
+                    jQuery('#grid').jqGrid('saveRow', lastSel, false, 'clientArray');
+                    jQuery('#grid').jqGrid('editRow', id, true);
+                    lastSel = id;
+                }
+                jQuery('#grid').editRow(id, true);
+                jQuery('#grid td[aria-describedby="grid_DutyUser"] input').attr('placeholder', '双击选择人员');
+            }
+        });
+
+        jQuery('#grid').on('click', '[aria-describedby="grid_DutyDepartmentName"] > input', function () {
+            selectDepartment('single', '', function (dept) {
+                deptid = dept.id;
+                jQuery('#grid').jqGrid('setCell', lastSel, 'DutyDepartmentId', dept.id);
+                jQuery('#grid tr[id="' + lastSel + '"] td[aria-describedby="grid_DutyDepartmentName"] > input').val(dept.text);
+            });
+            jQuery(this).blur();
+        });
+
+        jQuery('#grid').on('dblclick', '[aria-describedby="grid_DutyUser"] > input', function () {
+            selectUser(deptid, 'single', function (data) {
+                jQuery('#grid').jqGrid('setCell', lastSel, 'DutyUserId', data.UserId);
+                jQuery('#grid tr[id="' + lastSel + '"] td[aria-describedby="grid_DutyUserId"] > input').val(data.UserId);
+                jQuery('#grid tr[id="' + lastSel + '"] td[aria-describedby="grid_DutyUser"] > input').val(data.RealName);
+                jQuery('#grid tr[id="' + lastSel + '"] td[aria-describedby="grid_Phone"] > input').val(data.Mobile);
+            });
+        });
+
+        jQuery('#grid').on('change', '[aria-describedby="grid_DutyUser"] > input', function () {
+            jQuery('#grid tr[id="' + lastSel + '"] td[aria-describedby="grid_DutyUserId"] > input').val('');
+        });
+
+
+        jQuery('#grid').on('change', '[aria-describedby="grid_CategoryName"] > select', function (event) {
+            jQuery('#grid').jqGrid('setCell', lastSel, 'CategoryId', jQuery(event.target).val());
+        });
+    });
+
+
+    function valid(data) {
+        let isValid = true;
+        jQuery.each(data, function (i, o) {
+            if (!o.DutyDepartmentName.trim() && !o.DutyUser.trim() && !o.Cycle.trim())
+                return true;
+            else {
+                if (!o.DutyDepartmentName.trim()) {
+                    isValid = false;
+                    dialogAlert("请选择部门！", 2);
+                    return false;
+                }
+                if (!o.DutyUser.trim()) {
+                    isValid = false;
+                    dialogAlert("请选择责任人！", 2);
+                    return false;
+                }
+                if (!o.Cycle.trim()) {
+                    isValid = false;
+                    dialogAlert("请选择周期！", 2);
+                    return false;
+                }
+            }
+        });
+        return isValid;
+    }
+
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+
+        jQuery('#grid').jqGrid('saveRow', lastSel, false, 'clientArray');
+
+        var data = jQuery('#grid').jqGrid('getRowData');
+        if (!valid(data)) return false;
+
+        jQuery.each(data, function (i, o) {
+            o.CompanyId = jQuery('#CompanyId').val();
+            o.CompanyName = jQuery('#CompanyName').val();
+            o.DistrictId = jQuery('#DistrictId').val();
+            o.DistrictCode = jQuery('#DistrictCode').val();
+            o.DistrictName = jQuery('#DistrictName').val();
+        })
+
+
+        Loading(true, '正在保存...');
+        jQuery.ajax({
+            url: '/..@Url.Action("Edit")',
+            contentType: 'application/json',
+            type: 'POST',
+            data: JSON.stringify(data),
+            success: function (data) {
+                if (data.type == "3") {
+                    dialogAlert(data.message, -1);
+                } else {
+                    Loading(false);
+                    dialogMsg(data.message, 1);
+                    $.currentIframe().refresh();
+                    dialogClose();
+                }
+            },
+            complete: function () {
+                Loading(false);
+            }
+        });
+    }
+
+    function add() {
+        var rows = jQuery('#grid').jqGrid('getRowData');
+        jQuery('#grid').jqGrid('addRowData', rows.length, {
+            DistrictPersonId: null,
+            DutyUserId: null,
+            DutyDepartmentId: null,
+            CategoryId: categories[0].Key,
+            CategoryName: categories[0].Value,
+            DutyDepartmentName: null,
+            DutyUser: null,
+            Phone: null,
+            Cycle: null
+        });
+    }
+</script>
+<div class="container-fluid">
+    <div class="panel-body form-horizontal">
+        <div class="form-group">
+            <label class="col-xs-2 control-label">所属公司<span style="color:red;">*</span></label>
+            <div class="col-xs-4">
+                @Html.HiddenFor(x => x.CompanyId)
+                @Html.TextBoxFor(x => x.CompanyName, new { @class = "form-control", placeholder = "请输入", @readonly = "readonly" })
+            </div>
+            <label class="col-xs-2 control-label">区域名称<span style="color:red;">*</span></label>
+            <div class="col-xs-4">
+                @Html.HiddenFor(x => x.DistrictId)
+                @Html.TextBoxFor(x => x.DistrictName, new { @class = "form-control", placeholder = "请选择", isvalid = "yes", checkexpession = "NotNull", onclick = "selectArea(window.document.body, 'DistrictName,DistrictCode,,,,,,DistrictId');", onfocus = "blur();" })
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label">区域编码<span style="color:red;">*</span></label>
+            <div class="col-xs-4">
+                @Html.TextBoxFor(x => x.DistrictCode, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label">责任人基本信息</label><label class="col-xs-1 control-label"><a href="javascript:void(0);" onclick="add();">新增</a></label>
+        </div>
+        <div>
+            <table id="grid"></table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,368 @@
+﻿@model IEnumerable<BSFramework.Application.Web.Areas.Works.Models.SaftyCheckDataRecordrows>
+
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/plugins/layui/css/layui.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/person.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/app.css")" />
+<script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<style type="text/css">
+    .check:hover {
+        cursor: pointer;
+    }
+
+    .my-select {
+        width: 20%;
+    }
+
+    .safe-nav {
+        padding-left: 50px;
+        border-bottom: 1px solid #e3ebfd;
+        height: 80px;
+    }
+
+        .safe-nav li {
+            float: left;
+            font-size: 18px;
+            line-height: 78px;
+            font-weight: 800;
+            margin-right: 50px;
+        }
+
+            .safe-nav li:hover {
+                cursor: pointer;
+            }
+
+    .safe-main li {
+        height: 780px;
+    }
+
+    .safe-nav .active {
+        color: #3669e1;
+        border-bottom: 2px solid #3669e1;
+    }
+
+    .peccancy-list .head {
+        border: 0;
+    }
+</style>
+<script>
+  $(function () {
+        $('.main-sidebar,.main-content').niceScroll({
+            autohidemode: false
+        });
+        $('.table-today tr').hover(function () {
+            $(this).addClass('hover');
+        }, function () {
+            $(this).removeClass('hover');
+        });
+        $('.table-today tr').click(function () {
+            $(this).toggleClass('actives');
+        })
+        $('.user>.dropdown-menu').css({
+            left: $('.user').innerWidth() - $('.user>.dropdown-menu').width() - 65
+        });
+
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#from',
+                type: 'date',
+            });
+            laydate.render({
+                elem: '#to',
+                type: 'date',
+            });
+        })
+  });
+  var ctype = "@ViewBag.ctype";
+
+  function getList() {
+      $.ajax({
+          url: '@Url.Action("List")',
+          type: 'post',
+          data: { page: 1, pagesize: 12, ctype: ctype },
+          success: function (data) {
+              window.location.reload();
+          }
+      });
+  }
+  window.onload = function () {
+      getClass();
+  }
+  function getClass()
+  {
+      document.getElementById("li" + ctype).className = "active";
+      document.getElementById("texCtype").value = ctype;
+
+      if (ctype=="1")
+      {
+          
+          document.getElementById("thJg").style.width = "0px";
+          document.getElementById("thJg").style.display = "none";
+
+          document.getElementById("thJd").style.width = "0px";
+          document.getElementById("thJd").style.display = "none";
+          
+          var td = document.getElementsByClassName("tdJd");
+          for (var i = 0; i < td.length; ++i) {
+              var item = td[i];
+              item.style.width = "0px";
+              item.style.display = "none";
+          }
+
+          var td = document.getElementsByClassName("tdJg");
+          for (var i = 0; i < td.length; ++i) {
+              var item = td[i];
+              item.style.width = "0px";
+              item.style.display = "none";
+          }
+
+      }
+      else
+      {
+          
+          document.getElementById("thRy").style.width = "0px";
+          document.getElementById("thRy").style.display = "none";
+          var td = document.getElementsByClassName("tdRy");
+          for (var i = 0; i < td.length; ++i) {
+              var item = td[i];
+              item.style.width = "0px";
+              item.style.display = "none";
+          }
+      }
+      
+  }
+
+  function fn$edit(el) {
+      layer.open({
+          area: ['1500px', '800px'],
+          title: '发现问题和隐患',
+          type: 2,
+          content:el
+      });
+  }
+
+  function fn$edit2(el) {
+      layer.open({
+          area: ['1500px', '800px'],
+          title: '登记结果',
+          type: 2,
+          content:el
+      });
+  }
+
+</script>
+
+    <div class="main-content">
+        <div class="container-fluid">
+@using (Html.BeginForm("List", "ERCHTMS2", new { page = 1, pagesize = 12 }, FormMethod.Post))
+{
+    @Html.Hidden("pId")
+            <div>
+                <div class="title">安全检查台账</div>
+            </div>
+            <div class="bg-e3ebfd pd-10 my-body">
+                
+                <div class="bg-fff">
+                    <div>
+                        <div class="searchs" style="overflow: hidden;width:100%;">
+                            <label class="mg-l-30 ">检查名称：</label>
+                            <span class="my-input mg-r-40">
+                                <input type="text" name="CheckDataRecordName" id="CheckDataRecordName" value="@ViewData["CheckDataRecordName"]"    />
+                            </span>
+                            <label class="mg-l-30 ">时间范围：</label>
+                            <span class="my-input mg-r-15" style="width:160px;">
+                                @Html.TextBox("from", ViewData["from"])
+                                <img src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                            </span>&nbsp;
+                            至&nbsp;
+                            <span class="my-input mg-r-15" style="width:160px;">
+                                @Html.TextBox("to", ViewData["to"])
+                                <img src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                            </span>
+                            @*<a onclick="getList()">
+                                <img src="@Url.Content("~/Content/styles/static/images/search-icon.png")" alt="">
+                                搜索
+                            </a>*@
+                            <button class="my-btn bg-3669e1 mg-r-15" >
+                                <input style="display:none;" type="text" name="texCtype" id="texCtype" value="@ViewData["texCtype"]" />
+
+                                <img src="@Url.Content("~/Content/styles/static/images/search-icon.png")" alt="">
+                                搜索
+                            </button>
+                        </div>
+                    </div>
+                    <ul class="safe-nav">
+                        <a href="@Url.Action("List", "ERCHTMS2" , new { area="Works", page = 1, pagesize = 12,ctype=1 })"><li id="li1" style="list-style:none;">日常安全检查</li></a>
+                        <a href="@Url.Action("List", "ERCHTMS2" , new { area="Works", page = 1, pagesize = 12,ctype=2 })"><li id="li2" style="list-style:none;">专项安全检查</li></a>
+                        <a href="@Url.Action("List", "ERCHTMS2" , new { area="Works", page = 1, pagesize = 12,ctype=4 })"><li id="li4" style="list-style:none;">季节性安全检查</li></a>
+                        <a href="@Url.Action("List", "ERCHTMS2" , new { area="Works", page = 1, pagesize = 12,ctype=3 })"><li id="li3" style="list-style:none;">节假日前后安全检查</li></a>
+                        <a href="@Url.Action("List", "ERCHTMS2" , new { area="Works", page = 1, pagesize = 12,ctype=5 })"><li id="li5" style="list-style:none;">综合安全检查</li></a>
+                    </ul>
+                    <div class="body">
+                        <table class="table text-center table-striped no-mg vertical">
+                            <thead>
+                                <tr>
+                                    <th width="10%" class="bg-fff">序号</th>
+                                    <th width="20%" class="bg-fff">检查时间</th>
+                                    <th width="20%" class="bg-fff">检查名称</th>
+                                    <th width="20%" id="thRy" class="bg-fff">检查人员</th>
+                                    <th width="20%" id="thJd" class="bg-fff">检查进度</th>
+                                    <th width="10%" class="bg-fff">发现问题和隐患</th>
+                                    <th width="10%" id="thJg" class="bg-fff">查看登记结果</th>
+                                </tr>
+                            </thead>
+                            <tbody  id="tb">
+                                @for (int i = 0; i < Model.Count(); i++)
+                                {
+                                    int n = ((int)ViewBag.current - 1) * 12 + i + 1;
+                                    string p = @Model.ToList()[i].Id;
+                                    string p2 = @Model.ToList()[i].CheckDataType;
+                                    <tr style="height:50px;">
+                                        <td width="10%">@n</td>
+                                        <td width="10%">@Model.ToList()[i].CheckBeginTime</td>
+                                        <td width="10%">@Model.ToList()[i].CheckDataRecordName</td>
+                                        <td width="10%" class="tdRy">@Model.ToList()[i].CheckMan</td>
+                                        <td width="10%" class="tdJd">@Model.ToList()[i].SolveCount</td>
+                                        <td width="10%">
+                                            <a href="#" onclick="fn$edit('@p');">@Model.ToList()[i].Count</a></td>
+                                        <td  width="10%" class="tdJg">
+                                            <a href="#" onclick="fn$edit2('@p2');">查看登记结果</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="text-align:center;">
+                        <ul class="pagination">
+                            @if ((int)ViewBag.current == 1)
+                            {
+                                <li class="disabled">
+                                    <a>首页</a>
+                                </li>
+                                <li class="disabled">
+                                    <a>上一页</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    @Html.ActionLink("首页", "List", new { page = "1", pagesize = "12" })
+                                </li>
+                                <li>
+                                    @Html.ActionLink("上一页", "List", new { page = ((int)ViewBag.current - 1).ToString(), pagesize = "12" })
+                                </li>
+                            }
+                            @if (ViewBag.pages > 5) //超过5页
+                            {
+                                //显示前5页标识
+                                for (int i = (ViewBag.current - 1) / 12 * 10; i < 5; i++)
+                                {
+                                    <li class="@((i + 1) == ViewBag.current ? "JobUserModel" : string.Empty)">
+                                        @Html.ActionLink((i + 1).ToString(), "List", new { page = (i + 1).ToString(), pagesize = "12" })
+                                    </li>
+                                }
+                                if ((int)ViewBag.current == (int)ViewBag.pages)
+                                {
+                                    <li class="disabled">
+                                        <a>...</a>
+                                        @*@Html.ActionLink("...", "List", new { page = ViewBag.pages.ToString(), pagesize = "8" })*@
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        @Html.ActionLink("...", "List", new { page = ((int)ViewBag.current + 1).ToString(), pagesize = "12" })
+                                    </li>
+                                }
+                            }
+                            else
+                            {
+                                for (int i = (ViewBag.current - 1) / 12 * 10; i < (Math.Ceiling((decimal)ViewBag.current / 12) * 10 > ViewBag.pages ? ViewBag.pages : Math.Ceiling((decimal)
+
+                                ViewBag.current / 12) * 10); i++)
+                                {
+                                    <li class="@((i + 1) == ViewBag.current ? "JobUserModel" : string.Empty)">
+                                        @Html.ActionLink((i + 1).ToString(), "List", new { page = (i + 1).ToString(), pagesize = "12" })
+                                    </li>
+                                }
+                            }
+                            @if ((int)ViewBag.current == (int)ViewBag.pages || (int)ViewBag.pages == 0)
+                            {
+                                <li class="disabled">
+                                    <a>下一页</a>
+                                </li>
+                                <li class="disabled">
+                                    <a>末页</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    @Html.ActionLink("下一页", "List", new { page = ((int)ViewBag.current + 1).ToString(), pagesize = "12" })
+                                </li>
+                                <li>
+                                    @Html.ActionLink("末页", "List", new { page = ((int)ViewBag.pages).ToString(), pagesize = "12" })
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+}
+            <footer class="main-footer">
+                武汉博晟安全技术股份有限公司   版权所有
+            </footer>
+        </div>
+        
+    </div>
+    <div class="modal fade launch-modal" id="modal3" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-my" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                    <h4 class="modal-title">友好提示</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center c-0d0d0d f-18 pd-t-20 pd-b-20">
+                        即将删除该数据，请确认！
+                    </div>
+                    <div class="text-center mg-t-20 mg-b-20">
+                        @*@Html.ActionLink("确认", "List", new { id = "", page = 1, pagesize = 5 })*@
+                        <label id="lbid" style="visibility:hidden"></label>
+                        <button onclick="dele();" type="submit" class="my-btn mg-r-15 bg-3669e1">确认</button>
+                        <button class="my-btn bd" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<script>
+    $('.safe-main li').map(function (idx, item) {
+        $(item).niceScroll()
+    })
+    $('.safe-nav li').click(function () {
+        var index = $(this).index()
+        $(this).addClass('active').siblings().removeClass('active')
+        $('.safe-main li').eq(index).show().siblings().hide()
+    })
+
+
+    
+</script>
+

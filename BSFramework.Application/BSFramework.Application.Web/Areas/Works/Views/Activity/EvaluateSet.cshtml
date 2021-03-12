@@ -1,0 +1,173 @@
+﻿@{
+    ViewBag.Title = "EvaluateSet";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group a.btn {
+            margin-top: 4px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+</style>
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+<script type="text/javascript">
+    var selectedRowIndex;
+    jQuery(function () {
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#grid').setGridWidth(($('.gridPanel').width()));
+                $("#grid").setGridHeight($(window).height() - 140);
+            }, 200);
+            e.stopPropagation();
+        });
+        var queryJson = {
+            txt_Keyword: jQuery('#txt_Keyword').val(),
+        };
+        jQuery('#grid').jqGrid({
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'Id', hidden: true },
+                {
+                    label: '操作', name: '', index: '', width: 180, align: 'center',
+                    formatter: function (cellvaue, options, rowObject) {
+                        var html = "<a style='text-decoration:none;' href=\"javascript:detail('" + rowObject.Id + "')\" title=\"点击查看详情\">查看</a>";
+                        html += "<a style='text-decoration:none;' href=\"javascript:btn_edit('" + rowObject.Id + "')\" title=\"编辑\" code=\"edit\">编辑</a><a style='text-decoration:none;' href=\"javascript:btn_delete('" + rowObject.Id + "')\" title=\"删除\" code=\"code\">删除</a>";
+                        return html;
+
+                    }
+                },
+                { label: '模块名称', name: 'modulename', index: 'module', width: 160, align: 'center' },
+                { label: '评价顺序', name: 'evaluatesort', index: 'evaluatesort', width: 160, align: 'center' },
+                { label: '评价部门', name: 'deptname', index: 'deptname', width: 160, align: 'center' },
+                //{ label: '评价角色', name: 'userrole', index: 'userrole', width: 160, align: 'center' },
+                { label: '评价岗位', name: 'userjobs', index: 'userjobs', width: 160, align: 'center' },
+                {
+                    label: '使用专业类别', name: 'isprofessional', index: 'isprofessional', width: 160, align: 'center',
+                    formatter: function (cellvaue, options, rowObject) {
+                        var html = "";
+                        if (rowObject.isprofessional) {
+                            html += "是";
+                        } else {
+                            html += "否";
+                        }
+                        return html;
+
+                    }
+                },
+               { label: '排序', name: 'sort', index: 'sort', width: 160, align: 'center' }
+            ],
+            height: $(window).height() - 140,
+            url: '@Url.Action("GetEvaluateSetData")', postData: { queryJson: JSON.stringify(queryJson) },
+            datatype: "json",
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 20,
+            rownumbers: true,
+            pager: "#gridPager"
+
+        });
+        $("#btn_Search").click(function () {
+            var queryJson = {
+                txt_Keyword: jQuery('#txt_Keyword').val(),
+            };
+            jQuery('#grid').jqGrid('setGridParam', {
+                postData: { queryJson: JSON.stringify(queryJson) }, page: 1
+            }).trigger('reloadGrid');
+        });
+    });
+    //新增
+    function btn_add() {
+        dialogOpen({
+            id: 'Form1',
+            title: '新增',
+            url: '/..@Url.Action("EvaluateForm")',
+            width: '800px',
+            height: '600px',
+            callBack: function (iframeId) {
+                top.frames[iframeId].AcceptClick();
+            }
+        });
+    }
+
+    //编辑
+    function btn_edit(id) {
+            dialogOpen({
+                id: "Form2",
+                title: '修改',
+                url: '/..@Url.Action("EvaluateForm")?keyValue=' + id,
+                width: "1000px",
+                height: "600px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });  
+    }
+
+    //删除
+    function btn_delete(id) {
+      
+            $.RemoveForm({
+                url: '/..@Url.Action("deleteEvaluateSet")',
+                param: { keyValue: id },
+                success: function (data) {
+                    $('#grid').trigger('reloadGrid');
+                }
+            })
+        } 
+    
+
+
+    function detail(id) {
+            var dlg = dialogOpen({
+                id: 'detail',
+                title: '查看详情',
+                url: '/..@Url.Action("EvaluateFormDetail")?keyValue=' + id,
+                width: '800px',
+                height: '600px',
+                btn: ["关闭"],
+                callBack: function (iframeId) {
+                    top.layer.close(dlg);
+                }
+            })
+    }
+</script>
+<div class="titlePanel">
+    <div class="title-search">
+        <div class="form-inline">
+            <div class="form-group">
+                <label>模块名称</label>
+                <input id="txt_Keyword" type="text" class="form-control" placeholder="请输入关键字" style="width: 200px;">
+            </div>
+
+            <div class="form-group">
+                <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+            </div>
+        </div>
+    </div>
+    <div class="toolbar">
+        <div class="btn-group">
+            <a id="lr-add" class="btn btn-default" onclick="btn_add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+        </div>
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="grid"></table>
+    <div id="gridPager"></div>
+</div>
+

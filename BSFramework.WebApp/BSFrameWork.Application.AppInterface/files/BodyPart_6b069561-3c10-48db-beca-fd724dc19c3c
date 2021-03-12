@@ -1,0 +1,762 @@
+Debug: 2019-09-09 13:47:59-1568008079340
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-09 13:48:04-1568008084276
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-09 14:34:19-1568010859667
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-09 15:10:55-1568013055555
+LaunchActivity LaunchActivity
+
+Info: 2019-09-09 15:32:12-1568014332828
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-09 16:20:09-1568017209799
+LaunchActivity LaunchActivity
+
+Info: 2019-09-09 16:20:17-1568017217598
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-09 16:20:27-1568017227413
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-09 16:20:35-1568017235497
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8000744b; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:20:35-1568017235512
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8000780c; boundsInParent: Rect(0, 0 - 1920, 813); boundsInScreen: Rect(0, 203 - 1920, 1016); packageName: com.android.settings; className: android.widget.ListView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: true; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_CLEAR_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:20:37-1568017237439
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8000b05a; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:20:37-1568017237545
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80011d37; boundsInParent: Rect(0, 0 - 95, 27); boundsInScreen: Rect(181, 833 - 276, 860); packageName: com.android.settings; className: android.widget.TextView; text: （实验性）; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_SET_SELECTION - null]
+
+Debug: 2019-09-09 16:20:37-1568017237561
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8000b41b; boundsInParent: Rect(0, 0 - 1920, 898); boundsInScreen: Rect(0, 118 - 1920, 1016); packageName: com.android.settings; className: android.widget.ListView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: true; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: true; actions: [AccessibilityAction: ACTION_CLEAR_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SCROLL_FORWARD - null]
+
+Error: 2019-09-09 16:20:37-1568017237778
+crash_handler java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.String android.view.accessibility.AccessibilityNodeInfo.toString()' on a null object reference
+	at com.bossien.module.setting.service.MyAccessibilityService.onAccessibilityEvent(MyAccessibilityService.java:31)
+	at android.accessibilityservice.AccessibilityService$1.onAccessibilityEvent(AccessibilityService.java:659)
+	at android.accessibilityservice.AccessibilityService$IAccessibilityServiceClientWrapper.executeMessage(AccessibilityService.java:752)
+	at com.android.internal.os.HandlerCaller$MyHandler.handleMessage(HandlerCaller.java:37)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Error: 2019-09-09 16:20:37-1568017237779
+java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.String android.view.accessibility.AccessibilityNodeInfo.toString()' on a null object reference
+	at com.bossien.module.setting.service.MyAccessibilityService.onAccessibilityEvent(MyAccessibilityService.java:31)
+	at android.accessibilityservice.AccessibilityService$1.onAccessibilityEvent(AccessibilityService.java:659)
+	at android.accessibilityservice.AccessibilityService$IAccessibilityServiceClientWrapper.executeMessage(AccessibilityService.java:752)
+	at com.android.internal.os.HandlerCaller$MyHandler.handleMessage(HandlerCaller.java:37)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Debug: 2019-09-09 16:20:40-1568017240730
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-09 16:21:34-1568017294217
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8001c262; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:21:54-1568017314099
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8001c262; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:22:02-1568017322033
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8002600c; boundsInParent: Rect(0, 0 - 96, 33); boundsInScreen: Rect(288, 945 - 384, 978); packageName: com.android.settings; className: android.widget.TextView; text: 关于手机; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_SET_SELECTION - null]
+
+Debug: 2019-09-09 16:22:16-1568017336870
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80026f10; boundsInParent: Rect(0, 200 - 1920, 1098); boundsInScreen: Rect(0, 118 - 1920, 1016); packageName: com.android.settings; className: android.widget.ScrollView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: true; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SCROLL_FORWARD - null, AccessibilityAction: ACTION_SCROLL_BACKWARD - null]
+
+Debug: 2019-09-09 16:22:20-1568017340198
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80026f10; boundsInParent: Rect(0, 200 - 1920, 1098); boundsInScreen: Rect(0, 118 - 1920, 1016); packageName: com.android.settings; className: android.widget.ScrollView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: true; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SCROLL_FORWARD - null, AccessibilityAction: ACTION_SCROLL_BACKWARD - null]
+
+Debug: 2019-09-09 16:22:22-1568017342060
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80026f10; boundsInParent: Rect(0, 200 - 1920, 1098); boundsInScreen: Rect(0, 118 - 1920, 1016); packageName: com.android.settings; className: android.widget.ScrollView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: true; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SCROLL_FORWARD - null, AccessibilityAction: ACTION_SCROLL_BACKWARD - null]
+
+Debug: 2019-09-09 16:22:39-1568017359308
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80026f10; boundsInParent: Rect(0, 337 - 1920, 1235); boundsInScreen: Rect(0, 118 - 1920, 1016); packageName: com.android.settings; className: android.widget.ScrollView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: true; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SCROLL_BACKWARD - null]
+
+Debug: 2019-09-09 16:22:51-1568017371114
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80026f10; boundsInParent: Rect(0, 93 - 1920, 991); boundsInScreen: Rect(0, 118 - 1920, 1016); packageName: com.android.settings; className: android.widget.ScrollView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: true; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SCROLL_FORWARD - null, AccessibilityAction: ACTION_SCROLL_BACKWARD - null]
+
+Debug: 2019-09-09 16:22:52-1568017372594
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80026f10; boundsInParent: Rect(0, 93 - 1920, 991); boundsInScreen: Rect(0, 118 - 1920, 1016); packageName: com.android.settings; className: android.widget.ScrollView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: true; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SCROLL_FORWARD - null, AccessibilityAction: ACTION_SCROLL_BACKWARD - null]
+
+Debug: 2019-09-09 16:22:53-1568017373932
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80026f10; boundsInParent: Rect(0, 93 - 1920, 991); boundsInScreen: Rect(0, 118 - 1920, 1016); packageName: com.android.settings; className: android.widget.ScrollView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: true; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SCROLL_FORWARD - null, AccessibilityAction: ACTION_SCROLL_BACKWARD - null]
+
+Debug: 2019-09-09 16:23:03-1568017383931
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80026f10; boundsInParent: Rect(0, 337 - 1920, 1235); boundsInScreen: Rect(0, 118 - 1920, 1016); packageName: com.android.settings; className: android.widget.ScrollView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: true; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SCROLL_BACKWARD - null]
+
+Debug: 2019-09-09 16:23:08-1568017388978
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80026f10; boundsInParent: Rect(0, 0 - 1920, 898); boundsInScreen: Rect(0, 118 - 1920, 1016); packageName: com.android.settings; className: android.widget.ScrollView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: true; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SCROLL_FORWARD - null]
+
+Debug: 2019-09-09 16:23:10-1568017390285
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80026f10; boundsInParent: Rect(0, 0 - 1920, 898); boundsInScreen: Rect(0, 118 - 1920, 1016); packageName: com.android.settings; className: android.widget.ScrollView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: true; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SCROLL_FORWARD - null]
+
+Debug: 2019-09-09 16:23:11-1568017391580
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80026f10; boundsInParent: Rect(0, 0 - 1920, 898); boundsInScreen: Rect(0, 118 - 1920, 1016); packageName: com.android.settings; className: android.widget.ScrollView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: true; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SCROLL_FORWARD - null]
+
+Debug: 2019-09-09 16:23:20-1568017400482
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80026f10; boundsInParent: Rect(0, 271 - 1920, 1169); boundsInScreen: Rect(0, 118 - 1920, 1016); packageName: com.android.settings; className: android.widget.ScrollView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: true; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SCROLL_FORWARD - null, AccessibilityAction: ACTION_SCROLL_BACKWARD - null]
+
+Debug: 2019-09-09 16:23:56-1568017436750
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8002203b; boundsInParent: Rect(0, 0 - 742, 85); boundsInScreen: Rect(202, 486 - 944, 571); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:24:00-1568017440747
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80048ba8; boundsInParent: Rect(0, 0 - 1920, 813); boundsInScreen: Rect(0, 203 - 1920, 1016); packageName: com.android.settings; className: android.widget.ListView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: true; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_CLEAR_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:24:24-1568017464134
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80048ba8; boundsInParent: Rect(0, 0 - 1920, 813); boundsInScreen: Rect(0, 203 - 1920, 1016); packageName: com.android.settings; className: android.widget.ListView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: true; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_CLEAR_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:25:23-1568017523934
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@800487e7; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:25:27-1568017527566
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80048ba8; boundsInParent: Rect(0, 0 - 1920, 813); boundsInScreen: Rect(0, 203 - 1920, 1016); packageName: com.android.settings; className: android.widget.ListView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: true; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_CLEAR_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:25:31-1568017531108
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8004b8b4; boundsInParent: Rect(0, 0 - 1581, 27); boundsInScreen: Rect(169, 380 - 1750, 407); packageName: com.android.settings; className: android.widget.TextView; text: 最近没有任何应用申请使用位置信息; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_SET_SELECTION - null]
+
+Debug: 2019-09-09 16:28:10-1568017690381
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80049aac; boundsInParent: Rect(0, 0 - 75, 75); boundsInScreen: Rect(0, 38 - 75, 113); packageName: com.android.settings; className: android.widget.ImageButton; text: null; error: null; maxTextLength: -1; contentDescription: 向上导航; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_SET_SELECTION - null]
+
+Debug: 2019-09-09 16:28:13-1568017693868
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8001c262; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:28:15-1568017695838
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8001c262; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:28:17-1568017697478
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8005bbb1; boundsInParent: Rect(0, 0 - 742, 85); boundsInScreen: Rect(202, 986 - 944, 1016); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Error: 2019-09-09 16:28:18-1568017698713
+crash_handler java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.String android.view.accessibility.AccessibilityNodeInfo.toString()' on a null object reference
+	at com.bossien.module.setting.service.MyAccessibilityService.onAccessibilityEvent(MyAccessibilityService.java:31)
+	at android.accessibilityservice.AccessibilityService$1.onAccessibilityEvent(AccessibilityService.java:659)
+	at android.accessibilityservice.AccessibilityService$IAccessibilityServiceClientWrapper.executeMessage(AccessibilityService.java:752)
+	at com.android.internal.os.HandlerCaller$MyHandler.handleMessage(HandlerCaller.java:37)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Error: 2019-09-09 16:28:18-1568017698717
+java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.String android.view.accessibility.AccessibilityNodeInfo.toString()' on a null object reference
+	at com.bossien.module.setting.service.MyAccessibilityService.onAccessibilityEvent(MyAccessibilityService.java:31)
+	at android.accessibilityservice.AccessibilityService$1.onAccessibilityEvent(AccessibilityService.java:659)
+	at android.accessibilityservice.AccessibilityService$IAccessibilityServiceClientWrapper.executeMessage(AccessibilityService.java:752)
+	at com.android.internal.os.HandlerCaller$MyHandler.handleMessage(HandlerCaller.java:37)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Debug: 2019-09-09 16:28:21-1568017701241
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-09 16:28:27-1568017707207
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8001c262; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:28:27-1568017707305
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8001c262; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:28:27-1568017707414
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80085061; boundsInParent: Rect(0, 0 - 96, 33); boundsInScreen: Rect(288, 1011 - 384, 1016); packageName: com.android.settings; className: android.widget.TextView; text: 关于手机; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_SET_SELECTION - null]
+
+Error: 2019-09-09 16:28:41-1568017721744
+crash_handler java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.String android.view.accessibility.AccessibilityNodeInfo.toString()' on a null object reference
+	at com.bossien.module.setting.service.MyAccessibilityService.onAccessibilityEvent(MyAccessibilityService.java:31)
+	at android.accessibilityservice.AccessibilityService$1.onAccessibilityEvent(AccessibilityService.java:659)
+	at android.accessibilityservice.AccessibilityService$IAccessibilityServiceClientWrapper.executeMessage(AccessibilityService.java:752)
+	at com.android.internal.os.HandlerCaller$MyHandler.handleMessage(HandlerCaller.java:37)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Error: 2019-09-09 16:28:41-1568017721750
+java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.String android.view.accessibility.AccessibilityNodeInfo.toString()' on a null object reference
+	at com.bossien.module.setting.service.MyAccessibilityService.onAccessibilityEvent(MyAccessibilityService.java:31)
+	at android.accessibilityservice.AccessibilityService$1.onAccessibilityEvent(AccessibilityService.java:659)
+	at android.accessibilityservice.AccessibilityService$IAccessibilityServiceClientWrapper.executeMessage(AccessibilityService.java:752)
+	at com.android.internal.os.HandlerCaller$MyHandler.handleMessage(HandlerCaller.java:37)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Debug: 2019-09-09 16:28:44-1568017724470
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-09 16:29:09-1568017749175
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@800a61bd; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:29:10-1568017750557
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@800a61bd; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:29:12-1568017752046
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@800ba854; boundsInParent: Rect(0, 0 - 96, 33); boundsInScreen: Rect(288, 1282 - 384, 1016); packageName: com.android.settings; className: android.widget.TextView; text: 关于手机; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_SET_SELECTION - null]
+
+Error: 2019-09-09 16:30:17-1568017817973
+crash_handler java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.String android.view.accessibility.AccessibilityNodeInfo.toString()' on a null object reference
+	at com.bossien.module.setting.service.MyAccessibilityService.onAccessibilityEvent(MyAccessibilityService.java:31)
+	at android.accessibilityservice.AccessibilityService$1.onAccessibilityEvent(AccessibilityService.java:659)
+	at android.accessibilityservice.AccessibilityService$IAccessibilityServiceClientWrapper.executeMessage(AccessibilityService.java:752)
+	at com.android.internal.os.HandlerCaller$MyHandler.handleMessage(HandlerCaller.java:37)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Error: 2019-09-09 16:30:17-1568017817975
+java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.String android.view.accessibility.AccessibilityNodeInfo.toString()' on a null object reference
+	at com.bossien.module.setting.service.MyAccessibilityService.onAccessibilityEvent(MyAccessibilityService.java:31)
+	at android.accessibilityservice.AccessibilityService$1.onAccessibilityEvent(AccessibilityService.java:659)
+	at android.accessibilityservice.AccessibilityService$IAccessibilityServiceClientWrapper.executeMessage(AccessibilityService.java:752)
+	at com.android.internal.os.HandlerCaller$MyHandler.handleMessage(HandlerCaller.java:37)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Debug: 2019-09-09 16:30:20-1568017820519
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-09 16:33:59-1568018039222
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@800dcc6d; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:34:34-1568018074907
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@800dcc6d; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:34:36-1568018076757
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@800f1304; boundsInParent: Rect(0, 0 - 96, 33); boundsInScreen: Rect(288, 1282 - 384, 1016); packageName: com.android.settings; className: android.widget.TextView; text: 关于手机; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_SET_SELECTION - null]
+
+Debug: 2019-09-09 16:34:45-1568018085631
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@800ea627; boundsInParent: Rect(0, 0 - 742, 85); boundsInScreen: Rect(202, 342 - 944, 427); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:34:57-1568018097590
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8011335b; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:35:00-1568018100430
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8011371c; boundsInParent: Rect(0, 0 - 1920, 898); boundsInScreen: Rect(0, 118 - 1920, 1016); packageName: com.android.settings; className: android.widget.ListView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: true; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_CLEAR_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:35:24-1568018124199
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8011335b; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:35:26-1568018126716
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8011371c; boundsInParent: Rect(0, 0 - 1920, 898); boundsInScreen: Rect(0, 118 - 1920, 1016); packageName: com.android.settings; className: android.widget.ListView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: true; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_CLEAR_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:35:29-1568018129255
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80116067; boundsInParent: Rect(0, 0 - 64, 64); boundsInScreen: Rect(1856, 43 - 1920, 107); packageName: com.android.settings; className: android.widget.TextView; text: null; error: null; maxTextLength: -1; contentDescription: 搜索; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: true; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_LONG_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:40:13-1568018413825
+LaunchActivity LaunchActivity
+
+Info: 2019-09-09 16:41:07-1568018467674
+BaseApplication onTrimMemory ... level:5
+
+Debug: 2019-09-09 16:41:10-1568018470041
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-09 16:41:28-1568018488685
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@800dcc6d; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:41:28-1568018488714
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@800dcc6d; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:41:28-1568018488827
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80123ddc; boundsInParent: Rect(0, 0 - 742, 85); boundsInScreen: Rect(202, 1257 - 944, 1016); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:42:56-1568018576293
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8011fe0b; boundsInParent: Rect(0, 0 - 742, 85); boundsInScreen: Rect(975, 342 - 1717, 427); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:42:56-1568018576302
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8014800c; boundsInParent: Rect(0, 0 - 1920, 898); boundsInScreen: Rect(0, 118 - 1920, 1016); packageName: com.android.settings; className: android.widget.ListView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: true; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_CLEAR_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:42:56-1568018576304
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@801483cd; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:42:56-1568018576310
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@801483cd; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:42:56-1568018576316
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8014800c; boundsInParent: Rect(0, 0 - 1920, 898); boundsInScreen: Rect(0, 118 - 1920, 1016); packageName: com.android.settings; className: android.widget.ListView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: true; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_CLEAR_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:42:56-1568018576318
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8014bc1c; boundsInParent: Rect(0, 0 - 64, 64); boundsInScreen: Rect(1856, 43 - 1920, 107); packageName: com.android.settings; className: android.widget.TextView; text: null; error: null; maxTextLength: -1; contentDescription: 搜索; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: true; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_LONG_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:43:08-1568018588161
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8014878e; boundsInParent: Rect(0, 0 - 75, 75); boundsInScreen: Rect(0, 38 - 75, 113); packageName: com.android.settings; className: android.widget.ImageButton; text: null; error: null; maxTextLength: -1; contentDescription: 向上导航; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_SET_SELECTION - null]
+
+Debug: 2019-09-09 16:43:08-1568018588188
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@800dcc6d; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:43:08-1568018588258
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@800dcc6d; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:43:08-1568018588382
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80164db1; boundsInParent: Rect(0, 0 - 96, 33); boundsInScreen: Rect(288, 1282 - 384, 1016); packageName: com.android.settings; className: android.widget.TextView; text: 关于手机; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_SET_SELECTION - null]
+
+Error: 2019-09-09 16:43:08-1568018588601
+crash_handler java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.String android.view.accessibility.AccessibilityNodeInfo.toString()' on a null object reference
+	at com.bossien.module.setting.service.MyAccessibilityService.onAccessibilityEvent(MyAccessibilityService.java:31)
+	at android.accessibilityservice.AccessibilityService$1.onAccessibilityEvent(AccessibilityService.java:659)
+	at android.accessibilityservice.AccessibilityService$IAccessibilityServiceClientWrapper.executeMessage(AccessibilityService.java:752)
+	at com.android.internal.os.HandlerCaller$MyHandler.handleMessage(HandlerCaller.java:37)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Error: 2019-09-09 16:43:08-1568018588604
+java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.String android.view.accessibility.AccessibilityNodeInfo.toString()' on a null object reference
+	at com.bossien.module.setting.service.MyAccessibilityService.onAccessibilityEvent(MyAccessibilityService.java:31)
+	at android.accessibilityservice.AccessibilityService$1.onAccessibilityEvent(AccessibilityService.java:659)
+	at android.accessibilityservice.AccessibilityService$IAccessibilityServiceClientWrapper.executeMessage(AccessibilityService.java:752)
+	at com.android.internal.os.HandlerCaller$MyHandler.handleMessage(HandlerCaller.java:37)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Debug: 2019-09-09 16:43:11-1568018591458
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-09 16:43:14-1568018594817
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@800dcc6d; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:43:14-1568018594936
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@800dcc6d; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:43:15-1568018595016
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@8018add3; boundsInParent: Rect(0, 0 - 742, 85); boundsInScreen: Rect(202, 1257 - 944, 1016); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:43:25-1568018605066
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@80186e02; boundsInParent: Rect(0, 0 - 742, 85); boundsInScreen: Rect(975, 342 - 1717, 427); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:43:25-1568018605089
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@801af009; boundsInParent: Rect(0, 0 - 1920, 898); boundsInScreen: Rect(0, 118 - 1920, 1016); packageName: com.android.settings; className: android.widget.ListView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: true; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_CLEAR_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:43:25-1568018605127
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@801af3ca; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:43:25-1568018605167
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@801af3ca; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:43:25-1568018605191
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@801af009; boundsInParent: Rect(0, 0 - 1920, 898); boundsInScreen: Rect(0, 118 - 1920, 1016); packageName: com.android.settings; className: android.widget.ListView; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: true; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_CLEAR_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:43:25-1568018605229
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@801b4660; boundsInParent: Rect(0, 0 - 64, 64); boundsInScreen: Rect(1856, 43 - 1920, 107); packageName: com.android.settings; className: android.widget.TextView; text: null; error: null; maxTextLength: -1; contentDescription: 搜索; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: true; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_LONG_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:43:28-1568018608915
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@801afb4c; boundsInParent: Rect(0, 0 - 75, 75); boundsInScreen: Rect(0, 38 - 75, 113); packageName: com.android.settings; className: android.widget.ImageButton; text: null; error: null; maxTextLength: -1; contentDescription: 向上导航; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_SET_SELECTION - null]
+
+Debug: 2019-09-09 16:43:28-1568018608970
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@800dcc6d; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:43:29-1568018609001
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@800dcc6d; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:43:29-1568018609061
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@801cbda8; boundsInParent: Rect(0, 0 - 742, 85); boundsInScreen: Rect(202, 1257 - 944, 1016); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_CLICK - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Error: 2019-09-09 16:43:29-1568018609343
+crash_handler java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.String android.view.accessibility.AccessibilityNodeInfo.toString()' on a null object reference
+	at com.bossien.module.setting.service.MyAccessibilityService.onAccessibilityEvent(MyAccessibilityService.java:31)
+	at android.accessibilityservice.AccessibilityService$1.onAccessibilityEvent(AccessibilityService.java:659)
+	at android.accessibilityservice.AccessibilityService$IAccessibilityServiceClientWrapper.executeMessage(AccessibilityService.java:752)
+	at com.android.internal.os.HandlerCaller$MyHandler.handleMessage(HandlerCaller.java:37)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Error: 2019-09-09 16:43:29-1568018609344
+java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.String android.view.accessibility.AccessibilityNodeInfo.toString()' on a null object reference
+	at com.bossien.module.setting.service.MyAccessibilityService.onAccessibilityEvent(MyAccessibilityService.java:31)
+	at android.accessibilityservice.AccessibilityService$1.onAccessibilityEvent(AccessibilityService.java:659)
+	at android.accessibilityservice.AccessibilityService$IAccessibilityServiceClientWrapper.executeMessage(AccessibilityService.java:752)
+	at com.android.internal.os.HandlerCaller$MyHandler.handleMessage(HandlerCaller.java:37)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Debug: 2019-09-09 16:43:32-1568018612307
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-09 16:43:42-1568018622917
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@800dcc6d; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:43:43-1568018623010
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@800dcc6d; boundsInParent: Rect(0, 0 - 1920, 1080); boundsInScreen: Rect(0, 0 - 1920, 1080); packageName: com.android.settings; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]
+
+Debug: 2019-09-09 16:43:43-1568018623130
+MyAccessibilityService android.view.accessibility.AccessibilityNodeInfo@801f5258; boundsInParent: Rect(0, 0 - 96, 33); boundsInScreen: Rect(288, 1282 - 384, 1016); packageName: com.android.settings; className: android.widget.TextView; text: 关于手机; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; enabled: true; password: false; scrollable: false; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_SET_SELECTION - null]
+
+Debug: 2019-09-09 16:54:36-1568019276152
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-09 16:58:15-1568019495838
+LaunchActivity LaunchActivity
+
+Info: 2019-09-09 16:58:52-1568019532655
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-09 16:59:15-1568019555561
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-09 17:03:55-1568019835455
+LaunchActivity LaunchActivity
+
+Info: 2019-09-09 17:51:10-1568022670350
+BaseApplication onTrimMemory ... level:15
+
+Debug: 2019-09-09 17:51:12-1568022672712
+LaunchActivity LaunchActivity
+
+Info: 2019-09-09 17:52:51-1568022771270
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-09 17:52:56-1568022776192
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-09 17:52:59-1568022779091
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-09 18:05:10-1568023510503
+LaunchActivity LaunchActivity
+
+Info: 2019-09-09 18:05:22-1568023522761
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-09 18:06:27-1568023587848
+LaunchActivity LaunchActivity
+
+Info: 2019-09-09 18:06:37-1568023597343
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-09 18:08:17-1568023697471
+LaunchActivity LaunchActivity
+
+Info: 2019-09-09 18:08:40-1568023720981
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-09 18:09:09-1568023749425
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-09 18:10:56-1568023856088
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-09 18:10:59-1568023859988
+LaunchActivity LaunchActivity
+
+Info: 2019-09-09 18:11:22-1568023882901
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-09 18:13:05-1568023985200
+LaunchActivity LaunchActivity
+
+Info: 2019-09-09 18:13:20-1568024000855
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-09 18:13:48-1568024028009
+MyAccessibilityService android.widget.ListView
+
+Debug: 2019-09-09 18:13:49-1568024029302
+MyAccessibilityService com.android.settings.SubSettings
+
+Debug: 2019-09-09 18:13:50-1568024030324
+MyAccessibilityService android.widget.TextView
+
+Debug: 2019-09-09 18:13:51-1568024031227
+MyAccessibilityService android.widget.ListView
+
+Debug: 2019-09-09 18:13:52-1568024032140
+MyAccessibilityService android.widget.ListView
+
+Debug: 2019-09-09 18:13:56-1568024036126
+MyAccessibilityService android.widget.FrameLayout
+
+Debug: 2019-09-09 18:13:56-1568024036484
+MyAccessibilityService com.android.settings.Settings
+
+Debug: 2019-09-09 18:13:56-1568024036812
+MyAccessibilityService android.widget.TextView
+
+Debug: 2019-09-09 18:13:57-1568024037284
+MyAccessibilityService android.widget.ListView
+
+Debug: 2019-09-09 18:14:10-1568024050270
+MyAccessibilityService android.widget.FrameLayout
+
+Debug: 2019-09-09 18:14:13-1568024053382
+MyAccessibilityService android.widget.TextView
+
+Debug: 2019-09-09 18:14:20-1568024060120
+MyAccessibilityService com.android.settings.Settings
+
+Debug: 2019-09-09 18:14:26-1568024066877
+MyAccessibilityService android.widget.TextView
+
+Debug: 2019-09-09 18:14:50-1568024090858
+MyAccessibilityService android.widget.FrameLayout
+
+Debug: 2019-09-09 18:14:52-1568024092160
+MyAccessibilityService android.widget.ListView
+
+Debug: 2019-09-09 18:14:54-1568024094266
+MyAccessibilityService android.widget.ListView
+
+Debug: 2019-09-09 18:14:54-1568024094270
+MyAccessibilityService com.android.settings.SubSettings
+
+Debug: 2019-09-09 18:14:54-1568024094270
+MyAccessibilityService android.widget.ListView
+
+Debug: 2019-09-09 18:14:54-1568024094271
+MyAccessibilityService android.widget.ImageView
+
+Debug: 2019-09-09 18:15:23-1568024123167
+MyAccessibilityService android.widget.FrameLayout
+
+Debug: 2019-09-09 18:15:23-1568024123394
+MyAccessibilityService com.android.settings.Settings
+
+Debug: 2019-09-09 18:15:23-1568024123447
+MyAccessibilityService android.widget.FrameLayout
+
+Debug: 2019-09-09 18:15:23-1568024123649
+MyAccessibilityService android.widget.ListView
+
+Debug: 2019-09-09 18:15:50-1568024150017
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-09 18:15:57-1568024157313
+MyAccessibilityService 2048 android.widget.FrameLayout
+
+Debug: 2019-09-09 18:15:57-1568024157465
+MyAccessibilityService 2048 android.widget.TextView
+
+Debug: 2019-09-09 18:15:57-1568024157565
+MyAccessibilityService 32 com.android.settings.Settings
+
+Debug: 2019-09-09 18:15:57-1568024157652
+MyAccessibilityService 2048 android.widget.TextView
+
+Debug: 2019-09-09 18:16:34-1568024194795
+MyAccessibilityService 1 android.widget.FrameLayout
+
+Debug: 2019-09-09 18:16:35-1568024195411
+MyAccessibilityService 8 android.widget.ListView
+
+Debug: 2019-09-09 18:16:35-1568024195418
+MyAccessibilityService 32 com.android.settings.SubSettings
+
+Debug: 2019-09-09 18:16:35-1568024195521
+MyAccessibilityService 4096 android.widget.ListView
+
+Debug: 2019-09-09 18:16:35-1568024195556
+MyAccessibilityService 2048 android.widget.TextView
+
+Debug: 2019-09-09 18:18:30-1568024310576
+MyAccessibilityService 1 android.widget.ImageButton
+
+Debug: 2019-09-09 18:18:30-1568024310603
+MyAccessibilityService 2048 android.widget.FrameLayout
+
+Debug: 2019-09-09 18:18:33-1568024313889
+MyAccessibilityService 32 com.android.settings.Settings
+
+Debug: 2019-09-09 18:18:33-1568024313895
+MyAccessibilityService 2048 android.widget.FrameLayout
+
+Debug: 2019-09-09 18:18:33-1568024313901
+MyAccessibilityService 2048 android.widget.ListView
+
+Debug: 2019-09-09 18:18:37-1568024317790
+MyAccessibilityService 1 android.widget.FrameLayout
+
+Debug: 2019-09-09 18:18:37-1568024317909
+MyAccessibilityService 2048 android.widget.FrameLayout
+
+Debug: 2019-09-09 18:18:37-1568024317966
+MyAccessibilityService 8 android.widget.ListView
+
+Debug: 2019-09-09 18:19:03-1568024343001
+MyAccessibilityService 32 com.android.settings.SubSettings
+
+Debug: 2019-09-09 18:19:03-1568024343008
+MyAccessibilityService 4096 android.widget.ListView
+
+Debug: 2019-09-09 18:19:03-1568024343012
+MyAccessibilityService 2048 android.widget.TextView
+
+Debug: 2019-09-09 18:19:07-1568024347801
+MyAccessibilityService 1 android.widget.ImageButton
+
+Debug: 2019-09-09 18:19:07-1568024347820
+MyAccessibilityService 2048 android.widget.FrameLayout
+
+Debug: 2019-09-09 18:19:10-1568024350098
+MyAccessibilityService 32 com.android.settings.Settings
+
+Debug: 2019-09-09 18:19:10-1568024350104
+MyAccessibilityService 2048 android.widget.TextView
+
+Debug: 2019-09-09 18:19:10-1568024350111
+MyAccessibilityService 2048 android.widget.ListView
+
+Debug: 2019-09-09 18:19:13-1568024353479
+MyAccessibilityService 1 android.widget.FrameLayout
+
+Debug: 2019-09-09 18:19:13-1568024353532
+MyAccessibilityService 2048 android.widget.FrameLayout
+
+Debug: 2019-09-09 18:19:13-1568024353601
+MyAccessibilityService 8 android.widget.ListView
+
+Debug: 2019-09-09 18:19:18-1568024358627
+MyAccessibilityService 32 com.android.settings.SubSettings
+
+Debug: 2019-09-09 18:19:18-1568024358633
+MyAccessibilityService 4096 android.widget.ListView
+
+Debug: 2019-09-09 18:19:18-1568024358637
+MyAccessibilityService 2048 android.widget.TextView
+
+Debug: 2019-09-09 18:19:26-1568024366955
+MyAccessibilityService 1 android.widget.ImageButton
+
+Debug: 2019-09-09 18:19:26-1568024366980
+MyAccessibilityService 2048 android.widget.FrameLayout
+
+Debug: 2019-09-09 18:19:27-1568024367350
+MyAccessibilityService 32 com.android.settings.Settings
+
+Debug: 2019-09-09 18:19:27-1568024367413
+MyAccessibilityService 2048 android.widget.FrameLayout
+
+Debug: 2019-09-09 18:19:27-1568024367633
+MyAccessibilityService 2048 android.widget.ListView
+
+Debug: 2019-09-09 18:19:37-1568024377424
+MyAccessibilityService 1 android.widget.FrameLayout
+
+Debug: 2019-09-09 18:19:37-1568024377551
+MyAccessibilityService 8 android.widget.ListView
+
+Debug: 2019-09-09 18:19:37-1568024377553
+MyAccessibilityService 2048 android.widget.ListView
+
+Debug: 2019-09-09 18:19:37-1568024377651
+MyAccessibilityService 32 com.android.settings.SubSettings
+
+Debug: 2019-09-09 18:19:37-1568024377672
+MyAccessibilityService 4096 android.widget.ListView
+
+Debug: 2019-09-09 18:19:37-1568024377758
+MyAccessibilityService 2048 android.widget.TextView
+
+Debug: 2019-09-09 18:19:46-1568024386152
+MyAccessibilityService 1 android.widget.ImageButton
+
+Debug: 2019-09-09 18:19:46-1568024386167
+MyAccessibilityService 2048 android.widget.FrameLayout
+
+Debug: 2019-09-09 18:19:58-1568024398215
+MyAccessibilityService 32 com.android.settings.Settings
+
+Debug: 2019-09-09 18:19:58-1568024398217
+MyAccessibilityService 2048 android.widget.FrameLayout
+
+Debug: 2019-09-09 18:19:58-1568024398218
+MyAccessibilityService 2048 android.widget.ListView
+
+Debug: 2019-09-09 18:20:04-1568024404609
+MyAccessibilityService 1 android.widget.FrameLayout
+
+Debug: 2019-09-09 18:20:04-1568024404666
+MyAccessibilityService 2048 android.widget.FrameLayout
+
+Debug: 2019-09-09 18:20:05-1568024405280
+MyAccessibilityService 8 android.widget.ListView
+
+Debug: 2019-09-09 18:20:07-1568024407910
+MyAccessibilityService 32 com.android.settings.SubSettings
+
+Debug: 2019-09-09 18:20:07-1568024407913
+MyAccessibilityService 4096 android.widget.ListView
+
+Debug: 2019-09-09 18:20:07-1568024407915
+MyAccessibilityService 2048 android.widget.TextView
+
+Debug: 2019-09-09 18:20:10-1568024410712
+MyAccessibilityService 2048 android.widget.FrameLayout
+
+Debug: 2019-09-09 18:20:22-1568024422967
+MyAccessibilityService 32 com.android.settings.Settings
+
+Debug: 2019-09-09 18:20:22-1568024422969
+MyAccessibilityService 2048 android.widget.TextView
+
+Debug: 2019-09-09 18:20:22-1568024422970
+MyAccessibilityService 2048 android.widget.ListView
+

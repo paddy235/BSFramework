@@ -1,0 +1,547 @@
+﻿@{
+    ViewBag.Title = "教育培训信息";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<script src="@Url.Content("~/Content/scripts/plugins/datepicker/WdatePicker.js")"></script>
+<script src="~/Content/scripts/plugins/AdminPrettyDesktopFirst/js/LoadData.js"></script>
+<script>
+
+    var _parentId = "";
+    var _isOrg = "";
+    var userId = top.currUserId; //当前用户Id
+    var deptCode = top.currUserDeptCode;//当前用户所属部门Code
+    var orgCode = top.currUserOrgCode;//当前用户所属机构Code
+    var deptid = '@ViewBag.deptid';
+    var type = '@ViewBag.type';
+    var from = '@ViewBag.from';
+    var to = '@ViewBag.to';
+    var aqxxr = new Array();
+    var getDeptid = request('id');
+    var start = request('start');
+    var end = request('end');
+    var activityType = request('type');
+    var dafenurl = "@ViewBag.dafen";
+    $(function () {
+        jQuery('#appraise').val(type);
+        if (from != "") {
+            $('#from').val(from);
+        }
+        if (to != "") {
+            $('#to').val(to);
+        }
+        InitialPage();
+
+
+    });
+
+    function onNodeSelected(item) {
+        deptCode = item.Code;
+        deptid = item.id;
+
+        // deptid = item.id;
+        // _parentId = item.EnCode;
+        // _isOrg = item.Sort;
+        $('#btn_Search').trigger("click");
+    }
+
+
+    //初始化页面
+    function InitialPage() {
+        $('#layout').layout({
+            west: {
+                size: 300
+            },
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+        GetGrid();
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $("#departments").height($(window).height() - 50);
+                $("#gridTable").setGridHeight($(window).height() - 170);
+            }, 200);
+            e.stopPropagation();
+        });
+
+        $("#departments").height($(window).height() - 50);
+    }
+    function transferDate(date) {
+        var year = date.getFullYear();
+        var month = date.getMonth()+1;
+        var day = date.getDate();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (day >= 0 && day <= 9) {
+            day = "0" + day;
+        }
+        var dateString = year + '-' + month + '-' + day;
+        return dateString;
+    }
+
+    //加载表格
+    function GetGrid() {
+        var queryJson = { deptid: deptid};
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTable');
+        if (getDeptid) {
+
+            $('#from').val(start);
+            $('#to').val(end);
+            jQuery('#type option').each(function () {
+                if (this.innerText == activityType) {
+                    this.selected = "selected";
+                    return false;
+                }
+            });
+            queryJson = {
+                from: start,
+                to: end,
+                code: deptCode,
+                type: jQuery('#type').val(),
+                deptid: getDeptid
+            };
+
+
+        } else if (activityType) {
+           
+                jQuery('#type option').each(function () {
+                    if (this.innerText == activityType) {
+                        this.selected = "selected";
+                        return false;
+                    }
+                });
+            var startTime = new Date();
+            startTime.setDate(1);
+            var date = new Date();
+            var currentMonth = date.getMonth();
+            var nextMonth = ++currentMonth;
+            var nextMonthFirstDay = new Date(date.getFullYear(), nextMonth, 1);
+            var oneDay = 1000 * 60 * 60 * 24;
+            var end = new Date(nextMonthFirstDay - oneDay);
+            var startDate = transferDate(startTime);
+            var endDate = transferDate(end);
+            $("#from").val(startDate);
+            $("#to").val(endDate);
+
+            queryJson = {
+                from: startDate,
+                to: endDate,
+                code: deptCode,
+                type: jQuery('#type').val(),
+                deptid: deptid
+            };
+           
+        } else {
+           
+            queryJson = {
+                from: from,
+                to: to,
+                code: deptCode,
+                type: type,
+                deptid: deptid
+            };
+        }
+        $gridTable.jqGrid({
+            url: "../../Works/Education/GetEducationJson",
+            datatype: "json",
+            height: $(window).height() - 170,
+            postData: queryJson,
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'id', hidden: true },
+
+                {
+                    label: '操作', name: '', index: '', width: 180, align: 'center',
+                    formatter: function (cellvaue, options, rowObject) {
+                        if (rowObject.EduType.length > 1) {
+                            aqxxr.push(rowObject.ID);
+                            var html = "<a style='text-decoration:none;' href=\"javascript:btn_show('" + rowObject.ID + "')\" title=\"点击查看详情\">查看</a>";
+                            return html;
+                        } else {
+                            var html = "<a style='text-decoration:none;' href=\"javascript:detail('" + rowObject.ID + "')\" title=\"点击查看详情\">查看</a>";
+                            html += "<a style='text-decoration:none;' href=\"javascript:edit('" + rowObject.ID + "')\" title=\"编辑\" code=\"edit\">编辑</a><a style='text-decoration:none;' href=\"javascript:del('" + rowObject.ID + "')\" title=\"删除\" code=\"code\">删除</a>";
+                            return html;
+                        }
+                    }
+                },
+                {
+                    label: '培训类型', name: 'EduType', index: 'EduType', width: 160, align: 'center',
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (cellvalue == "1") {
+                            return "技术讲课";
+                        }
+                        if (cellvalue == "2") {
+                            return "技术问答";
+                        }
+                        if (cellvalue == "3") {
+                            return "事故预想";
+                        }
+                        if (cellvalue == "4") {
+                            return "反事故演习";
+                        }
+                        if (cellvalue == "5") {
+                            return "技术问答";
+                        }
+                        if (cellvalue == "6") {
+                            return "事故预想";
+                        }
+                        if (cellvalue == "7") {
+                            return "拷问讲解";
+                        }
+                        if (cellvalue == "8") {
+                            return "拷问讲解";
+                        }
+                        return cellvalue;
+                    }
+                },
+                {
+                    label: '题目', name: 'Theme', index: 'Theme', width: 400, align: 'center'
+                },
+                {
+                    label: '班组', name: 'BZName', index: 'BZName', width: 200, align: 'center'
+
+                },
+                {
+                    label: '参加人数/总人数', name: 'attendnum', index: 'attendnum', width: 160, align: 'center', sortable: false,
+                    formatter: function (cellvaue, options, rowObject) {
+                        return rowObject.SignNumber + '/' + rowObject.DefaultNumber;
+                    }
+                },
+                {
+                    label: '培训时间', name: 'date', index: 'date', width: 250, align: 'center', sortable: false,
+                    formatter: function (cellvaue, options, rowObject) {
+
+                        var start = formatDate(rowObject.ActivityDate, 'yyyy/MM/dd');
+                        var end = formatDate(rowObject.ActivityEndDate, 'yyyy/MM/dd');
+                        if (start == end) {
+                            var startStr = formatDate(rowObject.ActivityDate, 'yyyy/MM/dd hh:mm');
+                            var endStr = formatDate(rowObject.ActivityEndDate, 'hh:mm');
+                            return startStr + "-" + endStr;
+                        } else {
+                            var startStr = formatDate(rowObject.ActivityDate, 'yyyy/MM/dd hh:mm');
+                            var endStr = formatDate(rowObject.ActivityEndDate, 'yyyy/MM/dd hh:mm');
+                            return startStr + "-" + endStr;
+                        }
+                        //var start = new Date(parseInt(rowObject.ActivityDate.replace(/^\/Date\(/, '').replace(/\)\/$/, '')));
+                        //var end = new Date(parseInt(rowObject.ActivityEndDate.replace(/^\/Date\(/, '').replace(/\)\/$/, '')));
+                        //if (start.getMonth() == end.getMonth() && start.getDate() == end.getDate()) {
+
+                            // return '' + start.toLocaleDateString() + ' ' + start.toLocaleTimeString() + ' - ' + end.toLocaleTimeString();
+                        //}
+                        //else {
+
+                           // return '' + start.toLocaleDateString() + ' ' + start.toLocaleTimeString() + ' - ' + end.toLocaleDateString() + ' ' + end.toLocaleTimeString();
+                        //}
+
+                    }
+                },
+                {
+                    label: '培训时长(小时)', name: 'LearnTime', index: 'LearnTime', width: 180, align: 'center', sortable: false
+                },
+                {
+                    label: '状态', name: 'Status', index: 'Status', width: 120, align: 'center'
+
+                }
+            ],
+            viewrecords: true,
+            rowNum: 20,
+            // rowList: [30, 50, 100],
+            pager: "#gridPager",
+            sortname: 'ActivityDate',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: true,
+            gridview: true,
+            //forceFit: true,
+            onSelectRow: function () {
+                selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            },
+            loadError: function (xhr, status, error) {
+                //top.location.href = "../../Login/Index?Login_Error=1";
+            },
+            gridComplete: function () {
+                @if (!BSFramework.Application.Code.OperatorProvider.Provider.Current().IsSystem)
+                {
+                    @Html.Raw("AuthiruzeBtn($('.toolbar'), $('#gridTable'));");//操作按钮权限控制
+                }
+            }
+        });
+        //$gridTable.authorizeColModel()
+        //查询条件
+        $("#queryCondition .dropdown-menu li").click(function () {
+                             var text = $(this).find('a').html();
+                             var value = $(this).find('a').attr('data-value');
+            $("#queryCondition .dropdown-text").html(text).attr('data-value', value)
+        });
+        //查询事件
+        $("#btn_Search").click(function () {
+                             var from = $('#from').val();
+                             var to = $('#to').val();
+                             var queryJson = {
+                condition: $("#queryCondition").find('.dropdown-text').attr('data-value'),
+                name: $("#txt_Keyword").val(),
+                from: from,
+                to: to,
+                code: deptCode,
+                                 isOrg: _isOrg,
+                                 deptid: deptid,
+                appraise: jQuery('#appraise').val(),
+                type: jQuery('#type').val()
+            }
+            $gridTable.jqGrid('setGridParam', {
+                postData: queryJson, page: 1
+            }).trigger('reloadGrid');
+        });
+        $("#btn_SearchAll").click(function () {
+            $('#from').val('');
+            $('#to').val('');
+                             jQuery('#appraise').val('0');
+                             jQuery('#type').val('0');
+            $("#txt_Keyword").val('');
+            $('#btn_Search').trigger("click");
+                         });
+        //查询回车
+        $('#txt_Keyword').bind('keypress', function (event) {
+                             if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+                             }
+                         });
+
+    }
+    function fn$refresh() {
+        $('#gridTable').jqGrid('setGridParam', {
+            postData: queryJson, page: 1
+        }).trigger('reloadGrid');
+    }
+
+    //编辑
+    function btn_edit(id) {
+        dialogOpen({
+            id: "Form",
+            title: '修改',
+            url: '/../@Url.Action("Detail2", "EdActivity")/' + id,
+            width: "1200px",
+            height: "800px",
+            callBack: function (iframeId) {
+                // end();
+                top.frames[iframeId].AcceptClick();
+            }
+        });
+    }
+
+
+    //查看
+    function btn_show(id) {
+        dialogOpen({
+            id: "Edit",
+            title: '查看',
+            url: '/../@Url.Action("Form", "EdActivity")/' + id,
+        width: ($(window).width() - 100) + 'px',
+                height: ($(top.window).height() - 80) + "px",
+            btn: null,
+            callBack: function (iframeId) {
+                //end();
+            }
+        });
+    }
+
+    //删除
+    function btn_delete(id) {
+        $.RemoveForm({
+            url: '../../Works/EdActivity/RemoveForm',
+            param: { keyValue: id },
+            success: function (data) {
+                $('#gridTable').trigger('reloadGrid');
+            }
+        })
+    }
+
+
+    function detail(id) {
+        url = '/../@Url.Action("Detail2")/' + id
+        dialogOpen({
+            id: "Detail2",
+            title: '查看培训信息',
+            url: url,
+            width: ($(window).width() - 100) + 'px',
+            height: ($(top.window).height() - 80) + "px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+    function edit(id) {
+        url = '/../@Url.Action("Form2")/' + id
+        dialogOpen({
+            id: "Edit",
+            title: '编辑',
+            url: url,
+            width: ($(window).width() - 100) + 'px',
+            height: ($(top.window).height() - 80) + "px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+    //删除
+    function del(id) {
+            $.RemoveForm({
+                url: "/../@Url.Action("DeleteOne")",
+                param: { id: id },
+                success: function (data) {
+                    $("#gridTable").trigger("reloadGrid");
+                }
+            })
+    }
+    function action() {
+        $.ajax({
+            url: "/..@Url.Action("postAqxxr", "EdActivity")",
+            type: "post",
+            data: { aqxxr:JSON.stringify(aqxxr) },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data=="成功") {
+                    dialogMsg('当前查询数据同步成功！', 0);
+                } else {
+                    dialogMsg(data+'同步失败！', 0);
+                }
+            }
+        })
+    }
+
+</script>
+<style>
+    .ui-jqgrid tr.jqgrow td {
+        text-overflow: ellipsis;
+    }
+</style>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                <div class="col-md-10">
+                    组织机构
+                </div>
+                <div class="col-md-2 text-right" style="padding-right:8px;">
+                    <i class="fa fa-arrow-left" onclick="setBar(this)" style="cursor:pointer;" title="展开/收起"></i>
+                </div>
+            </div>
+            @Html.Partial("~/Areas/BaseManage/Views/Department/Tree.cshtml")
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title">教育培训信息</div>
+            <div class="titlePanel">
+                <div class="title-search">
+                    <table>
+                        <tr>
+                            <td>
+                                @*<div id="queryCondition" class="btn-group">
+                                        <a class="btn btn-default dropdown-text" data-toggle="dropdown">选择条件</a>
+                                        <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a data-value="Name">题目</a></li>
+                                            @*<li><a data-value="RealName">姓名</a></li>
+                                                <li><a data-value="Mobile">手机</a></li>
+                                        </ul>
+                                    </div>*@
+                                题目
+                            </td>
+                            <td style="padding-left: 5px;">
+                                <input id="txt_Keyword" type="text" class="form-control" placeholder="请输入关键字" style="width: 200px;" />
+                            </td>
+
+                            <td style="padding-left: 15px; ">
+                                选择日期
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                <input id="from" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker();" style="width: 150px;" />
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                -
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                <input id="to" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker();" style="width: 150px;" />
+                            </td>
+
+                            <td style="padding-left: 15px;">
+                                <label for="type">培训类型</label>
+                                <select id="type">
+                                    <option value="0">全部</option>
+                                    @{
+                                        string[] etype = ViewBag.etype;
+                                        foreach (string i in etype)
+                                        {
+                                            switch (i)
+                                            {
+                                                case "1":
+                                                    <option value="1">技术讲课</option>
+                                                    break;
+                                                case "2":
+                                                    <option value="2">技术问答</option>
+                                                    break;
+                                                case "3":
+                                                    <option value="3">事故预想</option>
+                                                    break;
+                                                case "4":
+                                                    <option value="4">反事故演习</option>
+                                                    break;
+                                                case "5":
+                                                    <option value="5">技术问答</option>
+                                                    break;
+                                                case "6":
+                                                    <option value="6">事故预想</option>
+                                                    break;
+                                                case "7":
+                                                    <option value="7">拷问讲解</option>
+                                                    break;
+                                                case "8":
+                                                    <option value="8">拷问讲解</option>
+                                                    break;
+                                                case "9":
+                                                    <option value="安全学习日">安全学习日</option>
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </td>
+                            <td style="padding-left: 15px;">
+                                <label for="appraise">状态</label>
+                                <select id="appraise">
+                                    <option value="0">全部</option>
+                                    <option value="1">已评价</option>
+                                    <option value="2">未评价</option>
+                                </select>
+                            </td>
+                            <td style="padding-left: 15px;">
+                                <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                                <a id="btn_SearchAll" class="btn btn-primary">&nbsp;全部</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="toolbar">
+                    <div class="btn-group">
+                        <a class="btn btn-default" onclick="action();"><i class="fa fa-check"></i>&nbsp;安全学习日同步</a>
+                    </div>
+                    <div class="btn-group">
+                        <a id="replace" class="btn btn-default" onclick="reload();"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+                    </div>
+                    <div class="btn-group">
+                        <a id="dafen" class="btn btn-default" code="dafen" onclick="dafen('Detail')"><i class="fa fa-check"></i>&nbsp;考评打分</a>
+                    </div>
+                    @*<script>$('.toolbar').authorizeButton()</script>*@
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="gridTable"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>

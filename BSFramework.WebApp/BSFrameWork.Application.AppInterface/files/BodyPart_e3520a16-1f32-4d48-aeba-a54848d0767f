@@ -1,0 +1,665 @@
+Info: 2019-09-06 09:12:24-1567732344471
+BaseApplication onTrimMemory ... level:5
+
+Debug: 2019-09-06 09:12:27-1567732347758
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 09:12:41-1567732361712
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 09:14:21-1567732461978
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 09:14:47-1567732487775
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-06 09:14:59-1567732499846
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-06 09:15:03-1567732503644
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-06 09:15:06-1567732506460
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-06 09:15:14-1567732514081
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-06 09:15:18-1567732518293
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-06 09:15:22-1567732522547
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 09:16:08-1567732568798
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-06 09:16:11-1567732571772
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-06 09:22:28-1567732948696
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-06 09:23:12-1567732992201
+BootCompletedReceiver this package com.bossien.banzu.terminal
+
+Debug: 2019-09-06 09:23:12-1567732992206
+BootCompletedReceiver on top com.android.dialer
+
+Debug: 2019-09-06 09:23:14-1567732994305
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-06 09:23:14-1567732994306
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-06 09:23:19-1567732999599
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 09:24:48-1567733088666
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 09:25:24-1567733124102
+BootCompletedReceiver this package com.bossien.banzu.terminal
+
+Debug: 2019-09-06 09:25:24-1567733124105
+BootCompletedReceiver on top com.android.dialer
+
+Info: 2019-09-06 09:25:25-1567733125531
+BaseApplication onTrimMemory ... level:10
+
+Debug: 2019-09-06 09:25:28-1567733128821
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 09:25:36-1567733136340
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-06 09:25:40-1567733140372
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-06 09:25:45-1567733145071
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 09:25:48-1567733148443
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 09:25:48-1567733148949
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-06 09:25:59-1567733159824
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 09:26:14-1567733174455
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 09:26:18-1567733178946
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 09:27:31-1567733251403
+BootCompletedReceiver this package com.bossien.banzu.terminal
+
+Debug: 2019-09-06 09:27:31-1567733251405
+BootCompletedReceiver on top com.bossien.banzu.terminal
+
+Debug: 2019-09-06 09:41:11-1567734071501
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 09:41:35-1567734095477
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 09:41:43-1567734103569
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 09:41:54-1567734114353
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 09:49:40-1567734580714
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 09:49:45-1567734585237
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 09:50:38-1567734638359
+BootCompletedReceiver this package com.bossien.banzu.terminal
+
+Debug: 2019-09-06 09:50:38-1567734638374
+BootCompletedReceiver android.process.acore imp 400
+
+Debug: 2019-09-06 09:50:38-1567734638376
+BootCompletedReceiver com.bossien.banzu.terminal imp 300
+
+Debug: 2019-09-06 09:50:38-1567734638377
+BootCompletedReceiver com.android.dialer imp 400
+
+Debug: 2019-09-06 09:50:38-1567734638377
+BootCompletedReceiver com.android.keychain imp 400
+
+Debug: 2019-09-06 09:50:38-1567734638384
+BootCompletedReceiver android.process.media imp 400
+
+Debug: 2019-09-06 09:50:38-1567734638386
+BootCompletedReceiver com.android.mms imp 400
+
+Debug: 2019-09-06 09:50:38-1567734638388
+BootCompletedReceiver com.android.music imp 300
+
+Debug: 2019-09-06 09:50:38-1567734638390
+BootCompletedReceiver com.android.smspush imp 200
+
+Debug: 2019-09-06 09:50:38-1567734638394
+BootCompletedReceiver com.android.printspooler imp 200
+
+Debug: 2019-09-06 09:50:38-1567734638395
+BootCompletedReceiver com.android.launcher3 imp 100
+
+Debug: 2019-09-06 09:50:38-1567734638397
+BootCompletedReceiver com.genymotion.genyd imp 100
+
+Debug: 2019-09-06 09:50:38-1567734638398
+BootCompletedReceiver com.android.phone imp 100
+
+Debug: 2019-09-06 09:50:38-1567734638398
+BootCompletedReceiver com.genymotion.systempatcher imp 100
+
+Debug: 2019-09-06 09:50:38-1567734638406
+BootCompletedReceiver com.android.inputmethod.latin imp 130
+
+Debug: 2019-09-06 09:50:38-1567734638411
+BootCompletedReceiver com.android.systemui imp 100
+
+Debug: 2019-09-06 09:50:38-1567734638411
+BootCompletedReceiver system imp 100
+
+Debug: 2019-09-06 09:50:38-1567734638412
+BootCompletedReceiver on top com.android.providers.userdictionary
+
+Debug: 2019-09-06 09:50:38-1567734638413
+BootCompletedReceiver on top com.android.providers.contacts
+
+Debug: 2019-09-06 09:51:44-1567734704168
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-06 09:52:48-1567734768882
+BootCompletedReceiver this package com.bossien.banzu.terminal
+
+Debug: 2019-09-06 09:52:48-1567734768885
+BootCompletedReceiver android.process.acore imp 400
+
+Debug: 2019-09-06 09:52:48-1567734768886
+BootCompletedReceiver com.bossien.banzu.terminal imp 300
+
+Debug: 2019-09-06 09:52:48-1567734768887
+BootCompletedReceiver com.android.dialer imp 400
+
+Debug: 2019-09-06 09:52:48-1567734768887
+BootCompletedReceiver android.process.media imp 400
+
+Debug: 2019-09-06 09:52:48-1567734768888
+BootCompletedReceiver com.android.keychain imp 400
+
+Debug: 2019-09-06 09:52:48-1567734768888
+BootCompletedReceiver com.android.mms imp 400
+
+Debug: 2019-09-06 09:52:48-1567734768888
+BootCompletedReceiver com.android.music imp 300
+
+Debug: 2019-09-06 09:52:48-1567734768889
+BootCompletedReceiver com.android.smspush imp 200
+
+Debug: 2019-09-06 09:52:48-1567734768889
+BootCompletedReceiver com.android.printspooler imp 200
+
+Debug: 2019-09-06 09:52:48-1567734768889
+BootCompletedReceiver com.android.launcher3 imp 100
+
+Debug: 2019-09-06 09:52:48-1567734768890
+BootCompletedReceiver com.genymotion.genyd imp 100
+
+Debug: 2019-09-06 09:52:48-1567734768891
+BootCompletedReceiver com.android.phone imp 100
+
+Debug: 2019-09-06 09:52:48-1567734768893
+BootCompletedReceiver com.genymotion.systempatcher imp 100
+
+Debug: 2019-09-06 09:52:48-1567734768893
+BootCompletedReceiver com.android.inputmethod.latin imp 130
+
+Debug: 2019-09-06 09:52:48-1567734768894
+BootCompletedReceiver com.android.systemui imp 100
+
+Debug: 2019-09-06 09:52:48-1567734768895
+BootCompletedReceiver system imp 100
+
+Debug: 2019-09-06 09:52:48-1567734768898
+BootCompletedReceiver on top com.android.providers.userdictionary
+
+Debug: 2019-09-06 09:52:48-1567734768898
+BootCompletedReceiver on top com.android.providers.contacts
+
+Info: 2019-09-06 09:54:11-1567734851271
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 09:54:15-1567734855043
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 09:54:18-1567734858114
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-06 09:54:21-1567734861913
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 09:55:20-1567734920687
+BootCompletedReceiver this package com.bossien.banzu.terminal
+
+Debug: 2019-09-06 09:55:20-1567734920692
+BootCompletedReceiver com.bossien.banzu.terminal imp 100
+
+Debug: 2019-09-06 09:55:20-1567734920693
+BootCompletedReceiver android.process.acore imp 400
+
+Debug: 2019-09-06 09:55:20-1567734920693
+BootCompletedReceiver com.android.dialer imp 400
+
+Debug: 2019-09-06 09:55:20-1567734920694
+BootCompletedReceiver com.android.keychain imp 400
+
+Debug: 2019-09-06 09:55:20-1567734920694
+BootCompletedReceiver android.process.media imp 400
+
+Debug: 2019-09-06 09:55:20-1567734920694
+BootCompletedReceiver com.android.calendar imp 400
+
+Debug: 2019-09-06 09:55:20-1567734920695
+BootCompletedReceiver com.android.mms imp 400
+
+Debug: 2019-09-06 09:55:20-1567734920695
+BootCompletedReceiver com.android.providers.calendar imp 400
+
+Debug: 2019-09-06 09:55:20-1567734920695
+BootCompletedReceiver com.android.deskclock imp 400
+
+Debug: 2019-09-06 09:55:20-1567734920696
+BootCompletedReceiver com.android.music imp 300
+
+Debug: 2019-09-06 09:55:20-1567734920696
+BootCompletedReceiver com.android.smspush imp 200
+
+Debug: 2019-09-06 09:55:20-1567734920697
+BootCompletedReceiver com.android.printspooler imp 200
+
+Debug: 2019-09-06 09:55:20-1567734920698
+BootCompletedReceiver com.genymotion.genyd imp 100
+
+Debug: 2019-09-06 09:55:20-1567734920699
+BootCompletedReceiver com.android.phone imp 100
+
+Debug: 2019-09-06 09:55:20-1567734920700
+BootCompletedReceiver com.genymotion.systempatcher imp 100
+
+Debug: 2019-09-06 09:55:20-1567734920701
+BootCompletedReceiver com.android.inputmethod.latin imp 130
+
+Debug: 2019-09-06 09:55:20-1567734920701
+BootCompletedReceiver com.android.systemui imp 100
+
+Debug: 2019-09-06 09:55:20-1567734920705
+BootCompletedReceiver system imp 100
+
+Debug: 2019-09-06 09:55:20-1567734920706
+BootCompletedReceiver on top com.bossien.banzu.terminal
+
+Debug: 2019-09-06 09:55:24-1567734924489
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-06 10:01:50-1567735310625
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-06 10:03:01-1567735381934
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-06 10:03:06-1567735386636
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 10:03:25-1567735405086
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-06 10:03:29-1567735409078
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 10:04:39-1567735479078
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-06 10:04:42-1567735482610
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 10:04:54-1567735494727
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 11:19:34-1567739974431
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-06 11:21:05-1567740065100
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 11:28:04-1567740484448
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 11:43:13-1567741393701
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-06 11:48:55-1567741735054
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-06 11:49:07-1567741747129
+LauncherUtils switch launcher ComponentInfo{com.bossien.banzu.terminal/com.bossien.module.app.splash.SplashActivity}
+
+Debug: 2019-09-06 11:49:07-1567741747131
+LauncherUtils launcher:ComponentInfo{com.android.launcher3/com.android.launcher3.Launcher}
+
+Debug: 2019-09-06 11:49:07-1567741747132
+LauncherUtils launcher:ComponentInfo{com.bossien.banzu.terminal/com.bossien.module.app.splash.SplashActivity}
+
+Error: 2019-09-06 11:49:07-1567741747134
+LauncherUtils java.lang.reflect.InvocationTargetException
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.bossien.module.setting.utils.LauncherUtils.switchLauncher(LauncherUtils.java:67)
+	at com.bossien.module.setting.view.dialog.hidesetting.HideSettingPresenter.setLauncherDefault(HideSettingPresenter.java:101)
+	at com.bossien.module.setting.view.dialog.hidesetting.HideSettingPresenter.saveSetting(HideSettingPresenter.java:94)
+	at com.bossien.module.setting.view.dialog.hidesetting.HideSettingFragment.lambda$initData$2(HideSettingFragment.java:63)
+	at com.bossien.module.setting.view.dialog.hidesetting.-$$Lambda$HideSettingFragment$kkXI7h8C-aCmlRgkOo5PHTrDbzo.accept(lambda)
+	at io.reactivex.internal.observers.LambdaObserver.onNext(LambdaObserver.java:63)
+	at com.uber.autodispose.HalfSerializer.onNext(HalfSerializer.java:129)
+	at com.uber.autodispose.AutoDisposingObserverImpl.onNext(AutoDisposingObserverImpl.java:81)
+	at io.reactivex.observers.SerializedObserver.onNext(SerializedObserver.java:113)
+	at io.reactivex.internal.operators.observable.ObservableThrottleFirstTimed$DebounceTimedObserver.onNext(ObservableThrottleFirstTimed.java:82)
+	at com.jakewharton.rxbinding2.view.ViewClickObservable$Listener.onClick(ViewClickObservable.java:39)
+	at android.view.View.performClick(View.java:4780)
+	at android.view.View$PerformClick.run(View.java:19866)
+	at android.os.Handler.handleCallback(Handler.java:739)
+	at android.os.Handler.dispatchMessage(Handler.java:95)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+Caused by: java.lang.SecurityException: Neither user 10059 nor current process has android.permission.SET_PREFERRED_APPLICATIONS.
+	at android.os.Parcel.readException(Parcel.java:1546)
+	at android.os.Parcel.readException(Parcel.java:1499)
+	at android.content.pm.IPackageManager$Stub$Proxy.replacePreferredActivity(IPackageManager.java:3217)
+	at android.app.ApplicationPackageManager.replacePreferredActivity(ApplicationPackageManager.java:1438)
+	... 23 more
+
+
+Error: 2019-09-06 11:49:07-1567741747135
+java.lang.reflect.InvocationTargetException
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.bossien.module.setting.utils.LauncherUtils.switchLauncher(LauncherUtils.java:67)
+	at com.bossien.module.setting.view.dialog.hidesetting.HideSettingPresenter.setLauncherDefault(HideSettingPresenter.java:101)
+	at com.bossien.module.setting.view.dialog.hidesetting.HideSettingPresenter.saveSetting(HideSettingPresenter.java:94)
+	at com.bossien.module.setting.view.dialog.hidesetting.HideSettingFragment.lambda$initData$2(HideSettingFragment.java:63)
+	at com.bossien.module.setting.view.dialog.hidesetting.-$$Lambda$HideSettingFragment$kkXI7h8C-aCmlRgkOo5PHTrDbzo.accept(lambda)
+	at io.reactivex.internal.observers.LambdaObserver.onNext(LambdaObserver.java:63)
+	at com.uber.autodispose.HalfSerializer.onNext(HalfSerializer.java:129)
+	at com.uber.autodispose.AutoDisposingObserverImpl.onNext(AutoDisposingObserverImpl.java:81)
+	at io.reactivex.observers.SerializedObserver.onNext(SerializedObserver.java:113)
+	at io.reactivex.internal.operators.observable.ObservableThrottleFirstTimed$DebounceTimedObserver.onNext(ObservableThrottleFirstTimed.java:82)
+	at com.jakewharton.rxbinding2.view.ViewClickObservable$Listener.onClick(ViewClickObservable.java:39)
+	at android.view.View.performClick(View.java:4780)
+	at android.view.View$PerformClick.run(View.java:19866)
+	at android.os.Handler.handleCallback(Handler.java:739)
+	at android.os.Handler.dispatchMessage(Handler.java:95)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+Caused by: java.lang.SecurityException: Neither user 10059 nor current process has android.permission.SET_PREFERRED_APPLICATIONS.
+	at android.os.Parcel.readException(Parcel.java:1546)
+	at android.os.Parcel.readException(Parcel.java:1499)
+	at android.content.pm.IPackageManager$Stub$Proxy.replacePreferredActivity(IPackageManager.java:3217)
+	at android.app.ApplicationPackageManager.replacePreferredActivity(ApplicationPackageManager.java:1438)
+	... 23 more
+java.lang.SecurityException: Neither user 10059 nor current process has android.permission.SET_PREFERRED_APPLICATIONS.
+	at android.os.Parcel.readException(Parcel.java:1546)
+	at android.os.Parcel.readException(Parcel.java:1499)
+	at android.content.pm.IPackageManager$Stub$Proxy.replacePreferredActivity(IPackageManager.java:3217)
+	at android.app.ApplicationPackageManager.replacePreferredActivity(ApplicationPackageManager.java:1438)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.bossien.module.setting.utils.LauncherUtils.switchLauncher(LauncherUtils.java:67)
+	at com.bossien.module.setting.view.dialog.hidesetting.HideSettingPresenter.setLauncherDefault(HideSettingPresenter.java:101)
+	at com.bossien.module.setting.view.dialog.hidesetting.HideSettingPresenter.saveSetting(HideSettingPresenter.java:94)
+	at com.bossien.module.setting.view.dialog.hidesetting.HideSettingFragment.lambda$initData$2(HideSettingFragment.java:63)
+	at com.bossien.module.setting.view.dialog.hidesetting.-$$Lambda$HideSettingFragment$kkXI7h8C-aCmlRgkOo5PHTrDbzo.accept(lambda)
+	at io.reactivex.internal.observers.LambdaObserver.onNext(LambdaObserver.java:63)
+	at com.uber.autodispose.HalfSerializer.onNext(HalfSerializer.java:129)
+	at com.uber.autodispose.AutoDisposingObserverImpl.onNext(AutoDisposingObserverImpl.java:81)
+	at io.reactivex.observers.SerializedObserver.onNext(SerializedObserver.java:113)
+	at io.reactivex.internal.operators.observable.ObservableThrottleFirstTimed$DebounceTimedObserver.onNext(ObservableThrottleFirstTimed.java:82)
+	at com.jakewharton.rxbinding2.view.ViewClickObservable$Listener.onClick(ViewClickObservable.java:39)
+	at android.view.View.performClick(View.java:4780)
+	at android.view.View$PerformClick.run(View.java:19866)
+	at android.os.Handler.handleCallback(Handler.java:739)
+	at android.os.Handler.dispatchMessage(Handler.java:95)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Debug: 2019-09-06 11:50:11-1567741811553
+LauncherUtils switch launcher ComponentInfo{com.bossien.banzu.terminal/com.bossien.module.app.splash.SplashActivity}
+
+Debug: 2019-09-06 11:50:38-1567741838445
+LauncherUtils launcher:ComponentInfo{com.android.launcher3/com.android.launcher3.Launcher}
+
+Debug: 2019-09-06 11:50:42-1567741842922
+LauncherUtils launcher:ComponentInfo{com.bossien.banzu.terminal/com.bossien.module.app.splash.SplashActivity}
+
+Error: 2019-09-06 11:51:35-1567741895740
+LauncherUtils java.lang.reflect.InvocationTargetException
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.bossien.module.setting.utils.LauncherUtils.switchLauncher(LauncherUtils.java:67)
+	at com.bossien.module.setting.view.dialog.hidesetting.HideSettingPresenter.setLauncherDefault(HideSettingPresenter.java:101)
+	at com.bossien.module.setting.view.dialog.hidesetting.HideSettingPresenter.saveSetting(HideSettingPresenter.java:94)
+	at com.bossien.module.setting.view.dialog.hidesetting.HideSettingFragment.lambda$initData$2(HideSettingFragment.java:63)
+	at com.bossien.module.setting.view.dialog.hidesetting.-$$Lambda$HideSettingFragment$kkXI7h8C-aCmlRgkOo5PHTrDbzo.accept(lambda)
+	at io.reactivex.internal.observers.LambdaObserver.onNext(LambdaObserver.java:63)
+	at com.uber.autodispose.HalfSerializer.onNext(HalfSerializer.java:129)
+	at com.uber.autodispose.AutoDisposingObserverImpl.onNext(AutoDisposingObserverImpl.java:81)
+	at io.reactivex.observers.SerializedObserver.onNext(SerializedObserver.java:113)
+	at io.reactivex.internal.operators.observable.ObservableThrottleFirstTimed$DebounceTimedObserver.onNext(ObservableThrottleFirstTimed.java:82)
+	at com.jakewharton.rxbinding2.view.ViewClickObservable$Listener.onClick(ViewClickObservable.java:39)
+	at android.view.View.performClick(View.java:4780)
+	at android.view.View$PerformClick.run(View.java:19866)
+	at android.os.Handler.handleCallback(Handler.java:739)
+	at android.os.Handler.dispatchMessage(Handler.java:95)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+Caused by: java.lang.SecurityException: Neither user 10059 nor current process has android.permission.SET_PREFERRED_APPLICATIONS.
+	at android.os.Parcel.readException(Parcel.java:1546)
+	at android.os.Parcel.readException(Parcel.java:1499)
+	at android.content.pm.IPackageManager$Stub$Proxy.replacePreferredActivity(IPackageManager.java:3217)
+	at android.app.ApplicationPackageManager.replacePreferredActivity(ApplicationPackageManager.java:1438)
+	... 23 more
+
+
+Error: 2019-09-06 11:51:35-1567741895741
+java.lang.reflect.InvocationTargetException
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.bossien.module.setting.utils.LauncherUtils.switchLauncher(LauncherUtils.java:67)
+	at com.bossien.module.setting.view.dialog.hidesetting.HideSettingPresenter.setLauncherDefault(HideSettingPresenter.java:101)
+	at com.bossien.module.setting.view.dialog.hidesetting.HideSettingPresenter.saveSetting(HideSettingPresenter.java:94)
+	at com.bossien.module.setting.view.dialog.hidesetting.HideSettingFragment.lambda$initData$2(HideSettingFragment.java:63)
+	at com.bossien.module.setting.view.dialog.hidesetting.-$$Lambda$HideSettingFragment$kkXI7h8C-aCmlRgkOo5PHTrDbzo.accept(lambda)
+	at io.reactivex.internal.observers.LambdaObserver.onNext(LambdaObserver.java:63)
+	at com.uber.autodispose.HalfSerializer.onNext(HalfSerializer.java:129)
+	at com.uber.autodispose.AutoDisposingObserverImpl.onNext(AutoDisposingObserverImpl.java:81)
+	at io.reactivex.observers.SerializedObserver.onNext(SerializedObserver.java:113)
+	at io.reactivex.internal.operators.observable.ObservableThrottleFirstTimed$DebounceTimedObserver.onNext(ObservableThrottleFirstTimed.java:82)
+	at com.jakewharton.rxbinding2.view.ViewClickObservable$Listener.onClick(ViewClickObservable.java:39)
+	at android.view.View.performClick(View.java:4780)
+	at android.view.View$PerformClick.run(View.java:19866)
+	at android.os.Handler.handleCallback(Handler.java:739)
+	at android.os.Handler.dispatchMessage(Handler.java:95)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+Caused by: java.lang.SecurityException: Neither user 10059 nor current process has android.permission.SET_PREFERRED_APPLICATIONS.
+	at android.os.Parcel.readException(Parcel.java:1546)
+	at android.os.Parcel.readException(Parcel.java:1499)
+	at android.content.pm.IPackageManager$Stub$Proxy.replacePreferredActivity(IPackageManager.java:3217)
+	at android.app.ApplicationPackageManager.replacePreferredActivity(ApplicationPackageManager.java:1438)
+	... 23 more
+java.lang.SecurityException: Neither user 10059 nor current process has android.permission.SET_PREFERRED_APPLICATIONS.
+	at android.os.Parcel.readException(Parcel.java:1546)
+	at android.os.Parcel.readException(Parcel.java:1499)
+	at android.content.pm.IPackageManager$Stub$Proxy.replacePreferredActivity(IPackageManager.java:3217)
+	at android.app.ApplicationPackageManager.replacePreferredActivity(ApplicationPackageManager.java:1438)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.bossien.module.setting.utils.LauncherUtils.switchLauncher(LauncherUtils.java:67)
+	at com.bossien.module.setting.view.dialog.hidesetting.HideSettingPresenter.setLauncherDefault(HideSettingPresenter.java:101)
+	at com.bossien.module.setting.view.dialog.hidesetting.HideSettingPresenter.saveSetting(HideSettingPresenter.java:94)
+	at com.bossien.module.setting.view.dialog.hidesetting.HideSettingFragment.lambda$initData$2(HideSettingFragment.java:63)
+	at com.bossien.module.setting.view.dialog.hidesetting.-$$Lambda$HideSettingFragment$kkXI7h8C-aCmlRgkOo5PHTrDbzo.accept(lambda)
+	at io.reactivex.internal.observers.LambdaObserver.onNext(LambdaObserver.java:63)
+	at com.uber.autodispose.HalfSerializer.onNext(HalfSerializer.java:129)
+	at com.uber.autodispose.AutoDisposingObserverImpl.onNext(AutoDisposingObserverImpl.java:81)
+	at io.reactivex.observers.SerializedObserver.onNext(SerializedObserver.java:113)
+	at io.reactivex.internal.operators.observable.ObservableThrottleFirstTimed$DebounceTimedObserver.onNext(ObservableThrottleFirstTimed.java:82)
+	at com.jakewharton.rxbinding2.view.ViewClickObservable$Listener.onClick(ViewClickObservable.java:39)
+	at android.view.View.performClick(View.java:4780)
+	at android.view.View$PerformClick.run(View.java:19866)
+	at android.os.Handler.handleCallback(Handler.java:739)
+	at android.os.Handler.dispatchMessage(Handler.java:95)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Info: 2019-09-06 11:55:08-1567742108183
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 11:56:26-1567742186123
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 11:56:29-1567742189748
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 11:57:36-1567742256038
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 11:57:44-1567742264836
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 11:59:24-1567742364924
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-06 11:59:28-1567742368453
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 11:59:43-1567742383794
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 12:29:00-1567744140072
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-06 13:38:07-1567748287137
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-06 13:44:42-1567748682930
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 13:44:46-1567748686431
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 13:55:50-1567749350776
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 13:55:56-1567749356462
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 13:59:42-1567749582086
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 13:59:46-1567749586042
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 14:01:20-1567749680575
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 14:01:34-1567749694975
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-06 14:01:48-1567749708267
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 14:03:19-1567749799422
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 14:03:23-1567749803449
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-06 14:03:39-1567749819997
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-06 14:03:49-1567749829914
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-06 14:04:02-1567749842794
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-06 14:04:08-1567749848212
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 14:05:08-1567749908241
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-06 14:05:12-1567749912733
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 14:05:18-1567749918952
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-06 14:05:23-1567749923340
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-06 17:01:28-1567760488199
+BaseApplication onTrimMemory ... level:10
+
+Debug: 2019-09-06 17:01:31-1567760491195
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 17:01:38-1567760498275
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-06 17:01:42-1567760502518
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-06 17:01:45-1567760505842
+LaunchActivity LaunchActivity
+
+Info: 2019-09-06 17:01:52-1567760512742
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-06 17:01:58-1567760518133
+BaseApplication onTrimMemory ... level:20
+

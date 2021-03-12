@@ -1,0 +1,125 @@
+﻿@{
+    ViewBag.Title = "TerminalForm";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script src="~/Content/scripts/business/Common.js"></script>
+
+<script>
+    var keyValue = request('keyValue');
+    var mode = request('mode');
+    $(function () {
+        initControl();
+    });
+    //初始化控件
+    function initControl() {
+        //获取表单
+        if (!!keyValue) {
+            $.SetForm({
+                    url: '/..@Url.Action("GetTerminalFormJson")' ,
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#form1").formDeserialize(data);
+
+                    if (data.IsOpen == 1) {
+                        document.getElementById("yes1").checked = true;
+                    } else {
+                        document.getElementById("no1").checked = true;
+                    }
+                    if (data.IsBZ == 1) {
+                        document.getElementById("yes2").checked = true;
+                    } else {
+                        document.getElementById("no2").checked = true;
+                    }
+                }
+            })
+        }
+        $('.icheck input').iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass: 'iradio_square-blue',
+            increaseArea: '20%'
+        });
+    }
+    //保存表单;
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var postData = $("#form1").formSerialize(keyValue);
+
+        if (document.getElementById("yes1").checked) {
+            postData["IsOpen"] =1;
+        } else {
+            postData["IsOpen"] = 0;
+        }
+        if (document.getElementById("yes2").checked) {
+            postData["IsBZ"] = 1;
+        } else {
+            postData["IsBZ"] = 0;
+        }
+        $.SaveForm({
+            url: '/..@Url.Action("SaveTerminalForm")' +'?keyValue=' + keyValue,
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<div style="margin-top: 20px; margin-right: 30px;">
+    <table class="form">
+        <tr>
+            <td class="formTitle">指标名称<font face="宋体" style="color:red;">*</font></td>
+            <td class="formValue">
+                <input id="Name" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" maxlength="100" />
+                <input type="hidden" id="CreateDate" />
+                <input type="hidden" id="ModifyDate" />
+                <input type="hidden" id="DataSetType" value="1" />
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">指标编码</td>
+            <td class="formValue">
+                <input id="Code" type="text" class="form-control" maxlength="200" />
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">单位</td>
+            <td class="formValue">
+                <input id="Unint" type="text" class="form-control" maxlength="50" />
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">是否启用<font face="宋体" style="color:red;">*</font></td>
+            <td class="formValue icheck">
+                <input type="radio" value="1" id="yes1" name="IsOpen" checked="checked" />&nbsp;<label for="yes1">是</label>&nbsp;&nbsp;&nbsp;
+                <input type="radio" value="0" id="no1" name="IsOpen" />&nbsp;<label for="no1">否</label>
+
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">是否班组指标<font face="宋体" style="color:red;">*</font></td>
+            <td class="formValue icheck">
+                <input type="radio" value="1" id="yes2" name="IsBZ" checked="checked" />&nbsp;<label for="yes2">是</label>&nbsp;&nbsp;&nbsp;
+                <input type="radio" value="0" id="no2" name="IsBZ" />&nbsp;<label for="no2">否</label>
+
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">排序<font face="宋体" style="color:red;">*</font></td>
+            <td class="formValue">
+                <input id="Sort" type="text" class="form-control" isvalid="yes" checkexpession="Num" />
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">备注</td>
+            <td class="formValue">
+                <textarea id="Remark" rows="5" maxlength="500" style="width:100%;"></textarea>
+            </td>
+        </tr>
+    </table>
+</div>
+

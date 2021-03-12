@@ -1,0 +1,53 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>通知公告详情</title>
+    <script>
+        var keyValue = request('Id');
+        $(function () {
+            var elemt = window.frames.parent[0].document.getElementById(keyValue);
+            console.log(elemt)
+           var Content = $(elemt).find("input[name=Content]").val();
+            var Publisher = $(elemt).find("input[name=Publisher]").val();
+            var PublisherDept = $(elemt).find("input[name=PublisherDept]").val();
+            var Title = $(elemt).find("input[name=Title]").val();
+            var ReleaseTime = $(elemt).find("input[name=ReleaseTime]").val();
+
+            $("#Title").html(Title);
+            $("#Publisher").html(Publisher);
+            $("#ReleaseTime").html(ReleaseTime);
+            $("#Content").html(Content);
+        })
+        function AcceptClick() {
+            dialogClose();
+        }
+    </script>
+    <style>
+        #tb_content td {
+            padding-bottom: 50px;
+        }
+    </style>
+</head>
+<body>
+    <table id="tb_content" style="margin:10px 10px; text-align:center;"  >
+        <tr>
+            <td colspan="2"><h1 id="Title"></h1 ></ td >
+</tr>
+        <tr>
+            <td id="Publisher"></td>
+            <td id="ReleaseTime"></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div style="word-break:break-word" id="Content"></div>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

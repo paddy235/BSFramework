@@ -1,0 +1,249 @@
+﻿@{
+    ViewBag.Title = "Index3";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<script src="~/Content/scripts/plugins/AdminPrettyDesktopFirst/js/LoadData.js"></script>
+<script>
+    var _parentId = "";
+    var _isOrg = "";
+    var userId = top.currUserId; //当前用户Id
+    var deptCode = top.currUserDeptCode;//当前用户所属部门Code
+    var orgCode = top.currUserOrgCode;//当前用户所属机构Code
+    var departmentId = "0";
+    var deptid = '@ViewBag.deptid';
+    //加载组织机构树
+    @*function GetTree() {
+        var url = '/..@Url.Action("GetDepartmentTree", "Department", new { area = "BaseManage"})?deptid=' + deptid;
+        var item = {
+            height: $(window).height() - 50,
+            url: url,
+            onnodeclick: function (item) {
+                _parentId = item.Code;
+                _isOrg = item.Sort;
+                $('#btn_Search').trigger("click");
+            }
+        };
+        //初始化
+        $("#itemTree").treeview(item);
+    }*@
+    $(function () {
+        InitialPage();
+        //GetTree();
+        GetGrid();
+    });
+
+    //初始化页面
+    function InitialPage() {
+        $('#layout').layout({
+            west: {
+                size: 300
+            },
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+
+                $("#gridTable").setGridHeight($(window).height() - 170);
+            }, 200);
+            e.stopPropagation();
+        });
+        $("#departments").height($(window).height() - 50);
+
+
+    }
+    function GetGrid() {
+        var selectedRowIndex = 0;
+        var $grid = $("#gridTable");
+        $grid.jqGrid({
+            url: '@Url.Action("GetToolInfoPageListJson")',
+            datatype: "json",
+            autowidth: true,
+            multiselect: false,
+            colModel: [
+                { label: '主键', name: 'ID', hidden: true, align: 'center' },
+                {
+                    label: '操作', name: '', index: '', width: 80, align: 'center',
+                    formatter: function (cellvaue, options, rowObject) {
+                        return "<a style='' href=\"javascript:detailnew('" + rowObject.ID + "')\" title=\"\">查看</a>"
+                    }
+                },
+                {
+                    label: '状态', name: 'CheckState', index: 'CheckState', width: 150, align: 'center'
+                }, {
+                    label: '工器具名称', name: 'Name', index: 'Name', width: 200, align: 'center'
+
+                }, {
+                    label: '编号', name: '', index: '', width: 200, align: 'center',
+                    formatter: function (cellvaue, options, rowObject) {
+                        var html = "";
+                        if (rowObject.BreakNumbers) {
+                            html = "<label style='color:red;' title=\"\">" + rowObject.BreakNumbers + "</label>";
+                            if (rowObject.Numbers) {
+                                html += ","
+                            }
+                        }
+                        html += "<label style='' title=\"\">" + rowObject.Numbers + "</label>";
+                        return html;
+                    }
+                }, {
+                    label: '班组', name: 'BZName', index: 'BZName', width: 200, align: 'center'
+                }
+                , {
+                    label: '有效期', name: 'ValiDate', index: 'ValiDate', width: 200, align: 'center', formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                }
+                ,
+                {
+                    label: '检验结果', name: 'CheckResult', index: 'CheckResult', width: 200, align: 'center'
+                }, {
+                    label: '检验人', name: 'CheckPeople', index: 'CheckPeople', width: 150, align: 'center'
+                }, {
+                    label: '检验日期', name: 'CheckDate', index: 'CheckDate', width: 150, align: 'center', formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                }
+
+            ],
+            height: $(window).height() - 170,
+            viewrecords: true,
+            rowNum: 20,
+            rowList: [20, 50, 100],
+            pager: "#gridPager",
+            sortname: 'CreateDate',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            onSelectRow: function () {
+                selectedRowIndex = $grid.getGridParam('selrow');
+            },
+            gridComplete: function () {
+                $grid.setSelection(selectedRowIndex, false);
+            }
+
+        });
+        $("#btn_Search").click(function () {
+            var queryJson = {
+                from: $("#from").val(),
+                to: $("#to").val(),
+                state: $("#state").val(),
+                result: $("#result").val(),
+                code: _parentId,
+            };
+            $grid.jqGrid('setGridParam', {
+                postData: queryJson, page: 1
+            }).trigger('reloadGrid');
+        });
+        $("#btn_SearchAll").click(function () {
+
+            $("#from").val(''),
+            $("#to").val(''),
+            $("#state").val(''),
+            $("#result").val(''),
+            $('#btn_Search').trigger("click");
+        });
+        $("#refresh").click(function () {
+
+            $("#txt_Keyword").val('');
+            $('#btn_Search').trigger("click");
+        });
+        //查询回车事件
+        $('#txt_Keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+
+    }
+
+    //详细
+
+    function detailnew(id) {
+        var height = "700px";
+        dialogOpen({
+            id: "Detai3",
+            title: '查看详情',
+            url: '/../@Url.Action("Detail3")/' + id,
+            width: "900px",
+            height: height,
+            btn: null
+        });
+    }
+    function onNodeSelected(node) {
+        deptid = node.id;
+        _parentId = node.Code;
+        _isOrg = node.Sort;
+        $('#btn_Search').trigger("click");
+    }
+</script>
+
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                <div class="col-md-10">
+                    组织机构
+                </div>
+                <div class="col-md-2 text-right" style="padding-right:8px;">
+                    <i class="fa fa-arrow-left" onclick="setBar(this)" style="cursor:pointer;" title="展开/收起"></i>
+                </div>
+            </div>
+            @*<div id="itemTree"></div>*@
+            @Html.Partial("~/Areas/BaseManage/Views/Department/Tree.cshtml")
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title">工器具检验信息</div>
+            <div class="titlePanel">
+                <div class="title-search">
+                    <table>
+                        <tr>
+                            <td style="padding-left: 15px; ">
+                                选择日期
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                <input id="from" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker();" style="width: 150px;" />
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                --
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                <input id="to" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker();" style="width: 150px;" />
+                            </td>
+                            <td style="padding-left: 15px;">
+                                <label for="result">检验结果</label>
+                                <select id="result">
+                                    <option value="">全部</option>
+                                    <option value="合格">合格</option>
+                                    <option value="报废">报废</option>
+                                </select>
+                            </td>
+                            <td style="padding-left: 15px;">
+                                <label for="state">状态</label>
+                                <select id="state">
+                                    <option value="">全部</option>
+                                    <option value="已检验">已检验</option>
+                                    <option value="未检验">未检验</option>
+                                </select>
+                            </td>
+                            <td style="padding-left: 5px;">
+                                <a id="btn_Search" class="btn btn-primary" style="line-height:15px;"><i class="fa fa-search"></i>&nbsp;查询</a>
+                                <a id="btn_SearchAll" class="btn btn-primary" style="line-height:15px;">&nbsp;全部</a>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+                <div class="toolbar">
+
+                    <script>$('.toolbar').authorizeButton()</script>
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="gridTable"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>

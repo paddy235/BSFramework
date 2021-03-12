@@ -1,0 +1,573 @@
+﻿@model BSFramework.Application.Entity.Activity.ActivityEntity
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<style>
+
+    .video li {
+        float: left;
+    }
+
+    .files li {
+        float: left;
+        margin: 0px 5px;
+    }
+
+    .imagelist li {
+        float: left;
+    }
+
+        .imagelist li img {
+            width: 100px;
+            height: 80px;
+        }
+</style>
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<script src="~/Content/scripts/business/common.js"></script>
+<script src="~/Content/scripts/jquery/jquery.serializeJSON.min.js"></script>
+<script src="~/Content/scripts/jquery/jquery.url.js"></script>
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+<!--播放器-->
+<link href="~/Content/scripts/plugins/video/css/video.min.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/video/js/video.min.js"></script>
+<script src="~/Content/scripts/plugins/video/js/videojs-contrib-hls.min.js"></script>
+
+<script>
+    jQuery(function () {
+        jQuery.getJSON('@Url.Action("GetSubActivities")/' + jQuery('#ActivityId').val(), function (subs) {
+            let edu1 = jQuery.grep(subs, function (o) {
+                return o.ActivitySubject == '事故预想'
+            });
+            if (edu1.length) {
+                jQuery.getJSON('@Url.Action("GetDetail", "Education")/' + edu1[0].SubActivityId, function (data) {
+                    if (data.Answers) {
+                        jQuery.each(data.Answers, function (i, o) {
+                            let imagehtml = '';
+                            if (o.Files) {
+                                jQuery.each(o.Files, function (j, p) {
+                                    imagehtml += '<li><img src="' + p.FilePath + '" data-url="' + p.FilePath + '" /></li>';
+                                });
+                            }
+                            jQuery('#answer1').append('\
+<div class="form-group">\
+                <label class="col-xs-1 control-label">题目</label>\
+                <div class="col-xs-11">\
+<input type="text" class="form-control" value="' + o.Question + '" />\
+                </div>\
+            </div>\
+            <div class="form-group">\
+                <label class="col-xs-1 control-label">答题人</label>\
+                <div class="col-xs-11">\
+<input type="text" class="form-control" value="' + o.AnswerPeople + '" />\
+                </div>\
+            </div>\
+            <div class="form-group">\
+                <label class="col-xs-1 control-label">事故现象</label>\
+                <div class="col-xs-11 imagelist">\
+                    <ul class="files">' + imagehtml + '\
+                    </ul>\
+                </div>\
+            </div>\
+');
+                        });
+                    }
+                });
+            } else {
+                jQuery('#part2').remove();
+            }
+
+            let edu2 = jQuery.grep(subs, function (o) {
+                return o.ActivitySubject == '反事故演习'
+            });
+            if (edu2.length) {
+                jQuery.getJSON('@Url.Action("GetDetail", "Education")/' + edu2[0].SubActivityId, function (data) {
+                    if (data.Answers) {
+                        jQuery.each(data.Answers, function (i, o) {
+                            let imagehtml = '';
+                            if (o.Files) {
+                                jQuery.each(o.Files, function (j, p) {
+                                    imagehtml += '<li><img src="' + p.FilePath + '" data-url="' + p.FilePath + '" /></li>';
+                                });
+                            }
+                            jQuery('#answer2').append('\
+<div class="form-group">\
+                <label class="col-xs-1 control-label">题目</label>\
+                <div class="col-xs-11">\
+<input type="text" class="form-control" value="' + o.Question + '" />\
+                </div>\
+            </div>\
+            <div class="form-group">\
+                <label class="col-xs-1 control-label">答题人</label>\
+                <div class="col-xs-11">\
+<input type="text" class="form-control" value="' + o.AnswerPeople + '" />\
+                </div>\
+            </div>\
+            <div class="form-group">\
+                <label class="col-xs-1 control-label">事故现象</label>\
+                <div class="col-xs-11 imagelist">\
+                    <ul class="files">' + imagehtml + '\
+                    </ul>\
+                </div>\
+            </div>\
+');
+                        });
+                    }
+                });
+            } else {
+                jQuery('#part3').remove();
+            }
+
+            let edu3 = jQuery.grep(subs, function (o) {
+                return o.ActivitySubject == '技术讲课'
+            });
+            if (edu3.length) {
+                jQuery.getJSON('@Url.Action("GetDetail", "Education")/' + edu3[0].SubActivityId, function (data) {
+                    if (data.Files2 && data.Files2.length) {
+                        jQuery('#kejian').val(data.Files2[0].FileName);
+                    }
+                    jQuery('#Describe').val(data.Describe);
+                    jQuery.each(data.Files, function (i, o) {
+                        jQuery('#part4 .imagelist').append('<li><img src="' + o.FilePath + '" data-url="' + o.FilePath + '" /></li>');
+                    });
+                });
+            } else {
+                jQuery('#part4').remove();
+            }
+
+            let report = jQuery.grep(subs, function (o) {
+                return o.ActivitySubject == '工作总结安排'
+            });
+            if (report.length) {
+                jQuery.getJSON('@Url.Action("GetDetail", "Report")/' + report[0].SubActivityId, function (data) {
+                    jQuery('#ReportContent').val(data.ReportContent);
+                    jQuery('#Tasks').val(data.Tasks);
+                    jQuery.each(data.TaskList, function (i, o) {
+                        jQuery('.tasklist').append('<li>' + i + '、' + o.TaskContent + ' —— ' + o.TaskPerson +  '</li>');
+                    });
+                });
+            } else {
+                jQuery('#part5').remove();
+            }
+
+            let yanlian = jQuery.grep(subs, function (o) {
+                return o.ActivitySubject == '应急演练'
+            });
+            if (yanlian.length) {
+                jQuery.getJSON('@Url.Action("Yanlian")/' + yanlian[0].SubActivityId, function (data) {
+                    jQuery('#plan').val(data.data.drillassessentity.drillname);
+                    jQuery('#drilltype').val(data.data.drillassessentity.drilltype);
+                    jQuery('#drillcontent').val(data.data.drillassessentity.drillcontent);
+                    //jQuery('#Tasks').val(data.Tasks);
+                    //jQuery.each(data.TaskList, function (i, o) {
+                    //    jQuery('.tasklist').append('<li>' + i + '、' + o.TaskContent + ' —— ' + o.TaskPerson +  '</li>');
+                    //});
+                });
+            } else {
+                jQuery('#part6').remove();
+            }
+        });
+
+        jQuery('.imagepanel').on('click', ' li', function () {
+            var dataimg = [];
+            jQuery(this).parents('.imagelist').find(" li img").each(function (o, i) {
+                var imgsrc = { src: $(i).attr("src") };
+                dataimg.push(imgsrc);
+            })
+            var json = {
+                data: dataimg
+            };
+            layer.photos({
+                photos: json,
+                anim: 5
+            })
+        });
+    });
+
+
+   var i = 0;
+    function fn$play(e) {
+        var url = jQuery(e).data('url');
+        var otherurl = jQuery(e).data("otherurl");
+        var folderid = jQuery(e).data("folderid");
+        //debugger;
+        layer.open({
+            type: 1,
+            title: false,
+            area: ['660px', '490px'],
+            content: jQuery('#videodiv'),
+            end: function () {
+                jQuery('#videodiv').empty();
+                jQuery('#videodiv').attr('display', 'none');
+            }
+        });
+        jQuery('#videodiv').attr('display', 'normal');
+
+        if (folderid) {
+                   $.ajax({
+                     url: "@Url.Action("GetJavaVideoJson", "ResourceFile", new { area= "PublicInfoManage" })",
+                      data: { file_id: folderid },
+                      type: "post",
+                      async: true,
+                success: function (result) {
+                    var resultJosn = JSON.parse(result);
+                    jQuery('#videodiv').append('<video id="preview' + i +'" autoplay="autoplay"  preload="paused" width="640" height="480" style="padding-top:8px;" class="video-js vjs-default-skin vjs-big-play-centered" controls="true"></video>');
+                        var options = {
+                            'techOrder': ['html5']
+                        };
+                        var oVideo = videojs("preview"+i, options, function () {
+                            videojs.log('your player is ready !!!');
+                            this.on("loadstart", function () {
+                                videojs.log('your player is loadstart !!!');
+                            });
+
+                        });
+                        console.log('test');
+                        oVideo.src({
+                            src: resultJosn.data.url,
+                            type: 'application/X-mpegURL'
+                        });
+                    oVideo.play();
+                    i++;
+                     }
+                });
+        } else {
+            //CDN加速
+            if (otherurl) {
+                jQuery('#videodiv').append('<video id="preview' + i + '" autoplay="autoplay"  preload="paused" width="640" height="480" style="padding-top:8px;" class="video-js vjs-default-skin vjs-big-play-centered" controls="true"></video>');
+                var options = {
+                    'techOrder': ['html5']
+                };
+                var oVideo = videojs("preview" + i, options, function () {
+                    videojs.log('your player is ready !!!');
+                    this.on("loadstart", function () {
+                        videojs.log('your player is loadstart !!!');
+                    });
+
+                });
+                console.log('test');
+                oVideo.src({
+                    src: otherurl,
+                    type: 'application/X-mpegURL'
+                });
+                oVideo.play();
+                i++;
+            } else {
+                jQuery('#videodiv').append('<video src="' + url + '" autoplay="autoplay" width="640" height="480" style="padding-top:8px;" controls="controls"><source src="http://rm03.wscdn.hls.xiaoka.tv/live/fczjp0Dc_J60VGMN/playlist.m3u8" type="application/x-mpegURL" id="target"></video>');
+            }
+        }
+
+
+        //jQuery('#videodiv').attr('display', 'normal');
+        //jQuery('#videodiv').append('<video src="' + url + '" autoplay="autoplay" width="1200" height="770" style:"margin:0px auto;" controls="controls"></video>');
+    }
+
+</script>
+<div class="container-fluid">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                基础信息
+            </h3>
+        </div>
+        <div class="panel-body form-horizontal">
+            <div class="form-group">
+                <label class="col-xs-1 control-label">活动主题<span style="color:red;">*</span></label>
+                <div class="col-xs-11">
+                    @Html.HiddenFor(x => x.ActivityId)
+                    @Html.TextBoxFor(x => x.Subject, new { @class = "form-control", placeholder = "请输入", @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-1 control-label">活动时间</label>
+                <div class="col-xs-5">
+                    @Html.TextBoxFor(x => x.StartTime, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+                <label class="col-xs-1 control-label">活动地点<span style="color:red;">*</span></label>
+                <div class="col-xs-5">
+                    @Html.TextBoxFor(x => x.ActivityPlace, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-1 control-label">主持人<span style="color:red;">*</span></label>
+                <div class="col-xs-5">
+                    @Html.TextBoxFor(x => x.ChairPerson, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+                <label class="col-xs-1 control-label">记录人<span style="color:red;">*</span></label>
+                <div class="col-xs-5">
+                    @Html.TextBoxFor(x => x.RecordPerson, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="form-group">
+                @{
+                    var person1 = string.Join(",", Model.ActivityPersons.Where(x => x.IsSigned == true).Select(x => x.Person));
+                    var person2 = string.Join(",", Model.ActivityPersons.Where(x => x.IsSigned == false).Select(x => x.Person));
+                }
+                <label class="col-xs-1 control-label">参加人员</label>
+                <div class="col-xs-5">
+                    @Html.TextArea("perons1", person1, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+                <label class="col-xs-1 control-label">缺勤人员</label>
+                <div class="col-xs-5">
+                    @Html.TextArea("perons1", person2, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-1 control-label">参与领导</label>
+                <div class="col-xs-5">
+                    @Html.TextBoxFor(x => x.Leader, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+                <label class="col-xs-1 control-label">提醒</label>
+                <div class="col-xs-5">
+                    @Html.TextBoxFor(x => x.AlertType, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                安全学习
+            </h3>
+        </div>
+        <div class="panel-body form-horizontal">
+            <div class="form-group">
+                <label class="col-xs-1 control-label">内容</label>
+                <div class="col-xs-11">
+                    @Html.TextAreaFor(x => x.Remark, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-1 control-label">课件材料</label>
+                <div class="col-xs-11">
+                    <ul class="files">
+                        @if (Model.Files != null)
+                        {
+                            foreach (var item in Model.Files)
+                            {
+                                if (item.Description == "课件")
+                                {
+                                    <li><a href="@Url.Content(item.FilePath)" target="_blank">@Html.Raw(item.FileName)</a></li>
+                                }
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-1 control-label">会议材料</label>
+                <div class="col-xs-11">
+                    <ul class="files">
+                        @if (Model.Files != null)
+                        {
+                            foreach (var item in Model.Files)
+                            {
+                                if (item.Description == "材料")
+                                {
+                                    <li><a href="@Url.Content(item.FilePath)" target="_blank">@Html.Raw(item.FileName)</a></li>
+                                }
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default" id="part2">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                事故预想
+            </h3>
+        </div>
+        <div class="panel-body form-horizontal imagepanel" id="answer1">
+        </div>
+    </div>
+    <div class="panel panel-default" id="part3">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                反事故演习
+            </h3>
+        </div>
+        <div class="panel-body form-horizontal imagepanel" id="answer2">
+        </div>
+    </div>
+    <div class="panel panel-default" id="part4">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                技术讲课
+            </h3>
+        </div>
+        <div class="panel-body form-horizontal" id="answer3">
+            @*<div class="form-group">
+                    <label class="col-xs-1 control-label">课件材料</label>
+                    <div class="col-xs-11">
+                        <input id="kejian" type="text" class="form-control" value="" />
+                    </div>
+                </div>*@
+            <div class="form-group">
+                <label class="col-xs-1 control-label">描述</label>
+                <div class="col-xs-11">
+                    <input id="Describe" type="text" class="form-control" value="" />
+                </div>
+            </div>
+            <div class="form-group imagepanel">
+                <label class="col-xs-1 control-label">照片</label>
+                <ul class="col-xs-11 imagelist">
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default" id="part6">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                应急演练
+            </h3>
+        </div>
+        <div class="panel-body form-horizontal">
+            <div class="form-group">
+                <label class="col-xs-1 control-label">演练计划</label>
+                <div class="col-xs-5">
+                    <input id="plan" type="text" class="form-control" value="" />
+                </div>
+                <label class="col-xs-1 control-label">演练方式</label>
+                <div class="col-xs-5">
+                    <input id="drilltype" type="text" class="form-control" value="" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-1 control-label">演练内容</label>
+                <div class="col-xs-11">
+                    <textarea class="form-control" id="drillcontent"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default" id="part5">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                工作总结安排
+            </h3>
+        </div>
+        <div class="panel-body form-horizontal">
+            <div class="form-group">
+                <label class="col-xs-1 control-label">本周工作总结</label>
+                <div class="col-xs-11">
+                    <input id="ReportContent" type="text" class="form-control" value="" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-1 control-label">本周已完成工作</label>
+                <div class="col-xs-11">
+                    <input id="Tasks" type="text" class="form-control" value="" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-1 control-label">下周工作安排</label>
+                <div class="col-xs-11">
+                    <ul class="tasklist">
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                过程记录
+            </h3>
+        </div>
+        <div class="panel-body form-horizontal">
+            <div class="form-group">
+                <label class="col-xs-1 control-label">视频</label>
+                <ul class="col-xs-11">
+                    @if (Model.Files != null)
+                    {
+                        foreach (var item in Model.Files)
+                        {
+                            if (item.Description == "视频")
+                            {
+                                <li><img src="@Url.Content("~/Content/images/album.png")" data-url="@Url.Content(item.FilePath)" data-otherurl="@Html.Raw(item.OtherUrl)" onclick="fn$play(this)" /></li>
+                            }
+                        }
+                    }
+                </ul>
+            </div>
+            <div class="form-group imagepanel">
+                <label class="col-xs-1 control-label">照片</label>
+                <ul class="col-xs-11 imagelist">
+                    @if (Model.Files != null)
+                    {
+                        foreach (var item in Model.Files)
+                        {
+                            if (item.Description == "照片")
+                            {
+                                <li><img src="@Url.Content(item.FilePath)" data-url="@Url.Content(item.FilePath)" /></li>
+                            }
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    @*<div class="panel-body form-horizontal">
+            <div class="form-group">
+                <h5>活动记录</h5>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-1 control-label">视频</label>
+                <div class="col-xs-11">
+                    <ul class="video">
+                    </ul>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-1 control-label">照片</label>
+                <div class="col-xs-11">
+                    <ul class="images">
+                    </ul>
+                </div>
+            </div>
+            <div class="form-group">
+                <h5>试题</h5>
+            </div>
+            <div class="form-group">
+            </div>
+            <div class="form-group">
+                <h5>补学记录</h5>
+            </div>
+            <div class="form-group">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>补学时间</th>
+                            <th>结束时间</th>
+                            <th>补学人员</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Supplys != null)
+                        {
+                            for (int i = 0; i < Model.Supplys.Count; i++)
+                            {
+                                <tr>
+                                    <td>@Model.Supplys[i].StartDate</td>
+                                    <td>@Model.Supplys[i].EndDate</td>
+                                    <td>@Model.Supplys[i].UserName</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="form-group">
+                <h5>活动评价</h5>
+            </div>
+            <div class="form-group">
+            </div>
+
+        </div>*@
+</div>
+<div id="videodiv" style="display:none; text-align:center;background-color:black;">
+</div>

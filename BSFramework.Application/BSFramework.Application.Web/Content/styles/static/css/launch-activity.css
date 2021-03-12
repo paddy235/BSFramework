@@ -1,0 +1,24 @@
+@charset "utf-8";
+.input-textarea button{
+    position: absolute;
+    bottom:0;
+    right:-130px;
+    color:#3669e1;
+    border:2px solid #3669e1;
+    background: none;
+}
+.input-textarea textarea{
+    display: block;
+}
+.launch-activity-list .add{width:30px;height:30px;margin-top:-3px;text-indent:-999em;overflow: hidden;background: url("../images/add-icon.png") center center;border:none;}
+.launch-activity-list ul{margin:0;padding:0;}
+.launch-activity-list li{list-style: none;position: relative;width:50%;float: left;padding:0 251px 0 15px;font-size:18px;color:#3669e1;margin-bottom:30px;line-height: 50px;}
+.launch-activity-list li .left{text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
+.launch-activity-list li .right{position: absolute;top:-1px;right:5px;}
+
+.launch-modal ul{padding:0 30px;}
+.launch-modal li{text-align:center;line-height: 50px;border-bottom:1px solid #cad3df;color:#374757;font-size:16px;}
+.launch-modal li.on{background: #3669e1;color:#fff;}
+.launch-modal .my-btn{height:42px;line-height: 42px;width:130px;}
+.launch-modal .my-btn.bd{border:2px solid #3669e1;color:#3669e1;background: none;line-height: 40px;}
+.modal-my{width: 500px;}

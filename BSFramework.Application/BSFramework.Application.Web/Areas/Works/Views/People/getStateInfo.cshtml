@@ -1,0 +1,22 @@
+﻿@model BSFramework.Application.Entity.WebApp.UserWorkAllocationEntity
+@{
+    ViewBag.Title = "getStateInfo";
+    Layout = "~/Views/Shared/_OrderForm.cshtml";
+}
+
+
+<div style="width:100%;padding:10px">
+    <label style="font-size:18px;">转岗人员</label>
+    <div style="">
+        <input class="form-control" style="font-size:18px;width:100%;height:30px" value="@Model.username" readonly="readonly" />
+    </div>
+    <label style="font-size:18px;">转岗部门<span style="color:red">*</span></label>
+    <div style="">
+        <input class="form-control" style="font-size:18px;width:100%;height:30px" value="@Model.department" readonly="readonly" />
+    </div>
+    <label style="font-size:18px;">转岗日期<span style="color:red">*</span></label>
+    <div style="">
+        <input class="form-control" style="font-size:18px;width:100%;height:30px" value="@Model.allocationtime" readonly="readonly" />
+    </div>
+
+</div>

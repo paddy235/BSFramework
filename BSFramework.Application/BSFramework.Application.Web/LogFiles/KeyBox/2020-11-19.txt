@@ -1,0 +1,15 @@
+2020-11-19 16:11:16 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":null,"CreateDate":null,"CreateUserId":null,"CreateUserName":null,"ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"9ac6c0f9-4157-4eda-9544-2cfb3cc18cd3","DeptCode":"001001001004009","DeptName":"热控二班","KeyCode":"hxzy01","KeyPlace":"城p","Category":"化学专业","CategoryId":"2","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-19 16:12:15 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":null,"CreateDate":null,"CreateUserId":null,"CreateUserName":null,"ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"9ac6c0f9-4157-4eda-9544-2cfb3cc18cd3","DeptCode":"001001001004009","DeptName":"热控二班","KeyCode":"rlzy01","KeyPlace":"突击手","Category":"燃料专业","CategoryId":"4","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-19 16:33:33 用户：司俊龙  id：f31bbce3-0fe5-49ee-a0c5-87e7358bcc62开始编辑钥匙管理数据 
+ {"ID":"8da785c9-5b3f-4784-a161-50945a55f951","CreateDate":"2020-11-19T16:33:01","CreateUserId":"7a47f8b0-d895-4a35-bc2c-c6d99c2e9906","CreateUserName":"司主任","ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"ef28c0f8-8e5a-44d1-8fdb-26d1bff0a90f","DeptCode":"001001001004006","DeptName":"电气一次班","KeyCode":"glzy01","KeyPlace":"狙击手","Category":"锅炉专业","CategoryId":"1","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-19 16:34:00 用户：司俊龙  id：f31bbce3-0fe5-49ee-a0c5-87e7358bcc62开始编辑钥匙管理数据 
+ {"ID":"8da785c9-5b3f-4784-a161-50945a55f951","CreateDate":"2020-11-19T16:33:01","CreateUserId":"7a47f8b0-d895-4a35-bc2c-c6d99c2e9906","CreateUserName":"司主任","ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"11579c4e-cb76-4fe1-8894-c104288041c9","DeptCode":"001001001004007","DeptName":"电气二次班","KeyCode":"glzy01","KeyPlace":"狙击手","Category":"锅炉专业","CategoryId":"1","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-19 16:34:35 用户：司俊龙  id：f31bbce3-0fe5-49ee-a0c5-87e7358bcc62开始编辑钥匙管理数据 
+ {"ID":"8da785c9-5b3f-4784-a161-50945a55f951","CreateDate":"2020-11-19T16:33:01","CreateUserId":"7a47f8b0-d895-4a35-bc2c-c6d99c2e9906","CreateUserName":"司主任","ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"f812a896-8ff1-4736-a378-1ca6b7284953","DeptCode":"001001001003012","DeptName":"化验室","KeyCode":"glzy01","KeyPlace":"狙击手","Category":"锅炉专业","CategoryId":"1","State":false,"Sort":"01"} 
+------------------------------------------------------------

@@ -1,0 +1,327 @@
+﻿@model BSFramework.Application.Entity.LllegalManage.LllegalEntity
+@{
+    ViewBag.Title = "违章核准";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<style>
+    .images-container {
+        min-height: 120px;
+    }
+
+        .images-container li {
+            list-style: none;
+            float: left;
+            padding: 0px 5px;
+        }
+
+    .yinpin li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+
+    .items li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+</style>
+<script>
+    $(function () {
+        var json1 = {
+            "data": [
+    @if (Model !=null)
+            {
+        foreach (var item in Model.Files)
+        {
+            //if (item.Description == "照片") {
+                      @Html.Raw(string.Format("{{ \"src\" : \"{0}\"}},", @Url.Action("DownloadFile", "ResourceFile", new { keyValue = item.FileId, area = "PublicInfoManage" })));
+            //}
+        }
+    }
+            ]
+        };
+        var json2 = {
+            "data": [
+        @if (Model.refrom != null)
+    {
+        foreach (var item in Model.refrom.Files)
+        {
+            //if (item.Description == "照片") {
+                  @Html.Raw(string.Format("{{ \"src\" : \"{0}\"}},", @Url.Action("DownloadFile", "ResourceFile", new { keyValue = item.FileId, area = "PublicInfoManage" })));
+        //}
+    }
+    }
+            ]
+        };
+        var json3 = {
+            "data": [
+        @if (Model.accept != null)
+            {
+        foreach (var item in Model.accept.Files)
+        {
+            //if (item.Description == "照片") {
+                  @Html.Raw(string.Format("{{ \"src\" : \"{0}\"}},", @Url.Action("DownloadFile", "ResourceFile", new { keyValue = item.FileId, area = "PublicInfoManage" })));
+            //}
+        }
+    }
+            ]
+        };
+
+        $('#images-container1').delegate('li', 'click', function () {
+            json1.start = jQuery(this).index();
+            layer.photos({
+                photos: json1,
+                anim: 5
+            })
+        });
+        $('#images-container2').delegate('li', 'click', function () {
+            json2.start = jQuery(this).index();
+            layer.photos({
+                photos: json2,
+                anim: 5
+            })
+        });
+        $('#images-container3').delegate('li', 'click', function () {
+            json3.start = jQuery(this).index();
+            layer.photos({
+                photos: json3,
+                anim: 5
+            })
+        });
+
+        if ("@Model.ApproveResult" == "0") {
+            $("#refromTable").show();
+        } else {
+            $("#refromTable").hide();
+        }
+    })
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right:30px;">
+            <table class="form">
+                <tr>
+                    <td class="formTitle">违章编号</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.LllegalNumber, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">违章单位/部门</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.LllegalDepart, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">违章类型</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.LllegalType, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">违章班组</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.LllegalTeam, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">违章等级</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.LllegalLevel, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">违章人员</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.LllegalPerson, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">记录人</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.RegisterPerson, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">违章时间</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.LllegalTime, new { @class = "form-control", @readonly = "readonly", Value = string.Format("{0:yyyy-MM-dd}", Model.LllegalTime) })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">违章地点</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.LllegalAddress, new { @class = "form-control", @readonly = "readonly", style = "height:60px;" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">违章描述</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.LllegalDescribe, new { @class = "form-control", @readonly = "readonly", style = "height:60px;" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">违章图片</td>
+                    <td class="formValue" colspan="3">
+                        <ul class="images-container" id="images-container1">
+                            @for (int i = 0; i < Model.Files.Count; i++)
+                            {
+                                <li><img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = Model.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:160px;height:120px;"></li>
+                            }
+                        </ul>
+                    </td>
+                </tr>
+                @if (Model.FlowState != "待核准")
+                {
+                    <tr>
+
+                        <td style="width:100%" colspan="4">
+                            <table id="approveTable" class="form">
+                                <tr style="height:38px;">
+                                    <td class="formTitle">核准结果</td>
+                                    <td class="formValue">
+                                        <ul class="items">
+                                            <li>
+                                                @if (Model.ApproveResult == "0")
+                                                {
+                                                    <input type="radio" value="0" id="approved" name="ApproveResult" checked="checked" /><label for="approved">核准通过</label>
+                                                }
+                                                else
+                                                {
+                                                    <input type="radio" value="0" id="approved" name="ApproveResult" checked="checked" /><label for="approved">核准不通过</label>
+                                                }
+                                            </li>
+                                            @*<li>
+                                                    <input type="radio" value="1" id="reject" name="ApproveResult" @(Model.ApproveResult == "1" ? "checked" : "") /><label for="reject">核准不通过</label>
+                                                </li>*@
+                                        </ul>
+                                    </td>
+                                    @if (Model.ApproveResult == "1")
+                                    {
+                                        <td class="formTitle">不予核准原因</td>
+                                        <td class="formValue">
+                                            @Html.TextBoxFor(x => x.ApproveReason, new { @class = "form-control", maxlength = 200, @readonly = "readonly" })
+                                        </td>
+                                    }
+                                </tr>
+                                <tr>
+                                    <td class="formTitle">核准人</td>
+                                    <td class="formValue">
+                                        @Html.HiddenFor(x => x.ApprovePersonId)
+                                        @Html.TextBoxFor(x => x.ApprovePerson, new { @class = "form-control", @readonly = "readonly" })
+                                    </td>
+                                    <td class="formTitle">核准时间</td>
+                                    <td class="formValue">
+                                        @Html.TextBoxFor(x => x.ApproveDate, new { @class = "form-control", @readonly = "readonly", Value = string.Format("{0:yyyy-MM-dd}", Model.ApproveDate) })
+                                    </td>
+                                </tr>
+                                @*<tr>
+                                        <td class="formTitle">考核方式</td>
+                                        <td class="formValue">
+                                            @Html.DropDownList("Checktype", ViewData["checktype"] as IEnumerable<SelectListItem>, new { @class = "form-control", style = "width:120px" })
+                                        </td>
+                                        <td class="formTitle">考核内容</td>
+                                        <td class="formValue">
+                                            @Html.TextBoxFor(x => x.CheckContent, new { @class = "form-control", maxlength = 200, @readonly = "readonly" })
+                                        </td>
+                                    </tr>*@
+                                <tr>
+                                    <td class="formTitle">考核金额</td>
+                                    <td class="formValue">
+                                        @Html.TextBoxFor(x => x.AssessMoney, new { @class = "form-control", maxlength = 200 })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="formTitle">整改人</td>
+                                    <td class="formValue">
+                                        @Html.HiddenFor(x => x.ReformPeopleId)
+                                        @Html.TextBoxFor(x => x.ReformPeople, new { @class = "form-control", @readonly = "readonly" })
+                                    </td>
+                                    <td class="formTitle">整改期限</td>
+                                    <td class="formValue">
+                                        @Html.TextBoxFor(x => x.ReformDate, new { @class = "form-control", @readonly = "readonly", Value = string.Format("{0:yyyy-MM-dd}", Model.ReformDate) })
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                }
+                @if (Model.FlowState == "待验收" || Model.FlowState == "验收通过")
+                {
+                    <tr>
+
+                        <td style="width:100%" colspan="4">
+                            <table id="refromTable" class="form">
+                                <tr>
+                                    <td class="formTitle">整改图片</td>
+                                    <td class="formValue" colspan="3">
+                                        <ul class="images-container" id="images-container2">
+                                            @for (int i = 0; i < Model.refrom.Files.Count; i++)
+                                            {
+                                                <li><img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = Model.refrom.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:160px;height:120px;"></li>
+                                            }
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="formTitle">整改描述</td>
+                                    <td class="formValue" colspan="3">
+                                        @Html.TextAreaFor(x => x.refrom.RefromResult, new { @class = "form-control", @readonly = "readonly", style = "height:60px;" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="formTitle">整改人</td>
+                                    <td class="formValue">
+                                        @Html.TextBoxFor(x => x.refrom.RefromPeople, new { @class = "form-control", @readonly = "readonly", maxlength = 200 })
+                                    </td>
+                                    <td class="formTitle">整改完成时间</td>
+                                    <td class="formValue">
+
+                                        @Html.TextBoxFor(x => x.refrom.RefromTime, new { @class = "form-control", @readonly = "readonly", Value = string.Format("{0:yyyy-MM-dd}", Model.refrom.RefromTime) })
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+
+
+                    </tr>
+                }
+                @if (Model.FlowState == "验收通过")
+                {
+                    <tr>
+
+                        <td style="width:100%" colspan="4">
+                            <table id="acceptTable" class="form">
+                                <tr>
+                                    <td class="formTitle">验收图片</td>
+                                    <td class="formValue" colspan="3">
+                                        <ul class="images-container" id="images-container3">
+                                            @for (int i = 0; i < Model.accept.Files.Count; i++)
+                                            {
+                                                <li><img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = Model.accept.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:160px;height:120px;"></li>
+                                            }
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="formTitle">验收意见</td>
+                                    <td class="formValue" colspan="3">
+                                        @Html.TextAreaFor(x => x.accept.AcceptMind, new { @class = "form-control", @readonly = "readonly", style = "height:60px;" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="formTitle">验收人</td>
+                                    <td class="formValue">
+                                        @Html.TextBoxFor(x => x.accept.AcceptPeople, new { @class = "form-control", @readonly = "readonly", maxlength = 200 })
+                                    </td>
+                                    <td class="formTitle">验收时间</td>
+                                    <td class="formValue">
+
+                                        @Html.TextBoxFor(x => x.accept.AcceptTime, new { @class = "form-control", @readonly = "readonly", Value = string.Format("{0:yyyy-MM-dd}", Model.accept.AcceptTime) })
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+
+
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>

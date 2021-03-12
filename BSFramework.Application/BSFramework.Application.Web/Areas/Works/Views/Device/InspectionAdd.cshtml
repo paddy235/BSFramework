@@ -1,0 +1,196 @@
+﻿@using BSFramework.Application.Entity.DeviceInspection;
+@model DeviceInspectionEntity
+@{
+    ViewBag.Title = "InspectionAdd";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+@System.Web.Optimization.Styles.Render("~/Content/scripts/plugins/jqgrid/css")
+@System.Web.Optimization.Scripts.Render("~/Content/scripts/plugins/jqgrid/js")
+@System.Web.Optimization.Scripts.Render("~/Content/scripts/business/Common.js")
+<script>
+    var keyValue = request('keyValue');
+    var items = JSON.parse("@Html.Raw(ViewBag.Items)");
+    $(function () {
+        GetGrid();
+    });
+    /** 保存表单 */
+    //保存表单
+    function AcceptClick(IsCommit) {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var postData = $("#form1").formSerialize(keyValue);
+
+
+
+        var measures = $("#gridTable").jqGrid('getRowData');
+        if (measures.length > 0) {
+            var arr = [];
+            var flag = false;
+            for (var i = 0; i < measures.length; i++) {
+                if ($("#gridTable").find("input[name='ItemName']").eq(i).length > 0) {
+                    if (($.trim($("#gridTable").find("input[name='ItemName']").eq(i).val()).length == 0 || $.trim($("#gridTable").find("input[name='Standard']").eq(i).val()).length == 0) && !flag) {
+                        flag = true;
+                    } else {
+                        arr.push({ ItemName: $("#gridTable").find("input[name='ItemName']").eq(i).val(), Standard: $("#gridTable").find("input[name='Standard']").eq(i).val(), Method: $("#gridTable").find("input[name='Method']").eq(i).val(), id: newGuid() });
+                    }
+                } 
+            }
+            if (flag) {
+                dialogMsg("检查项目和标准都不能为空！", 2);
+                return false;
+            }
+            json = JSON.stringify(arr);
+            postData["itemsJson"] = json;
+        } 
+        $.SaveForm({
+            url: "@Url.Action("SaveForm")?keyValue=" + keyValue,
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+
+    //加载表格
+    function GetGrid() {
+        var $gridTable = $('#gridTable');
+        var height = $(top.window).height() - 520;
+        height = height < 200 ? 200 : height;
+        $gridTable.jqGrid({
+            data: items,
+            datatype: "local",
+            height: height + "px",
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'Id', hidden: true },
+                {
+                    label: '操作', name: 'Oper', width: 100, align: 'center',
+                    formatter: function (cellvalue, options, rowObject) {
+                        var html = "";
+                        if (rowObject.Status == 1) {
+                            html = "已确认,无法修改";
+
+                        } else {
+                            //html += "<a onclick=selRisk(this,1)  title='从风险库中选择' style='cursor:pointer;'><i class='fa fa-check'></i></a>";
+                            html += "&nbsp;&nbsp;<a href=javascript:del('" + rowObject.Id + "',this)  title='删除'><i class='fa fa-trash-o'></i></a>";
+                        }
+                        return html;
+                    }
+                },
+                {
+                    label: '检查项目', name: 'ItemName', width: 200, align: 'center', formatter: function (cellvalue, options, rowObject) {
+                        var html = ' <input  name="ItemName" type="text" style="width: 100%;height:30px;" class="form-control" value="' + rowObject.ItemName+ '"/> ';
+
+                        return html;
+                    }
+                },
+                {
+                    label: '方法', name: 'Method', width: 400, align: 'center'
+                    , formatter: function (cellvalue, options, rowObject) {
+                        var html = ' <input  name="Method" type="text"  style="width: 100%;height:30px;" class="form-control" value="' + rowObject.Method + '" /> ';
+
+                        return html;
+                    }
+                },
+                  {
+                      label: '标准', name: 'Standard', width: 200, align: 'center'
+                    , formatter: function (cellvalue, options, rowObject) {
+                        var html = ' <input   name="Standard" type="text" style="width: 100%;height:30px;"  class="form-control" value="' + rowObject.Standard + '"/> ';
+
+                        return html;
+                    }
+                }
+            ],
+            viewrecords: true,
+            rowNum: items.length,
+            sortname: 'CreateDate',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true
+        });
+    }
+
+   /**动态新增风险及措施 */
+    function Add(obj) {
+        tCode = ""; tName = ""; tContent = "";
+        var rowId = $("#gridTable").jqGrid('getRowData').length;
+
+        $("#gridTable").addRowData(rowId, { id: newGuid(), ItemName: "", Method: '', Standard: "" });
+    }
+
+    /**删除数据行 */
+    function del(id, obj) {
+        var jqTable = $("#gridTable");
+        var idx = dialogConfirm("确认删除吗？", function (isSure) {
+            if (isSure) {
+                jqTable.delRowData(jqTable.getGridParam('selrow'));
+                top.layer.close(idx);
+            } else {
+                top.layer.close(idx);
+            }
+        });
+    }
+
+    //验证：项目值、项目名 不能重复
+    function OverrideExistField(id, url) {
+        $.ExistField(id, url, { keyValue: keyValue });
+    }
+</script>
+<div style="margin-top: 20px; margin-right: 30px;">
+    <table class="form">
+        <tr>
+            <th class="formTitle">检查表名称<font face="宋体">*</font></th>
+            <td class="formValue">
+                @*<input id="InspectionName" name="InspectionName" type="text" class="form-control" onblur="OverrideExistField(this.id,'../../Works/Device/ExistInspectionName')" placeholder="请输入检查表名称" isvalid="yes" checkexpession="NotNull" value="@Model.InspectionName" />*@
+                <input id="InspectionName" name="InspectionName" type="text" class="form-control" placeholder="请输入检查表名称" isvalid="yes" checkexpession="NotNull" value="@Model.InspectionName" />
+            </td>
+            <th class="formTitle">设备系统<font face="宋体">*</font></th>
+            <td class="formValue">
+                <input id="DeviceSystem" name="DeviceSystem" type="text" class="form-control" isvalid="yes" maxlength="50" checkexpession="NotNull" value="@Model.DeviceSystem" />
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">班组<font face="宋体">*</font></th>
+            <td class="formValue">
+                <div class="input-group">
+                    <input id="DeptName" name="DeptName" type="text" class="form-control" readonly="readonly" isvalid="yes" checkexpession="NotNull" value="@Model.DeptName"/>
+                    <span class="input-group-addon" onclick="selectDept('/../@Url.Action("SelectBZ", "Department", new { area = "BaseManage" })', '', 1, 0, '选择班组', this.parentNode,  'DeptName,DeptId,DeptCode', '班组')" title="选择班组" style="cursor:pointer;">...</span>
+                    <input id="DeptId" name="DeptId" type="hidden" value="@Model.DeptId" />
+                    <input id="DeptCode" name="DeptCode" type="hidden" value="@Model.DeptCode" />
+                </div>
+            </td>
+            <td class="formTitle">提交人</td>
+            <td class="formValue">
+                <input id="CreateUserName" name="CreateUserName" type="text" class="form-control" readonly="readonly" value="@Model.CreateUserName" />
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">提交时间</td>
+            <td class="formValue">
+                <input id="CreateDate" name="CreateDate" type="text" class="form-control" readonly="readonly" value="@Html.Raw(Model.CreateDate.HasValue ? Model.CreateDate.Value.ToString("yyyy-MM-dd HH:mm:ss") : DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")) " />
+            </td>
+        </tr>
+    </table>
+    <div class="center-Panel" style="padding-left:9px;">
+        <div class="panel-Title">设备巡检台账</div>
+        <div class="titlePanel">
+            <div class="title-search form-inline">
+            </div>
+            <div class="toolbar">
+                <div class="toolbar">
+                    <div class="btn-group">
+                        <a id="lr-edit" class="btn btn-default" onclick="Add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="gridPanel">
+            <table id="gridTable"></table>
+            <div id="gridPager"></div>
+        </div>
+    </div>
+</div>
+

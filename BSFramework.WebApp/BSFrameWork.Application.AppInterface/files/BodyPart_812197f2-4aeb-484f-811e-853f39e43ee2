@@ -1,0 +1,682 @@
+Debug: 2019-09-02 09:52:48-1567389168962
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-02 09:55:15-1567389315420
+LaunchActivity LaunchActivity
+
+Error: 2019-09-02 09:55:34-1567389334258
+SuspensionWindowService-info size:w176h144
+w320h240
+w352h288
+w640h480
+using size:640x480
+focus:fixed;
+
+Info: 2019-09-02 09:55:42-1567389342200
+SuspensionWindowService java.lang.IllegalStateException
+	at android.media.MediaRecorder.stop(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.stopRecord(HardwareManager.java:352)
+	at com.bossien.video_support.suspension.HardwareManager.destroy(HardwareManager.java:404)
+	at com.bossien.video_support.SuspensionWindowService.onDestroy(SuspensionWindowService.java:133)
+	at android.app.ActivityThread.handleStopService(ActivityThread.java:2924)
+	at android.app.ActivityThread.access$2200(ActivityThread.java:151)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1406)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Info: 2019-09-02 09:55:42-1567389342202
+java.lang.IllegalStateException
+	at android.media.MediaRecorder.stop(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.stopRecord(HardwareManager.java:352)
+	at com.bossien.video_support.suspension.HardwareManager.destroy(HardwareManager.java:404)
+	at com.bossien.video_support.SuspensionWindowService.onDestroy(SuspensionWindowService.java:133)
+	at android.app.ActivityThread.handleStopService(ActivityThread.java:2924)
+	at android.app.ActivityThread.access$2200(ActivityThread.java:151)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1406)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Error: 2019-09-02 09:59:07-1567389547728
+SuspensionWindowService-info size:w176h144
+w320h240
+w352h288
+w640h480
+using size:640x480
+focus:fixed;
+
+Info: 2019-09-02 09:59:19-1567389559244
+SuspensionWindowService java.lang.IllegalStateException
+	at android.media.MediaRecorder.stop(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.stopRecord(HardwareManager.java:352)
+	at com.bossien.video_support.suspension.HardwareManager.destroy(HardwareManager.java:404)
+	at com.bossien.video_support.SuspensionWindowService.onDestroy(SuspensionWindowService.java:133)
+	at android.app.ActivityThread.handleStopService(ActivityThread.java:2924)
+	at android.app.ActivityThread.access$2200(ActivityThread.java:151)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1406)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Info: 2019-09-02 09:59:19-1567389559246
+java.lang.IllegalStateException
+	at android.media.MediaRecorder.stop(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.stopRecord(HardwareManager.java:352)
+	at com.bossien.video_support.suspension.HardwareManager.destroy(HardwareManager.java:404)
+	at com.bossien.video_support.SuspensionWindowService.onDestroy(SuspensionWindowService.java:133)
+	at android.app.ActivityThread.handleStopService(ActivityThread.java:2924)
+	at android.app.ActivityThread.access$2200(ActivityThread.java:151)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1406)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Error: 2019-09-02 09:59:50-1567389590924
+SuspensionWindowService-info size:w176h144
+w320h240
+w352h288
+w640h480
+using size:640x480
+focus:fixed;
+
+Info: 2019-09-02 10:00:01-1567389601260
+SuspensionWindowService java.lang.IllegalStateException
+	at android.media.MediaRecorder.stop(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.stopRecord(HardwareManager.java:352)
+	at com.bossien.video_support.suspension.HardwareManager.destroy(HardwareManager.java:404)
+	at com.bossien.video_support.SuspensionWindowService.onDestroy(SuspensionWindowService.java:133)
+	at android.app.ActivityThread.handleStopService(ActivityThread.java:2924)
+	at android.app.ActivityThread.access$2200(ActivityThread.java:151)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1406)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Info: 2019-09-02 10:00:01-1567389601263
+java.lang.IllegalStateException
+	at android.media.MediaRecorder.stop(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.stopRecord(HardwareManager.java:352)
+	at com.bossien.video_support.suspension.HardwareManager.destroy(HardwareManager.java:404)
+	at com.bossien.video_support.SuspensionWindowService.onDestroy(SuspensionWindowService.java:133)
+	at android.app.ActivityThread.handleStopService(ActivityThread.java:2924)
+	at android.app.ActivityThread.access$2200(ActivityThread.java:151)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1406)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Error: 2019-09-02 10:00:37-1567389637321
+SuspensionWindowService-info size:w176h144
+w320h240
+w352h288
+w640h480
+using size:640x480
+focus:fixed;
+
+Info: 2019-09-02 10:00:52-1567389652190
+SuspensionWindowService java.lang.IllegalStateException
+	at android.media.MediaRecorder.stop(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.stopRecord(HardwareManager.java:352)
+	at com.bossien.video_support.suspension.HardwareManager.destroy(HardwareManager.java:404)
+	at com.bossien.video_support.SuspensionWindowService.onDestroy(SuspensionWindowService.java:133)
+	at android.app.ActivityThread.handleStopService(ActivityThread.java:2924)
+	at android.app.ActivityThread.access$2200(ActivityThread.java:151)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1406)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Info: 2019-09-02 10:00:52-1567389652192
+java.lang.IllegalStateException
+	at android.media.MediaRecorder.stop(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.stopRecord(HardwareManager.java:352)
+	at com.bossien.video_support.suspension.HardwareManager.destroy(HardwareManager.java:404)
+	at com.bossien.video_support.SuspensionWindowService.onDestroy(SuspensionWindowService.java:133)
+	at android.app.ActivityThread.handleStopService(ActivityThread.java:2924)
+	at android.app.ActivityThread.access$2200(ActivityThread.java:151)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1406)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Error: 2019-09-02 10:01:15-1567389675326
+SuspensionWindowService-info size:w176h144
+w320h240
+w352h288
+w640h480
+using size:640x480
+focus:fixed;
+
+Info: 2019-09-02 10:01:25-1567389685091
+SuspensionWindowService java.lang.IllegalStateException
+	at android.media.MediaRecorder.stop(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.stopRecord(HardwareManager.java:352)
+	at com.bossien.video_support.suspension.HardwareManager.destroy(HardwareManager.java:404)
+	at com.bossien.video_support.SuspensionWindowService.onDestroy(SuspensionWindowService.java:133)
+	at android.app.ActivityThread.handleStopService(ActivityThread.java:2924)
+	at android.app.ActivityThread.access$2200(ActivityThread.java:151)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1406)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Info: 2019-09-02 10:01:25-1567389685092
+java.lang.IllegalStateException
+	at android.media.MediaRecorder.stop(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.stopRecord(HardwareManager.java:352)
+	at com.bossien.video_support.suspension.HardwareManager.destroy(HardwareManager.java:404)
+	at com.bossien.video_support.SuspensionWindowService.onDestroy(SuspensionWindowService.java:133)
+	at android.app.ActivityThread.handleStopService(ActivityThread.java:2924)
+	at android.app.ActivityThread.access$2200(ActivityThread.java:151)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1406)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Info: 2019-09-02 10:01:34-1567389694156
+Upload Process resume
+
+Info: 2019-09-02 10:01:34-1567389694157
+Upload Process resume
+
+Info: 2019-09-02 10:01:34-1567389694629
+Upload Process {}
+
+Info: 2019-09-02 10:01:34-1567389694630
+Upload Process {}
+
+Info: 2019-09-02 10:02:20-1567389740647
+Upload Process pause
+
+Info: 2019-09-02 10:02:20-1567389740652
+Upload Process pause
+
+Info: 2019-09-02 10:02:21-1567389741061
+Upload Process destroy
+
+Info: 2019-09-02 10:02:21-1567389741064
+Upload Process destroy
+
+Info: 2019-09-02 10:09:23-1567390163984
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-02 10:10:17-1567390217553
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-02 10:10:24-1567390224863
+LaunchActivity LaunchActivity
+
+Error: 2019-09-02 10:21:37-1567390897429
+SuspensionWindowService-info size:w176h144
+w320h240
+w352h288
+w640h480
+using size:640x480
+focus:fixed;
+
+Info: 2019-09-02 10:21:45-1567390905365
+SuspensionWindowService java.lang.IllegalStateException
+	at android.media.MediaRecorder.stop(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.stopRecord(HardwareManager.java:352)
+	at com.bossien.video_support.suspension.HardwareManager.destroy(HardwareManager.java:404)
+	at com.bossien.video_support.SuspensionWindowService.onDestroy(SuspensionWindowService.java:133)
+	at android.app.ActivityThread.handleStopService(ActivityThread.java:2924)
+	at android.app.ActivityThread.access$2200(ActivityThread.java:151)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1406)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Info: 2019-09-02 10:21:45-1567390905369
+java.lang.IllegalStateException
+	at android.media.MediaRecorder.stop(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.stopRecord(HardwareManager.java:352)
+	at com.bossien.video_support.suspension.HardwareManager.destroy(HardwareManager.java:404)
+	at com.bossien.video_support.SuspensionWindowService.onDestroy(SuspensionWindowService.java:133)
+	at android.app.ActivityThread.handleStopService(ActivityThread.java:2924)
+	at android.app.ActivityThread.access$2200(ActivityThread.java:151)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1406)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Error: 2019-09-02 10:22:38-1567390958150
+SuspensionWindowService-info size:w176h144
+w320h240
+w352h288
+w640h480
+using size:640x480
+focus:fixed;
+
+Info: 2019-09-02 10:22:39-1567390959362
+SuspensionWindowService java.lang.RuntimeException: stop failed.
+	at android.media.MediaRecorder.stop(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.stopRecord(HardwareManager.java:352)
+	at com.bossien.video_support.suspension.RecordingState.pauseRecord(RecordingState.java:30)
+	at com.bossien.video_support.SuspensionWindowService.manualStopRecord(SuspensionWindowService.java:90)
+	at com.bossien.video_support.SuspensionWindowService.onRecordClick(SuspensionWindowService.java:115)
+	at com.bossien.video_support.suspension.ViewManager.lambda$initRecorderView$0(ViewManager.java:131)
+	at com.bossien.video_support.suspension.-$$Lambda$ViewManager$HXcW6nTE6xP9dD_jz6arQwvRu84.accept(lambda)
+	at io.reactivex.internal.observers.LambdaObserver.onNext(LambdaObserver.java:63)
+	at io.reactivex.observers.SerializedObserver.onNext(SerializedObserver.java:113)
+	at io.reactivex.internal.operators.observable.ObservableThrottleFirstTimed$DebounceTimedObserver.onNext(ObservableThrottleFirstTimed.java:82)
+	at com.jakewharton.rxbinding2.view.ViewClickObservable$Listener.onClick(ViewClickObservable.java:39)
+	at android.view.View.performClick(View.java:4780)
+	at android.view.View$PerformClick.run(View.java:19866)
+	at android.os.Handler.handleCallback(Handler.java:739)
+	at android.os.Handler.dispatchMessage(Handler.java:95)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Info: 2019-09-02 10:22:39-1567390959363
+java.lang.RuntimeException: stop failed.
+	at android.media.MediaRecorder.stop(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.stopRecord(HardwareManager.java:352)
+	at com.bossien.video_support.suspension.RecordingState.pauseRecord(RecordingState.java:30)
+	at com.bossien.video_support.SuspensionWindowService.manualStopRecord(SuspensionWindowService.java:90)
+	at com.bossien.video_support.SuspensionWindowService.onRecordClick(SuspensionWindowService.java:115)
+	at com.bossien.video_support.suspension.ViewManager.lambda$initRecorderView$0(ViewManager.java:131)
+	at com.bossien.video_support.suspension.-$$Lambda$ViewManager$HXcW6nTE6xP9dD_jz6arQwvRu84.accept(lambda)
+	at io.reactivex.internal.observers.LambdaObserver.onNext(LambdaObserver.java:63)
+	at io.reactivex.observers.SerializedObserver.onNext(SerializedObserver.java:113)
+	at io.reactivex.internal.operators.observable.ObservableThrottleFirstTimed$DebounceTimedObserver.onNext(ObservableThrottleFirstTimed.java:82)
+	at com.jakewharton.rxbinding2.view.ViewClickObservable$Listener.onClick(ViewClickObservable.java:39)
+	at android.view.View.performClick(View.java:4780)
+	at android.view.View$PerformClick.run(View.java:19866)
+	at android.os.Handler.handleCallback(Handler.java:739)
+	at android.os.Handler.dispatchMessage(Handler.java:95)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Info: 2019-09-02 10:22:48-1567390968492
+SuspensionWindowService java.lang.IllegalStateException
+	at android.media.MediaRecorder.stop(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.stopRecord(HardwareManager.java:352)
+	at com.bossien.video_support.suspension.HardwareManager.destroy(HardwareManager.java:404)
+	at com.bossien.video_support.SuspensionWindowService.onDestroy(SuspensionWindowService.java:133)
+	at android.app.ActivityThread.handleStopService(ActivityThread.java:2924)
+	at android.app.ActivityThread.access$2200(ActivityThread.java:151)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1406)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Info: 2019-09-02 10:22:48-1567390968493
+java.lang.IllegalStateException
+	at android.media.MediaRecorder.stop(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.stopRecord(HardwareManager.java:352)
+	at com.bossien.video_support.suspension.HardwareManager.destroy(HardwareManager.java:404)
+	at com.bossien.video_support.SuspensionWindowService.onDestroy(SuspensionWindowService.java:133)
+	at android.app.ActivityThread.handleStopService(ActivityThread.java:2924)
+	at android.app.ActivityThread.access$2200(ActivityThread.java:151)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1406)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Debug: 2019-09-02 10:30:35-1567391435104
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-02 14:16:23-1567404983395
+LaunchActivity LaunchActivity
+
+Info: 2019-09-02 14:16:28-1567404988992
+Upload Process resume
+
+Info: 2019-09-02 14:16:28-1567404988994
+Upload Process resume
+
+Info: 2019-09-02 14:16:29-1567404989610
+Upload Process {}
+
+Info: 2019-09-02 14:16:29-1567404989611
+Upload Process {}
+
+Info: 2019-09-02 14:16:33-1567404993716
+Upload Process pause
+
+Info: 2019-09-02 14:16:33-1567404993717
+Upload Process pause
+
+Info: 2019-09-02 14:16:34-1567404994143
+Upload Process destroy
+
+Info: 2019-09-02 14:16:34-1567404994146
+Upload Process destroy
+
+Info: 2019-09-02 14:16:34-1567404994606
+Upload Process resume
+
+Info: 2019-09-02 14:16:34-1567404994609
+Upload Process resume
+
+Info: 2019-09-02 14:16:35-1567404995248
+Upload Process {}
+
+Info: 2019-09-02 14:16:35-1567404995272
+Upload Process {}
+
+Info: 2019-09-02 14:16:46-1567405006147
+Upload Process pause
+
+Info: 2019-09-02 14:16:46-1567405006148
+Upload Process pause
+
+Info: 2019-09-02 14:16:46-1567405006565
+Upload Process destroy
+
+Info: 2019-09-02 14:16:46-1567405006570
+Upload Process destroy
+
+Info: 2019-09-02 14:16:48-1567405008686
+Upload Process resume
+
+Info: 2019-09-02 14:16:48-1567405008687
+Upload Process resume
+
+Info: 2019-09-02 14:16:49-1567405009326
+Upload Process {}
+
+Info: 2019-09-02 14:16:49-1567405009326
+Upload Process {}
+
+Info: 2019-09-02 14:17:04-1567405024179
+Upload Process pause
+
+Info: 2019-09-02 14:17:04-1567405024180
+Upload Process pause
+
+Info: 2019-09-02 14:17:04-1567405024594
+Upload Process destroy
+
+Info: 2019-09-02 14:17:04-1567405024597
+Upload Process destroy
+
+Debug: 2019-09-02 14:17:19-1567405039681
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-02 14:18:37-1567405117451
+LaunchActivity LaunchActivity
+
+Info: 2019-09-02 14:18:55-1567405135498
+Upload Process resume
+
+Info: 2019-09-02 14:18:55-1567405135500
+Upload Process resume
+
+Info: 2019-09-02 14:18:56-1567405136049
+Upload Process {}
+
+Info: 2019-09-02 14:18:56-1567405136049
+Upload Process {}
+
+Info: 2019-09-02 14:19:01-1567405141963
+Upload Process pause
+
+Info: 2019-09-02 14:19:01-1567405141964
+Upload Process pause
+
+Info: 2019-09-02 14:19:02-1567405142369
+Upload Process destroy
+
+Info: 2019-09-02 14:19:02-1567405142370
+Upload Process destroy
+
+Info: 2019-09-02 14:19:02-1567405142991
+Upload Process resume
+
+Info: 2019-09-02 14:19:02-1567405142991
+Upload Process resume
+
+Info: 2019-09-02 14:19:03-1567405143344
+Upload Process {}
+
+Info: 2019-09-02 14:19:03-1567405143345
+Upload Process {}
+
+Info: 2019-09-02 14:19:06-1567405146358
+Upload Process pause
+
+Info: 2019-09-02 14:19:06-1567405146359
+Upload Process pause
+
+Info: 2019-09-02 14:19:06-1567405146767
+Upload Process destroy
+
+Info: 2019-09-02 14:19:06-1567405146768
+Upload Process destroy
+
+Info: 2019-09-02 14:19:07-1567405147235
+Upload Process resume
+
+Info: 2019-09-02 14:19:07-1567405147235
+Upload Process resume
+
+Info: 2019-09-02 14:19:07-1567405147599
+Upload Process {}
+
+Info: 2019-09-02 14:19:07-1567405147599
+Upload Process {}
+
+Info: 2019-09-02 14:19:16-1567405156828
+Upload Process pause
+
+Info: 2019-09-02 14:19:16-1567405156831
+Upload Process pause
+
+Info: 2019-09-02 14:19:17-1567405157234
+Upload Process destroy
+
+Info: 2019-09-02 14:19:17-1567405157236
+Upload Process destroy
+
+Info: 2019-09-02 14:21:09-1567405269081
+Upload Process resume
+
+Info: 2019-09-02 14:21:09-1567405269083
+Upload Process resume
+
+Info: 2019-09-02 14:21:33-1567405293622
+Upload Process {}
+
+Info: 2019-09-02 14:21:33-1567405293622
+Upload Process {}
+
+Info: 2019-09-02 14:21:50-1567405310795
+Upload Process pause
+
+Info: 2019-09-02 14:21:50-1567405310798
+Upload Process pause
+
+Info: 2019-09-02 14:21:51-1567405311215
+Upload Process destroy
+
+Info: 2019-09-02 14:21:51-1567405311217
+Upload Process destroy
+
+Info: 2019-09-02 14:21:52-1567405312848
+Upload Process resume
+
+Info: 2019-09-02 14:21:52-1567405312849
+Upload Process resume
+
+Info: 2019-09-02 14:22:04-1567405324468
+Upload Process {}
+
+Info: 2019-09-02 14:22:04-1567405324469
+Upload Process {}
+
+Info: 2019-09-02 14:22:12-1567405332746
+Upload Process pause
+
+Info: 2019-09-02 14:22:12-1567405332750
+Upload Process pause
+
+Info: 2019-09-02 14:22:13-1567405333176
+Upload Process destroy
+
+Info: 2019-09-02 14:22:13-1567405333178
+Upload Process destroy
+
+Info: 2019-09-02 14:22:14-1567405334182
+Upload Process resume
+
+Info: 2019-09-02 14:22:14-1567405334184
+Upload Process resume
+
+Info: 2019-09-02 14:22:56-1567405376903
+Upload Process {}
+
+Info: 2019-09-02 14:22:56-1567405376904
+Upload Process {}
+
+Info: 2019-09-02 14:23:01-1567405381681
+Upload Process pause
+
+Info: 2019-09-02 14:23:01-1567405381683
+Upload Process pause
+
+Info: 2019-09-02 14:23:02-1567405382099
+Upload Process destroy
+
+Info: 2019-09-02 14:23:02-1567405382100
+Upload Process destroy
+
+Info: 2019-09-02 14:41:42-1567406502896
+Upload Process resume
+
+Info: 2019-09-02 14:41:42-1567406502897
+Upload Process resume
+
+Info: 2019-09-02 14:41:43-1567406503275
+Upload Process {}
+
+Info: 2019-09-02 14:41:43-1567406503275
+Upload Process {}
+
+Info: 2019-09-02 14:41:45-1567406505091
+Upload Process pause
+
+Info: 2019-09-02 14:41:45-1567406505098
+Upload Process pause
+
+Info: 2019-09-02 14:41:45-1567406505494
+Upload Process destroy
+
+Info: 2019-09-02 14:41:45-1567406505495
+Upload Process destroy
+
+Info: 2019-09-02 15:07:30-1567408050490
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-02 15:24:32-1567409072713
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-02 15:27:47-1567409267147
+LaunchActivity LaunchActivity
+
+Info: 2019-09-02 15:28:29-1567409309757
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-02 15:55:44-1567410944634
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-02 16:08:52-1567411732990
+LaunchActivity LaunchActivity
+
+Info: 2019-09-02 17:33:08-1567416788362
+BaseApplication onTrimMemory ... level:5
+
+Debug: 2019-09-02 17:33:11-1567416791015
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-02 17:40:14-1567417214920
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-02 17:44:05-1567417445966
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-02 17:45:53-1567417553063
+LaunchActivity LaunchActivity
+

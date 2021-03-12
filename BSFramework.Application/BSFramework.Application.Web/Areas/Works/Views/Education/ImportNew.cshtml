@@ -1,0 +1,133 @@
+﻿@{
+    ViewBag.Title = "ImportNew";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<script type="text/javascript" src="~/content/scripts/business/common.js"></script>
+<style type="text/css">
+    .import_content {
+        width: 370px;
+        text-align: center;
+        font-size: 16px;
+    }
+
+        .import_content button {
+            background: #3668e1;
+            color: #fff;
+            border: none;
+            line-height: 45px;
+            width: 180px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .import_content a {
+            color: #3869df;
+            text-decoration: underline;
+        }
+
+    .import_file {
+        position: relative;
+        margin-bottom: 35px;
+    }
+
+        .import_file input.select_file {
+            position: absolute;
+            line-height: 47px;
+            width: 180px;
+            left: 50%;
+            margin-left: -90px;
+            opacity: 0;
+            cursor: pointer;
+        }
+</style>
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+<script>
+    jQuery(function () {
+        jQuery('#isupload').val('');
+    });
+
+</script>
+@using (Html.BeginForm("ImportNew", "WorkMeeting", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div style="padding:35px 50px 0 50px;">
+        <table style="width:100%;">
+            <tr>
+                <td class="formTitle" style="width:90px;">适用班组<font face="宋体">*</font></td>
+                <td class="formValue" colspan="3">
+                    <div class="input-group" style="width:100%;" onclick="selectDept('/../@Url.Action("SelectBZ", "Department", new { area = "BaseManage" })', '@ViewBag.deptid', 1, 0, '选择班组', this.parentNode, 'UseDeptName,UseDeptId,UseDeptCode')">
+                        @*<input id="UseDept" name="UseDept" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" onfocus="this.blur();" />*@
+                        <textarea id="UseDeptName" name="UseDeptName" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" rows="5" onfocus="this.blur();"></textarea>
+                        <span class="input-group-addon" title="选择班组" style="cursor:pointer;">...</span>
+                        <input id="UseDeptId" type="hidden" name="UseDeptId" />
+                        <input id="UseDeptCode" type="hidden" name="UseDeptCode" />
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="import_content" style="padding:45px 110px 0px 110px;width:100%;">
+        <div class="import_file">
+            <button id="load">导入文件</button>
+            <input style="display:block;width:180px;height:47px;margin:-47px auto 0px auto; opacity:0;" id="select_file" name="inputfile" type="file" />
+        </div>
+        <p>下载模板后，点击“导入文件”按钮，可上传文件</p>
+        @{
+    if (ViewBag.type == "2"||ViewBag.type=="5")
+    {
+        <a href="@Url.Content("~/Content/export/技术问答导入模板.xlsx")">下载模板</a>
+    }
+    else if (ViewBag.type == "3"||ViewBag.type=="6")
+    {
+        <a href="@Url.Content("~/Content/export/事故预想导入模板.xlsx")">下载模板</a>
+    }
+        }
+      <br />
+        <label id="lb" style="color:red;"></label>
+    </div>
+}
+<script>
+    $('#select_file').click(function ()
+    {
+        var dept = $("#UseDeptCode").val();
+        if (dept == "")
+        {
+            dialogMsg('请选择适用班组！', 0);
+            return false;
+        }
+    });
+    $('#select_file').change(uploadFile);
+    $('#load').click(function () {
+        
+        document.getElementById('select_file').click();
+    });
+    function uploadFile() {
+        var myform = new FormData();
+        myform.append('file', $('#select_file')[0].files[0]);
+        var codes = $("#UseDeptCode").val();
+        var ids = $("#UseDeptId").val();
+        var names = $("#UseDeptName").val();
+        $.ajax({
+            url: "@Url.Action("DoImportNew")?type=" + '@ViewBag.type' + "&codes=" + codes + "&ids=" + ids + "&names=" + names,
+            type: 'POST',
+            dataType: 'json',
+            data: myform,
+            contentType: false,
+            processData: false,
+            clearForm: true,
+            beforeSend: function () {
+                document.getElementById("lb").innerText = "上传中，请稍后...";
+            },
+            success: function (data) {
+                document.getElementById("lb").innerText = "";
+                if (data.success) {
+                    top.$.currentIframe().$("#gridTable").trigger("reloadGrid");
+                    layer.msg("导入成功！");
+                }
+                else
+                    layer.msg(data.message);
+            },
+            error: function (data) {
+            }
+        });
+    }
+</script>

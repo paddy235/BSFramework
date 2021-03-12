@@ -1,0 +1,45 @@
+@charset "UTF-8";
+*{font-family: "微软雅黑";}
+input{outline: none;}
+a{text-decoration: none;}
+html,body{height: 100%;width: 100%;margin: 0;padding: 0;}
+.login_bg{background:url("../images/login_bg.png") no-repeat;background-size: 100% 100%;}
+.warp{position: relative;width: 100%;height: 100%;}
+.header{position: absolute;top:120px;left: 50%;transform: translate(-50%,0);color: #fff;white-space: nowrap;font-size: 40px;letter-spacing: 15px;}
+.header img{vertical-align: text-top;margin-right: 20px;}
+
+.main{position: absolute;left: 50%;top: 50%;transform: translate(-50%,-50%);background: #fff;}
+.login_box{padding: 20px 120px;position: relative;height: 457px;width: 482px;}
+#toggle-btn{position:absolute;top:20px;right:40px;height:42px;width:42px;background: url("../images/toggle_icon.png") left bottom no-repeat;cursor: pointer;transition: all .1s;}
+#toggle-btn.active{background-position: left top;}
+
+.toggle-2{display: none;}
+.toggle-2 > div{padding-top:20px;text-align: center;}
+.toggle-2 p{font-size:16px;line-height: 24px;color: #999999;}
+.toggle-2 .refresh{color: #5a9bfd;font-size: 20px;cursor: pointer;}
+.toggle-2 .refresh img{vertical-align: middle;color: #5a9bfd;font-size: 20px;}
+.toggle-2 img{margin:0 auto;}
+
+.login_box h2{margin: 30px 0;font-size: 26px;color: #5a9bfd;font-weight: 700;text-align: center;}
+.login_box .my-input {position: relative;border: 1px solid #e6e8ed;height: 70px;width: 480px;margin-bottom: 20px;border-radius: 3px;box-shadow: #e6e8ed 0 0 3px inset;}
+.login_box .my-input .icon{width:32px;height:32px;position:absolute;right:15px;top:19px;}
+.login_box .my-input .icon-username{background: url("../images/user_icon.png") no-repeat;}
+.login_box .my-input .icon-password{background: url("../images/password_icon.png") no-repeat;}
+.login_box .my-input input::-webkit-input-placeholder{color: #cccccc;}
+.login_box .my-input input:-ms-input-placeholder{color: #cccccc;}
+.login_box .my-input input::-moz-placeholder{color: #cccccc;}
+.login_box .my-input input[type="text"],.login_box .my-input input[type="password"] {position: relative;z-index: 1;background: none;width: 100%;height: 100%;padding:0 10px;border: none;outline: none;font-size: 24px;}
+.my_checkbox{color: #94b9f9;}
+.my_checkbox span{display: inline-block;height: 16px;width: 16px;border: 1px solid #94b9f9;cursor: pointer;vertical-align: text-bottom;}
+.checkbox{background: url("../images/checkbox_icon.png") no-repeat center center;}
+.login_box .my-btn{width: 100%;line-height: 70px;border-radius:3px;box-shadow:#5a9bfd 1px 1px 2px;margin-top:30px;color: #fff;font-size: 30px;font-weight: 500;outline: none;border: none;background-color: #5a9bfd;cursor: pointer;}
+.download_div{height: 20px;margin: 20px 0 5px 0;}
+.download_btn{position: absolute;right: 40px;bottom: 20px;font-size: 18px;color: #5a9bfd;cursor: pointer;}
+
+
+.download_box{background: #709cff;color: #fff;display: none;height:497px;width: 722px;position: relative;}
+.download_box .down_close{position: absolute;height: 40px;width: 40px;right: 30px;top:30px;background:url("../images/downclose_icon.png") no-repeat center center;cursor: pointer;}
+.download_box img{position: absolute;top:50%;left:50%;transform: translate(-50%,-50%);}
+.download_box p{margin: 0;font-size: 14px;position: absolute;bottom: 105px;text-align: center;width: 100%;}
+
+.footer{position: absolute;bottom:70px;left: 50%;transform: translate(-50%,0);color: #b1cdff;white-space: nowrap;font-size: 14px;}

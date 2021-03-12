@@ -1,0 +1,101 @@
+﻿@using BSFramework.Application.Entity.SystemManage;
+@using Newtonsoft.Json
+@{
+    ViewBag.Title = "TerminalBindForm";
+    Layout = "~/Views/Shared/_Form.cshtml";
+    List<TerminalDataSetEntity> entities = Model;
+    List<string> checkIds = ViewBag.ChceckIds;
+    //begin 指标筛选  平台跟终端不能配APP的指标 ，APP不能配平台跟终端的指标
+    switch (int.Parse(Request.QueryString["indexType"]))
+    {
+        case (int)IndexType.平台端:
+        case (int)IndexType.安卓终端:
+            entities.RemoveAll(x => x.DataSetType == "2");
+            break;
+        case (int)IndexType.手机APP:
+            entities.RemoveAll(x => x.DataSetType == "0" || x.DataSetType == "1");
+            break;
+        default:
+            break;
+    }
+    // end
+    string titleId = ViewBag.TitleId;
+    string chekc = JsonConvert.SerializeObject(checkIds);
+}
+<script>
+    var titleId = '@titleId'
+    var checkdata = JSON.parse('@Html.Raw(chekc)');
+    $(function () {
+
+    })
+    function CheckEvent(Id, elemt) {
+        if ($(elemt).is(":checked")) {
+            checkdata.push(Id);
+            //if (checkdata.length < 5) {
+            //    checkdata.push(Id);
+            //} else {
+            //    $(elemt).prop("checked", false)
+            //    dialogMsg('每个分类指标最多勾选5个！', 0);
+            //}
+        } else {
+            for (var i = 0; i < checkdata.length; i++) {
+                if (checkdata[i] == Id) {
+                    checkdata.splice(i, 1);
+                }
+            }
+        }
+    }
+
+    function AcceptClick() {
+
+        var postData = {
+            indexIdStr: JSON.stringify(checkdata),
+            titleId: titleId
+        }
+        console.log(postData);
+        $.SaveForm({
+           url: '/..@Url.Action("SaveAssociation")' ,
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<div class="container" style="width:100%;">
+    @if (entities != null && entities.Count > 0)
+    {
+        var groupList = entities.GroupBy(group => group.DataSetType, (x, y) => new { x, y }).OrderBy(x=>x.x);
+        foreach (var group in groupList)
+        {
+            string typeStr = "未知分类";
+            switch (group.x)
+            {
+                case "0":
+                    typeStr = "平台指标";
+                    break;
+                case "1":
+                    typeStr = "终端指标";
+                    break;
+                case "2":
+                    typeStr = "App指标";
+                    break;
+            }
+    <div class="col-md-12" style="height:50px; margin-top:10px; float:left; ">
+        <h4>@typeStr</h4>
+    </div>
+            foreach (var item in group.y)
+            {
+
+
+                <div class="col-md-4" style="height:50px; margin-top:10px; float:left;">
+                    <input type="checkbox" value="@item.Id" id="@item.Id" @Html.Raw(checkIds.Any(x => x == item.Id) ? "checked=\"checked\"" : "") onchange="CheckEvent('@item.Id',this)" />&nbsp;<label for="@item.Id">@item.Name</label>&nbsp;&nbsp;&nbsp;
+                </div>
+            }
+        }
+
+
+    }
+</div>
+

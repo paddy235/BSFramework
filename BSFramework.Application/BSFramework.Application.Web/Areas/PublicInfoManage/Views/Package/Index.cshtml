@@ -1,0 +1,224 @@
+@{;
+  ViewBag.Title = "列表页面";
+  Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script>;
+    $(function () {
+        InitialPage();
+        GetGrid();
+    });
+    //初始化页面
+    function InitialPage() {
+        //resize重设布局;
+        //$(window).resize(function (e) {
+        //    window.setTimeout(function () {
+        //        $('#gridTable').setGridWidth(($('.gridPanel').width()));
+        //        $('#gridTable').setGridHeight($(window).height() - 108.5);
+        //    }, 200);
+        //    e.stopPropagation();
+        //});
+    }
+
+    function GetGrid() {
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            url: "../../PublicInfoManage/Package/GetListJson",
+            datatype: "json",
+            height: $(window).height() - 142,
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'ID', hidden: true },
+                 {
+                     label: '操作', name: 'oper', index: 'id', width: 120, align: 'center',
+                     formatter: function (cellvalue, options, rowObject) {
+                         var html = "<a href=javascript:btn_view('" + rowObject.ID + "')  title='查看'><i class='fa fa-eye'></i></a>";
+                         html += "&nbsp;&nbsp;&nbsp;<a href=javascript:btn_edit('" + rowObject.ID + "')  title='修改'><i class='fa fa-pencil-square-o'></i></a>";
+                         html += "&nbsp;&nbsp;&nbsp;<a href=javascript:btn_delete('" + rowObject.ID + "')  title='删除'><i class='fa fa-trash-o'></i></a>";
+                         return html;
+                     }
+                 },
+                { label: '应用程序名', name: 'AppName', index: 'AppName', width: 400, align: 'center', sortable: false },
+                {
+                    label: '应用程序类型', name: 'PackType', index: 'PackType', width: 100, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        if (rowObject.PackType == 0) {
+                            return '安卓APP';
+                        }
+                        return '安卓终端';
+                    }
+                },
+                {
+                    label: 'Apk类型', name: 'ApkType', index: 'ApkType', width: 100, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        if (!rowObject.ApkType ) {
+                            return '默认';
+                        }
+                        return rowObject.ApkType;
+                    }
+                },
+                { label: '发布版本', name: 'PublishVersion', index: 'PublishVersion', width: 150, align: 'center', sortable: false },
+                { label: '编译版本', name: 'ReleaseVersion', index: 'ReleaseVersion', width: 150, align: 'center', sortable: false },
+                {
+                    label: '编译日期', name: 'ReleaseDate', index: 'ReleaseDate', width: 150, align: 'center', sortable: false,
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                },
+                {
+                    label: "创建时间", name: "CreateDate", index: "CreateDate", width: 200, align: "center", sortable: false,
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                }
+            ],
+            viewrecords: true,
+            rowNum: 30,
+            rowList: [30, 50, 100],
+            pager: "#gridPager",
+            sortname: 'CreateDate',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            onSelectRow: function () {
+                selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            },
+            gridComplete: function () {
+                $("#" + this.id).setSelection(selectedRowIndex, false);
+            }
+        });
+        //查询事件
+        $("#btn_Search").click(function () {
+            var queryJson = {
+                keyword: $("#txt_Keyword").val()
+            }
+            $gridTable.jqGrid('setGridParam', {
+                postData: { queryJson: JSON.stringify(queryJson) },
+                page: 1
+            }).trigger('reloadGrid');
+        });
+        //查询回车
+        $('#txt_Keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+    }
+
+    function btn_view(keyValue) {
+        dialogOpen({
+            id: "Form",
+            title: '查看app版本',
+            url: '/../@Url.Action("Form")?keyValue=' + keyValue + '&actiontype=view',
+            width: "600px",
+            height: "420px",
+            btn: null
+        });
+    }
+
+    //新增
+    function btn_add() {
+        dialogOpen({
+            id: 'Form',
+            title: '添加app版本',
+            url: '/../@Url.Action("Form")',
+            width: '600px',
+            height: '420px',
+            callBack: function (iframeId) {
+                top.frames[iframeId].AcceptClick();
+            }
+        });
+    }
+    //编辑
+    function btn_edit() {
+        var keyValue = $('#gridTable').jqGridRowValue('ID');
+        if (checkedRow(keyValue)) {
+            dialogOpen({
+                id: 'Form',
+                title: '编辑app版本',
+                url: '/../@Url.Action("Form")?keyValue=' + keyValue,
+                width: '600px',
+                height: '420px',
+                callBack: function (iframeId) {
+                    top.frames[iframeId].AcceptClick();
+                }
+            })
+        }
+    }
+    //删除
+    function btn_delete() {
+        var keyValue = $('#gridTable').jqGridRowValue('ID');
+        if (keyValue) {
+            $.RemoveForm({
+                url: '/../@Url.Action("RemoveForm")',
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $('#gridTable').trigger('reloadGrid');
+                }
+            })
+        } else {
+            dialogMsg('请选择需要删除的app版本！', 0);
+        }
+    }
+    var dofrom = null;
+    function produce() {
+        //手动弹出层输入路径
+       
+            @*dofrom = dialogOpen({
+                id: "PrjectItem",
+                title: "二维码",
+                url: '/../@Url.Action("CodeEncoder")',
+                width: ($(top.window).width() - 800) + "px",
+                height: ($(top.window).height() - 300) + "px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });*@
+        var keyValue = $('#gridTable').jqGridRowValue('ID');
+        if (keyValue) {
+            Loading(true, "请稍候,正在处理！");
+            $.ajax({
+                url: "/../@Url.Action("Bulid")",
+                data: { keyValue: keyValue },
+                    type: "get",
+                    dataType: "JSON",
+                    success: function (result) {
+                        if (result != undefined || result != null) {
+                            dialogMsg("此版本的二维码生成成功！", 1);
+                        }
+                        else {
+                            dialogMsg("此版本的二维码生成失败！", 5);
+                        }
+                        Loading(false);
+                        dialogClose();
+                    }
+              });
+        } else {
+            dialogMsg('请选择要生成二维码的数据！', 0);
+        }
+
+    }
+</script>
+<div class="titlePanel">
+    <div class="title-search">
+        <table>
+            <tr>
+                <td>&nbsp;&nbsp;&nbsp;应用程序名：</td>
+                <td>
+                    <input id="txt_Keyword" type="text" class="form-control" placeholder="请输入要查询关键字" style="width: 200px;" />
+                </td>
+                <td style="padding-left: 5px;">
+
+                    <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>查询</a>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="toolbar">
+        <div class="btn-group">
+            <a id="replace" class="btn btn-default" onclick="reload()"><i class="fa fa-refresh"></i>刷新</a>
+            <a id="add" class="btn btn-default" onclick="btn_add()"><i class="fa fa-plus"></i>新增</a>
+            @*<a id="produce" class="btn btn-default" onclick="produce()"><i class="fa fa-pencil-square-o"></i>生成二维码</a>*@
+        </div>
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="gridTable"></table>
+     <div id="gridPager"></div>
+</div>

@@ -1,0 +1,90 @@
+﻿
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")" />
+
+
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>
+<script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/pdfjs/pdf.js")"></script>
+<script src="@Url.Content("~/Content/scripts/pdfjs/pdf.worker.js")"></script>
+<script>
+    $(function () {
+     
+        BuildPagePdf(1);
+    });
+    var pageNumber = '';
+    var currentPage =1;
+    var filePath = '@ViewBag.path';
+    //构建PDF
+    function BuildPagePdf(pageIndex) {
+       
+        PDFJS.workerSrc = '@Url.Content("~/Content/scripts/pdfjs/pdf.worker.js")';
+        PDFJS.getDocument(filePath).then(function getPdfHelloWorld(pdf) {
+            pageNumber = pdf.numPages;
+            pdf.getPage(pageIndex).then(function getPageHelloWorld(page) {
+                     var scale = 1.5;
+                     var viewport = page.getViewport(scale);
+                     var canvas = document.getElementById('the-canvas');
+                     var context = canvas.getContext('2d');
+                     canvas.height = viewport.height;
+                     canvas.width = viewport.width;
+                     var renderContext = {
+                         canvasContext: context,
+                         viewport: viewport
+                     };
+                    page.render(renderContext);
+                 });
+             });
+    }
+    //下一页
+    function nextPage() {
+      
+        if (currentPage < pageNumber) {
+            currentPage += 1;
+            BuildPagePdf(currentPage);
+            $("#btnPrePage").removeAttr('disabled');
+        }
+        if (currentPage == pageNumber) {
+            $("#btnNextPage").attr("disabled", "disabled");
+        }
+
+    }
+
+    //上一页
+    function PrePage() {
+        if (currentPage > 1) {
+            currentPage -= 1;
+            BuildPagePdf(currentPage);
+            $("#btnNextPage").removeAttr('disabled');
+        }
+        if (currentPage == 1) {
+            $("#btnPrePage").attr("disabled", "disabled");
+            $("#btnNextPage").removeAttr('disabled');
+
+        }
+
+    }
+
+</script>
+            <div class="bg-fff add-peccancy">
+                <div style="text-align:center;position:fixed;left:500px;">
+                    <a onclick="PrePage();" class="my-btn bg-8fadce">上一页</a>
+                    <a onclick="nextPage();" class="my-btn bg-8fadce">下一页</a>
+                </div>
+                <div class="bs-area-1" style="text-align:center;">
+                    <canvas id="the-canvas" style="height:100%;width:100%;margin:10px;max-width:90%;max-height:60%;"></canvas>
+                </div>
+            </div>
+
+
+
+

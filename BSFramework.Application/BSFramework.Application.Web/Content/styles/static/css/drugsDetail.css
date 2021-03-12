@@ -1,0 +1,96 @@
+
+	.left{
+		display: float;
+		flex-direction: column;
+	}
+	.left ul{
+		height: 50px;
+		display: flex;
+		align-items: center;
+		border-bottom: 1px solid #e3ecfd;
+	}
+	.left h2{
+		border-bottom: 1px solid #e3ecfd;
+		margin:0;
+	}
+	.left h2 span{
+		line-height: 50px;
+		padding-left: 2%;
+	}
+	.right p{padding:0 4%;}
+	.left ul li{
+		color:#68748e;
+		margin-right: 40px;
+	}
+	
+	.drugs-nav{
+		width:100%;
+		height: 50px;
+		padding-left: 0;
+		border-bottom: 1px solid #e3ecfd;
+	}
+	.drugs-nav li{
+		float:left;
+		list-style: none;
+		width:33%;
+		text-align: center;
+	}
+	.drugs-nav li:hover{
+		cursor: pointer;
+	}
+	.drugs-nav li span{
+		display: inline-block;
+		line-height: 50px;
+		color: #000000;
+		font-weight: 800;
+		font-size: 18px;
+	}
+	.drugs-content{
+		list-style: none;
+		margin-top: 20px;
+		padding-left: 0;
+	}
+	.drugs-content li{
+		height: 820px;
+	}
+	.select span{
+		border-bottom: 2px solid #3569e1;
+		color: #3569e1!important;
+	}
+
+	.msds .main{
+		width:90%;
+		margin: 0 auto;
+		border:1px solid #a8acaf;
+		padding:10%;
+		margin-bottom: 20px;
+		background:#c8edcc;
+		color:#000000;
+	}
+	.msds h3,.msds h4{
+		text-align: center;
+		border: 0;
+		font-size: 10px;
+		background: url('../images/images/text_03.png')no-repeat 0 0,url('../images/images/text_05.png')no-repeat right 0;
+	}
+	.msds h4{
+		color:#c8edcc ;
+		background: url('../images/images/text_09.png')no-repeat 0 bottom,url('../images/images/text_10.png')no-repeat right bottom;
+	}
+	.msds dl,.msds dt{
+		font-size: 8px;
+		color: #000000;
+		text-align: center;
+	}
+	.msds dt{
+		text-align: left;
+	}
+	.currentVideo{
+		color:#fff;
+		background: #000000;
+		margin: 0;
+		border:0;
+		font-size: 20px;
+		text-indent: 9.4%;
+		padding:26px 0 10px 0;
+	}

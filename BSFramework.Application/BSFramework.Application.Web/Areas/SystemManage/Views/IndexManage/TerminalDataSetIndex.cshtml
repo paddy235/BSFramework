@@ -1,0 +1,191 @@
+﻿@{
+    ViewBag.Title = "TerminalDataSetIndex";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+
+    <script>
+    $(function () {
+        //GetTree();
+        GetGrid();
+    });
+
+    //加载表格
+    function GetGrid() {
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            postData: { dataSetType: "0" },
+            autowidth: true,
+            height: $(window).height() - 180,
+           url: '/..@Url.Action("GetTerminalPageListJson",new { DataSetType="1"})',
+            datatype: "json",
+            colModel: [
+                { label: 'Id', name: 'Id', hidden: true },
+                {
+                    label: '操作', name: 'Operter', width: 100, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        return ' <a href="javascript:edit(\'' + rowObject.Id + '\')" title="修改"><i class="fa fa-pencil-square-o"></i></a> <a href="javascript:del(\'' + rowObject.Id + '\')" title="删除"><i class="fa fa-trash-o"></i></a>';
+                    }
+                },
+                { label: '指标编码', name: 'Code', width: 400, align: 'center', sortable: false },
+                { label: '指标名称', name: 'Name', width: 600, align: 'center', sortable: false },
+                { label: '单位', name: 'Unint', width: 200, align: 'center', sortable: false },
+                {
+                    label: '是否启用', name: 'IsOpen', width: 200, align: 'center', sortable: false, formatter: function (value) {
+                        if (value == 1) {
+                            return "是"
+                        }
+                            return "否"
+                    }
+                },
+                { label: '排序字段', name: 'Sort', width: 200, align: 'center', sortable: false },
+            ],
+            rowList: [15, 20, 30, 50, 100],
+            rowNum: 15,
+            pager: "#gridPager",
+            sortname: 'sort',
+            sortorder: 'asc'
+
+        });
+
+        //查询事件
+        $("#btn_Search").click(function () {
+            var queryJson = {
+                keyword: $("#txt_Keyword").val(),
+                condition: $("#selType").val(),
+            }
+            $gridTable.jqGrid('setGridParam', {
+                postData: { queryJson: JSON.stringify(queryJson), dataSetType:"0" },
+                page: 1
+            }).trigger('reloadGrid');
+        });
+        $("#btn_SearchAll").click(function () {
+            $("#txt_Keyword").val("");
+            $("#selType").val("");
+            var queryJson = {
+                condition: '',
+                keyword: '',
+            }
+            $gridTable.jqGrid('setGridParam', {
+                postData: { queryJson: JSON.stringify(queryJson), dataSetType: "0"}, page: 1
+            }).trigger('reloadGrid');
+        });
+        //查询回车
+        $('#txt_Keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+
+    }
+
+
+
+
+    var checkNodeId ; //选中的节点的Id
+    var checkNodeName; //选中的节点的名称
+    function GetTree() {
+        var item = {
+            height: $(window).height() - 60,
+            showcheck: true,
+            url: "../../SystemManage/IndexManage/GetTitleList",
+            onnodeclick: function (item) {
+                if (item.checkstate == 0) {
+                    $("#TitleList").setCheckedNodeOne(item.id);
+                    checkNodeId = item.id;
+                    //platform = item.platformType;
+                    checkNodeName = item.text;
+                    //取该节点底下的数据
+                    $("#gridTable").jqGrid('setGridParam', {
+                        postData: { queryJson: JSON.stringify({ TitleId: checkNodeId, keyword: $("#txt_Keyword").val() }) },
+                        page: 1
+                    }).trigger('reloadGrid');
+                }
+            }
+        };
+        $("#TitleList").treeview(item);
+
+    }
+    function add() {
+            dialogOpen({
+                id: 'Form',
+                title: '编辑信息',
+               url: '/..@Url.Action("TerminalForm",new {DataSetType="0" })',
+                width: '800px',
+                height: ($(top.window).height() - 400) + 'px',
+                callBack: function (iframeId) {
+                    top.frames[iframeId].AcceptClick();
+                }
+            });
+    }
+
+
+
+    //编辑
+    function edit(id) {
+        if (!!id) {
+            dialogOpen({
+                id: 'Form',
+                title: '编辑信息',
+                url: '/..@Url.Action("TerminalForm")' +'?keyValue=' + id,
+                width: '800px',
+                height: ($(top.window).height() -400) + 'px',
+                callBack: function (iframeId) {
+                    top.frames[iframeId].AcceptClick();
+                }
+            })
+        }  else {
+            dialogMsg('请选择需要编辑的指标！', 0);
+        }
+    }
+    //删除
+    function del(id) {
+        if (!!id) {
+            $.RemoveForm({
+                  url: '/..@Url.Action("RemoveTerminalForm")',
+                param: { keyValue: id },
+                success: function (data) {
+                    $('#gridTable').trigger('reloadGrid');
+                }
+            })
+        } else {
+            dialogMsg('请选择需要删除的指标！', 0);
+        }
+    }
+    </script>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-center col-md-12">
+        <div class="center-Panel">
+            <div class="panel-Title">指标管理</div>
+            <div class="titlePanel">
+                <div class="title-search">
+                    <table>
+                        <tr>
+                            <td style="padding-left: 2px;">
+                                <input id="txt_Keyword" type="text" class="form-control" placeholder="请输入要查询关键字" style="width: 200px;" />
+                            </td>
+
+                            <td style="padding-left: 5px;">
+                                <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="toolbar">
+                    <div class="btn-group">
+                        <a class="btn btn-default" onclick="reload();"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+                        <a id="addIndex" class="btn btn-default" onclick="add()"><i class="fa fa-plus"></i>&nbsp;新增指标</a>
+                    </div>
+                    <div class="btn-group">
+
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="gridTable"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>

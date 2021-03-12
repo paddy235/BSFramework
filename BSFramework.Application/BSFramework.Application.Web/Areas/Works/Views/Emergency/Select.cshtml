@@ -1,0 +1,41 @@
+﻿
+@{
+    ViewBag.Title = "Select";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+<script>
+    jQuery(function () {
+
+        $('#layout').layout({
+            applyDemoStyles: false,
+            west: {
+                size: 300,
+            },
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+
+        jQuery('#tree').treeview({
+            height: $(window).height() - 50,
+            url: '@Url.Action("GetAllCardType")'
+        });
+    });
+
+    function AcceptClick(callback) {
+        var node = jQuery('#tree').getCurrentNode();
+        callback(node);
+        dialogClose();
+    }
+</script>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-center">
+        <div class="panel">
+            <div class="panel-Title">
+                类别
+            </div>
+            <div id="tree"></div>
+        </div>
+    </div>
+</div>

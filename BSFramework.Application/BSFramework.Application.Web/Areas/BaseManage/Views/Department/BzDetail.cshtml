@@ -1,0 +1,248 @@
+﻿@{
+    ViewBag.Title = "班组详情";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+
+<script>
+    var keyValue = request('keyValue');
+    $(function () {
+        initControl();
+        GetGrid();
+        GetGrid1();
+    })
+    //初始化控件
+    function initControl() {
+        //上级部门
+        $("#OrganizeTree").ComboBoxTree({
+            url: "../../BaseManage/Department/GetOrganizeTreeJson",
+            description: "==请选择==",
+            height: "250px",
+            click: function (item) {
+                if (item.Sort == 'Organize') {
+                    organizeId = item.id;
+                    parentId = 0;
+                } else {
+                    parentId = item.id;
+                }
+            }
+        });
+        //获取表单
+        if (!!keyValue) {
+
+            $.SetForm({
+                url: "../../BaseManage/Department/GetFormJson",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#form1").formDeserialize(data);
+                    if (data.ParentId == 0) {
+                        $("#OrganizeTree").ComboBoxTreeSetValue(data.OrganizeId);
+                    } else {
+                        $("#OrganizeTree").ComboBoxTreeSetValue(data.ParentId);
+                    }
+                    parentId = data.ParentId;
+                    organizeId = data.OrganizeId;
+                    $("#form1").find('.form-control,.ui-select,input').attr('disabled', 'disabled');
+
+                }
+            });
+        }
+    }
+
+    function GetGrid() {
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTableL');
+        $gridTable.jqGrid({
+            url: "../../BaseManage/Department/GetLegalsJson?bzid=" + keyValue,
+            datatype: "json",
+            height: $(window).height() - 170,
+            autowidth: true,
+            colModel: [
+               { label: '主键', name: 'id', hidden: true },
+                {
+                    label: '违章时间', name: 'lllegaltime', index: 'LllegalTime', width: 130, align: 'center',
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                },
+
+                { label: '违章地点', name: 'lllegaladdress', index: 'LllegalAddress', width: 130, align: 'center' },
+                { label: '违章类型', name: 'lllegaltype', index: 'LllegalType', width: 130, align: 'center' },
+                {
+                    label: '违章描述', name: 'lllegaldescribe', index: 'LllegalDescribe', width: 210, align: 'center'
+
+                },
+                {
+                    label: '违章部门', name: 'lllegaldepart', index: 'LllegalDepart', width: 130, align: 'center'
+
+                }
+            ],
+            viewrecords: true,
+            rowNum: 12,
+            // rowList: [30, 50, 100],
+            pager: "#gridPager2",
+            sortname: 'lllegaltime',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            onSelectRow: function () {
+                selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            },
+            loadError: function (xhr, status, error) {
+                top.location.href = "../../Login/Index?Login_Error=1";
+            }
+        });
+        //$gridTable.authorizeColModel()
+        //查询条件
+        $("#queryCondition .dropdown-menu li").click(function () {
+            var text = $(this).find('a').html();
+            var value = $(this).find('a').attr('data-value');
+            $("#queryCondition .dropdown-text").html(text).attr('data-value', value)
+        });
+        //查询事件
+        $("#btn_Search").click(function () {
+            var queryJson = {
+                condition: $("#queryCondition").find('.dropdown-text').attr('data-value'),
+                keyword: $("#txt_Keyword").val(),
+                code: _parentId,
+                isOrg: _isOrg
+            }
+            $gridTable.jqGrid('setGridParam', {
+                postData: { queryJson: JSON.stringify(queryJson) }, page: 1
+            }).trigger('reloadGrid');
+        });
+        //查询回车
+        $('#txt_Keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+    }
+
+    function GetGrid1() {
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTableP');
+        $gridTable.jqGrid({
+            url: "../../BaseManage/Department/GetPeopleJson?bzid=" + keyValue,
+            datatype: "json",
+            height: $(window).height() - 400,
+            autowidth: true,
+            colModel: [
+               { label: '主键', name: 'id', hidden: true },
+               { label: '排序', name: 'planer', index: 'Planer', hidden: true },
+               {
+                   label: '岗位', name: 'quarters', index: 'Quarters', width: 200, align: 'center'
+               },
+                { label: '姓名', name: 'name', index: 'Name', width: 250, align: 'center' },
+                { label: '手机', name: 'linkway', index: 'LinkWay', width: 250, align: 'center' }
+                
+            ],
+            viewrecords: true,
+            rowNum: 12,
+            // rowList: [30, 50, 100],
+            pager: "#gridPager1",
+            sortname: 'planer',
+            sortorder: 'asc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            onSelectRow: function () {
+                selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            },
+            loadError: function (xhr, status, error) {
+                top.location.href = "../../Login/Index?Login_Error=1";
+            }
+        });
+    }
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#BaseInfo" data-toggle="tab">基本信息</a></li>
+        <li><a href="#LInfo" data-toggle="tab">违章信息</a></li>
+        <li><a href="#EduInfo" data-toggle="tab">培训信息</a></li>
+    </ul>
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style="padding:8px;">
+            <table class="form">
+                <tr>
+                <th class="formTitle">上级部门<font face="宋体">*</font></th>
+                <td class="formValue">
+                    <div id="OrganizeTree" type="selectTree" class="ui-select" isvalid="yes" checkexpession="NotNull"></div>
+                </td>
+                <th class="formTitle">负责人</th>
+                <td class="formValue">
+                    <input id="Manager" type="text" class="form-control" />
+                </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">部门名称<font face="宋体">*</font></th>
+                    <td class="formValue">
+                        <input id="FullName" type="text" class="form-control" />
+                    </td>
+                    <th class="formTitle">部门编号<font face="宋体">*</font></th>
+                    <td class="formValue">
+                        <input id="EnCode" type="text" class="form-control" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">部门简称</th>
+                    <td class="formValue">
+                        <input id="ShortName" type="text" class="form-control" />
+                    </td>
+                    <th class="formTitle">部门性质</th>
+                    <td class="formValue">
+                        <input id="Nature" type="text" class="form-control" />
+                    </td>
+                </tr>
+                @*<tr>
+                    <th class="formTitle">电话号</th>
+                    <td class="formValue">
+                        <input id="OuterPhone" type="text" class="form-control" />
+                    </td>
+                    <th class="formTitle">分机号</th>
+                    <td class="formValue">
+                        <input id="InnerPhone" type="text" class="form-control" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">邮箱</th>
+                    <td class="formValue">
+                        <input id="Email" type="text" class="form-control" />
+                    </td>
+                    <th class="formTitle">传真</th>
+                    <td class="formValue">
+                        <input id="Fax" type="text" class="form-control" />
+                    </td>
+                </tr>*@
+                <tr >
+                    <th class="formTitle" valign="top" style="padding-top: 4px;">
+                        备注
+                    </th>
+                    <td class="formValue" colspan="3">
+                        <textarea id="Description" class="form-control" style="height: 100px;"></textarea>
+                    </td>
+                </tr>
+            </table>
+            <div class="gridPanel" style="padding-top:20px;" >
+                <table id="gridTableP"></table>
+                <div id="gridPager1"></div>
+            </div>
+        </div>
+        <div id="LInfo" class="tab-pane">
+            <div class="gridPanel">
+                <table id="gridTableL"></table>
+                <div id="gridPager2"></div>
+            </div>
+        </div>
+
+        <div id="EduInfo" class="tab-pane">
+            <div class="gridPanel">
+                <table id="gridTableEdu"></table>
+                <div id="gridPager3"></div>
+            </div>
+        </div>
+    </div>
+    
+</div>

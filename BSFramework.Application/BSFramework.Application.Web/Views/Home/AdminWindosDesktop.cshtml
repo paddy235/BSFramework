@@ -1,0 +1,39 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>敏捷开发框架</title>
+    <link href="~/Content/styles/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/adminWindos/css/index.css" rel="stylesheet" />
+    <script src="~/Content/scripts/jquery/jquery-1.10.2.min.js"></script>
+    <script src="~/Content/adminWindos/index.js"></script>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="~/content/scripts/bootstrap/html5shiv.js"></script>
+        <script src="~/content/scripts/bootstrap/respond.min.js"></script>
+        <script src="~/content/scripts/bootstrap/jquery.placeholder.min.js"></script>
+        <script src="~/content/scripts/bootstrap/json2.js" type="text/javascript"></script>
+    <![endif]-->
+
+    <script>
+        $(function () {
+            $.index.loadDesktop();
+            $.tab.init();
+            $(".slidebox-slider ul").css('left', ($(window).width() - $(".slidebox-slider ul").width()) / 2);
+        })
+    </script>
+</head>
+<body style="overflow-y:auto; overflow-x:hidden;">
+    <div class="slidebox-slider">
+        <ul>
+            @*<li><i class="fa fa-reorder"></i></li>*@
+        </ul>
+    </div>
+    <div class="slidebox">
+        <ul>
+        </ul>
+    </div>
+</body>
+</html>

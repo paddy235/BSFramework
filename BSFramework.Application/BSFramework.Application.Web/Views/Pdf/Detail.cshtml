@@ -1,0 +1,74 @@
+﻿@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/pdfjs/pdf.js")"></script>
+<script src="@Url.Content("~/Content/scripts/pdfjs/pdf.worker.js")"></script>
+<script>
+    var filePath = '@ViewBag.url';
+    var strIp = '@ViewBag.Ip';
+    var strFilePath = '@ViewBag.filePath';
+    $(function () {
+        //BuildPagePdf(1);
+        var url = "../../Content/scripts/pdfjs/web/viewer.html?file=" + strFilePath;
+        location.href = url;
+    });
+    var pageNumber = '';
+    var currentPage = 1;
+    @*var filePath = '@ViewBag.url';*@
+    var filePath = "/bzzd/Resource/Emergency/20181022/1b33bf30-beb2-41b3-ab9c-4870409ee3d1.pdf";
+    //构建PDF
+    function BuildPagePdf(pageIndex) {
+        PDFJS.workerSrc = '@Url.Content("~/Content/scripts/pdfjs/pdf.worker.js")';
+        PDFJS.getDocument(filePath).then(function getPdfHelloWorld(pdf) {
+            pageNumber = pdf.numPages;
+            pdf.getPage(pageIndex).then(function getPageHelloWorld(page) {
+                var scale = 2;
+                var viewport = page.getViewport(scale);
+                var canvas = document.getElementById('the-canvas');
+                var context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                var renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                page.render(renderContext);
+            });
+        });
+    }
+    //下一页
+    function nextPage() {
+        if (currentPage < pageNumber) {
+            currentPage += 1;
+            BuildPagePdf(currentPage);
+            $("#btnPrePage").removeAttr('disabled');
+        }
+        if (currentPage == pageNumber) {
+            $("#btnNextPage").attr("disabled", "disabled");
+        }
+
+    }
+
+    //上一页
+    function PrePage() {
+        if (currentPage > 1) {
+            currentPage -= 1;
+            BuildPagePdf(currentPage);
+            $("#btnNextPage").removeAttr('disabled');
+        }
+        if (currentPage == 1) {
+            $("#btnPrePage").attr("disabled", "disabled");
+            $("#btnNextPage").removeAttr('disabled');
+
+        }
+
+    }
+</script>
+@*<div style="text-align:center;">
+    <button onclick="PrePage();" class="my-btn bg-8fadce">上一页</button>
+    <button onclick="nextPage();" class="my-btn bg-8fadce">下一页</button>
+</div>
+<canvas id="the-canvas" style="height:100%;width:100%;margin:10px;"></canvas>*@
+

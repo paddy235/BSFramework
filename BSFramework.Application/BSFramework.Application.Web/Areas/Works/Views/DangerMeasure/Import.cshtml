@@ -1,0 +1,77 @@
+﻿@model BSFramework.Application.Web.Areas.EvaluateAbout.Models.CategoryModel
+
+@{
+    ViewBag.Title = "导入考评内容";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<script src="~/Content/scripts/business/Common.js" type="text/javascript"></script>
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.url.js")"></script>
+
+<script>
+    jQuery('#form1').attr('enctype', 'multipart/form-data');
+
+    function fn$ok() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+
+        if (!jQuery('#importfile').val()) {
+            dialogMsg('请选择文件！', 2);
+            return false;
+        }
+
+        Loading(true, "导入中……");
+
+        var form1 = document.querySelector('#form1');
+        jQuery.ajax({
+            url: '@Url.Action("DoImport")',
+            type: 'POST',
+            dataType: 'json',
+            data: new FormData(form1),
+            processData: false,
+            contentType: false,
+            success: function (data, status) {
+                Loading(false);
+
+                if (data.type == 3) {
+                    dialogAlert(data.message, -1);
+                } else {
+                    dialogMsg(data.message, 1);
+                    $.currentIframe().fn$refresh();
+                    dialogClose();
+                }
+            }
+        });
+    }
+
+</script>
+
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right 30px;">
+            @Html.HiddenFor(x => x.CategoryId)
+            <table class="form">
+                <tr>
+                    <td class="formTitle">导入文件<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        <input type="file" value="选择文件" name="importfile" id="importfile" required />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">获取模板</td>
+                    <td class="formValue">
+                        <a href="@Url.Content("~/Content/export/风险预控措施导入模板.xlsx")" style="color:blue;">下载模板</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="ExpandInfo" class="tab-pane">
+            <div class="app_layout app_preview" style="border-top: 1px solid #ccc;" id="frmpreview"></div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,349 @@
+@charset "utf-8";
+.warp{
+	position: relative;
+}
+.warp .aside{
+	position: absolute;
+	right:10px;bottom:0;
+	z-index:10;
+	background-color: #fff;
+}
+.warp .aside p{
+	color:#666666;
+	font-size:16px;
+	margin-top:10px;
+}
+.warp .aside button{
+	display: block;
+	width:100%;
+	line-height: 58px;
+	color:#fff;
+	font-size:18px;
+}
+.warp .head{
+	line-height: 40px;
+	padding-bottom:10px;
+}
+.warp .head img{
+	margin:-2px 8px 0;
+}
+.warp .audio{
+	padding-left:100px;
+}
+.warp .audio .left{
+	margin-left:-100px;
+	line-height: 45px;
+	width:100px;
+	float: left;
+}
+.warp button{
+	border:none;
+}
+.warp ul{
+	margin:0;padding:0;
+}
+.warp li{
+	list-style: none;
+}
+.warp .audio .right{
+	width:100%;
+	overflow: hidden;
+}
+.warp .audio .right li{
+	width:250px;
+	height:45px;
+	margin-right:20px;
+	margin-bottom:20px;
+	position: relative;
+	padding-left:0;
+	padding-right:30px;
+	line-height: 43px;
+	border:1px solid #e3ebfd;
+	float: left;
+	font-size:16px;
+	color:#0d0d0d;
+}
+.warp .audio .right li img{
+	position: absolute;
+	width:24px;
+	height:24px;
+	top:50%;
+	margin-top:-12px;
+	left:8px;
+}
+.warp .audio .right li .play-audio{
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	padding-left: 40px;
+	position: relative;
+}
+.warp .audio .right button{
+	position: absolute;
+	right: 10px;
+    top: 13px;
+	height:17px;
+	width:17px;
+	background:url(../images/remove-icon.png) no-repeat center center;
+	overflow: hidden;
+	text-indent: -1111em;
+}
+.warp .photo{
+	padding-bottom:0;
+}
+.warp .photo li{
+	width:160px;
+	float: left;
+	/*height:90px;*/
+	position: relative;
+	margin-bottom:20px;
+	margin-right:20px;
+}
+.warp .photo li button{
+	position: absolute;
+	top:5px;right:5px;
+	height:20px;
+	width:20px;
+	background: url(../images/remove-icon-1.png) no-repeat center center;
+}
+
+/*详情页面*/
+.details .flag{
+	margin:0 0 10px;
+	font-weight: bold;
+	font-size:24px;color:#67748d;
+	text-align:center;
+	line-height: 40px;
+}
+.details .work{
+	font-size:16px;
+	color:#67748d;
+	line-height: 50px;
+}
+.details .work > .clearfix{
+	margin-bottom:20px;
+	padding-left:88px;
+}
+.details .work label{
+	color:#0d0d0d;
+	font-size:16px;
+	margin-left:-88px;
+	width:88px;
+	font-weight: bold;
+	float: left;
+}
+.details .work label + div{
+	width:100%;
+}
+/*签到人员信息表*/
+.sign.modal .my-nav li{
+	border-bottom:1px solid #cad3df;
+	line-height: 50px;
+	padding-left:66px;
+	font-size:16px;
+	color:#374757;
+	background: url("../images/sign-icon.png") no-repeat 10px bottom;
+}
+
+.sign.modal .my-nav li.active{
+	color:#fff;
+	background: url("../images/sign-icon.png") no-repeat 10px top #3669e1;
+}
+
+.sign ul{
+    margin:0;padding:0;
+}
+.sign li{
+    list-style: none;
+}
+.sign{
+    padding:10px 20px;
+    margin:0;
+}
+.sign .my-nav li{
+    border-bottom:1px solid #cad3df;
+    line-height: 50px;
+    padding-left:66px;
+    font-size:16px;
+    color:#374757;
+    background: url("../images/sign-icon.png") no-repeat 10px bottom;
+}
+
+.sign .my-nav li.active{
+    color:#fff;
+    background: url("../images/sign-icon.png") no-repeat 10px top #3669e1;
+}
+.my-search-md{
+	padding-right:80px;
+	position: relative;
+}
+.my-search-md button,
+.my-search-md input{
+	float: left;
+}
+.my-search-md input{
+	width:100%;
+}
+.my-search-md button{
+	position: absolute;
+	width:80px;
+	background: url("../images/search-icon-blue.png") no-repeat left center;
+	padding-left:20px;
+	top:0;
+	right:0;
+}
+.my-tabs .tab-item{
+	display: none;
+}
+.my-tabs .tab-item span{
+	position: relative;
+}
+.my-tabs .tab-item button {
+	position: absolute;
+	border:none;
+	top:50%;
+	margin-top:-11px;
+	right:20px;
+	text-indent:-10000em;
+	overflow: hidden;
+	height:21px;
+	width:21px;
+	background: url("../images/icon-16.png") center center no-repeat;
+}
+.my-tabs .tab-item span.on{
+	background: #3669e1;
+	color:#fff;
+}
+.my-tabs .tab-item span.on button{
+	background-image: url("../images/icon-17.png");
+}
+
+/*临时工作录入*/
+#temp label,
+#temp label + div{
+	float: left;
+	font-size:16px;
+	color:#0c0e0d;
+}
+#temp .item{
+	padding-left:100px;
+	margin-bottom:15px;
+}
+#temp label{
+	width:100px;
+	text-align: right;
+	padding-right:10px;
+	line-height: 46px;
+	margin-left:-100px;
+}
+#temp label + div{
+	width:100%;
+}
+
+#temp input[type="text"].block,
+#temp textarea.block{
+	width:100%;
+	font-family: '微软雅黑';
+}
+#temp textarea{
+	resize:none;
+	padding:5px;
+	height:100px;
+}
+
+/*选择危险因素*/
+.sign.modal .danger_nav li{
+	border-bottom:1px solid #cad3df;
+	line-height: 50px;
+	font-size:16px;
+	color:#374757;
+	text-align: center;
+	width: 80%;
+	margin: 0 auto;
+}
+.sign.modal .danger_nav li:hover,.sign.modal .danger_nav li.select{
+	background: #3669e1;
+	color: #fff;
+}
+
+/*选择防范措施*/
+@media (min-width: 768px){.modal-sm {
+		width: 400px;
+	}}
+.ul-container{
+	min-height: 306px;
+	max-height: 510px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+.ul-container::-webkit-scrollbar{
+	width: 5px;
+	height: 5px;
+}
+.ul-container::-webkit-scrollbar-track-piece{
+	background: none;
+}
+.ul-container::-webkit-scrollbar-thumb{
+	background-color: #ddd;
+	background-clip: padding-box;
+	min-height: 28px;
+	border-radius: 5px;
+}
+.ul-container::-webkit-scrollbar-thumb:hover{
+	background-color: #bbb;
+}
+.sign.modal .measure_nav{
+
+}
+.sign.modal .measure_nav li{
+	border-bottom:1px solid #cad3df;
+	line-height: 50px;
+	font-size:16px;
+	color:#374757;
+	text-align: center;
+	width: 80%;
+	margin: 0 auto;
+}
+.sign.modal .measure_nav li span{
+	display: inline-block;
+	width: 100%;
+}
+.sign.modal .measure_box button{
+	color: #fff;
+	border: none;
+}
+.sign.modal .measure_nav li .delete_btn{
+	display: none;
+	background: #ff5757;
+	width: 100%;
+}
+.sign.modal .measure_box .add_btn{
+	background: #3668e1;
+	width: 80%;
+	line-height: 50px;
+	margin: 0 auto;
+	display: block;
+}
+.sign.modal .measure_nav li.remove .delete_btn{
+	display: block;
+}
+.sign.modal .measure_nav li.remove span{
+	display: none;
+}
+.sign.modal .measure_nav li:hover,.sign.modal .measure_nav li.select{
+    background: #3669e1;
+    color: #fff;
+}
+.measure_text{
+	width: 80%;
+	margin: 0 auto;
+}
+.measure_text textarea{
+	resize: none;
+	width: 100%;
+	padding: 10px;
+	background: #f6f9ff;
+	height: 180px;
+	font-size: 16px;
+	margin-top: 20px;
+}

@@ -1,0 +1,466 @@
+﻿@{
+    ViewBag.Title = "部门任务";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<style>
+    .row-cancel{
+        background-color:#ddd;
+    }
+</style>
+<script>
+    var userid = '@ViewBag.userid';
+    jQuery(function () {
+        $('#layout').layout({
+            applyDemoStyles: true,
+            onresize: function () {
+                $(window).resize();
+            }
+        });
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                //$('#grid1').setGridWidth($(window).width() - 100);
+                $('#grid1').setGridHeight($(window).height() - 190);
+                //$('#grid2').setGridWidth($(window).width() - 100);
+                $('#grid2').setGridHeight($(window).height() - 190);
+            }, 200);
+            e.stopPropagation();
+        });
+
+        var d = new Date();
+        d.setDate(1);
+        jQuery('#startdate').val(formatDate(d, 'yyyy-MM-dd'));
+        d.setMonth(d.getMonth() + 1);
+        d.setDate(0);
+        jQuery('#enddate').val(formatDate(d, 'yyyy-MM-dd'));
+
+
+        jQuery('#tab1').click(function () {
+            jQuery('#div1').show();
+            jQuery('#div2').hide();
+            //jQuery('#startdate').val('');
+            //jQuery('#enddate').val('');
+
+            var obj = { startdate: jQuery('#startdate').val(), enddate: jQuery('#enddate').val() };
+            jQuery('#grid1').jqGrid('setGridParam', {
+                postData: obj, page: 1
+            }).trigger('reloadGrid');
+        });
+
+        jQuery('#tab2').click(function () {
+            jQuery('#div1').hide();
+            jQuery('#div2').show();
+
+            var obj = { startdate: jQuery('#startdate').val(), enddate: jQuery('#enddate').val() };
+            jQuery('#grid2').jqGrid('setGridParam', {
+                postData: obj, page: 1
+            }).trigger('reloadGrid');
+        });
+
+        var sd = jQuery('#startdate').val();
+        var ed = jQuery('#enddate').val();
+
+        jQuery('#grid1').jqGrid({
+            height: $(window).height() - 188,
+            width: $(window).width() - 22,
+            //autowidth: true,
+            colModel: [
+                { label: '主键', name: 'TaskId', key: true, hidden: true, align: 'center' },
+                {
+                    label: '操作', name: 'action', width: 150, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        var html = "";
+                        html += "<a href=\"javascript:fn$view('" + rowObject.TaskId + "')\" title=\"查看\" style=\"color:blue;padding-left:0px;\">查看</a> ";
+
+                        if (rowObject.Status != '已取消') {
+                            var date = new Date();
+                            date.setDate(1);
+                            var ed = new Date(parseInt(rowObject.EndDate.replace(/^\/Date\(/, '').replace(/\)\/$/)));
+                            if (ed >= date) {
+                                if (userid == rowObject.CreateUserId || userid == rowObject.DutyUserId || userid == rowObject.TodoUserId)
+                                    html += "<a href=\"javascript:fn$edit('" + rowObject.TaskId + "')\" title=\"编辑\" style=\"color:blue;padding-left:0px;\">编辑</a> ";
+                                if (userid == rowObject.CreateUserId)
+                                    html += "<a href=\"javascript:fn$cancel('" + rowObject.TaskId + "')\" title=\"取消\" style=\"color:blue;padding-left:0px;\">取消</a> ";
+                            }
+                        }
+                        return html;
+                    }
+                },
+                { label: '工作任务', name: 'Content', index: 'GroupName', width: 500, align: 'center', sortable: false },
+                { label: '子任务', name: 'SubTaskTotal', index: 'SubTaskTotal', width: 120, align: 'center', sortable: false },
+                {
+                    label: '状态', name: 'Status', index: 'Status', width: 120, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        if (cellvalue == "未开始") {
+                            var now = new Date();
+                            var date = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                            var sd = new Date(parseInt(rowObject.StartDate.replace(/^\/Date\(/, '').replace(/\)\/$/)));
+                            var ed = new Date(parseInt(rowObject.EndDate.replace(/^\/Date\(/, '').replace(/\)\/$/)));
+                            if (sd <= date && ed >= date) return '进行中'
+                            else if (ed < date) return '未完成'
+                            else return cellvalue;
+                        } else return cellvalue;
+                    }
+                },
+                {
+                    label: '责任人', name: 'DutyUser', width: 160, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        if (rowObject.TodoUser)
+                            return cellvalue + '（授权：' + rowObject.TodoUser + '）';
+                        else return cellvalue;
+                    }
+                },
+                { label: '责任人', name: 'DutyUserId', width: 160, hidden: true },
+                { label: '计划开始时间', name: 'StartDate', index: 'StartDate', width: 160, align: 'center', formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' } },
+                { label: '计划结束时间', name: 'EndDate', index: 'EndDate', width: 160, align: 'center', formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' } },
+                { label: '创建人', name: 'CreateUser', index: 'CreateUser', width: 160, align: 'center', sortable: false },
+                { label: '创建部门', name: 'CreateDept', index: 'CreateDept', width: 160, align: 'center', sortable: false },
+                { label: '创建时间', name: 'CreateTime', index: 'CreateTime', width: 160, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' } }
+            ],
+            url: '/..@Url.Action("List1")',
+            mtype: 'POST',
+            datatype: "json",
+            shrinkToFit: true,
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            forceFit: true,
+            rowNum: 20,
+            rownumbers: true,
+            pager: "#pager1",
+            postData: { startdate: sd, enddate: ed, status: jQuery('#status').val() },
+            gridComplete: function () {
+                var rows = jQuery('#grid1').jqGrid('getRowData');
+                jQuery.each(rows, function (i, o) {
+                    if (o.Status == '已取消') jQuery('#grid1').jqGrid('setRowData', o.TaskId, o, 'row-cancel');
+                });
+            }
+        });
+
+        jQuery('#grid2').jqGrid({
+            height: $(window).height() - 198,
+            width: $(window).width() - 22,
+            //autowidth: true,
+            colModel: [
+                { label: '主键', name: 'TaskId', key: true, hidden: true, align: 'center' },
+                { name: 'ParentTaskId', hidden: true },
+                { name: 'ParentDutyDepartmentId', hidden: true },
+                { name: 'DutyDepartmentId', hidden: true },
+                { name: 'DutyDepartment', hidden: true },
+                { name: 'Remark', hidden: true },
+                { name: 'UpdateRecords', hidden: true },
+                { name: 'TodoUserId', hidden: true },
+                { name: 'TodoUser', hidden: true },
+                {
+                    label: '操作', name: 'action', width: 150, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        var html = "";
+                        if (rowObject.ParentTaskId) {
+                            html += "<a href=\"javascript:fn$view('" + rowObject.TaskId + "')\" title=\"查看\" style=\"color:blue;padding-left:0px;\">查看</a> ";
+                            if (rowObject.Status != '已取消') {
+                                var date = new Date();
+                                date.setDate(1);
+                                var ed = new Date(parseInt(rowObject.EndDate.replace(/^\/Date\(/, '').replace(/\)\/$/)));
+                                if (ed >= date) {
+                                    if (userid == rowObject.CreateUserId || userid == rowObject.DutyUserId || userid == rowObject.TodoUserId)
+                                        html += "<a href=\"javascript:fn$edit('" + rowObject.TaskId + "')\" title=\"编辑\" style=\"color:blue;padding-left:0px;\">编辑</a> ";
+                                    if (userid == rowObject.CreateUserId)
+                                        html += "<a href=\"javascript:fn$cancel('" + rowObject.TaskId + "')\" title=\"取消\" style=\"color:blue;padding-left:0px;\">取消</a> ";
+                                }
+                            }
+                        } else {
+                            html += "<a href=\"javascript:fn$view('" + rowObject.TaskId + "')\" title=\"查看\" style=\"color:blue;padding-left:0px;\">查看</a> ";
+                            if (rowObject.Status != '已取消') {
+                                var date = new Date();
+                                date.setDate(1);
+                                var ed = new Date(parseInt(rowObject.EndDate.replace(/^\/Date\(/, '').replace(/\)\/$/)));
+                                if (ed >= date) {
+                                    if (userid == rowObject.CreateUserId || userid == rowObject.DutyUserId)
+                                        html += "<a href=\"javascript:fn$edit('" + rowObject.TaskId + "')\" title=\"编辑\" style=\"color:blue;padding-left:0px;\">编辑</a> ";
+                                    if (userid == rowObject.CreateUserId)
+                                        html += "<a href=\"javascript:fn$cancel('" + rowObject.TaskId + "')\" title=\"取消\" style=\"color:blue;padding-left:0px;\">取消</a> ";
+                                }
+                            }
+                        }
+                        return html;
+                    }
+                },
+                { label: '工作任务', name: 'Content', index: 'GroupName', width: 500, align: 'center', sortable: false },
+                {
+                    label: '状态', name: 'Status', index: 'Status', width: 120, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        if (cellvalue == "未开始") {
+                            var now = new Date();
+                            var date = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                            var sd = new Date(parseInt(rowObject.StartDate.replace(/^\/Date\(/, '').replace(/\)\/$/)));
+                            var ed = new Date(parseInt(rowObject.EndDate.replace(/^\/Date\(/, '').replace(/\)\/$/)));
+                            if (sd <= date && ed >= date) return '进行中'
+                            else if (ed < date) return '未完成'
+                            else return cellvalue;
+                        } else return cellvalue;
+                    }
+                },
+                {
+                    label: '责任人', name: 'DutyUser', width: 160, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        if (rowObject.TodoUser)
+                            return cellvalue + '（授权：' + rowObject.TodoUser + '）';
+                        else return cellvalue;
+                    }
+                },
+                { label: '计划开始时间', name: 'StartDate', index: 'StartDate', width: 160, align: 'center', formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' } },
+                { label: '计划结束时间', name: 'EndDate', index: 'EndDate', width: 160, align: 'center', formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' } },
+                { label: '创建人', name: 'CreateUser', index: 'CreateUser', width: 160, align: 'center', sortable: false },
+                { label: '创建部门', name: 'CreateDept', index: 'CreateDept', width: 160, align: 'center', sortable: false },
+                { label: '创建时间', name: 'CreateTime', index: 'CreateTime', width: 160, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' } }
+            ],
+            url: '/..@Url.Action("List2")',
+            mtype: 'POST',
+            datatype: "json",
+            shrinkToFit: true,
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            forceFit: true,
+            rowNum: 20,
+            rownumbers: true,
+            pager: "#pager2",
+            postData: { startdate: sd, enddate: ed, status: jQuery('#status').val() },
+            gridComplete: function () {
+                var rows = jQuery('#grid2').jqGrid('getRowData');
+                jQuery.each(rows, function (i, o) {
+                    if (o.Status == '已取消') jQuery('#grid2').jqGrid('setRowData', o.TaskId, o, 'row-cancel');
+                });
+            }
+        });
+
+        jQuery("#btn_Search").click(function () {
+            var obj = { startdate: jQuery('#startdate').val(), enddate: jQuery('#enddate').val(), status: jQuery('#status').val() };
+            if (jQuery('.nav-tabs li:first').hasClass('active')) {
+                jQuery('#grid1').jqGrid('setGridParam', {
+                    postData: obj, page: 1
+                }).trigger('reloadGrid');
+            } else {
+                jQuery('#grid2').jqGrid('setGridParam', {
+                    postData: obj, page: 1
+                }).trigger('reloadGrid');
+            }
+        });
+
+    });
+
+    function fn$refresh() {
+        if (jQuery('.nav-tabs li:first').hasClass('active'))
+            jQuery('#grid1').trigger('reloadGrid');
+        else
+            jQuery('#grid2').trigger('reloadGrid');
+    }
+
+    function add() {
+        dialogOpen({
+            id: "Edit",
+            title: '新增工作任务',
+            url: '/..@Url.Action("Edit")',
+            width: "1300px",
+            height: "800px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    function fn$edit(id) {
+        if (jQuery('.nav-tabs li:first').hasClass('active')) {
+            dialogOpen({
+                id: "Edit",
+                title: '编辑工作任务',
+                url: '/..@Url.Action("Update")/' + id,
+                width: "1300px",
+                height: "800px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        } else {
+            var row = jQuery('#grid2').jqGrid('getRowData', id);
+            if (row.ParentTaskId) {
+                if (row.ParentDutyDepartmentId == row.DutyDepartmentId) {
+                    dialogOpen({
+                        id: "Edit2",
+                        title: '编辑工作任务',
+                        url: '/..@Url.Action("Update2")/' + id,
+                        width: "800px",
+                        height: "500px",
+                        callBack: function (iframeId) {
+                            top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                        }
+                    });
+                } else {
+                    dialogOpen({
+                        id: "Edit",
+                        title: '编辑工作任务',
+                        url: '/..@Url.Action("Update")/' + id,
+                        width: "1300px",
+                        height: "800px",
+                        callBack: function (iframeId) {
+                            top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                        }
+                    });
+                }
+            } else {
+                dialogOpen({
+                    id: "Edit",
+                    title: '编辑工作任务',
+                    url: '/..@Url.Action("Update")/' + id,
+                    width: "1300px",
+                    height: "800px",
+                    callBack: function (iframeId) {
+                        top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                    }
+                });
+            }
+        }
+    }
+
+    function fn$view(id) {
+        if (jQuery('.nav-tabs li:first').hasClass('active')) {
+            dialogOpen({
+                id: "Edit",
+                title: '查看工作任务',
+                url: '/..@Url.Action("Detail")/' + id,
+                width: "1300px",
+                height: "800px",
+                btn: null,
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        } else {
+            var row = jQuery('#grid2').jqGrid('getRowData', id);
+            if (row.ParentTaskId) {
+                if (row.ParentDutyDepartmentId == row.DutyDepartmentId) {
+                    dialogOpen({
+                        id: "Edit2",
+                        title: '查看工作任务',
+                        url: '/..@Url.Action("Detail2")/' + id,
+                        width: "800px",
+                        height: "500px",
+                        btn: null,
+                        callBack: function (iframeId) {
+                            top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                        }
+                    });
+                } else {
+                    dialogOpen({
+                        id: "Edit",
+                        title: '查看工作任务',
+                        url: '/..@Url.Action("Detail")/' + id,
+                        width: "1300px",
+                        height: "800px",
+                        btn: null,
+                        callBack: function (iframeId) {
+                            top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                        }
+                    });
+                }
+            } else {
+                dialogOpen({
+                    id: "Edit",
+                    title: '查看工作任务',
+                    url: '/..@Url.Action("Detail")/' + id,
+                    width: "1300px",
+                    height: "800px",
+                    btn: null,
+                    callBack: function (iframeId) {
+                        top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                    }
+                });
+            }
+        }
+
+    }
+
+    function fn$cancel(id) {
+        dialogConfirm('该任务取消后其子任务将会被取消，是否取消？', function (yes) {
+            if (yes) {
+                Loading(true, '正在取消任务');
+                jQuery.ajax({
+                    url: '/..@Url.Action("Cancel")/' + id,
+                    contentType: 'application/json',
+                    type: 'POST',
+                    success: function (data) {
+                        if (data.type == "3") {
+                            dialogAlert(data.message, -1);
+                        } else {
+                            Loading(false);
+                            dialogMsg(data.message, 1);
+                            $.currentIframe().fn$refresh();
+                            dialogClose();
+                        }
+                    },
+                    complete: function () {
+                        Loading(false);
+                    }
+                });
+            }
+        });
+    }
+
+    function getTask(id) {
+        return jQuery('#grid2').jqGrid('getRowData', id);
+    }
+
+
+</script>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-center">
+        <div class="center-Panel" style="margin-left: 10px; margin-right: 10px;">
+            <div class="titlePanel" style="border-top:1px solid #ccc;">
+                <div class="title-search">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label for="team">选择日期</label>
+                            <input type="text" class="form-control" id="startdate" onfocus="WdatePicker();" readonly="readonly">
+                            - <input type="text" class="form-control" id="enddate" onfocus="WdatePicker();" readonly="readonly">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="team" style="display:none" placeholder="请输入关键字">
+                        </div>
+                        <div class="form-group">
+                            <label for="status">任务状态</label>
+                            <select id="status" class="form-control" style="width:120px;">
+                                <option>全部</option>
+                                <option>未开始</option>
+                                <option>进行中</option>
+                                <option>已完成</option>
+                                <option>未完成</option>
+                                <option>已取消</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="toolbar">
+                    <div class="btn-group">
+                        <a class="btn btn-default" onclick="reload()"><i class="fa fa-refresh"></i>刷新</a>
+                        <a id="addht" class="btn btn-default" onclick="add()"><i class="fa fa-plus"></i>新增</a>
+                    </div>
+                </div>
+                <script>
+                    $('.toolbar').authorizeButton();
+                </script>
+
+            </div>
+            <div style="border-left:1px solid #ccc;border-right:1px solid #ccc;">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a id="tab1" data-toggle="tab">本部门任务</a></li>
+                    <li><a id="tab2" data-toggle="tab">我的任务</a></li>
+                </ul>
+            </div>
+            <div class="gridPanel" id="div1">
+                <table id="grid1"></table>
+                <div id="pager1"></div>
+            </div>
+            <div class="gridPanel" id="div2" style="display:none;">
+                <table id="grid2"></table>
+                <div id="pager2"></div>
+            </div>
+        </div>
+    </div>
+</div>

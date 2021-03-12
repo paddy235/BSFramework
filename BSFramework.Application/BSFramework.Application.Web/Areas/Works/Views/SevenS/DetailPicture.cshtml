@@ -1,0 +1,236 @@
+﻿@model List<BSFramework.Application.Entity.PublicInfoManage.FileInfoEntity>
+@{
+    ViewBag.Title = "DetailPicture";
+    Layout = "~/Views/Shared/_OrderForm.cshtml";
+}
+<style>
+    .fixed {
+        position: fixed;
+        left: 0px;
+        bottom: 0px;
+        width: 100%;
+        height: 50px;
+        z-index: 9999;
+    }
+</style>
+<script>
+    jQuery(function () {
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#grid').setGridWidth(($('.gridPanel').width()));
+                $("#grid").setGridHeight($(window).height() - 140);
+            }, 200);
+            e.stopPropagation();
+        });
+
+        jQuery('#grid').jqGrid({
+            colModel: [
+                { label: '评价人', name: 'EvaluateUser', width: 100, align: 'center', sortable: false },
+                { label: '评价部门', name: 'DeptName', width: 100, align: 'center', sortable: false },
+                { label: '评价时间', name: 'EvaluateDate', width: 100, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d H:i', newformat: 'Y-m-d H:i' } },
+                { label: '评分', name: 'Score', width: 100, align: 'center', sortable: false },
+                { label: '评价内容', name: 'EvaluateContent', align: 'center', sortable: false }
+            ],
+            height: 160,
+            autowidth: true,
+            url: '@Url.Action("GetDataEvaluate", "activity")?keyValue=@ViewBag.keyValue',
+            datatype: "json",
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 20,
+            rownumbers: true,
+            pager: false,
+            gridComplete: function () {
+            }
+        });
+    });
+
+    function btn_evaluate() {
+       // +jQuery(self.frameElement).attr('id')
+            dialogOpen({
+                id: "form1",
+                title: '评价',
+                url: '/../@Url.Action("Evaluate","activity")?id=@ViewBag.keyValue'+ "&iframeId=" + jQuery(self.frameElement).attr('id'),
+                width: "500px",
+                height: "330px",
+                callBack: function (iframeId) {
+
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+
+                }
+            });
+        
+    }
+    function fn$refresh() {
+        jQuery("#grid").trigger("reloadGrid");
+        $.currentIframe().$("#gridTable").trigger("reloadGrid");
+    }
+</script>
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="bg-f5f8fe pd-20 my-body">
+            <div class="text-center">
+                <label class="f-18 f-w mg-r-15">@ViewBag.DeptName</label>
+
+            </div>
+            <div>
+                <div class="row text-center list" style="padding-bottom:50px;height:400px">
+                    @{
+                        var picJson = "";
+                        int k = 0;
+                        foreach (var item in Model)
+                        {
+
+                            <div class="col-md-3 mg-t-20">
+                                <div class="list-item">
+
+                                    <img style="width:100%;height:100%;" src="@Url.Content(item.FilePath)" onclick="playPic(this, @k)" alt="">
+                                    <div>
+                                        <span class="bg"></span>
+                                        <div class="content">@item.FileExtensions</div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            picJson += Html.Raw("{ src: '" + Url.Content(item.FilePath) + "'");
+                            picJson += "},";
+
+                            k++;
+
+                        }
+                        if (picJson.Length > 2)
+                        {
+                            picJson = picJson.Substring(0, picJson.Length - 1);
+                        }
+                        var GetpicJosn = Html.Raw(HttpUtility.HtmlDecode(picJson));
+                    }
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+                <div class="pd-20 bg-fff bd-t-e3ebfd">
+                    <div class="f-18 f-w c-0d0d0d"><a id="lr-edit" class="btn btn-default" onclick="btn_evaluate()"><i class="fa fa-pencil-square-o"></i>&nbsp;评价</a></div>
+                    <div class="f-16 c-4a4e50 lh-36 pd-b-20" style="word-break:break-all;height:auto;min-height:110px;padding-top:10px;padding-left:10px;">
+                        <div class="gridPanel">
+                            <table id="grid"></table>
+                            <div id="gridPager"></div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+    @*@if (!string.IsNullOrEmpty(ViewBag.evaluation))
+        {
+            //fixed
+            <div class=" text-center" style="bottom:70px;padding-bottom:50px">
+                <div class="title-search">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label for="team">评价:</label>
+                            <textarea type="text" class="form-control" id="evaluation" style="width:600px" readonly="readonly" maxlength="200">@ViewBag.evaluation</textarea><br /><br />
+                            <label for="team">评价人:</label>  <input type="text" class="form-control" readonly="readonly" value="@ViewBag.user " style="width:242px;">
+                            <label for="team">评价时间:</label>  <input type="text" class="form-control" readonly="readonly" value="@ViewBag.evaluationtime" style="width:242px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+
+            <div class=" text-center" style="bottom:30px;padding-bottom:50px">
+                <div class="title-search">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label for="team">评价:</label>
+                            <textarea type="text" class="form-control" id="evaluation" style="width:600px" maxlength="200">@ViewBag.evaluation</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }*@
+
+</div>
+
+
+<input type="text" class="form-control" id="keyValue" value="@ViewBag.keyValue" style="width:400px;display:none">
+
+
+
+
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+
+<script>
+
+    function playPic(obj, idx) {
+        var json = {
+            "data": [@GetpicJosn]
+        }
+        json.start = idx;
+        layer.photos({
+            photos: json,
+            anim: 5
+        })
+    }
+    function play(obj) {
+        var isPlay = $(obj).attr('data-play')
+        if (!isPlay || isPlay == 'false') {
+            var src = jQuery(obj).find('img').attr('src');
+            jQuery(obj).find('img').attr('src', src.substring(0, src.lastIndexOf('/') + 1) + 'laba.gif');
+
+            var url = $(obj).data('url');
+            var html = '<audio id="audio1" src="' + url + '" controls autoplay style="width:483px;display:none;"></audio>';
+            $('#audio-warp').html(html);
+            $('#audio1')[0].addEventListener('canplaythrough', function () {
+                this.play();
+            });
+            $(obj).attr('data-play', true);
+            var audio2 = document.getElementById('audio1');
+            audio2.onpause = function () {
+                var audele = jQuery('div[data-url="' + jQuery(this).attr('src') + '"]');
+                var img = jQuery('div[data-url="' + jQuery(this).attr('src') + '"]').find('img');
+                var src = img.attr('src');
+                img.attr('src', src.substring(0, src.lastIndexOf('/') + 1) + 'horn-icon.png');
+                audele.attr('data-play', false)
+            };
+            audio2.pause();
+        } else {
+            var audio1 = document.getElementById('audio1');
+            audio1.pause()
+        }
+        //var url = $(obj).data('url');
+        //$('#audio').attr('src', url);
+        //audiojs.events.ready(function () {
+        //    audiojs.createAll();
+        //})
+        //layer.open({
+        //    type: 1,
+        //    area: ['460px', '36px'],
+        //    content: $('#audio-warp '),
+        //    title: false,
+        //    end: function () {
+        //        $('#audio-warp').html('<audio id="audio" autoplay></audio>').css('display', 'none');
+        //    }
+        //});
+    }
+    //保存表单;
+    function AcceptClick() {
+        var postData = {};
+        postData["evaluation"] = $("#evaluation").val();
+        postData["keyValue"] = $("#keyValue").val();;
+        $.SaveForm({
+            url: "@Url.Action("SaveEvaluation")",
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+</script>

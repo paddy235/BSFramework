@@ -1,0 +1,215 @@
+﻿
+@model BSFramework.Application.Entity.SevenSManage.SevenSOfficeEntity
+@{
+    ViewBag.Title = "IndexAudit";
+    Layout = "~/Views/Shared/_OrderForm.cshtml";
+}
+
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+
+<span style="font-size:18px;font-weight:bold">提案信息</span>
+<div style="border-top:1px solid #e3ebfd;width:100%;padding:10px">
+    <label style="font-size:18px;">提案名称：</label>
+    <div style="">
+        <input class="form-control" style="font-size:18px;width:100%;height:30px" value="@Model.name" readonly="readonly" />
+    </div>
+    <label style="font-size:18px;">现状（现在的做法）：</label>
+    <div style="">
+        <textarea class="form-control" style="font-size:18px;width:100%;height:50px" readonly="readonly">@Model.statusquo</textarea>
+    </div>
+    <div class="row text-center list" style="padding-bottom:50px;padding-top:50px">
+        @{
+            var picJson = "";
+            int k = 0;
+            foreach (var item in Model.statusquoFiles)
+            {
+
+                <div class="col-md-3 mg-t-20" style="padding-bottom:10px">
+                    <div class="list-item">
+
+                        <img style="width:150px;height:100px;" src="@Url.Content(item.FilePath)" onclick="playPic(this, @k)" alt="">
+
+                    </div>
+                </div>
+                picJson += Html.Raw("{ src: '" + Url.Content(item.FilePath) + "'");
+                picJson += "},";
+
+                k++;
+
+            }
+            if (picJson.Length > 2)
+            {
+                picJson = picJson.Substring(0, picJson.Length - 1);
+            }
+            var GetpicJosn = Html.Raw(HttpUtility.HtmlDecode(picJson));
+        }
+    </div>
+    <label style="font-size:18px;">创意提案（我的想法）：</label>
+    <div style="">
+        <textarea class="form-control" style="font-size:18px;width:100%;height:50px" readonly="readonly">@Model.proposed</textarea>
+    </div>
+    <div class="row text-center list" style="padding-bottom:50px;padding-top:50px">
+        @{
+            var picJson1 = "";
+            int k1 = 0;
+            foreach (var item in Model.proposedFiles)
+            {
+
+                <div class="col-md-3 mg-t-20" style="padding-bottom:10px">
+                    <div class="list-item">
+
+                        <img style="width:150px;height:100px;" src="@Url.Content(item.FilePath)" onclick="playPic1(this, @k)" alt="">
+
+                    </div>
+                </div>
+                picJson1 += Html.Raw("{ src: '" + Url.Content(item.FilePath) + "'");
+                picJson1 += "},";
+
+                k1++;
+
+            }
+            if (picJson1.Length > 2)
+            {
+                picJson1 = picJson1.Substring(0, picJson1.Length - 1);
+            }
+            var GetpicJosn1 = Html.Raw(HttpUtility.HtmlDecode(picJson1));
+        }
+    </div>
+    <div style="width:100%;height:30px">
+
+        <div style="float:left;width:50%">
+            <div style="float:left;width:25%"><label style="font-size:18px;padding-right:20px;">上报人：</label></div>
+            <input class="form-control" style="font-size:18px;height:30px;width:70%;float:left" readonly="readonly" value="@Model.createusername" />
+        </div>
+
+        <div style="float:left;width:50%">
+            <div style="float:left;width:25%"><label style="font-size:18px;padding-right:20px;">上报时间：</label></div>
+            <input class="form-control" style="font-size:18px;height:30px;width:70%;float:left" readonly="readonly" value="@(Model.createdate.HasValue?Convert.ToDateTime(Model.createdate).ToString("yyyy-MM-dd"):"")" />
+
+        </div>
+    </div>
+    <div style="width:100%;height:30px;margin-top:30px">
+
+        <div style="float:left;width:50%">
+            <div style="float:left;width:25%"><label style="font-size:18px;padding-right:20px;">所属班组：</label></div>
+            <input class="form-control" style="font-size:18px;height:30px;width:70%;float:left" readonly="readonly" value="@Model.deptname" />
+
+        </div>
+
+        <div style="float:left;width:50%">
+            <div style="float:left;width:25%"><label style="font-size:18px;padding-right:20px;">所属部门：</label></div>
+            <input class="form-control" style="font-size:18px;height:30px;width:70%;float:left" readonly="readonly" value="@Model.parentname" />
+
+        </div>
+    </div>
+</div>
+
+
+<div style="border-top:1px solid #e3ebfd;width:100%;margin-top:30px">
+    <span style="font-size:18px;font-weight:bold"> 审核信息</span><br>
+    <a id="lr-add" class="btn btn-default" onclick="btn_add()"><i class="fa fa-plus"></i>&nbsp;审核</a>
+
+</div>
+
+
+<div style="padding-bottom:100px">
+    <table class="form" style="border:1px solid #e3ebfd;text-align:center;">
+        <colgroup>
+            <col style="width:50px;" />
+            <col style="width:80px;" />
+            <col style="width:120px;" />
+            <col style="width:150px;" />
+            <col style="width:150px;" />
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="bg-fff">序号</th>
+                <th class="bg-fff">审核结论</th>
+                <th class="bg-fff">审核意见</th>
+                <th class="bg-fff">审核人</th>
+                <th class="bg-fff">审核时间</th>
+            </tr>
+        </thead>
+        <tbody id="table_set">
+            @{
+                for (int i = 0; i < Model.audit.Count; i++)
+                {
+                    <tr>
+                        <td>@(i + 1)</td>
+                        <td>@Model.audit[i].state</td>
+                        <td>@Model.audit[i].opinion</td>
+                        <td>@Model.audit[i].username</td>
+                        @if (!string.IsNullOrEmpty(Model.audit[i].state))
+                        {
+                            <td>@(Model.audit[i].submintdate.HasValue ? Convert.ToDateTime(Model.audit[i].submintdate).ToString("yyyy-MM-dd") : "")</td>
+
+                        }
+                        else {
+                            <td></td>
+                        }
+                    </tr>
+                }
+
+            }
+        </tbody>
+
+
+    </table>
+</div>
+
+
+<script>
+          function playPic(obj, idx) {
+        var json = {
+            "data": [@GetpicJosn]
+        }
+        json.start = idx;
+        layer.photos({
+            photos: json,
+            anim: 5
+        })
+    }
+        function playPic1(obj, idx) {
+        var json = {
+            "data": [@GetpicJosn1]
+        }
+        json.start = idx;
+        layer.photos({
+            photos: json,
+            anim: 5
+        })
+    }
+    function btn_add() {
+        var  ck=@ViewBag.ck;
+         //0无权限 1已经审核 2可以审核
+        if (ck==0) {
+            dialogMsg('您无审核权限！', 0);
+            return;
+        }
+        if (ck==1) {
+            dialogMsg('您已经审核不能再度审核！', 0);
+            return;
+        }
+        if (ck==3) {
+            dialogMsg('审核已经6次，不能再度审核！', 0);
+            return;
+        }
+        var id='@ViewBag.Id';
+        dialogOpen({
+            id: "audit",
+            title: '查看',
+            url: '/../@Url.Action("IndexShow",new  { id = string.Empty})/'+id,
+            width: "700px",
+            height: "350px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick(ref);
+            }
+        });
+
+    }
+
+    function ref() {
+        location.reload();
+    }
+
+</script>

@@ -1,0 +1,63 @@
+﻿@model BSFramework.Application.Entity.PeopleManage.PeopleEntity
+@{
+    ViewBag.Title = "ChangeForm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("ChangeForm", "People", FormMethod.Post, new { @class = "sf", enctype = "multipart/form-data" }))
+{
+    <div id="RevisePassword" class="flag" style="display: none;">
+        <div class="title">
+            修改密码
+        </div>
+        <table class="form" style="margin-top: 20px;">
+            <tr>
+                <td class="formTitle" style="height: 20px;"></td>
+                <td>
+                    <p style="color: #959393; padding-left: 8px;">为了保护您的帐号安全，操作前请您进行安全验证</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="formTitle">旧密码<font face="宋体">*</font></td>
+                <td class="formValue">
+                    <input id="OldPassword" type="password" class="form-control input-profile" style="float: left;" />
+                    <div style="width: 300px; float: left"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="formTitle">新密码<font face="宋体">*</font></td>
+                <td class="formValue">
+                    <input id="NewPassword" type="password" class="form-control input-profile" style="float: left;" />
+                    <div style="width: 300px; float: left"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="formTitle">重复新密码<font face="宋体">*</font></td>
+                <td class="formValue">
+                    <input id="RedoNewPassword" type="password" class="form-control input-profile" style="float: left;" />
+                    <div style="width: 300px; float: left"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="formTitle">验证码<font face="宋体">*</font></td>
+                <td class="formValue">
+                    <div style="float: left;">
+                        <input id="VerifyCode" maxlength="4" type="text" class="form-control input-profile" style="width: 100px;" />
+                    </div>
+                    <div style="float: left; width: 200px;">
+                        <img src="~/PersonCenter/VerifyCode" id="VerifyCodeImag" width="100" height="30" alt="点击切换验证码"
+                             title="点击切换验证码" style="cursor: pointer; padding-top: 2px; padding-left: 5px;" />
+                    </div>
+                    <div class="VerifyCodemsg" style="width: 300px; float: left"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="formTitle"></td>
+                <td class="formValue">
+                    <br />
+                    <a id="btn_RevisePassword" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;提&nbsp;交</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+}

@@ -1,0 +1,103 @@
+﻿@model IList<BSFramework.Entity.EvaluateAbout.Group>
+@{
+    ViewBag.Title = "IndexStatisticsPartView";
+    //Layout = "~/Views/Shared/_Index.cshtml";
+    int count = 1;
+}
+
+<link href="~/Content/styles/framework-ui.css" rel="stylesheet" />
+<script src="~/Content/styles/static/js/rem.js"></script>
+<link href="~/Content/styles/static/css/indexmanage.css" rel="stylesheet" />
+
+<div>
+    <div class="item_title">
+        <h2>班组考评排名</h2>
+    </div>
+    <div class="content chart2_content" onclick="top.openTab('','@Url.Action("Index2")','考评排名')">
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <th>序号</th>
+                <th>班组</th>
+                <th>班组荣誉</th>
+                <th>分数</th>
+                <th>得分率</th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><div class="@Html.Raw(count<4 ? "bg_blue" : "bg_white" )">@(count)</div></td>
+                    <td>@item.GroupName</td>
+                    <td>
+                        @if (!string.IsNullOrWhiteSpace(item.TitleName))
+                        {
+                            <div>@item.TitleName </div>
+                        }
+                    </td>
+                    <td>@item.Score1.ToString("0.##")</td>
+                    <td>@item.Percent</td>
+                </tr>
+                count++;
+            }
+        </table>
+    </div>
+</div>
+
+@*<div class="div_border" style="width:100%;"><span><a onclick="top.openTab('','@Url.Action("Index2")','考评排名')"><b style="font-size:15pt;">班组考评排名</b></a></span></div>
+
+    <div style="width:100%; overflow:auto;">
+        <table>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><div class="@Html.Raw(count<4 ? "bg_blue" : "bg_white" )">@(item.Index)</div></td>
+                    <td style="padding-left:10px;">@item.GroupName</td>
+                    <td>
+                        @if (!string.IsNullOrWhiteSpace(item.TitleName))
+                        {
+                            <div style="border:1px solid #1890ff; color:#1890ff; width:60px;">@item.TitleName </div>
+                        }
+                    </td>
+                    <td>@item.Score1.ToString("0.##")</td>
+                    <td>@item.Percent</td>
+                </tr>
+                count++;
+            }
+        </table>
+    </div>*@
+<style>
+
+
+    .td_bg {
+        margin-right: 50px;
+        width: 20px;
+        border-radius: 70px;
+    }
+
+    .bg_blue {
+        color: white;
+        border-radius: 20px;
+        background-color: #1890ff;
+        vertical-align: middle;
+        height: 20px;
+        width: 20px;
+        line-height: 20px;
+        margin-left: 10px;
+    }
+
+    .bg_white {
+        color: black;
+        border-radius: 10px;
+        width: 16px;
+        background-color: white;
+        line-height: 20px;
+        margin-left: 10px;
+    }
+
+    .div_border {
+        border-bottom: 1px solid #d9d9d9;
+        padding: 10px 0px;
+        font-size: 15pt;
+    }
+</style>

@@ -1,0 +1,79 @@
+﻿@{
+    ViewBag.Title = "新增类别";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var CertificateId = request("CertificateId")
+    var CertificateName = request("CertificateName")
+    $(function () {
+        if (CertificateId != "") {
+            $("#twoCertificate").show();
+            $("#PCertificateName").val(CertificateName);
+            $("#ParentId").val(CertificateId);
+        }
+    });
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        if ($("#CertificateName").val() == "") {
+            dialogMsg('名称不能为空！', 0);
+            return false;
+        }
+        var ck = parseInt($("#Sort").val());
+        if (isNaN(ck)) {
+            dialogMsg('请注意排序只能为数字！', 0);
+            return false;
+        }
+        if ($("#Sort").val() == "") {
+            dialogMsg('排序不能为空！', 0);
+            return false;
+        }
+        var postData = $("#form1").formSerialize();
+        if ($("#CkIsEffective").prop('checked')) {
+            postData["IsEffective"] = true;
+        }
+        $.SaveForm({
+            url: "/..@Url.Action("SaveForm")",
+            loading: "正在保存数据...",
+            param: postData,
+            success: function () {
+                $.currentIframe().$("#gridTable").resetSelection();
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+
+    }
+
+  
+</script>
+
+<div style="margin-left: 10px; margin-top: 20px; margin-right: 30px;">
+    <table class="form">
+        <tr id="twoCertificate" style="display:none">
+            <th class="formTitle">上级</th>
+            <td class="formValue">
+                <input id="PCertificateName" type="text" readonly="readonly" class="form-control" />
+
+                <input id="ParentId" type="text" style="display:none" readonly="readonly" class="form-control" />
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">名称<font face="宋体">*</font></th>
+            <td class="formValue">
+                <input id="CertificateName" type="text" class="form-control" />
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">排序<font face="宋体">*</font></th>
+            <td class="formValue">
+                <input id="Sort" type="text" class="form-control" />
+            </td>
+            <th class="formTitle">状态</th>
+            <td class="formValue">
+                <input id="CkIsEffective" type="checkbox" checked="checked"/>
+                有效
+            </td>
+        </tr>
+    </table>
+</div>

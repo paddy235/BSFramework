@@ -1,0 +1,69 @@
+2020-11-16 10:38:54 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":null,"CreateDate":null,"CreateUserId":null,"CreateUserName":null,"ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"ef28c0f8-8e5a-44d1-8fdb-26d1bff0a90f","DeptCode":"001001001004006","DeptName":"电气一次班","KeyCode":"qjzy01","KeyPlace":"sadasd","Category":"汽机专业","CategoryId":"0","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-16 10:51:51 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":null,"CreateDate":null,"CreateUserId":null,"CreateUserName":null,"ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"b2f3be33-c9a0-4c6a-8f5b-f8de7b469b2a","DeptCode":"001001001004001","DeptName":"汽机维护班","KeyCode":"qjzy01","KeyPlace":"厂库","Category":"汽机专业","CategoryId":"0","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-16 10:52:23 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":null,"CreateDate":null,"CreateUserId":null,"CreateUserName":null,"ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"7fbf2215-71ee-4f4f-8854-b76c08011784","DeptCode":"001001001004002","DeptName":"锅炉本体维护班","KeyCode":"glzy01","KeyPlace":"机场","Category":"锅炉专业","CategoryId":"1","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-16 10:53:32 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":null,"CreateDate":null,"CreateUserId":null,"CreateUserName":null,"ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"b2f3be33-c9a0-4c6a-8f5b-f8de7b469b2a","DeptCode":"001001001004001","DeptName":"汽机维护班","KeyCode":"glzy01","KeyPlace":"大苏打撒旦","Category":"锅炉专业","CategoryId":"1","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-16 10:55:17 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":null,"CreateDate":null,"CreateUserId":null,"CreateUserName":null,"ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"b2f3be33-c9a0-4c6a-8f5b-f8de7b469b2a","DeptCode":"001001001004001","DeptName":"汽机维护班","KeyCode":"hxzy01","KeyPlace":"p城","Category":"化学专业","CategoryId":"2","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-16 10:59:11 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":"67a88e41-39bc-4806-8231-0a03608e30bc","CreateDate":"2020-11-16T10:55:17","CreateUserId":"132e8b64-532a-4449-b090-0a34fb145595","CreateUserName":"设备维护部","ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"b2f3be33-c9a0-4c6a-8f5b-f8de7b469b2a","DeptCode":"001001001004001","DeptName":"汽机维护班","KeyCode":"hxzy01","KeyPlace":"R城","Category":"化学专业","CategoryId":"2","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-16 10:59:15 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":"67a88e41-39bc-4806-8231-0a03608e30bc","CreateDate":"2020-11-16T10:55:17","CreateUserId":"132e8b64-532a-4449-b090-0a34fb145595","CreateUserName":"设备维护部","ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"b2f3be33-c9a0-4c6a-8f5b-f8de7b469b2a","DeptCode":"001001001004001","DeptName":"汽机维护班","KeyCode":"hxzy01","KeyPlace":"R城","Category":"化学专业","CategoryId":"2","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-16 11:02:10 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":"67a88e41-39bc-4806-8231-0a03608e30bc","CreateDate":"2020-11-16T10:55:17","CreateUserId":"132e8b64-532a-4449-b090-0a34fb145595","CreateUserName":"设备维护部","ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"7fbf2215-71ee-4f4f-8854-b76c08011784","DeptCode":"001001001004002","DeptName":"锅炉本体维护班","KeyCode":"hxzy01","KeyPlace":"p城","Category":"化学专业","CategoryId":"2","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-16 11:02:28 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":"67a88e41-39bc-4806-8231-0a03608e30bc","CreateDate":"2020-11-16T10:55:17","CreateUserId":"132e8b64-532a-4449-b090-0a34fb145595","CreateUserName":"设备维护部","ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"7fbf2215-71ee-4f4f-8854-b76c08011784","DeptCode":"001001001004002","DeptName":"锅炉本体维护班","KeyCode":"hxzy01","KeyPlace":"p城","Category":"化学专业","CategoryId":"2","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-16 11:03:12 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":null,"CreateDate":null,"CreateUserId":null,"CreateUserName":null,"ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"ef28c0f8-8e5a-44d1-8fdb-26d1bff0a90f","DeptCode":"001001001004006","DeptName":"电气一次班","KeyCode":"qjzy01","KeyPlace":"卫星楼","Category":"汽机专业","CategoryId":"0","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-16 11:18:09 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":null,"CreateDate":null,"CreateUserId":null,"CreateUserName":null,"ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"b2f3be33-c9a0-4c6a-8f5b-f8de7b469b2a","DeptCode":"001001001004001","DeptName":"汽机维护班","KeyCode":"qjzy01","KeyPlace":"阿斯顿撒","Category":"汽机专业","CategoryId":"0","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-16 11:18:34 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":null,"CreateDate":null,"CreateUserId":null,"CreateUserName":null,"ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"b2f3be33-c9a0-4c6a-8f5b-f8de7b469b2a","DeptCode":"001001001004001","DeptName":"汽机维护班","KeyCode":"qjzy01","KeyPlace":"撒大苏打","Category":"汽机专业","CategoryId":"0","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-16 11:18:48 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":null,"CreateDate":null,"CreateUserId":null,"CreateUserName":null,"ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":null,"DeptCode":null,"DeptName":"汽机维护班","KeyCode":"qjzy01","KeyPlace":"撒大苏打","Category":"汽机专业","CategoryId":"0","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-16 11:22:13 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":null,"CreateDate":null,"CreateUserId":null,"CreateUserName":null,"ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"b2f3be33-c9a0-4c6a-8f5b-f8de7b469b2a","DeptCode":"001001001004001","DeptName":"汽机维护班","KeyCode":"qjzy01","KeyPlace":"撒大苏打","Category":"汽机专业","CategoryId":"0","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-16 15:51:57 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":null,"CreateDate":null,"CreateUserId":null,"CreateUserName":null,"ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"7fbf2215-71ee-4f4f-8854-b76c08011784","DeptCode":"001001001004002","DeptName":"锅炉本体维护班","KeyCode":"qjzy06","KeyPlace":"啊实打实的","Category":"汽机专业","CategoryId":"0","State":false,"Sort":"06"} 
+------------------------------------------------------------
+2020-11-16 15:56:20 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":"92d2ecba-95f6-4e10-bb80-100371b54893","CreateDate":"2020-11-16T11:22:14","CreateUserId":"132e8b64-532a-4449-b090-0a34fb145595","CreateUserName":"设备维护部","ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"11579c4e-cb76-4fe1-8894-c104288041c9","DeptCode":"001001001004007","DeptName":"电气二次班","KeyCode":"qjzy01","KeyPlace":"撒大苏打","Category":"汽机专业","CategoryId":"0","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-16 15:57:00 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":"92d2ecba-95f6-4e10-bb80-100371b54893","CreateDate":"2020-11-16T11:22:14","CreateUserId":"132e8b64-532a-4449-b090-0a34fb145595","CreateUserName":"设备维护部","ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"11579c4e-cb76-4fe1-8894-c104288041c9","DeptCode":"001001001004007","DeptName":"电气二次班","KeyCode":"qjzy01","KeyPlace":"撒大苏打","Category":"汽机专业","CategoryId":"0","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-16 15:58:01 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":"92d2ecba-95f6-4e10-bb80-100371b54893","CreateDate":"2020-11-16T11:22:14","CreateUserId":"132e8b64-532a-4449-b090-0a34fb145595","CreateUserName":"设备维护部","ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"11579c4e-cb76-4fe1-8894-c104288041c9","DeptCode":"001001001004007","DeptName":"电气二次班","KeyCode":"qjzy01","KeyPlace":"撒大苏打","Category":"汽机专业","CategoryId":"0","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-16 15:59:36 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":"92d2ecba-95f6-4e10-bb80-100371b54893","CreateDate":"2020-11-16T11:22:14","CreateUserId":"132e8b64-532a-4449-b090-0a34fb145595","CreateUserName":"设备维护部","ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"11579c4e-cb76-4fe1-8894-c104288041c9","DeptCode":"001001001004007","DeptName":"电气二次班","KeyCode":"qjzy01","KeyPlace":"撒大苏打","Category":"汽机专业","CategoryId":"0","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-16 16:10:19 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":null,"CreateDate":null,"CreateUserId":null,"CreateUserName":null,"ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"ef28c0f8-8e5a-44d1-8fdb-26d1bff0a90f","DeptCode":"001001001004006","DeptName":"电气一次班","KeyCode":"qjzy10","KeyPlace":"sadasd","Category":"汽机专业","CategoryId":"0","State":false,"Sort":"10"} 
+------------------------------------------------------------
+2020-11-16 16:10:55 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":"1cb55989-09e6-4d55-8311-7a94756d29a6","CreateDate":"2020-11-16T16:10:21","CreateUserId":"132e8b64-532a-4449-b090-0a34fb145595","CreateUserName":"设备维护部","ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"11579c4e-cb76-4fe1-8894-c104288041c9","DeptCode":"001001001004007","DeptName":"电气二次班","KeyCode":"qjzy10","KeyPlace":"sadasd","Category":"汽机专业","CategoryId":"0","State":false,"Sort":"10"} 
+------------------------------------------------------------
+2020-11-16 17:06:20 用户：设备维护部  id：132e8b64-532a-4449-b090-0a34fb145595开始编辑钥匙管理数据 
+ {"ID":null,"CreateDate":null,"CreateUserId":null,"CreateUserName":null,"ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"650e1b84-c40d-4f91-b598-76b59e3e2cf7","DeptCode":"001001001004004","DeptName":"化学维护班","KeyCode":"hxzy01","KeyPlace":"自闭城","Category":"化学专业","CategoryId":"2","State":false,"Sort":"01"} 
+------------------------------------------------------------
+2020-11-16 17:17:08 用户：超级管理员  id：System开始编辑钥匙管理数据 
+ {"ID":null,"CreateDate":null,"CreateUserId":null,"CreateUserName":null,"ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"650e1b84-c40d-4f91-b598-76b59e3e2cf7","DeptCode":"001001001004004","DeptName":"化学维护班","KeyCode":"hxzy02","KeyPlace":"绝地求生","Category":"化学专业","CategoryId":"2","State":false,"Sort":"02"} 
+------------------------------------------------------------

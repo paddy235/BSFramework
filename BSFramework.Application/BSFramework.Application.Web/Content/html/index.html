@@ -1,0 +1,972 @@
+﻿<!--<!DOCTYPE html>-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">-->
+    <link rel="stylesheet" type="text/css" href="css/common.css">
+    <link rel="stylesheet" type="text/css" href="css/swiper.min.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/work.css">
+    <link rel="stylesheet" type="text/css" href="css/an-skill-bar.css">
+    <title>国电汉川-安全检察部</title>
+    <style>
+        .work_list1 li {
+            display: none;
+        }
+    </style>
+    <script src="../scripts/jquery/jquery-1.10.2.min.js"></script>
+    <script src="../scripts/jquery/jquery.url.js"></script>
+    <script>
+        var userid = $.getUrlArgs('userId'), deptid = $.getUrlArgs('bzId'), category = 'day', num1 = 0, num2 = 0, num3 = 0, num4 = 0;
+        jQuery(function () {
+            loadModule();
+
+            loadData2();
+
+            loadDynamic();
+
+            loadActivity();
+
+            loadEducation();
+
+            loadMeeting();
+
+            loadNotice();
+
+            jQuery('.switch li').click(function () {
+                category = jQuery(this).data('category');
+                loadData2();
+            });
+        });
+
+        function loadMeeting() {
+            jQuery.getJSON('../../Works/DepartmentHome/GetMeetings', { deptid: deptid }, function (data) {
+                num1 = data.num1;
+                num2 = data.num2;
+                num3 = data.num3;
+                num4 = data.num4;
+                $('.tit_note').text('应开会班组' + num1 + '个，未开会班组' + num2 + '个');
+                jQuery('#meeting1 tbody').empty();
+                jQuery.each(data.meetings1, function (i, o) {
+                    jQuery('#meeting1 tbody').append('<tr><td>' + (i + 1) + '</td><td>' + o.DeptName + '</td><td class="' + (o.Meeting1 == '未开' ? 'not' : '') + '">' + o.Meeting1 + '</td><td class="' + (o.Meeting2 == '未开' ? 'not' : '') + '">' + o.Meeting2 + '</td></tr>');
+                });
+                jQuery('#meeting2 tbody').empty();
+                jQuery.each(data.meetings2, function (i, o) {
+                    var date = new Date(parseInt(o.MeetingDate.replace(/^\/Date\(/, '').replace(/\)\//, '')));
+
+                    jQuery('#meeting2 tbody').append('<tr><td>' + (i + 1) + '</td><td>' + o.DeptName + '</td><td>' + date.toLocaleDateString() + '</td><td>' + o.MeetingName + '</td></tr>');
+                });
+            });
+        }
+
+        function loadModule() {
+            var items = JSON.parse(bzApi.getDepartmentLedgerModules());
+            //var items = JSON.parse('[{"jumpKey":"LEG[MET]","key":"MET","name":"班前班后会","type":0},{"jumpKey":"LEG[KYT]","key":"KYT","name":"人身风险预控","type":4},{"jumpKey":"LEG[ACT]","key":"ACT","name":"班组活动","type":0},{"jumpKey":"LEG[EDU]","key":"EDU","name":"教育培训","type":0}]');
+
+            jQuery('.tz_list li').each(function (i, e) {
+                var selectItems = jQuery.grep(items, function (o, j) {
+                    return o.key == jQuery(e).attr('id');
+                });
+                if (selectItems.length == 0) jQuery(e).hide();
+            });
+
+
+            var items2 = JSON.parse(bzApi.getDepartmentModules());
+            jQuery('.work_list1 li').each(function (i, e) {
+                if (jQuery(e).hasClass('pass')) {
+                    jQuery(e).show();
+                } else {
+                    var selectItems = jQuery.grep(items2, function (o, j) {
+                        return o.key == jQuery(e).attr('id');
+                    });
+
+                    if (selectItems.length > 0) {
+                        jQuery(e).show();
+                        jQuery(e).click(function () {
+                            moduleClick(selectItems[0].jumpKey);
+                        });
+                    }
+                }
+            });
+
+        }
+
+        function loadData2() {
+            jQuery.getJSON('../../Works/DepartmentHome/GetData2', { userid: userid, deptid: deptid, category: category }, function (data) {
+                jQuery('#part2 tbody').empty();
+                jQuery.each(data, function (i, o) {
+                    var pct = Math.round(o.Pct * 100);
+                    jQuery('#part2 tbody').append('<tr><td>' + (i + 1) + '</td><td>' + o.FullName + '</td><td>' + o.Finished + '</td><td>' + pct + '%</td></tr>');
+                });
+            });
+        }
+
+        function loadDynamic() {
+            jQuery.getJSON('../../Works/DepartmentHome/GetDynamic', { userid: userid }, function (data) {
+                jQuery('.dynamic_list').empty();
+                jQuery.each(data, function (i, o) {
+                    jQuery('.dynamic_list').append('<li class="clearfix"><a>' + o.deptname + '【' + o.worktype + '】' + o.title + '</a><span>' + o.worktime + '</span></li>');
+                });
+            });
+        }
+
+        function loadActivity() {
+            jQuery.getJSON('../../Works/DepartmentHome/GetActivity', { userid: userid, type: '0' }, function (data) {
+                jQuery('#activity1 tbody').empty();
+                jQuery.each(data, function (i, o) {
+                    jQuery('#activity1 tbody').append('<tr><td>' + (i + 1) + '</td><td>' + o.dept + '</td><td>' + o.week + '</td><td>' + o.time + '</td></tr>');
+                });
+            });
+
+            jQuery.getJSON('../../Works/DepartmentHome/GetActivity', { userid: userid, type: '1' }, function (data) {
+                jQuery('#activity2 tbody').empty();
+                jQuery.each(data, function (i, o) {
+                    jQuery('#activity2 tbody').append('<tr><td>' + (i + 1) + '</td><td>' + o.dept + '</td><td><div class="perDiv"><div class="skillbar acTime"><div class="filled" data-width="' + (o.total / 5) * 200 + '"></div><span class="percent"></span></div><span class="timeSpan">' + o.total + '</span></div></td></tr>');
+                });
+                $('.skillbar').skillbar({
+                    speed: 1
+                });
+            });
+        }
+
+        function loadEducation() {
+            var data1 = [];
+            var data2 = [];
+            var data3 = [];
+            option1 = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                toolbox: {
+                },
+                legend: {
+                    y: 0,
+                    textStyle: {
+                        color: '#b2b2b2',
+                        fontSize: 18
+                    },
+                    itemGap: 30,
+                    data: ['技术讲课', '技术问答', '事故预想']
+                },
+                calculable: true,
+                xAxis: [
+                    {
+                        axisLine: {
+                            lineStyle: {
+                                color: '#ccc'
+                            }
+                        },
+                        splitLine: {
+                            show: false,
+                            lineStyle: {
+                                color: '#242668'
+                            }
+                        },
+                        axisLabel: {
+                            textStyle: {
+                                color: '#b2b2b2',
+                                fontSize: 16
+                            }
+                        },
+                        type: 'category',
+                        data: ['电机班', '继电班', '检修班', '#5机集控运行二值']
+                    }
+                ],
+                yAxis: [
+                    {
+                        axisLine: {
+                            lineStyle: {
+                                color: '#cccccc'
+                            }
+                        },
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                color: '#cccccc'
+                            }
+                        },
+                        axisLabel: {
+                            textStyle: {
+                                color: '#666',
+                                fontSize: 16
+                            }
+                        },
+                        nameTextStyle: {
+                            color: 'rgba(255,255,255,1)'
+                        },
+                        name: '',
+                        type: 'value'
+                    }
+                ],
+                dataZoom: [
+                    {
+                        type: 'slider',
+                        show: true,
+                        start: 0,
+                        end: 30,
+                        handleSize: 8,
+                        bottom: 0,
+                        height: 12,
+                        textStyle: false
+                    }, {
+                        type: 'inside',
+                        start: 70,
+                        end: 100
+                    }
+                ],
+                grid: {
+                    y: 30,
+                    y2: 40,
+                    x2: 40
+                },
+                series: [
+                    {
+                        name: '技术讲课',
+                        type: 'bar',
+                        barWidth: '35%',
+                        stack: '总量',
+                        color: '#3296d4',
+                        data: data1,
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    position: 'inside',
+                                    textStyle: {
+                                        color: '#fff',
+                                        fontSize: 14
+                                    },
+                                    formatter: function (params) {
+                                        if (params.value > 0) return params.value;
+                                        else return '';
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        name: '技术问答',
+                        type: 'bar',
+                        barWidth: '35%',
+                        stack: '总量',
+                        color: '#ce474d',
+                        data: data2,
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    position: 'inside',
+                                    textStyle: {
+                                        color: '#fff',
+                                        fontSize: 14
+                                    },
+                                    formatter: function (params) {
+                                        if (params.value > 0) return params.value;
+                                        else return '';
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        name: '事故预想',
+                        type: 'bar',
+                        barWidth: '35%',
+                        stack: '总量',
+                        color: '#f6ab00',
+                        data: data3,
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    position: 'inside',
+                                    textStyle: {
+                                        color: '#fff',
+                                        fontSize: 14
+                                    },
+                                    formatter: function (params) {
+                                        if (params.value > 0) return params.value;
+                                        else return '';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            };
+            myChart1 = echarts.init(document.getElementById('chart1'));
+
+            jQuery.getJSON('../../Works/DepartmentHome/GetEducation', { userid: userid }, function (data) {
+                var depts = [];
+                jQuery.each(data, function (i, o) {
+                    depts.push(o.dept);
+                    data1.push(o.jsjk);
+                    data2.push(o.jswd);
+                    data3.push(o.sgyx);
+                });
+                option1.xAxis[0].data = depts;
+                myChart1.setOption(option1);
+            });
+        }
+
+        function moduleClick(key) {
+            bzApi.moduleJump(key);
+        }
+
+        function loadNotice() {
+            var json = {
+                userid: userid, Data: { pageNum: 1, pageSize: 3 }
+            };
+
+            jQuery.getJSON('../../Works/DepartmentHome/GetSkApi', function (data) {
+                jQuery.post(data.url + '/routinesafetywork/getannouncementlist', { json: JSON.stringify(json) }, function (data) {
+                    jQuery('#work_list2').empty();
+                    jQuery.each(data.data, function (i, o) {
+                        jQuery('#work_list2').append('<li onclick="bzApi.showNotificationDetail(\'' + o.id + '\',\'' + o.url + '\')" class="clearfix"><p class="time fl">' + o.releasetime.substring(5, 10).replace('-', '/') + '<br/><span>' + o.releasetime.substr(11) + '</span></p><div class="fr"><h4>' + o.title + '</h4><p>' + o.publisherdept + '</p></li>');
+                    });
+                }, 'json');
+            });
+        }
+        /**/</script>
+</head>
+<body>
+    <div class="body-wrap swiper-container" style="overflow: hidden">
+        <div class="swiper-wrapper">
+            <div class="index2 swiper-slide">
+                <h1 class="body_title">部门安全生产工作</h1>
+                <div class="clearfix body_main">
+                    <div class="work_left fl">
+                        <ul class="work_list1 clearfix">
+                            <li id="DTAK">
+                                <img src="images/work_icon1.png">
+                                <p>当月部门工作</p>
+                            </li>
+                            <li id="DIWO">
+                                <img src="images/work_icon2.png">
+                                <p>重点工作任务</p>
+                            </li>
+                            <li>
+                                <img src="images/work_icon3.png">
+                                <p>项目管理</p>
+                            </li>
+                            <li id="DEF">
+                                <img src="images/work_icon4.png">
+                                <p>缺陷管理</p>
+                            </li>
+                            <li id="DBUM">
+                                <img src="images/work_icon6.png">
+                                <p>奖惩通报</p>
+                            </li>
+                            <li id="EDUA-SS">
+                                <img src="images/work_icon7.png">
+                                <p>安全学习日</p>
+                            </li>
+                            <li id="EDUA-SD">
+                                <img src="images/work_icon7.png">
+                                <p>安全日活动</p>
+                            </li>
+                            <li id="DRTK">
+                                <img src="images/work_icon8.png">
+                                <p>部门定期工作</p>
+                            </li>
+                            <li class="noClick pass">
+                                <img src="images/work_icon5.png">
+                                <p>正在开发中...</p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="work_right fr">
+                        <div class="noticeDiv">
+                            <div class="workSec_top">
+                                <h3 class="workSec_title">公告</h3>
+                            </div>
+                            <ul class="work_list2" id="work_list2" style="height:243px;">
+                                <!--<li class="clearfix">
+                                    <p class="time fl">05/27<br /><span>08:45</span></p>
+                                    <div class="fr">
+                                        <h4>第三季度班组标准化考核结果通知</h4>
+                                        <p>工会</p>
+                                    </div>
+                                </li>
+                                <li class="clearfix">
+                                    <p class="time fl">05/27<br /><span>08:45</span></p>
+                                    <div class="fr">
+                                        <h4>关于召开燃煤电厂综合性改造技术研讨会</h4>
+                                        <p>生技部</p>
+                                    </div>
+                                </li>
+                                <li class="clearfix">
+                                    <p class="time fl">05/27<br /><span>08:45</span></p>
+                                    <div class="fr">
+                                        <h4>关于我厂冬季安全检查的通知</h4>
+                                        <p>安监部</p>
+                                    </div>
+                                </li>-->
+                            </ul>
+                        </div>
+                        <div class="working_div">
+                            <div class="workSec_top clearfix">
+                                <h3 class="workSec_title fl">值班表</h3>
+                                <a onclick="bzApi.goDepartmentOnDuty();" class="fr">更多&gt;&gt;</a>
+                            </div>
+                            <div class="tableDiv">
+                                <table id="duty">
+                                    <colgroup>
+                                        <col width="170px">
+                                        <col width="">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>本周</th>
+                                            <th>值班人员</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>周一（10/8）</td>
+                                            <td>王鹏辉、李冰、熊红琴、周茹瑞周茹瑞周茹瑞周茹瑞周茹瑞周茹瑞周茹瑞</td>
+                                        </tr>
+                                        <tr>
+                                            <td>周二（10/9）</td>
+                                            <td>周成功、胡丽周茹瑞周茹瑞周茹瑞周茹瑞周茹瑞周茹瑞周茹瑞</td>
+                                        </tr>
+                                        <tr>
+                                            <td>周三（10/10）</td>
+                                            <td>周志仁、李冰</td>
+                                        </tr>
+                                        <tr>
+                                            <td>周四（10/11）</td>
+                                            <td>西欧、艾薇</td>
+                                        </tr>
+                                        <tr>
+                                            <td>周五（10/12）</td>
+                                            <td>周成、刘飞</td>
+                                        </tr>
+                                        <tr>
+                                            <td>周六（10/13）</td>
+                                            <td>刘敏、伍志国</td>
+                                        </tr>
+                                        <tr>
+                                            <td>周日（10/14）</td>
+                                            <td>熊红琴、周成功</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="index1 swiper-slide">
+                <h1 class="body_title">班组安全管控信息</h1>
+                <div class="clearfix body_main">
+                    <div class="main_left">
+                        <div class="mainLeft_sec1">
+                            <div class="sec_top clearfix">
+                                <h3 class="fl sec_title">班前班后会 <span class="tit_note">应开会班组个，未开会班组个</span></h3>
+                                <ul class="fr top_list top_list1">
+                                    <li class="active">今日</li>
+                                    <li>本月</li>
+                                </ul>
+                            </div>
+                            <div class="info_main">
+                                <div class="info_main1" style="height: 317px;overflow-y: auto;">
+                                    <table class="normal_table table2" id="meeting1">
+                                        <colgroup>
+                                            <col width="60px">
+                                            <col width="260px">
+                                            <col width="150px">
+                                            <col width="104px">
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th>序号</th>
+                                                <th>班组</th>
+                                                <th>班前会</th>
+                                                <th>班后会</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!--<tr>
+                                                <td>1</td>
+                                                <td>电机班</td>
+                                                <td>已开</td>
+                                                <td>已开</td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>继电班</td>
+                                                <td>已开</td>
+                                                <td>已开</td>
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>检修班</td>
+                                                <td>已开</td>
+                                                <td>已开</td>
+                                            </tr>
+                                            <tr>
+                                                <td>4</td>
+                                                <td>#5机集控运行二值</td>
+                                                <td>已开</td>
+                                                <td>已开</td>
+                                            </tr>
+                                            <tr>
+                                                <td>5</td>
+                                                <td>脱硫运行一班</td>
+                                                <td class="not">未开</td>
+                                                <td class="not">未开</td>
+                                            </tr>
+                                            <tr>
+                                                <td>6</td>
+                                                <td>电控二班</td>
+                                                <td class="not">未开</td>
+                                                <td class="not">未开</td>
+                                            </tr>-->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="info_main2" style="height: 317px;overflow-y: auto;">
+                                    <table id="meeting2" class="normal_table table1">
+                                        <colgroup>
+                                            <col width="60px">
+                                            <col width="260px">
+                                            <col width="150px">
+                                            <col width="104px">
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th>序号</th>
+                                                <th>班组</th>
+                                                <th>未开展日期</th>
+                                                <th>班次</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!--<tr>
+                                                <td>1</td>
+                                                <td>电机班</td>
+                                                <td>2019-09-03</td>
+                                                <td>常白班</td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>继电班</td>
+                                                <td>2019-09-04</td>
+                                                <td>常白班</td>
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>检修班</td>
+                                                <td>2019-09-02</td>
+                                                <td>常白班</td>
+                                            </tr>
+                                            <tr>
+                                                <td>4</td>
+                                                <td>#5机集控运行二值</td>
+                                                <td>2019-09-01</td>
+                                                <td>夜班</td>
+                                            </tr>
+                                            <tr>
+                                                <td>5</td>
+                                                <td>脱硫运行一班</td>
+                                                <td>2019-09-01</td>
+                                                <td>前夜</td>
+                                            </tr>
+                                            <tr>
+                                                <td>6</td>
+                                                <td>电控二班</td>
+                                                <td>2019-09-04</td>
+                                                <td>后夜</td>
+                                            </tr>-->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mainLeft_sec2">
+                            <div class="sec_top clearfix">
+                                <h3 class="fl sec_title">安全学习日</h3>
+                                <ul class="fr top_list top_list2">
+                                    <li class="active">本周</li>
+                                    <li>本月</li>
+                                </ul>
+                            </div>
+                            <div class="study_main">
+                                <div class="study_main1" style="height: 317px;overflow-y: auto;">
+                                    <table class="normal_table table2" id="activity1">
+                                        <colgroup>
+                                            <col width="60px">
+                                            <col width="240px">
+                                            <col width="150px">
+                                            <col width="124px">
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th>序号</th>
+                                                <th>班组</th>
+                                                <th>学习时间</th>
+                                                <th>学习时长</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!--<tr>
+                                                <td>1</td>
+                                                <td>电机班</td>
+                                                <td>周四</td>
+                                                <td>1时1分</td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>继电班</td>
+                                                <td>周三</td>
+                                                <td>55分</td>
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>检修班</td>
+                                                <td>周四、周五</td>
+                                                <td>1时0分</td>
+                                            </tr>
+                                            <tr>
+                                                <td>4</td>
+                                                <td>#5机集控运行二值</td>
+                                                <td>周三</td>
+                                                <td>55分</td>
+                                            </tr>
+                                            <tr>
+                                                <td>5</td>
+                                                <td>脱硫运行一班</td>
+                                                <td>周五</td>
+                                                <td>2时0分</td>
+                                            </tr>
+                                            <tr>
+                                                <td>6</td>
+                                                <td>电控二班</td>
+                                                <td>未学习</td>
+                                                <td>0分</td>
+                                            </tr>-->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="study_main2" style="height: 317px;overflow-y: auto;">
+                                    <table class="normal_table table2" id="activity2">
+                                        <colgroup>
+                                            <col width="60px">
+                                            <col width="264px">
+                                            <col width="250px">
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th>序号</th>
+                                                <th>班组</th>
+                                                <th>活动次数</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!--<tr>
+                                                <td>1</td>
+                                                <td>电机班</td>
+                                                <td>
+                                                    <div class="perDiv">
+                                                        <div class="skillbar acTime">
+                                                            <div class="filled" data-width="100%"></div>
+                                                            <span class="percent"></span>
+                                                        </div>
+                                                        <span class="timeSpan">5</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>继电班</td>
+                                                <td>
+                                                    <div class="perDiv">
+                                                        <div class="skillbar acTime">
+                                                            <div class="filled" data-width="80%"></div>
+                                                            <span class="percent"></span>
+                                                        </div>
+                                                        <span class="timeSpan">4</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>检修班</td>
+                                                <td>
+                                                    <div class="perDiv">
+                                                        <div class="skillbar acTime">
+                                                            <div class="filled" data-width="80%"></div>
+                                                            <span class="percent"></span>
+                                                        </div>
+                                                        <span class="timeSpan">4</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>4</td>
+                                                <td>#5机集控运行二值</td>
+                                                <td>
+                                                    <div class="perDiv">
+                                                        <div class="skillbar acTime">
+                                                            <div class="filled" data-width="60%"></div>
+                                                            <span class="percent"></span>
+                                                        </div>
+                                                        <span class="timeSpan">3</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>5</td>
+                                                <td>脱硫运行一班</td>
+                                                <td>
+                                                    <div class="perDiv">
+                                                        <div class="skillbar acTime">
+                                                            <div class="filled" data-width="20%"></div>
+                                                            <span class="percent"></span>
+                                                        </div>
+                                                        <span class="timeSpan">1</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>6</td>
+                                                <td>电控二班</td>
+                                                <td>
+                                                    <div class="perDiv">
+                                                        <div class="skillbar acTime">
+                                                            <div class="filled" data-width="0%"></div>
+                                                            <span class="percent"></span>
+                                                        </div>
+                                                        <span class="timeSpan">0</span>
+                                                    </div>
+                                                </td>
+                                            </tr>-->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="main_center">
+                        <div class="mainCenter_sec1">
+                            <div class="sec_top clearfix">
+                                <h3 class="fl sec_title">人身风险预控</h3>
+                                <ul class="fr top_list top_list3 switch">
+                                    <li class="active" data-category="day">今日</li>
+                                    <li data-category="month">本月</li>
+                                </ul>
+                            </div>
+                            <div class="risk_main" style="height: 317px;overflow-y: auto;">
+                                <table class="normal_table table3" id="part2">
+                                    <colgroup>
+                                        <col width="60px">
+                                        <col width="230px">
+                                        <col width="160px">
+                                        <col width="84px">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>序号</th>
+                                            <th>班组</th>
+                                            <th>已完成数量</th>
+                                            <th>完成率</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!--<tr>
+                                            <td>1</td>
+                                            <td>电机班</td>
+                                            <td>40</td>
+                                            <td>100%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>继电班</td>
+                                            <td>33</td>
+                                            <td>98%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td>检修班</td>
+                                            <td>45</td>
+                                            <td>95%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>4</td>
+                                            <td>#5机集控运行二值</td>
+                                            <td>21</td>
+                                            <td>90%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>5</td>
+                                            <td>脱硫运行一班</td>
+                                            <td>20</td>
+                                            <td>80%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>6</td>
+                                            <td>电控二班</td>
+                                            <td>30</td>
+                                            <td>70%</td>
+                                        </tr>-->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="mainCenter_sec2">
+                            <div class="sec_top clearfix">
+                                <h3 class="fl sec_title">教育培训</h3>
+                                <ul class="fr top_list">
+                                    <li class="active">本月</li>
+                                </ul>
+                            </div>
+                            <div id="chart1"></div>
+                        </div>
+                    </div>
+                    <div class="main_right">
+                        <div class="dynamic">
+                            <div class="sec_top" style="padding-top: 20px;">
+                                <h3 class="sec_title">最新动态</h3>
+                            </div>
+                            <ul class="dynamic_list" style="height: 220px;overflow-y: auto;">
+                                <!--<li class="clearfix">
+                                    <a>电气二次班【班前会】</a>
+                                    <span>05/12 8:00</span>
+                                </li>
+                                <li class="clearfix">
+                                    <a>电气二次班【安全学习日】安全生产学习</a>
+                                    <span>05/12 8:00</span>
+                                </li>
+                                <li class="clearfix">
+                                    <a>热控二班【人身风险预控】#1机组检查</a>
+                                    <span>05/12 8:00</span>
+                                </li>
+                                <li class="clearfix">
+                                    <a>运行一班【技术讲课】电力系统培训</a>
+                                    <span>05/12 8:00</span>
+                                </li>-->
+                            </ul>
+                        </div>
+                        <div class="taiZhang">
+                            <div class="sec_top" style="padding-top: 25px;">
+                                <h3 class="sec_title">班组台账</h3>
+                            </div>
+                            <ul class="tz_list clearfix">
+                                <li class="clearfix" onclick="moduleClick('LEG[MET]')" id="MET">
+                                    <div class="fl"><p>班会记录</p><p>&gt;&gt;</p></div>
+                                    <img src="images/tz_icon1.png">
+                                </li>
+                                <li class="clearfix" onclick="moduleClick('LEG[KYT]')" id="KYT">
+                                    <div class="fl"><p>人身风险预控</p><p>&gt;&gt;</p></div>
+                                    <img src="images/tz_icon2.png">
+                                </li>
+                                <li class="clearfix" onclick="moduleClick('LEG[ACT]')" id="ACT">
+                                    <div class="fl"><p>班组活动</p><p>&gt;&gt;</p></div>
+                                    <img src="images/tz_icon3.png">
+                                </li>
+                                <li class="clearfix" onclick="moduleClick('LEG[EDU]')" id="EDU">
+                                    <div class="fl"><p>教育培训</p><p>&gt;&gt;</p></div>
+                                    <img src="images/tz_icon4.png">
+                                </li>
+                                <li class="clearfix" onclick="moduleClick('LEG[CUL]')" id="CUL">
+                                    <div class="fl"><p>班组文化墙</p><p>&gt;&gt;</p></div>
+                                    <img src="images/tz_icon5.png">
+                                </li>
+                                <li class="clearfix" onclick="moduleClick('LEG[EME.DR]')" id="EME.DR">
+                                    <div class="fl"><p>应急演练</p><p>&gt;&gt;</p></div>
+                                    <img src="images/tz_icon6.png">
+                                </li>
+                                <li class="clearfix" onclick="moduleClick('LEG[HAZ]')" id="HAZ">
+                                    <div class="fl"><p>隐患管理</p><p>&gt;&gt;</p></div>
+                                    <img src="images/tz_icon7.png">
+                                </li>
+                                <li class="clearfix" onclick="moduleClick('LEG[VIO]')" id="VIO">
+                                    <div class="fl"><p>违章管理</p><p>&gt;&gt;</p></div>
+                                    <img src="images/tz_icon8.png">
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+<script src="js/jquery-2.2.4.min.js"></script>
+<script src="js/echarts.min.js"></script>
+<script src="js/an-skill-bar.js"></script>
+<script src="js/swiper.min.js"></script>
+<script>
+    $(function () {
+        var hasJump = false;
+        //页面滑动
+        new Swiper('.swiper-container', {
+            resistanceRatio: 0.5,
+            longSwipesRatio: 0.2,
+            on: {
+                onInit: function (swiper) {
+
+                },
+                onSlideChangeEnd: function (swiper) {
+
+                },
+                setTranslate: function (translate) {
+                    if (translate <= 13) {
+                        hasJump = false;
+                    } else if (!hasJump && translate > 13) {
+                        hasJump = true;
+                        bzApi.goDepartmentCulture();
+                    }
+                }
+            },
+        })
+        $('.skillbar').skillbar({
+            speed: 1000
+        });
+        $('.top_list1 li').click(function () {
+            $(this).addClass('active').siblings().removeClass('active')
+            var index = $(this).index()
+            if (index == 0) {
+                $('.tit_note').text('应开会班组' + num1 + '个，未开会班组' + num2 + '个')
+                $('.info_main > div').eq(0).show().siblings().hide()
+            }
+            if (index == 1) {
+                $('.tit_note').text('未开会班组' + num3 + '个，共' + num4 + '次')
+                $('.info_main > div').eq(1).show().siblings().hide()
+            }
+
+        })
+        $('.top_list2 li').click(function () {
+            $(this).addClass('active').siblings().removeClass('active')
+            var index = $(this).index()
+            $('.study_main > div').eq(index).show().siblings().hide()
+        })
+        $('.top_list3 li').click(function () {
+            $(this).addClass('active').siblings().removeClass('active')
+        })
+
+        jQuery.getJSON('../../Works/DepartmentHome/GetDutyData', { deptid: deptid }, function (json) {
+            jQuery('#duty tbody').empty();
+            jQuery.each(json, function (i, o) {
+                var d = new Date(parseInt(o.Date.replace(/^\/Date\(/, '').replace(/\)\/$/, '')));
+                jQuery('#duty tbody').append('<tr><td>' + o.Day + '（' + (d.getMonth() + 1) + '/' + d.getDate() + '）</td><td>' + handleStr(o.Data) + '</td></tr>');
+            });
+        });
+
+        function handleStr(val) {
+            var str = '';
+            if (val.length > 15) {
+                str = val.substr(0, 15) + '...';
+            } else {
+                str = val
+            } return str
+        }
+    })
+
+</script>
+</html>

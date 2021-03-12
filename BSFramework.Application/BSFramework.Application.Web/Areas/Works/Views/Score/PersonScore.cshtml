@@ -1,0 +1,391 @@
+﻿
+@using BSFramework.Entity.WorkMeeting
+@{
+    ViewBag.Title = "PersonScore";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/Font-Awesome/css/font-awesome.min.css")" />
+<style type="text/css">
+    .delete {
+        margin-left: 15px;
+    }
+
+    .personScore {
+        height: 827px;
+        background: #e4ebfe;
+        border: 1px solid #fff;
+    }
+
+    .main {
+        margin: 10px;
+        background: #fff;
+    }
+
+        .main p {
+            border-bottom: 2px solid #e4ebfe;
+            display: flex;
+            height: 68px;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 30px 0 30px;
+        }
+
+            .main p strong {
+                font-size: 20px;
+                height: 54px;
+                line-height: 50px;
+                display: inline-block;
+                margin-right: 40px;
+            }
+
+            .main p img {
+                margin-right: 10px;
+            }
+
+            .main p .select {
+                border-bottom: 2px solid #3469dd;
+                color: #3469dd;
+            }
+
+    .main2 {
+        display: none;
+    }
+
+    .main p strong:hover {
+        cursor: pointer;
+    }
+
+    .main1 {
+        height: 725px;
+    }
+
+    #all {
+        width: 100%;
+        height: 600px;
+        margin-top: 40px;
+    }
+</style>
+
+<script>
+    $(function () {
+        jQuery('#user').change(function () {
+            jQuery('form').submit();
+        });
+        jQuery('#year').change(function () {
+            jQuery('form').submit();
+        });
+        jQuery('#user1').change(function () {
+            jQuery('form').submit();
+        });
+        jQuery('#year1').change(function () {
+            jQuery('form').submit();
+        });
+
+        jQuery('#month').change(function () {
+            jQuery('form').submit();
+        });
+    });
+</script>
+
+<div class="main-content">
+    <div class="container-fluid" style="height:100%">
+        @using (Html.BeginForm("PersonScore", "Score"))
+        {
+           @Html.Hidden("t","0")
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="clearfix my-title">
+                        <a class="pull-left" href="@Url.Action("ScoreAll")"><img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">个人评分统计</a>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="personScore">
+                <div class="main">
+                    @if (ViewBag.t=="0") { 
+                    <p>
+                        
+                        <span id="index">
+                            <strong class="select" data-id='0'>任务评分统计</strong>
+                            <strong data-id='1'>任务评分列表</strong>
+                        </span>
+                        @*<span><img src="@Url.Content("~/Content/styles/static/images/add-icon-1.png")" />新增</span>*@
+                    </p>
+                    }
+                    else if (ViewBag.t == "1")
+                    {
+                        <p>
+
+                            <span id="index">
+                                <strong  data-id='0'>任务评分统计</strong>
+                                <strong class="select" data-id='1'>任务评分列表</strong>
+                            </span>
+                            @*<span><img src="@Url.Content("~/Content/styles/static/images/add-icon-1.png")" />新增</span>*@
+                        </p>
+                    }
+                    <div class="main1">
+                        <div class="mg-t-10 mg-b-10">
+                            <label class="mg-l-30" >成员名称</label>
+                            <span class="my-select" style="width:260px;">
+                                @Html.DropDownList("user")
+                                <span class="icon"></span>
+                            </span>
+                            <label class="mg-l-30">时间范围</label>
+                            <span class="my-select" style="width:260px;">
+                                @Html.DropDownList("year")
+                                <span class="icon"></span>
+                            </span>
+                        </div>
+                        <div id='all'></div>
+                    </div>
+                    <div class="main2" style="height:690px;overflow-y:scroll;">
+                        <div class="mg-t-10 mg-b-10">
+                            <label class="mg-l-30">成员名称</label>
+                            <span class="my-select" style="width:260px;">
+                                @Html.DropDownList("user1")
+                                <span class="icon"></span>
+                            </span>
+
+                            <label class="mg-l-30">时间范围</label>
+                            <span class="my-select" style="width:260px;">
+                                @Html.DropDownList("year1")
+                                <span class="icon"></span>
+                            </span>
+                            <label class="mg-l-30">时间范围</label>
+                            <span class="my-select" style="width:260px;">
+                                @Html.DropDownList("month")
+                                <span class="icon"></span>
+                            </span>
+                            <label style="width:350px;text-align:right;">总计：@ViewData["total"] 分</label>
+                        </div>
+                        <table class="table text-center table-striped" style="border-top:1px solid #e3ebfd;border-bottom:1px solid #e3ebfd;">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>日期</th>
+                                    <th>工作任务</th>
+                                    <th>完成情况</th>
+                                    <th>评分</th>
+                                    @*<th>操作</th>*@
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+    var list = (List<MeetingJobEntity>)ViewData["jobs"];
+                                }
+                                @for(int i=0;i<list.Count(); i++) {
+                            <tr>
+                                <td>@Html.Raw(i+1)</td>
+                                <td>@list[i].StartTime.ToString("yyyyMMdd")</td>
+                                <td>@list[i].Job</td>
+                                <td>@Html.Raw(list[i].IsFinished=="finish"?"完成":"未完成")</td>
+                                <td>@list[i].Score</td>
+                                @*<td>
+                                        <a href="#">
+                                            <img src="@Url.Content("~/Content/styles/static/images/ed.png")" />
+                                            编辑
+                                        ></a>
+                                        <a href="#" class="delete">
+                                            <img src="@Url.Content("~/Content/styles/static/images/remove-icon-2.png")" />
+                                            更改
+                                        ></a>
+                                    </td>*@
+                            </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+            <footer class="main-footer">
+                武汉博晟安全技术股份有限公司   版权所有
+            </footer>
+        }
+    </div>
+    
+</div>
+
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/echarts/echarts.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/bootstrap/js/bootstrap.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<script>
+    $(function () {
+
+        var user = $("#user").val();
+        var year = $("#year").val();
+        $.ajax({
+            url: '@Url.Action("GetPersonScore")',
+            type: 'post',
+            data: { year: year, user: user },
+            success: function (data) {
+                var score = new Array();
+                var avg = new Array();
+                for (var i in data.data)
+                {
+                    score.push(data.data[i].Score);
+                    avg.push(data.data1[i].Score);
+                }
+                count(score, avg);
+                if ('@ViewBag.t' == "0") {
+
+                }
+                if ('@ViewBag.t' == "1") {
+                    $('.main1').hide()
+                    $('.main2').show()
+                }
+            }
+        });
+
+    });
+    //var data1 = [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
+    //var data2 = [3.9, 5.9, 11.1, 18.7, 48.3, 69.2, 231.6, 46.6, 55.4, 18.4, 10.3, 0.7]
+    //count(data1, data2)
+	function count(data1,data2){
+		var Chart4 = echarts.init(document.getElementById('all'))
+		var colors = ['#f6b327', '#32d03b', '#ccc'];
+		option = {
+		    color: colors,
+		    title:{
+		    	text:'任务评分统计(/分)',
+		    	x:'34%',
+		    	y:'-5px'
+		    },
+		    tooltip: {
+		        trigger: 'axis',
+		        axisPointer: {
+		            type: 'cross'
+		        }
+		    },
+		    //tooltip:
+            //    {
+            //        formatter: '{b}\n{c}'
+            //    },
+		    legend: {
+		        data:['任务得分', '平均得分'],
+		    },
+		    grid: {
+		        top: 70,
+		        bottom: 50
+		    },
+		    xAxis: [
+		        {
+		            type: 'category',
+		            axisTick: {
+		                alignWithLabel: false
+		            },
+		            axisLine: {
+		                onZero: false,
+		                lineStyle: {
+		                    color: colors[2]
+		                }
+		            },
+		            //axisPointer: {
+		            //    label: {
+		            //        formatter: function (params) {
+		            //            return params.value + '任务得分  '
+		            //                + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
+		            //        }
+		            //    }
+		            //},
+		            data: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
+		        },
+		        {
+		            type: 'category',
+		            axisTick: {
+		                alignWithLabel: false
+		            },
+		            axisLine: {
+		                onZero: false,
+		                lineStyle: {
+		                    color: colors[3]
+		                }
+		            },
+		            //axisPointer: {
+		            //    label: {
+		            //        formatter: function (params) {
+		            //            return params.value + '平均得分  '
+		            //                + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
+		            //        }
+		            //    }
+		            //},
+		            data: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
+		        }
+		    ],
+		    yAxis: [
+		        {
+		            type: 'value'
+		        }
+		    ],
+		    series: [
+		        {
+		            name:'任务得分',
+		            type:'line',
+		            xAxisIndex: 1,
+
+		            data: data1,
+		            itemStyle:
+                        {
+                            normal:
+                                {
+                                    label: {show:true}
+                                }
+                        }
+		        },
+		        {
+		            name:'平均得分',
+		            type:'line',
+
+		            data: data2,
+		            itemStyle:
+                        {
+                            normal:
+                                {
+                                    label: { show: true }
+                                }
+                        }
+		        }
+		    ]
+		};
+
+ Chart4.setOption(option);
+	}
+
+
+	$('.main p strong').click(function(){
+		$(this).addClass('select').siblings().removeClass('select')
+		var type = $(this).attr('data-id')
+		if(type==0){
+			$('.main1').show()
+			$('.main2').hide()
+			$('#t').val('0');
+		}else{
+		  $('.main1').hide()
+		  $('.main2').show()
+		  $('#t').val('1');
+		}
+	})
+  $(function(){
+      $('.main-sidebar,.main-content').niceScroll({
+          autohidemode:false
+      });
+      $('.table-today tr').hover(function(){
+          $(this).addClass('hover');
+      },function(){
+          $(this).removeClass('hover');
+      });
+      $('.table-today tr').click(function(){
+          $(this).toggleClass('actives');
+      })
+      console.log( $('.user').innerWidth() )
+      $('.user>.dropdown-menu').css({
+          left : $('.user').innerWidth() - $('.user>.dropdown-menu').width() - 65
+      })
+  })
+
+</script>

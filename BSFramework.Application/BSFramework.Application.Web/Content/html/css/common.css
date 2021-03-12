@@ -1,0 +1,59 @@
+@charset "utf-8";
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+em {
+    font-style: normal;
+}
+img {
+    border: 0;
+    vertical-align: middle;
+}
+img {
+    border: none;
+}
+ol,
+ul,
+li {
+    list-style: none;
+}
+input,
+textarea,
+select,
+button {
+    vertical-align: middle;
+    font-family: inherit;
+    line-height: normal;
+    outline: none;
+    appearance: none;
+}
+button {
+    cursor: pointer;
+}
+table {
+    border-collapse: collapse;
+}
+video {
+    object-fit: contain;
+}
+.clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+.clearfix {
+    *zoom: 1;
+}
+.clear {
+    clear: both;
+}
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}

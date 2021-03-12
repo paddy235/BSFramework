@@ -1,0 +1,238 @@
+﻿@{
+    ViewBag.Title = "Index2";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<script>
+    $(function () {
+        InitialPage();
+        GetGrid();
+    });
+    //初始化页面
+    function InitialPage() {
+        //resize重设(表格、树形)宽高
+        //$(window).resize(function (e) {
+        //    window.setTimeout(function () {
+        //        $('#gridTable').setGridWidth(($('.gridPanel').width()));
+        //        $("#gridTable").setGridHeight($(window).height() - 136.5);
+        //    }, 200);
+        //    e.stopPropagation();
+        //});
+    }
+    function GetGrid() {
+        var selectedRowIndex = 0;
+        var $grid = $("#gridTable");
+        $grid.jqGrid({
+            height: $(window).height() - 136.5,
+            url: '@Url.Action("GetPageListJson")',
+            datatype: "json",
+            autowidth: true,
+            multiselect: true,
+            colModel: [
+                { label: '主键', name: 'ID', hidden: true, align: 'center' },
+                {
+                    label: '操作', name: '', index: '', width: 180, align: 'center',
+                    formatter: function (cellvaue, options, rowObject) {
+                        return "<a style='' href=\"javascript:detailnew('" + rowObject.ID + "')\" title=\"\">查看</a><a style='' href=\"javascript:editnew('" + rowObject.ID + "')\" title=\"\">修改</a><a style='' href=\"javascript:delglass('" + rowObject.ID + "')\" title=\"\">删除</a>"
+                    }
+                },
+                {
+                    label: '名称', name: 'Name', index: 'Name', width: 300, align: 'center'
+                },{
+                    label: '规格型号', name: 'Spec', index: 'Spec', width: 300, align: 'center'
+                },{
+                    label: '类别', name: 'Type', index: 'Type', width: 300, align: 'center'
+                },
+                {
+                    label: '相关文件', name: '', index: '', width: 300,sortable:false, align: 'center',
+                    formatter: function (cellvaue, options, rowObject) {
+                        var html = "";
+                        if (rowObject.File) {
+                            html += "<a style='text-decoration:none;color:blue;' href=\"" + rowObject.File + " \" title=\"\" target=\"_blank\">操作规程</a>";
+                        }
+                        if (rowObject.Video) {
+                            html += "<a style='text-decoration:none;color:blue;' href=\"javascript:video('" + rowObject.ID + "')\" title=\"\" target=\"_blank\">操作视频</a>";
+                        }
+                        return html;
+                    }
+                }
+            ],
+            height: $(window).height() - 130,
+            viewrecords: true,
+            rowNum: 20,
+            rowList: [20, 50, 100],
+            pager: "#gridPager",
+            sortname: 'CreateDate',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            onSelectRow: function () {
+                selectedRowIndex = $grid.getGridParam('selrow');
+            },
+            gridComplete: function () {
+                $grid.setSelection(selectedRowIndex, false);
+            }
+
+        });
+        $("#btn_Search").click(function () {
+            var queryJson = {
+                name: jQuery('#txt_Keyword').val()
+
+            };
+            $grid.jqGrid('setGridParam', {
+                postData: queryJson ,page:1
+            }).trigger('reloadGrid');
+        });
+        $("#btn_SearchAll").click(function () {
+
+            $("#txt_Keyword").val('');
+            $('#btn_Search').trigger("click");
+        });
+        $("#refresh").click(function () {
+
+            $("#txt_Keyword").val('');
+            $('#btn_Search').trigger("click");
+        });
+        //查询回车事件
+        $('#txt_Keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+
+    }
+    function imp() {
+        dialogOpen({
+            id: "Form",
+            title: '新增',
+            url: '/../@Url.Action("ImportNew")/',
+            width: "700px",
+            height: "500px",
+            btn: null
+        });
+    }
+    //新增
+    function btn_add() {
+        var height = "700px";
+        dialogOpen({
+            id: "Form2",
+            title: '新增',
+            url: '/../@Url.Action("Form2")',
+            width: "600px",
+            height: height,
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick1();
+            }
+        });
+
+    }
+    //详细
+    
+    function detailnew(id) {
+        var height = "700px";
+        dialogOpen({
+            id: "Detail",
+            title: '查看详情',
+            url: '/../@Url.Action("Detail2")/' + id,
+            width: "600px",
+            height: height,
+            btn: null
+        });
+    }
+    //编辑
+    
+    function editnew(id) {
+        var height = "700px";
+        dialogOpen({
+            id: "Form2",
+            title: '修改',
+            url: '/../@Url.Action("Form2")/' + id,
+            width: "600px",
+            height: height,
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick1();
+            }
+        });
+
+    }
+    //删除
+    
+    function delglass(id) {
+        $.RemoveForm({
+            url: '/../@Url.Action("DeleteOne")/',
+            param: { keyValue: id },
+            success: function (data) {
+                $("#gridTable").resetSelection();
+                $("#gridTable").trigger("reloadGrid");
+            }
+        });
+
+    }
+    function exp() {
+        var ids = $('#gridTable').jqGrid('getGridParam', 'selarrrow');
+        if (ids.length < 1)
+        {
+            alert('请选择要导出的数据！');
+            return;
+        }
+        var idstr = '';
+        ids.forEach(function (value, i)
+        {
+            idstr += $('#gridTable').getCell(ids[i], "ID") + ",";
+        })
+        @*$.ajax({
+            url: '@Url.Action("expword")',
+            type: 'post',
+            data: { ids: idstr },
+            loading: "数据提交中...",
+            success: function (data) {
+
+            }
+        });*@
+        window.location.href = '@Url.Action("expword")?ids=' + idstr;
+    }
+    function video(id) {
+        dialogOpen({
+            id: "Detail",
+            title: '查看详情',
+            url: '/../@Url.Action("GlassWareVideo")/' + id,
+            width: "1050px",
+            height: "720px",
+            btn: null
+        });
+    }
+</script>
+
+<div class="titlePanel">
+    <div class="title-search">
+        <table>
+            <tr>
+                <td style="padding-left: 2px;">
+                    <input id="txt_Keyword" type="text" class="form-control" placeholder="请输入要查询关键字" style="width: 200px;" />
+                </td>
+                <td style="padding-left: 5px;">
+                    <a id="btn_Search" class="btn btn-primary" style="line-height:15px;"><i class="fa fa-search"></i>&nbsp;查询</a>
+                    <a id="btn_SearchAll" class="btn btn-primary" style="line-height:15px;">&nbsp;全部</a>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+    @*<div class="toolbar">
+        <div class="btn-group">
+            
+        </div>
+        <script>$('.toolbar').authorizeButton()</script>
+    </div>*@
+    <div class="toolbar">
+        <div class="btn-group">
+            <a id="refresh" class="btn btn-default"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+            <a id="lr-add" class="btn btn-default" onclick="btn_add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+            <a id="exp" class="btn btn-default" onclick="exp()"><i class="fa fa-download"></i>&nbsp;导出二维码</a>
+        </div>
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="gridTable"></table>
+    <div id="gridPager"></div>
+</div>

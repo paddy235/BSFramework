@@ -1,0 +1,183 @@
+﻿
+@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script src="~/Content/scripts/business/Common.js"></script>
+<script src="~/Content/scripts/layui/layer.js"></script>
+<style>
+
+    i {
+        cursor: pointer;
+    }
+
+        i.on_color {
+            color: #449d44;
+            margin-top: -1px;
+        }
+
+        i.off_color {
+            color: #aaa;
+            margin-top: -1px;
+        }
+</style>
+<script>
+    var keyValue = request('keyValue');
+    var actiontype = request('actiontype');
+    $(function () {
+        initControl();
+    });
+    /**初始化控件 */
+    function initControl() {
+        if (actiontype == "show") {
+            $("input,textarea").attr("disabled", "disabled");
+        }
+        ////获取表单
+        if (!!keyValue) {
+            $.SetForm({
+                url: "@Url.Action("GetDetail")",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#form1").formDeserialize(data);
+                    if (data) {
+                        var DataLength = data.Items.length;
+                        var Onehtml = "";
+                        var Twohtml = ""
+                        var allhtml = "";
+                        var i = 1;
+                        while (true) {
+                            if (i % 3 == 1||i==1) {
+                                Onehtml += "<tr class='grid-row'>";
+                                Twohtml += "<tr class='grid-row'>";}
+
+                            Onehtml += "<td style=\"border: 1px solid #e3ebfd;width:30%\">" + data.Items[i - 1].Name + "</td>";
+                            if (data.Items[i - 1].State) {
+                                Twohtml += "<td style=\"border: 1px solid #e3ebfd;width:30%\"><i class=\"fa fa-check\"></i></td>";
+
+                            } else {
+                                Twohtml += "<td style=\"border: 1px solid #e3ebfd;width:30%\"><i class=\"fa fa-close\"></i></td>";
+                            }
+                            if (i % 3 == 0 || i == DataLength) {
+                                Onehtml += "</tr>";
+                                Twohtml += "</tr>";
+                                allhtml += Onehtml + Twohtml;
+                                Onehtml = "";
+                                Twohtml = "";
+                            }
+                            i++;
+                            if (i > DataLength) {
+                                break;
+                            }
+                        }
+
+
+                        $("#DataItems").append(allhtml);
+                    }
+
+                }
+            });
+        }
+
+
+    }
+
+    /** 保存表单 */
+    @*function AcceptClick(IsCommit) {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+
+        var postData = $("#form1").formSerialize(keyValue);
+        postData["CategoryId"]= $("#Category").find("option:selected").val();
+        postData["Category"]= $("#Category").find("option:selected").text(),
+       // postData["IsOpen"] =
+        $.SaveForm({
+            url: "@Url.Action("SaveForm")",
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }*@
+
+
+
+</script>
+<div style="margin-top: 20px; margin-right: 30px;">
+    <table id="form1" class="form">
+        <tr>
+            <th class="formTitle">检查区域@*<font face="宋体">*</font>*@</th>
+            <td class="formValue">
+
+                <input type="hidden" id="ID" name="ID" />
+                <input id="District" name="District" type="text" class="form-control" placeholder="" maxlength="20" isvalid="yes" checkexpession="NotNull" value="" />
+
+            </td>
+            <th class="formTitle">检查日期@*<font face="宋体">*</font>*@</th>
+            <td class="formValue">
+
+                <input id="CreateDate" name="CreateDate" type="text" class="form-control" placeholder="" maxlength="20" isvalid="yes" checkexpession="NotNull" value="" />
+
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">检查结果@*<font face="宋体">*</font>*@</th>
+            <td class="formValue" colspan="3">
+                <table class="table" style="border:1px solid #e3ebfd;text-align:center" id="DataItems">
+                </table>
+
+            </td>
+
+        </tr>
+        <tr>
+            <th class="formTitle">检查人@*<font face="宋体">*</font>*@</th>
+            <td class="formValue">
+
+                <input id="CreateUserName" name="CreateUserName" type="text" class="form-control" placeholder="" maxlength="20" isvalid="yes" checkexpession="NotNull" value="" />
+            </td>
+            <th class="formTitle">@*<font face="宋体">*</font>*@</th>
+            <td class="formValue">
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">验收情况描述<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <textarea id="Situation" class="form-control" style="height:100px" maxlength="2000"></textarea>
+            </td>
+        </tr>
+
+
+        <tr>
+            <th class="formTitle">验收结果@*<font face="宋体">*</font>*@</th>
+            <td class="formValue">
+
+                <input id="State" name="State" type="text" class="form-control" placeholder="" maxlength="20" isvalid="yes" checkexpession="NotNull" value="" />
+
+            </td>
+            <th class="formTitle">质量验收人@*<font face="宋体">*</font>*@</th>
+            <td class="formValue">
+
+                <input id="ModifyUserName" name="ModifyUserName" type="text" class="form-control" placeholder="" maxlength="20" isvalid="yes" checkexpession="NotNull" value="" />
+
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">管理责任人@*<font face="宋体">*</font>*@</th>
+            <td class="formValue">
+
+                <input id="DutyUser" name="DutyUser" type="text" class="form-control" placeholder="" maxlength="20" isvalid="yes" checkexpession="NotNull" value="" />
+
+            </td>
+            <th class="formTitle">@*<font face="宋体">*</font>*@</th>
+            <td class="formValue">
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+

@@ -1,0 +1,256 @@
+﻿@{
+    ViewBag.Title = "LearnCount";
+    Layout = "~/Views/Shared/_FlowIndex.cshtml";
+}
+
+<script src="~/Content/scripts/jquery/jquery-1.10.2.min.js"></script>
+<script src="~/Content/scripts/plugins/echarts/echarts.min.js"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/datepicker/WdatePicker.js")"></script>
+<script>
+    $(function () {
+        var from = $("#from").val();
+        var to = $("#to").val();
+
+        $.ajax({
+            url: '@Url.Action("GetLearnCount", "Education", new { area = "Works" })',
+            type: 'post',
+            data: {from:from,to:to},
+            success: function (data) {
+                var rows = data.rows;
+                var types = data.types;
+                bindChart(rows,types);
+            }
+        });
+
+    });
+    function select()
+    {
+        var from = $("#from").val();
+        var to = $("#to").val();
+        $.ajax({
+            url: '@Url.Action("GetLearnCount", "Education", new { area = "Works" })',
+            type: 'post',
+            data: { from: from, to: to },
+            success: function (data) {
+                var rows = data.rows;
+                var types = data.types;
+                bindChart(rows, types);
+            }
+        });
+    }
+    function selectall() {
+        $("#from").val('');
+        $("#to").val('');
+        var from = $("#from").val();
+        var to = $("#to").val();
+        $.ajax({
+            url: '@Url.Action("GetLearnCount", "Education", new { area = "Works" })',
+            type: 'post',
+            data: { from: from, to: to },
+            success: function (data) {
+                var rows = data.rows;
+                var types = data.types;
+                bindChart(rows, types);
+            }
+        });
+    }
+
+    function bindChart(rows,types) {
+        var array = eval('(' + rows + ')');
+        var name = new Array();
+        var count = new Array();
+        var count1 = new Array();
+        var count2 = new Array();
+        var count3 = new Array();
+        var count4 = new Array();
+        var count5 = new Array();
+        var count6 = new Array();
+        for (var i in array) {
+            name.push(array[i].category);
+            count.push(array[i].value);
+            count1.push(array[i].value1);
+            count2.push(array[i].value2);
+            count3.push(array[i].value3);
+            count4.push(array[i].value4);
+            count5.push(array[i].value5);
+            count6.push(array[i].value6);
+        }
+        
+        var n = echarts.init(document.getElementById("mainChart")), t;
+
+        n.setOption(
+            {
+                backgroundColor: "#fff",
+                title: {
+                    text: "班组培训次数统计图",
+                    left: 20,
+                    top: 'top',
+                    textStyle: {
+                        color: "#666666",
+                        fontSize: 24,
+                        fontWeight: 100,
+                        fontFamily: "微软雅黑"
+                    },
+                    subtext: "",
+                    subtextStyle: {
+                        color: "#878787", fontSize: 14, fontWeight: 100, fontFamily: "微软雅黑"
+                    },
+                    itemGap: 20
+                },
+                tooltip: {
+                    trigger: "axis",
+                    axisPointer: {
+                        type: "shadow",
+                        textStyle: { color: "#fff" }
+                    }
+                },
+                //tooltip:
+                //    {
+                //        formatter: function (a) {
+                //            return (a['seriesName'] + '</br>' + a['name'] + ':' + a['value']);
+                //        }
+                //    },
+                legend: {
+                    //data: ["违章次数"],
+                    //x: 15, y: 45, textStyle: { color: "#878787" }
+                },
+                grid: {
+                    borderWidth: 0, top: 100, left: "2%", right: "1%", bottom: "12%", containLabel: !0
+                },
+                xAxis: [{
+                    type: "category",
+                    data: name,
+                    splitLine: !1, axisTick: !1,
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 40,
+                        textStyle: {}
+                    }
+                }],
+                yAxis: [{
+                    type: "value",
+                    splitLine: !1, axisTick: !1,
+                    splitNumber: 1
+                }],
+                series: BindSeries( count,count1, count2, count3, count4,count5,count6,types)
+            });
+    }
+    //{
+    //    name: ['1','2','3'],
+    //    type: 'bar',
+    //    stack: 'sum',
+    //    barWidth: 20,
+    //    itemStyle: {
+    //        normal: {
+    //                label: {
+    //                    show:true,
+    //                    },
+    //            color: ['RGB(255,140,0)','RGB(95,158,160)','RGB(100,149,237)']
+    //        }
+    //    },
+    //    data:[count,count1,count2]
+    //}
+    function BindSeries(count,count1,count2,count3,count4,count5,count6,types)
+    {
+        var series = [];
+        $.each(types, function (i, item)
+        {
+            var name;
+            var data;
+            var color;
+            switch (item)
+            {
+                case "1":
+                    name = "技术讲课";
+                    data = count;
+                    color = 'RGB(255,140,0)';
+                    break;
+                case "2":
+                    name = "技术问答";
+                    data = count1;
+                    color = 'RGB(95,158,160)';
+                    break;
+                case "3":
+                    name = "事故预想";
+                    data = count2;
+                    color = 'RGB(100,149,237)';
+                    break;
+                case "4":
+                    name = "反事故演习";
+                    data = count3;
+                    color = 'RGB(188,173,168)';
+                    break;
+                case "5":
+                    name = "技术问答 ";
+                    data = count4;
+                    color = 'RGB(173,223,140)';
+                    break;
+                case "6":
+                    name = "事故预想 ";
+                    data = count5;
+                    color = 'RGB(50,223,140)';
+                    break;
+                case "7":
+                    name = "考问讲解 ";
+                    data = count6;
+                    color = 'RGB(50,103,40)';
+                    break;
+            }
+            
+            var item = {
+                name: name,
+                    type: 'bar',
+                    stack: 'sum',
+                    barWidth: 30,
+                    itemStyle: {
+                        normal: {
+                                label: {
+                                    show:true,
+                                    },
+                            color: color
+                        }
+                    },
+                    data:data
+            }
+            series.push(item);
+
+        });
+        return series;
+    }
+</script>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;overflow-y:hidden;">
+
+    <div class="ui-layout-center" style="padding-left:5px;">
+        <div class="center-Panel">
+            <div class="titlePanel">
+                <div class="title-search">
+                    <table>
+                        <tr>
+                            <td style="padding-left: 15px; ">
+                                选择日期
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                <input id="from" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker();" style="width: 150px;" />
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                --
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                <input id="to" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker();" style="width: 150px;" />
+                            </td>
+                            <td style="padding-left: 5px;">
+                                <a id="btn_Search" class="btn btn-primary" onclick="select();"><i class="fa fa-search"></i>&nbsp;查询</a>
+                                <a id="btn_SearchAll" class="btn btn-primary" onclick="selectall();">&nbsp;全部</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="gridPanel">
+                <div class="content" id="mainChart" style="width:100%;height:750px;margin-top:50px;"></div>
+            </div>
+            
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,190 @@
+﻿@{
+    ViewBag.Title = "Index6";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+<script>
+    $(function () {
+        InitialPage();
+        GetGrid();
+    });
+    //初始化页面
+    function InitialPage() {
+        //resize重设(表格、树形)宽高
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#gridTable').setGridWidth(($('.gridPanel').width()));
+                $("#gridTable").setGridHeight($(window).height() - 136.5);
+            }, 200);
+            e.stopPropagation();
+        });
+    }
+    function GetGrid() {
+        var selectedRowIndex = 0;
+        var $grid = $("#gridTable");
+        $grid.jqGrid({
+            height: $(window).height() - 136.5,
+            url: '@Url.Action("GetExplains")',
+            datatype: "json",
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'FileId', hidden: true, align: 'center' },
+                {
+                    label: '操作', name: '', index: '', width: 180, align: 'center',
+                    formatter: function (cellvaue, options, rowObject) {
+                        //<a style='' href=\"javascript:detailnew('" + rowObject.FileId + "')\" title=\"\">查看</a>
+                        return "<a style='' href=\"javascript:editnew('" + rowObject.FileId + "')\" title=\"\">修改</a><a style='' href=\"javascript:delnew('" + rowObject.FileId + "')\" title=\"\">删除</a>"
+                    }
+                },
+                {
+                    label: '文件名称', name: 'FileName', index: 'FileName', width: 600, align: 'center',
+                    formatter: function (cellvaue, options, rowObject) {
+                        var html = "";
+                        if (rowObject.FileName) {
+                            html += "<a style='text-decoration:none;color:blue;' href=\"" + rowObject.FilePath + "\" title=\"\" target=\"_blank\">" + rowObject.FileName + "</a>";
+                        }
+                        return html;
+                    }
+                },
+                { label: '文件类型', name: 'Description', index: 'Description', width: 300, align: 'center' },
+                {
+                    label: '更新时间', name: 'ModifyDate', index: 'ModifyDate', width: 300, align: 'center', formatter: 'date', formatoptions: { srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s' }
+                }
+            ],
+
+            viewrecords: true,
+            rowNum: 20,
+            rowList: [20, 50, 100],
+            pager: "#gridPager",
+            sortname: 'ModifyDate',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            onSelectRow: function () {
+                selectedRowIndex = $grid.getGridParam('selrow');
+            },
+            gridComplete: function () {
+                $grid.setSelection(selectedRowIndex, false);
+            }
+
+        });
+        $("#btn_Search").click(function () {
+            var queryJson = {
+                name: jQuery('#txt_Keyword').val(),
+                des: jQuery('#des').val()
+            };
+            $grid.jqGrid('setGridParam', {
+                postData: { queryJson: JSON.stringify(queryJson) },
+            }).trigger('reloadGrid');
+        });
+        $("#btn_SearchAll").click(function () {
+            $("#txt_Keyword").val('');
+            $('#des').val('');
+            $('#btn_Search').trigger("click");
+        });
+        $("#refresh").click(function () {
+            $('#des').val('');
+            $("#txt_Keyword").val('');
+            $('#btn_Search').trigger("click");
+        });
+        //查询回车事件
+        $('#txt_Keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+
+    }
+
+    //新增
+    function add() {
+        var height = "350px";
+        dialogOpen({
+            id: "Form",
+            title: '新增',
+            url: '/../@Url.Action("AddExplain")',
+            width: "600px",
+            height: height,
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+
+    }
+
+    function detailnew(id) {
+        var height = "800px";
+        dialogOpen({
+            id: "Detail",
+            title: '查看详情',
+            url: '/../@Url.Action("Detail")/' + id,
+            width: "1200px",
+            height: height,
+            btn: null
+        });
+    }
+
+    function editnew(id) {
+        var height = "350px";
+        dialogOpen({
+            id: "Form",
+            title: '编辑',
+            url: '/../@Url.Action("EditExplain")/' + id,
+            width: "600px",
+            height: height,
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+
+    }
+
+    function delnew(id) {
+        $.RemoveForm({
+            url: '/../@Url.Action("DeleteOne1")/',
+            param: { id: id },
+            success: function (data) {
+                $("#gridTable").resetSelection();
+                $("#gridTable").trigger("reloadGrid");
+            }
+        });
+
+    }
+</script>
+
+<div class="titlePanel">
+    <div class="title-search">
+        <table>
+            <tr>
+                <td>
+                    <label for="des">文件类型</label>
+                    <select id="des">
+                        <option value="">全部</option>
+                        <option value="操作说明书">操作说明书</option>
+                        <option value="操作介绍视频">操作介绍视频</option>
+                    </select>
+                </td>
+                <td style="padding-left: 2px;">
+                    <input id="txt_Keyword" type="text" class="form-control" placeholder="请输入要查询关键字" style="width: 200px;" />
+                </td>
+                <td style="padding-left: 5px;">
+                    <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                    <a id="btn_SearchAll" class="btn btn-primary">&nbsp;全部</a>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+    <div class="toolbar">
+        <div class="btn-group">
+            <a id="refresh" class="btn btn-default"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+            <a id="add" class="btn btn-default" onclick="add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+        </div>
+        @*<script>$('.toolbar').authorizeButton()</script>*@
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="gridTable"></table>
+    <div id="gridPager"></div>
+</div>

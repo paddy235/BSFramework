@@ -1,0 +1,422 @@
+﻿@model BSFramework.Application.Entity.ToolManage.ToolInfoEntity
+@{
+    ViewBag.Title = "AddTool";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")" />
+
+<script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>
+<script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+@*<script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>   与validform.js有冲突*@
+<script src="@Url.Content("~/Content/scripts/plugins/layui/layui.all.js")"></script>
+@*<script src="@Url.Content("~/Content/bootstrap/js/bootstrap.min.js")"></script>*@
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+
+
+@*<link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/index.css">
+    <link rel="stylesheet" href="../static/css/extend.css">
+    <link rel="stylesheet" href="../Font-Awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/peccancy.css">*@
+
+<script>
+   // var keyValue = '@Model.ID';
+    $(function () {
+
+        $('#uploadFile').change(cp);
+        $('#uploadFile1').change(cp1);
+        $('#uploadFile2').change(cp2);
+        jQuery('.sf').Validform({
+            tiptype: 3
+        });
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#OutDate',
+                type: 'date'
+            });
+            laydate.render({
+                elem: '#ValiDate',
+                type: 'date'
+            });
+        })
+        $('.main-sidebar,.main-content').niceScroll({
+            autohidemode: false
+        });
+
+        $('.user>.dropdown-menu').css({
+            left: $('.user').innerWidth() - $('.user>.dropdown-menu').width() - 65
+        })
+
+
+    })
+
+    function cp() {
+        $.ajaxFileUpload({
+            url: "@Url.Action("UploadFileNew")?para=hgz",
+            secureuri: false,
+            fileElementId: 'uploadFile',
+            dataType: 'json',
+            success: function (data) {
+                $("#HGZPath").val(top.contentPath + data.resultdata.path);
+                $("#HGZ").val(data.resultdata.name);
+                $('#uploadFile').change(cp);
+            }
+        });
+    }
+    function cp1() {
+        $.ajaxFileUpload({
+            url: "@Url.Action("UploadFileNew")?para=cer",
+            secureuri: false,
+            fileElementId: 'uploadFile1',
+            dataType: 'json',
+            success: function (data) {
+                $("#CerPath").val(top.contentPath + data.resultdata.path);
+                $("#Certificate").val(data.resultdata.name);
+                $('#uploadFile1').change(cp);
+            }
+        });
+    } function cp2() {
+        $.ajaxFileUpload({
+            url: "@Url.Action("UploadFileNew")?para=check",
+            secureuri: false,
+            fileElementId: 'uploadFile2',
+            dataType: 'json',
+            success: function (data) {
+                $("#CheckPath").val(top.contentPath + data.resultdata.path);
+                $("#CheckReport").val(data.resultdata.name);
+                $('#uploadFile2').change(cp);
+            }
+        });
+    }
+    var l;
+    function selMonth()
+    {
+        l=layer.open({
+            type: 1,
+            title: '选择检验周期',
+            content: $('#m4'),
+            area: ['430px', '250px']
+        })
+    }
+    function sel(c) {
+
+        $('#CheckCycle').val(c);
+        layer.close(l);
+    }
+    var l1;
+    function selTotal() {
+        l1 = layer.open({
+            type: 1,
+            title: '选择数量',
+            content: $('#m5'),
+            area: ['430px', '250px']
+        })
+    }
+   
+
+    function sel1(c) {
+        
+        $('#Total').val(c);
+        layer.close(l1);
+    }
+</script>
+<div class="main-content" style="height:100%;">
+    <div class="container-fluid" style="height:99%;">
+        @using (Html.BeginForm("Sub", "Tool", FormMethod.Post, new { @class = "sf", enctype = "multipart/form-data",style="height:100%;" }))
+        {
+            //@Html.HiddenFor(x => x.ID);
+            @Html.HiddenFor(x => x.RegPersonId);
+            @Html.HiddenFor(x => x.RegDate);
+            @Html.HiddenFor(x => x.TypeId);
+
+
+            <div class="mg-b-10" style="height:4%;">
+                <div class="" style="overflow: hidden;">
+                    <div class="pull-left title">
+                        <a href="@Url.Action("ToolList", new { id=Model.TypeId })">
+                            <img src="~/Content/styles/static/images/arrow-back-icon.png" alt="">
+                            添加工器具
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-e3ebfd pd-10" style="height:92%">
+                <div class="bg-fff add-peccancy" style="height:100%;">
+                    <div class="head">
+                        <div style="overflow: hidden;">
+                            <h1 class="pull-left">工器具信息：</h1>
+                            <div class="pull-right">
+                                <button type="submit" class="my-btn bg-3669e1">提交</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="body">
+                        <div class="form-wrap">
+                            <div>
+                                <label>名称 <span class="c-red">*</span></label>
+                                <div>
+                                    @Html.TextBoxFor(x => x.Name, new { nullmsg = "名称不能为空", datatype = "*", placeholder = "请输入工器具名称" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-wrap" style="">
+                            <div>
+                                <label>型号 <span class="c-red">*</span></label>
+                                <div>
+                                    @Html.TextBoxFor(x => x.Spec, new { nullmsg = "型号不能为空", datatype = "*", placeholder = "请输入型号" })
+                                </div>
+                            </div>
+                            <div>
+                                <label>数量 <span class="c-red">*</span></label>
+                                <div>
+                                    @Html.TextBoxFor(x => x.Total, new { nullmsg = "数量不能为空", datatype = "n1-100", onclick = "selTotal();", placeholder = "请选择", @readonly = "readonly" })
+                                    @*<img src="~/Content/styles/static/images/arrow-right-1.png" alt="">*@
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-wrap">
+                            <div>
+                                <label>出厂日期</label>
+                                <div>
+                                    @Html.TextBox("OutDate", Model.OutDate.ToString("yyyy-MM-dd"))
+                                    <img src="~/Content/styles/static/images/time.png" alt="">
+                                </div>
+                            </div>
+                            <div>
+                                <label>生产厂家</label>
+                                <div>
+                                    @Html.TextBoxFor(x => x.ProFactory, new { placeholder = "请输入" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-wrap">
+                            <div>
+                                <label>有效期</label>
+                                <div>
+                                    @Html.TextBox("ValiDate", Model.ValiDate.Value.ToString("yyyy-MM-dd"))
+                                    <img src="~/Content/styles/static/images/time.png" alt="">
+                                </div>
+                            </div>
+                            <div>
+                                <label>校验周期</label>
+                                <div>
+                                    @Html.TextBoxFor(x => x.CheckCycle, new { placeholder = "请选择", onclick = "selMonth();", @readonly = "readonly" })
+
+                                    @*<img src="~/Content/styles/static/images/arrow-right-1.png" alt="">*@
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-wrap">
+                            <div>
+                                <label>合格证</label>
+                                <div class="file" style="">
+
+                                    <label for="uploadFile" style="width:80%;">
+                                        @Html.TextBoxFor(x => x.HGZ, new { })
+                                        <img src="~/Content/styles/static/images/import-icon.png" alt="" style="margin-top:30px;">
+                                        <input type="file" name="uploadFile" id="uploadFile" style="display:none;">
+                                        @Html.TextBoxFor(x => x.HGZPath, new { style = "display:none" })
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <label>说明书</label>
+                                <div class="file" style="">
+
+                                    <label for="uploadFile1" style="width:80%;">
+                                        @Html.TextBoxFor(x => x.Certificate, new { })
+                                        <img src="~/Content/styles/static/images/import-icon.png" alt="" style="margin-top:30px;">
+                                        <input type="file" name="uploadFile1" id="uploadFile1" style="display:none;">
+                                        @Html.TextBoxFor(x => x.CerPath, new { style = "display:none" })
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-wrap" style="margin-bottom:30px;">
+                            <div>
+                                <label>检验报告</label>
+                                <div class="file" style="">
+
+                                    <label for="uploadFile2" style="width:80%;">
+                                        @Html.TextBoxFor(x => x.CheckReport, new { })
+                                        <img src="~/Content/styles/static/images/import-icon.png" alt="" style="margin-top:30px;">
+                                        <input type="file" name="uploadFile2" id="uploadFile2" style="display:none;">
+                                        @Html.TextBoxFor(x => x.CheckPath, new { style = "display:none" })
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-wrap">
+                            <div>
+                                <label>登记人</label>
+                                <div>
+                                    @Html.TextBoxFor(x => x.RegPersonName, new { placeholder = "请输入姓名", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div>
+                                <label>登记日期</label>
+                                <div>
+                                    @Html.TextBox("RegDate", Model.RegDate.ToString("yyyy-MM-dd"), new { @readonly = "readonly" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <footer class="main-footer" style="height:4%">
+                武汉博晟安全技术股份有限公司   版权所有
+            </footer>
+
+
+        }
+    </div>
+</div>
+
+<style type="text/css">
+    #m4 ul li {
+        width:140px;
+        list-style: none;
+        font-size: 20px;
+        margin-left: -20px;
+        line-height: 45px;
+        float:left;
+    }
+
+        #m4 ul li a {
+            color: #3669E1;
+        }
+
+        #m5 ul li {
+        width:75px;
+        list-style: none;
+        font-size: 28px;
+        margin-left: -22px;
+        line-height: 55px;
+        float:left;
+    }
+
+        #m5 ul li a {
+            color: #3669E1;
+        }
+</style>
+<div class="m4" id="m4">
+
+    <div style="text-align:center">
+        <ul style="margin-top:20px;">
+            <li>
+                <a href="#" name="1个月" onclick="sel(this.name);">1个月</a>
+            </li>
+            <li>
+                <a href="#" name="2个月" onclick="sel(this.name);">2个月</a>
+            </li>
+            <li>
+                <a href="#" name="3个月" onclick="sel(this.name);">3个月</a>
+            </li>
+            <li>
+                <a href="#" name="4个月" onclick="sel(this.name);">4个月</a>
+            </li>
+            <li>
+                <a href="#" name="5个月" onclick="sel(this.name);">5个月</a>
+            </li>
+            <li>
+                <a href="#" name="6个月" onclick="sel(this.name);">6个月</a>
+            </li>
+            <li>
+                <a href="#" name="1年" onclick="sel(this.name);">1&nbsp;年</a>
+            </li>
+            <li>
+                <a href="#" name="2年" onclick="sel(this.name);">2&nbsp;年</a>
+            </li>
+            <li>
+                <a href="#" name="3年" onclick="sel(this.name);">3&nbsp;年</a>
+            </li>
+            <li>
+                <a href="#" name="4年" onclick="sel(this.name);">4&nbsp;年</a>
+            </li>
+            <li>
+                <a href="#" name="5年" onclick="sel(this.name);">5&nbsp;年</a>
+            </li>
+            <li>
+                <a href="#" name="6年" onclick="sel(this.name);">6&nbsp;年</a>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+<div class="m5" id="m5">
+
+    <div style="text-align:center">
+        <ul style="margin-top:20px;">
+            <li>
+                <a href="#" name="1" onclick="sel1(this.name);">1</a>
+            </li>
+            <li>
+                <a href="#" name="2" onclick="sel1(this.name);">2</a>
+            </li>
+            <li>
+                <a href="#" name="3" onclick="sel1(this.name);">3</a>
+            </li>
+            <li>
+                <a href="#" name="4" onclick="sel1(this.name);">4</a>
+            </li>
+            <li>
+                <a href="#" name="5" onclick="sel1(this.name);">5</a>
+            </li>
+            <li>
+                <a href="#" name="6" onclick="sel1(this.name);">6</a>
+            </li>
+            <li>
+                <a href="#" name="7" onclick="sel1(this.name);">7</a>
+            </li>
+            <li>
+                <a href="#" name="8" onclick="sel1(this.name);">8</a>
+            </li>
+            <li>
+                <a href="#" name="9" onclick="sel1(this.name);">9</a>
+            </li>
+            <li>
+                <a href="#" name="10" onclick="sel1(this.name);">10</a>
+            </li>
+            <li>
+                <a href="#" name="11" onclick="sel1(this.name);">11</a>
+            </li>
+            <li>
+                <a href="#" name="12" onclick="sel1(this.name);">12</a>
+            </li>
+            <li>
+                <a href="#" name="13" onclick="sel1(this.name);">13</a>
+            </li>
+            <li>
+                <a href="#" name="14" onclick="sel1(this.name);">14</a>
+            </li>
+            <li>
+                <a href="#" name="15" onclick="sel1(this.name);">15</a>
+            </li>
+            <li>
+                <a href="#" name="16" onclick="sel1(this.name);">16</a>
+            </li>
+            <li>
+                <a href="#" name="17" onclick="sel1(this.name);">17</a>
+            </li>
+            <li>
+                <a href="#" name="18" onclick="sel1(this.name);">18</a>
+            </li>
+            <li>
+                <a href="#" name="19" onclick="sel1(this.name);">19</a>
+            </li>
+            <li>
+                <a href="#" name="20" onclick="sel1(this.name);">20</a>
+            </li>
+        </ul>
+    </div>
+
+</div>

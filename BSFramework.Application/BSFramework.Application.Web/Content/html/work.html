@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">-->
+    <link rel="stylesheet" type="text/css" href="css/common.css">
+    <link rel="stylesheet" type="text/css" href="css/work.css">
+    <link rel="stylesheet" type="text/css" href="css/an-skill-bar.css">
+    <title>国电汉川-部门工作首页</title>
+    <script src="../scripts/jquery/jquery-1.10.2.min.js"></script>
+    <script src="../scripts/jquery/jquery.url.js"></script>
+    <script>
+        function loadModule() {
+            var items = JSON.parse(bzApi.getDepartmentModules());
+            //var items = JSON.parse('[{"jumpKey":"LEG[MET]","key":"MET","name":"班前班后会","type":0},{"jumpKey":"LEG[KYT]","key":"KYT","name":"人身风险预控","type":4},{"jumpKey":"LEG[ACT]","key":"ACT","name":"班组活动","type":0},{"jumpKey":"LEG[EDU]","key":"EDU","name":"教育培训","type":0}]');
+
+            jQuery('.work_list1 li').each(function (i, e) {
+                var selectItems = jQuery.grep(items, function (o, j) {
+                    return o.key == jQuery(e).attr('id');
+                });
+                if (selectItems.length == 0) jQuery(e).hide();
+            });
+        }
+
+    </script>
+</head>
+<body>
+    <div class="body-wrap">
+        <h1 class="body_title">部门安全生产工作</h1>
+        <div class="clearfix body_main">
+            <div class="work_left fl">
+                <ul class="work_list1 clearfix">
+                    <li>
+                        <img src="images/work_icon1.png">
+                        <p>当月部门工作</p>
+                    </li>
+                    <li>
+                        <img src="images/work_icon2.png">
+                        <p>重点工作任务</p>
+                    </li>
+                    <li>
+                        <img src="images/work_icon3.png">
+                        <p>项目管理</p>
+                    </li>
+                    <li>
+                        <img src="images/work_icon4.png">
+                        <p>缺陷管理</p>
+                    </li>
+                    <li class="noClick">
+                        <img src="images/work_icon5.png">
+                        <p>正在开发中...</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="work_right fr">
+                <div class="noticeDiv">
+                    <div class="sec_top">
+                        <h3 class="sec_title">通知公告</h3>
+                    </div>
+                    <ul class="work_list2">
+                        <li class="clearfix">
+                            <p class="time fl">05/27<br /><span>08:45</span></p>
+                            <div class="fr">
+                                <h4>第三季度班组标准化考核结果通知</h4>
+                                <p>工会</p>
+                            </div>
+                        </li>
+                        <li class="clearfix">
+                            <p class="time fl">05/27<br /><span>08:45</span></p>
+                            <div class="fr">
+                                <h4>关于召开燃煤电厂综合性改造技术研讨会</h4>
+                                <p>生技部</p>
+                            </div>
+                        </li>
+                        <li class="clearfix">
+                            <p class="time fl">05/27<br /><span>08:45</span></p>
+                            <div class="fr">
+                                <h4>关于我厂冬季安全检查的通知</h4>
+                                <p>安监部</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="working_div">
+                    <div class="sec_top clearfix">
+                        <h3 class="sec_title fl">值班表</h3>
+                        <a class="fr">更多&gt;&gt;</a>
+                    </div>
+                    <div class="tableDiv">
+                        <table id="duty">
+                            <colgroup>
+                                <col width="170px">
+                                <col width="">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>本周</th>
+                                    <th>值班人员</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!--<tr>
+                                    <td>周一（10/8）</td>
+                                    <td>王鹏辉、李冰、熊红琴、周茹瑞</td>
+                                </tr>
+                                <tr>
+                                    <td>周二（10/9）</td>
+                                    <td>周成功、胡丽</td>
+                                </tr>
+                                <tr>
+                                    <td>周三（10/10）</td>
+                                    <td>周志仁、李冰</td>
+                                </tr>
+                                <tr>
+                                    <td>周四（10/11）</td>
+                                    <td>西欧、艾薇</td>
+                                </tr>
+                                <tr>
+                                    <td>周五（10/12）</td>
+                                    <td>周成、刘飞</td>
+                                </tr>
+                                <tr>
+                                    <td>周六（10/13）</td>
+                                    <td>刘敏、伍志国</td>
+                                </tr>
+                                <tr>
+                                    <td>周日（10/14）</td>
+                                    <td>熊红琴、周成功</td>
+                                </tr>-->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="js/jquery-2.2.4.min.js"></script>
+<script src="../scripts/jquery/jquery.url.js"></script>
+<script>
+    var userid = $.getUrlArgs('userId'), deptid = $.getUrlArgs('bzId'), category = 'day', num1 = 0, num2 = 0, num3 = 0, num4 = 0;
+    jQuery(function () {
+        jQuery.getJSON('../../Works/DepartmentHome/GetDutyData', { deptid: deptid }, function (json) {
+            jQuery('#duty tbody').empty();
+            jQuery.each(json, function (i, o) {
+                var d = new Date(parseInt(o.Date.replace(/^\/Date\(/, '').replace(/\)\/$/, '')));
+                jQuery('#duty tbody').append('<tr><td>' + o.Day + '（' + (d.getMonth() + 1) + '/' + d.getDate() + '）</td><td>' + o.Data + '</td></tr>');
+            });
+        });
+    });
+</script>
+</html>

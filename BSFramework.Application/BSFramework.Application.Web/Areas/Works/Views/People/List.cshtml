@@ -1,0 +1,345 @@
+﻿@model IEnumerable<BSFramework.Application.Entity.PeopleManage.PeopleEntity>
+
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/plugins/layui/css/layui.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/person.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/app.css")" />
+<script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+
+<script>
+    $(function () {
+        $(window).resize(function () {
+            setW();
+        }).trigger('resize');
+
+
+        $('#btnIdCardImport').click(function () {
+            //弹出提示对话框，提示用户正确放置身份证
+            iframeIndex = layer.open({
+                type: 1,
+                title: '初始化人员信息',
+                content: $('#div1'),
+                area: ['500px', '420px']
+            });
+
+            //主动获取硬件的处理结果
+            GetIdCardInfo();
+        })
+    });
+
+    //定时执行句柄
+    var idCardHandler = null;
+    //获取身份证信息
+    function GetIdCardInfo() {
+        idCardHandler = setTimeout(function () {
+            var items = JsObj.ReadCard();
+            if (items != "1") {
+                GetIdCardInfoSuccess(items);
+                clearTimeout(idCardHandler);
+            }
+            else {
+                GetIdCardInfo();
+            }
+
+        }, 100);
+    }
+
+    //获取身份证信息成功后的处理
+    function GetIdCardInfoSuccess(items) {
+        try {
+            var list = items.split(',');
+            if (list.length > 0 && list[0].length > 0) {
+                var name = list[0];
+                var ID = list[2];
+                var sex = list[1];
+                window.location.href = "../People/New?type=new&Name=" + escape(name) + "&ID=" + escape(ID) + "&sex=" + escape(sex);
+            }
+            else {
+                layer.alert('请将您的身份证放入感应区！');
+            }
+        } catch (e) {
+            alert(e.message);
+        }
+    }
+
+
+    function setW() {
+        var h = $(window).height();
+        $('.body').css('min-height', h - 310);
+    }
+    function btnok() {
+        var pid = jQuery('#lbid').val();
+    }
+    function del(id) {
+        jQuery('#lbid').val(id);
+    }
+
+    function dele() {
+
+        var keyValue = jQuery('#lbid').val();
+        $.ajax({
+            url: '@Url.Action("RemoveForm")',
+            type: 'post',
+            data: { keyValue: keyValue },
+            success: function (data) {
+                $('#modal3').modal('hide');
+                window.location.reload();
+            }
+        });
+    }
+    function show(id) {
+        var keyValue = id;
+        layer.open({
+            area: ['400px', '300px'],
+            title: '转岗确认中待转入部门确认',
+            type: 2,
+            content: '@Url.Action("getStateInfo")?keyValue=' + keyValue,
+        });
+
+        @*dialogOpen({
+            id: "Detail",
+            title: '查看',
+            url: '/../@Url.Action("getStateInfo")?keyValue=' + keyValue,
+            width: "300px",
+            height: "200px",
+            btn: ['关闭'],
+            callBack: function (iframeId) {
+                top.layer.close(dlg);
+            }
+        });*@
+
+    }
+
+</script>
+
+<div class="main-content">
+    <div class="container-fluid">
+        @using (Html.BeginForm("List", "People", new { page = 1, pagesize = 12 }, FormMethod.Post))
+        {
+            @Html.Hidden("pId")
+            <div>
+                <div class="title">成员管理</div>
+            </div>
+            <div class="bg-e3ebfd pd-10 my-body">
+
+                <div class="bg-fff">
+                    <div class="pd-b-10 bg-e3ebfd">
+                        <a href="@Url.Action("New", new { type="new"})" class="f-18 c-0d0d0d">
+                            <img src="~/Content/styles/static/images/add-icon.png" alt="">
+                            &nbsp;
+                            添加
+                        </a>
+                        &nbsp;&nbsp;
+                        @*<a id="btnIdCardImport" href="javascript:;" class="f-18 c-0d0d0d">
+                                <img src="~/Content/styles/static/images/add-icon.png" alt="">
+                                &nbsp;
+                                刷身份证添加
+                            </a>*@
+                        &nbsp;&nbsp;
+                        @*<a href="javascript:;" class="f-18 c-0d0d0d mg-l-20">
+                                <img src="~/Content/styles/static/images/add-icon-1.png" alt="">
+                                &nbsp;
+                                批量添加
+                            </a>*@
+                    </div>
+                    <div class="body">
+                        <table class="table text-center table-striped no-mg vertical">
+                            <thead>
+                                <tr>
+                                    <th width="10%" class="bg-fff">序号</th>
+                                    <th width="8%" class="bg-fff">姓名</th>
+                                    <th width="7%" class="bg-fff">性别</th>
+                                    <th width="10%" class="bg-fff">职务</th>
+                                    <th width="10%" class="bg-fff">年龄</th>
+                                    <th width="10%" class="bg-fff">政治面貌</th>
+                                    <th width="10%" class="bg-fff">联系方式</th>
+                                    <th width="10%" class="bg-fff">技术等级</th>
+                                    <th width="15%" class="bg-fff">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.Count(); i++)
+                                {
+                                    int n = ((int)ViewBag.current - 1) * 12 + i + 1;
+                                    string id = @Model.ToList()[i].ID;
+                                    <tr style="height:50px;">
+                                        <td width="10%">@n</td>
+                                        <td width="10%">
+                                            @{
+                                                if (Model.ToList()[i].state == "转岗确认中")
+                                                {
+                                                    <a style="text-decoration:none;" href="@Url.Action("Edit", new { id = id, type = "initobj" })">
+                                                        @Model.ToList()[i].Name
+                                                    </a> <a style="text-decoration:none;" onclick="show('@Model.ToList()[i].ID')">(转岗确认中)</a>
+                                                }
+                                                else if (Model.ToList()[i].state == "转岗待确认")
+                                                {
+                                                    <a style="text-decoration:none;" href="@Url.Action("Edit", new { id = id, type = "initobj" })">
+                                                        @Model.ToList()[i].Name
+                                                    </a> <a style="text-decoration:none;" onclick="show('@Model.ToList()[i].ID')">(转岗待确认)</a>
+
+                                                }
+                                                else
+                                                {
+                                                    <a style="text-decoration:none;" href="@Url.Action("Edit", new { id = id, type = "initobj" })">@Model.ToList()[i].Name</a>
+
+                                                }
+                                            }
+                                        </td>
+                                        <td width="10%">@Model.ToList()[i].Sex</td>
+                                        <td width="10%">@Model.ToList()[i].Quarters</td>
+                                        <td width="10%">@Model.ToList()[i].Age</td>
+                                        <td width="10%">@Model.ToList()[i].Visage</td>
+                                        <td width="10%">@Model.ToList()[i].LinkWay</td>
+                                        <td width="10%">@Model.ToList()[i].TecLevel</td>
+                                        <td width="10%">
+                                            @{
+                                                if (Model.ToList()[i].state == "转岗确认中")
+                                                {
+                                                    <a class="my-link detail"><img src="~/Content/styles/static/images/detail-icon.png" alt=""> 编辑</a>
+                                                    <a class="my-link remove mg-l-15"><img src="~/Content/styles/static/images/remove-icon-2.png" alt=""> 删除</a>
+
+                                                }
+                                                else if (Model.ToList()[i].state == "转岗待确认")
+                                                {
+                                                    <a class="my-link detail"><img src="~/Content/styles/static/images/detail-icon.png" alt=""> 编辑</a>
+                                                    <a class="my-link remove mg-l-15"><img src="~/Content/styles/static/images/remove-icon-2.png" alt=""> 删除</a>
+
+                                                }
+                                                else
+                                                {
+                                                    @*<a href="@Url.Action("Edit", new { id = id, type = "initobj" })" class="my-link detail"><img src="~/Content/styles/static/images/detail-icon.png" alt="">详情</a>*@
+                                                    <a href="@Url.Action("Edit", new { id = id, type = "editobj" })" class="my-link detail"><img src="~/Content/styles/static/images/detail-icon.png" alt=""> 编辑</a>
+                                                    <a id="@Model.ToList()[i].ID" href="#" onclick="del(this.id);" data-toggle="modal" data-target="#modal3" class="my-link remove mg-l-15"><img src="~/Content/styles/static/images/remove-icon-2.png" alt=""> 删除</a>
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="text-align:center;">
+                        <ul class="pagination">
+                            @if ((int)ViewBag.current == 1)
+                            {
+                                <li class="disabled">
+                                    <a>首页</a>
+                                </li>
+                                <li class="disabled">
+                                    <a>上一页</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    @Html.ActionLink("首页", "List", new { page = "1", pagesize = "12" })
+                                </li>
+                                <li>
+                                    @Html.ActionLink("上一页", "List", new { page = ((int)ViewBag.current - 1).ToString(), pagesize = "12" })
+                                </li>
+                            }
+                            @if (ViewBag.pages > 5) //超过5页
+                            {
+                                //显示前5页标识
+                                for (int i = (ViewBag.current - 1) / 12 * 10; i < 5; i++)
+                                {
+                                    <li class="@((i + 1) == ViewBag.current ? "people" : string.Empty)">
+                                        @Html.ActionLink((i + 1).ToString(), "List", new { page = (i + 1).ToString(), pagesize = "12" })
+                                    </li>
+                                }
+                                if ((int)ViewBag.current == (int)ViewBag.pages)
+                                {
+                                    <li class="disabled">
+                                        <a>...</a>
+                                        @*@Html.ActionLink("...", "List", new { page = ViewBag.pages.ToString(), pagesize = "8" })*@
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        @Html.ActionLink("...", "List", new { page = ((int)ViewBag.current + 1).ToString(), pagesize = "12" })
+                                    </li>
+                                }
+                            }
+                            else
+                            {
+                                for (int i = (ViewBag.current - 1) / 12 * 10; i < (Math.Ceiling((decimal)ViewBag.current / 12) * 10 > ViewBag.pages ? ViewBag.pages : Math.Ceiling((decimal)
+
+                                ViewBag.current / 12) * 10); i++)
+                                {
+                                    <li class="@((i + 1) == ViewBag.current ? "people" : string.Empty)">
+                                        @Html.ActionLink((i + 1).ToString(), "List", new { page = (i + 1).ToString(), pagesize = "12" })
+                                    </li>
+                                }
+                            }
+                            @if ((int)ViewBag.current == (int)ViewBag.pages || (int)ViewBag.pages == 0)
+                            {
+                                <li class="disabled">
+                                    <a>下一页</a>
+                                </li>
+                                <li class="disabled">
+                                    <a>末页</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    @Html.ActionLink("下一页", "List", new { page = ((int)ViewBag.current + 1).ToString(), pagesize = "12" })
+                                </li>
+                                <li>
+                                    @Html.ActionLink("末页", "List", new { page = ((int)ViewBag.pages).ToString(), pagesize = "12" })
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+                                                }
+        <footer class="main-footer">
+            武汉博晟安全技术股份有限公司   版权所有
+        </footer>
+    </div>
+
+</div>
+<div class="modal fade launch-modal" id="modal3" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">友好提示</h4>
+            </div>
+            <div class="modal-body">
+                <div class="text-center c-0d0d0d f-18 pd-t-20 pd-b-20">
+                    即将删除该数据，请确认！
+                </div>
+                <div class="text-center mg-t-20 mg-b-20">
+                    @*@Html.ActionLink("确认", "List", new { id = "", page = 1, pagesize = 5 })*@
+                    <label id="lbid" style="visibility:hidden"></label>
+                    <button onclick="dele();" type="submit" class="my-btn mg-r-15 bg-3669e1">确认</button>
+                    <button class="my-btn bd" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="div1" class="text-center c-0d0d0d f-18 pd-t-20 pd-b-20" style="display:block;">
+    <div style="height: 294px; line-height: 294px; background: url(../../Content/images/init-bg.png) center center no-repeat; font-size: 24px; color: #888888; text-align: center; ">
+        请将您的二代身份证放入感应区
+    </div>
+</div>
+
+

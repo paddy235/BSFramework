@@ -1,0 +1,339 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D6B8ABEA-C923-4605-99A9-B7ACA5DE4D8A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BSFramework.Application.Service</RootNamespace>
+    <AssemblyName>BSFramework.Application.Service</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\Debug\BSFramework.Application.Service.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\..\libs\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Activities" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccountService.cs" />
+    <Compile Include="Activity\ActivityActionService.cs" />
+    <Compile Include="Activity\ActivityEvaluateService.cs" />
+    <Compile Include="Activity\ActivitySubjectService.cs" />
+    <Compile Include="Activity\ApproveRecordService.cs" />
+    <Compile Include="Activity\DangerMeasureService.cs" />
+    <Compile Include="Activity\HumanDangerTrainingService.cs" />
+    <Compile Include="Activity\HumanDangerService.cs" />
+    <Compile Include="Activity\MeasuresService.cs" />
+    <Compile Include="Activity\DangerService.cs" />
+    <Compile Include="Activity\OrderinfoService.cs" />
+    <Compile Include="Activity\CultureWallInfoService.cs" />
+    <Compile Include="Activity\ReportService.cs" />
+    <Compile Include="Activity\SafetydayService.cs" />
+    <Compile Include="Activity\ScreensaverService.cs" />
+    <Compile Include="AppVersionManage\AppVersionService.cs" />
+    <Compile Include="AttendManage\AttendService.cs" />
+    <Compile Include="AttendManage\SetAttendService.cs" />
+    <Compile Include="AuthorizeManage\AuthorizeService.cs" />
+    <Compile Include="AuthorizeManage\ModuleFormInstanceService.cs" />
+    <Compile Include="AuthorizeManage\ModuleFormService.cs" />
+    <Compile Include="AuthorizeManage\AndroidmenuService.cs" />
+    <Compile Include="BaseManage\PersonDoshboardService.cs" />
+    <Compile Include="BaseManage\UserInfoService.cs" />
+    <Compile Include="BudgetAbout\CostService.cs" />
+    <Compile Include="BudgetAbout\BudgetService.cs" />
+    <Compile Include="BusinessExceptions\TrainingException.cs" />
+    <Compile Include="CarcOrCardManage\CarcOrCardService.cs" />
+    <Compile Include="CertificateManage\CertificateService.cs" />
+    <Compile Include="CertificateManage\UserCertificateService.cs" />
+    <Compile Include="CustomerManage\CashBalanceService.cs" />
+    <Compile Include="CustomerManage\ChanceService.cs" />
+    <Compile Include="CustomerManage\ExpensesService.cs" />
+    <Compile Include="CustomerManage\InvoiceService.cs" />
+    <Compile Include="CustomerManage\ReceivableService.cs" />
+    <Compile Include="CustomerManage\TrailRecordService.cs" />
+    <Compile Include="CustomerManage\CustomerContactService.cs" />
+    <Compile Include="CustomerManage\CustomerService.cs" />
+    <Compile Include="CustomerManage\OrderEntryService.cs" />
+    <Compile Include="CustomerManage\OrderService.cs" />
+    <Compile Include="CustomerManage\ReceivableReportService.cs" />
+    <Compile Include="CustomParameterManage\CustomParameterService.cs" />
+    <Compile Include="CustomParameterManage\CustomTemplateService.cs" />
+    <Compile Include="DeviceInspection\DeviceInspectionJobService.cs" />
+    <Compile Include="DeviceInspection\DeviceInspectionService.cs" />
+    <Compile Include="DeviceInspection\InspectionRecordService.cs" />
+    <Compile Include="DeptCycleTaskManage\DeptCycleTaskService.cs" />
+    <Compile Include="DeptCycleTaskManage\DeptWorkCycleTaskService.cs" />
+    <Compile Include="DrugManage\DrugInventoryService.cs" />
+    <Compile Include="DrugManage\DrugOutService.cs" />
+    <Compile Include="DrugManage\DrugGlassWareService.cs" />
+    <Compile Include="DrugManage\DrugService.cs" />
+    <Compile Include="DrugManage\DrugStockOutService.cs" />
+    <Compile Include="DrugManage\DrugStockService.cs" />
+    <Compile Include="DrugManage\GlassService.cs" />
+    <Compile Include="DrugManage\GlassStockService.cs" />
+    <Compile Include="DrugManage\InstrumentBDService.cs" />
+    <Compile Include="DrugManage\InstrumentCheckService.cs" />
+    <Compile Include="DrugManage\InstrumentService.cs" />
+    <Compile Include="EducationManage\EdActivityService.cs" />
+    <Compile Include="EducationManage\EduCommentTagService.cs" />
+    <Compile Include="EducationManage\EduAnswerService.cs" />
+    <Compile Include="EducationManage\EduAppraiseService.cs" />
+    <Compile Include="EducationManage\EduBaseInfoService.cs" />
+    <Compile Include="EducationManage\EduBookService.cs" />
+    <Compile Include="EducationManage\EduInventoryService.cs" />
+    <Compile Include="EducationManage\EduMessageService.cs" />
+    <Compile Include="EducationManage\EduPlanInfoService.cs" />
+    <Compile Include="EducationManage\EduPlanService.cs" />
+    <Compile Include="EducationManage\EduPlanVerifyService.cs" />
+    <Compile Include="EmergencyManage\EmergencyService.cs" />
+    <Compile Include="EmpowerManage\EmpowerService.cs" />
+    <Compile Include="EvaluateAbout\DesignationService.cs" />
+    <Compile Include="EvaluateAbout\EvaluateGroupTitleService.cs" />
+    <Compile Include="EvaluateAbout\EvaluateSetService.cs" />
+    <Compile Include="EvaluateAbout\WeightSetService.cs" />
+    <Compile Include="ExperienceManage\CommentService.cs" />
+    <Compile Include="ExperienceManage\IListSort.cs" />
+    <Compile Include="ExperienceManage\QuestionService.cs" />
+    <Compile Include="FlowManage\WFDelegateRecordService.cs" />
+    <Compile Include="FlowManage\WFDelegateRuleService.cs" />
+    <Compile Include="FlowManage\WFProcessInstanceService.cs" />
+    <Compile Include="FlowManage\WFProcessOperationHistoryService.cs" />
+    <Compile Include="FlowManage\WFProcessSchemeService.cs" />
+    <Compile Include="FlowManage\WFProcessTransitionHistoryService.cs" />
+    <Compile Include="FlowManage\WFRuntimeService.cs" />
+    <Compile Include="FlowManage\WFSchemeInfoService.cs" />
+    <Compile Include="FlowManage\WFSchemeContentService.cs" />
+    <Compile Include="FlowManage\WFFrmMainService.cs" />
+    <Compile Include="InnovationManage\AdviceService.cs" />
+    <Compile Include="InnovationManage\QcActivityService.cs" />
+    <Compile Include="InnovationManage\WorkInnovationService.cs" />
+    <Compile Include="KeyBoxManage\KeyBoxService.cs" />
+    <Compile Include="SweepManage\SweepService.cs" />
+    <Compile Include="TaskManage\TaskService.cs" />
+    <Compile Include="LllegalManage\LllegalAcceptService.cs" />
+    <Compile Include="LllegalManage\LllegalRefromService.cs" />
+    <Compile Include="LllegalManage\LllegalService.cs" />
+    <Compile Include="MisManage\TicketService.cs" />
+    <Compile Include="MisManage\FaultService.cs" />
+    <Compile Include="OndutyManage\OndutyMeetOnoffService.cs" />
+    <Compile Include="OndutyManage\OndutyRecordService.cs" />
+    <Compile Include="OndutyManage\OndutyMeetService.cs" />
+    <Compile Include="OndutyManage\FaceAttendanceService.cs" />
+    <Compile Include="OndutyManage\OndutyService.cs" />
+    <Compile Include="PeopleManage\PeopleService.cs" />
+    <Compile Include="PerformanceManage\PerformanceSecondService.cs" />
+    <Compile Include="PerformanceManage\PerformanceService.cs" />
+    <Compile Include="PerformanceManage\PerformancesetupSecondService.cs" />
+    <Compile Include="PerformanceManage\PerformancesetupService.cs" />
+    <Compile Include="PerformanceManage\PerformancetitleSecondService.cs" />
+    <Compile Include="PerformanceManage\PerformancetitleService.cs" />
+    <Compile Include="PerformanceManage\PerformanceupSecondService.cs" />
+    <Compile Include="PerformanceManage\PerformanceupService.cs" />
+    <Compile Include="ProducingCheck\CheckTemplateService.cs" />
+    <Compile Include="ProducingCheck\CheckCategoryService.cs" />
+    <Compile Include="PublicInfoManage\AdminPrettyService.cs" />
+    <Compile Include="PublicInfoManage\NewFileInfoService.cs" />
+    <Compile Include="PublicInfoManage\PackageService.cs" />
+    <Compile Include="PublicInfoManage\ScheduleService.cs" />
+    <Compile Include="PushInfoManage\PushInfoService.cs" />
+    <Compile Include="QuestionManage\QuestionBankService.cs" />
+    <Compile Include="ReportManage\RptTempService.cs" />
+    <Compile Include="SafeProduceManage\SafeProduceService.cs" />
+    <Compile Include="SafetyScore\AccountRuleService.cs" />
+    <Compile Include="SafetyScore\SafetyScoreService.cs" />
+    <Compile Include="SetManage\MeasureSetService.cs" />
+    <Compile Include="SevenSManage\SevensPictureEvaluationService.cs" />
+    <Compile Include="SevenSManage\SevenSService.cs" />
+    <Compile Include="SystemManage\DistrictPersonService.cs" />
+    <Compile Include="SystemManage\DataSetService .cs" />
+    <Compile Include="SystemManage\IndexAssocationService.cs" />
+    <Compile Include="SystemManage\IndexManageService.cs" />
+    <Compile Include="SystemManage\LogService.cs" />
+    <Compile Include="SystemManage\CodeRuleService.cs" />
+    <Compile Include="PublicInfoManage\FileFolderService.cs" />
+    <Compile Include="PublicInfoManage\FileInfoService.cs" />
+    <Compile Include="PublicInfoManage\EmailCategoryService.cs" />
+    <Compile Include="PublicInfoManage\EmailContentService.cs" />
+    <Compile Include="MessageManage\IMContentService.cs" />
+    <Compile Include="MessageManage\IMGroupService.cs" />
+    <Compile Include="MessageManage\IMUserService.cs" />
+    <Compile Include="PublicInfoManage\NewsService.cs" />
+    <Compile Include="PublicInfoManage\NoticeService.cs" />
+    <Compile Include="SystemManage\DataBaseBackupService.cs" />
+    <Compile Include="AuthorizeManage\FilterIPService.cs" />
+    <Compile Include="AuthorizeManage\FilterTimeService.cs" />
+    <Compile Include="SystemManage\DataBaseLinkService.cs" />
+    <Compile Include="SystemManage\DataBaseTableService.cs" />
+    <Compile Include="SystemManage\AreaService.cs" />
+    <Compile Include="AuthorizeManage\ModuleButtonService.cs" />
+    <Compile Include="AuthorizeManage\ModuleColumnService.cs" />
+    <Compile Include="AuthorizeManage\ModuleService.cs" />
+    <Compile Include="AuthorizeManage\PermissionService.cs" />
+    <Compile Include="BaseManage\DepartmentService.cs" />
+    <Compile Include="BaseManage\OrganizeService.cs" />
+    <Compile Include="BaseManage\RoleService.cs" />
+    <Compile Include="BaseManage\UserService.cs" />
+    <Compile Include="BaseManage\PostService.cs" />
+    <Compile Include="BaseManage\JobService.cs" />
+    <Compile Include="BaseManage\UserGroupService.cs" />
+    <Compile Include="SystemManage\DataItemDetailService.cs" />
+    <Compile Include="SystemManage\DataItemService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SystemManage\AppPackageService.cs" />
+    <Compile Include="SystemManage\FeedbackService.cs" />
+    <Compile Include="SystemManage\TerminalDataSetService.cs" />
+    <Compile Include="EvaluateAbout\EvaluateReviseService.cs" />
+    <Compile Include="SystemManage\WorkStandardService.cs" />
+    <Compile Include="ToolManage\ToolBorrowService.cs" />
+    <Compile Include="ToolManage\ToolCheckService.cs" />
+    <Compile Include="ToolManage\ToolInfoService.cs" />
+    <Compile Include="ToolManage\ToolInventoryService.cs" />
+    <Compile Include="ToolManage\ToolRepairService.cs" />
+    <Compile Include="ToolManage\ToolTypeService.cs" />
+    <Compile Include="WebApp\MedicalService.cs" />
+    <Compile Include="WebApp\UserExperiencService.cs" />
+    <Compile Include="WebApp\UserWorkAllocationService.cs" />
+    <Compile Include="WebApp\UserWorkStateService.cs" />
+    <Compile Include="WeChatManage\WeChatAppService.cs" />
+    <Compile Include="WeChatManage\WeChatOrganizeService.cs" />
+    <Compile Include="WeChatManage\WeChatUserService.cs" />
+    <Compile Include="Activity\ActivityService.cs" />
+    <Compile Include="EvaluateAbout\EvaluateService.cs" />
+    <Compile Include="SetManage\RiskFactorSetService.cs" />
+    <Compile Include="WorkMeeting\DangerAnalysisService.cs" />
+    <Compile Include="WorkMeeting\DepartmentTaskService.cs" />
+    <Compile Include="WorkMeeting\DepartmentPublishService.cs" />
+    <Compile Include="WorkMeeting\JobEvaluateService.cs" />
+    <Compile Include="WorkMeeting\MeetingQuestionSerivce.cs" />
+    <Compile Include="WorkMeeting\MeetingRecordService.cs" />
+    <Compile Include="WorkMeeting\MeetSubjectService.cs" />
+    <Compile Include="WorkMeeting\TaskService.cs" />
+    <Compile Include="WorkMeeting\ScoreService.cs" />
+    <Compile Include="WorkMeeting\WorkMeetingNoteService.cs" />
+    <Compile Include="WorkMeeting\WorkOrderService.cs" />
+    <Compile Include="WorkMeeting\WorkSettingService.cs" />
+    <Compile Include="WorkMeeting\CultureService.cs" />
+    <Compile Include="WorkMeeting\WorkmeetingService.cs" />
+    <Compile Include="WorkMeeting\WorkSetupService.cs" />
+    <Compile Include="WorkPlanManage\WorkPlanService.cs" />
+    <Compile Include="WorkReport\WorkReportService.cs" />
+    <Compile Include="YearWorkPlanManage\YearWorkPlanService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\BSFramework.Util\BSFramework.Data.EF\BSFramework.Data.EF.csproj">
+      <Project>{7c84f157-09b6-42d8-85f2-04af1f31a046}</Project>
+      <Name>BSFramework.Data.EF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Util\BSFramework.Data.Repository\BSFramework.Data.Repository.csproj">
+      <Project>{1751a2dd-0f00-4c76-b180-97e8f72fe078}</Project>
+      <Name>BSFramework.Data.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Util\BSFramework.Data\BSFramework.Data.csproj">
+      <Project>{528f308b-d2cd-4bd1-a94f-bf94abef08d7}</Project>
+      <Name>BSFramework.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Util\BSFramework.Util.Extension\BSFramework.Util.Extension.csproj">
+      <Project>{4b7dde80-dfa1-4938-93f8-3721e2c592b9}</Project>
+      <Name>BSFramework.Util.Extension</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Util\BSFramework.Util.FlowWork\BSFramework.Util.FlowWork.csproj">
+      <Project>{2db6492a-3cda-40cb-9bab-51f00510b0c2}</Project>
+      <Name>BSFramework.Util.FlowWork</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Util\BSFramework.Util.Log\BSFramework.Util.Log.csproj">
+      <Project>{2EF55895-D7DD-42D6-8741-F8100E5C210F}</Project>
+      <Name>BSFramework.Util.Log</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Util\BSFramework.Util.WebControl\BSFramework.Util.WebControl.csproj">
+      <Project>{93f81df7-5a0b-4a13-a90e-8cf7c41955c3}</Project>
+      <Name>BSFramework.Util.WebControl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Util\BSFramework.Util\BSFramework.Util.csproj">
+      <Project>{07aa2566-d0e5-47af-a17d-3b1c6aee598d}</Project>
+      <Name>BSFramework.Util</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Bst.Bzzd.DataSource\Bst.Bzzd.DataSource.csproj">
+      <Project>{0404B662-9130-473B-B472-2BCCB4D9A93A}</Project>
+      <Name>Bst.Bzzd.DataSource</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Bst.Bzzd.Sync\Bst.Bzzd.Sync.csproj">
+      <Project>{b44759ba-5ac5-4ccd-a221-5a0110b36070}</Project>
+      <Name>Bst.Bzzd.Sync</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Bst.ServiceContract.MessageQueue\Bst.ServiceContract.MessageQueue.csproj">
+      <Project>{cb80a5fd-cefc-43f6-8246-a51a2ee2c64b}</Project>
+      <Name>Bst.ServiceContract.MessageQueue</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BSFramework.Application.Entity\BSFramework.Application.Entity.csproj">
+      <Project>{c10920fe-8c74-4993-a7f4-1da189da842c}</Project>
+      <Name>BSFramework.Application.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BSFramework.Application.IService\BSFramework.Application.IService.csproj">
+      <Project>{6ce11ff9-1cb7-494e-89c7-5f06bea94211}</Project>
+      <Name>BSFramework.Application.IService</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!--<Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />-->
+  <!--<Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>-->
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

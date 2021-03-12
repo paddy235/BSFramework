@@ -1,0 +1,51 @@
+﻿@using BSFramework.Application.Entity.PublicInfoManage;
+@using Newtonsoft.Json;
+@{
+    ViewBag.Title = "ShowFile";
+    Layout = "~/Views/Shared/_Index.cshtml";
+    List<FileInfoEntity> fileList = Model;
+}
+
+<script>
+    var localdata = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(fileList,new JsonSerializerSettings() { DateFormatString="yyyy-MM-dd"}))')
+    $(function () {
+        jQuery('#grid').jqGrid({
+            colModel: [
+                { name: 'FileId', index: 'FileId', hidden: true, frozen: true },
+                {
+                    name: 'FileName', index: 'FileName', label: '文件名称', width: 260, align: 'center', sortable: false, formatter: function (value, colModel, rowobj) {
+                        var htmlStr = '<a style="text-decoration: underline;color: blue;"  href="../../ResourceFile/DownloadFile?keyValue=' + rowobj.FileId + '"  target="_blank">' + value + '</a>'
+                        return htmlStr;
+                    }
+                },
+                { name: 'CreateDate', index: 'CreateDate', label: '上传时间', width: 100, align: 'center', frozen: true, sortable: false },
+            ],
+            datatype: 'local',
+            autowidth: true,
+            height: jQuery(window).height() - 150,
+            rownumbers: true,
+            sortable: false,
+            shrinkToFit: false,
+            gridview: true,
+            data: localdata,
+            rowNum: localdata.length,
+            onCellSelect: function (rowid, iCol, cellcontent, e) {
+
+
+            }
+
+        });
+    })
+</script>
+
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-center col-md-12">
+        <div class="center-Panel">
+            <div class="panel-Title">附件</div>
+            <div class="gridPanel">
+                <table id="grid"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>

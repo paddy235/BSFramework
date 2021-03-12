@@ -1,0 +1,251 @@
+﻿@{
+    ViewBag.Title = "职位权限";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<script type="text/javascript">
+    var objectId = request('objectId');
+    var authorizeType = request('authorizeType');
+    var moduleId = "-1";
+    var moduleIds = "";
+    var moduleButtonIds = "";
+
+    $(function () {
+        initialPage();
+        GetTree();
+        GetGrid();
+        buttonOperation();
+    });
+    function GetTree() {
+        var item = {
+            height: 540,
+            showcheck: true,
+            url: "../../AuthorizeManage/PermissionJob/ModuleTreeJson?jobId=" + objectId,
+            onnodeclick: function (item) {
+                if (item.checkstate == 0) {
+                    $("#ModuleTree").setCheckedNodeOne(item.id);
+                }
+                moduleId = item.id;
+                var $gridTable = $('#gridTable');
+                GetDataAuthorize();
+                var postData = $gridTable.jqGrid("getGridParam", "postData");
+                delete postData["moduleId"];
+                $gridTable.jqGrid('setGridParam', {
+                    postData: { moduleId: item.id, jobId: objectId },
+                }).trigger('reloadGrid');
+            }
+        };
+        $("#ModuleTree").treeview(item);
+
+    }
+
+    //加载表格
+    function GetGrid() {
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            unwritten: false,
+            sortable: false,
+            url: "../../AuthorizeManage/ModuleButton/GetTreeListJson",
+            datatype: "json",
+            height: $(window).height() - 118,
+            autowidth: true,
+            colModel: [
+                { label: "主键", name: "ModuleButtonId", hidden: true },
+                { label: "名称", name: "FullName", align: "center", sortable: false },
+                { label: "编号", name: "EnCode", align: "center", sortable: false },
+                {
+                    label: "本人", name: "AuthorizeType", align: "center", sortable: false,
+                    formatter: function (cellvalue, options, rowObject) {
+                        var html = "";
+                        if (cellvalue.indexOf("1") >= 0) {
+                            html = "<input type=\"checkbox\" name=\"authorizeType\"  value=\"1\" checked=\"checked\" onclick=\"selMe(this,'" + rowObject.ModuleButtonId + "')\"  itemId=\"" + rowObject.ModuleButtonId + "\"  itemName=\"" + rowObject.FullName + "\" moduleId=\"" + moduleId + "\"  itemCode=\"" + rowObject.EnCode + "\" >";
+                        } else {
+                            html = "<input type=\"checkbox\" name=\"authorizeType\"  value=\"1\" onclick=\"selMe(this,'" + rowObject.ModuleButtonId + "')\"  itemId=\"" + rowObject.ModuleButtonId + "\"  itemName=\"" + rowObject.FullName + "\" moduleId=\"" + moduleId + "\" >";
+                        }
+                        return html;
+                    }
+                },
+                {
+                    label: "本部门", name: "AuthorizeType", align: "center", sortable: false,
+                    formatter: function (cellvalue, options, rowObject) {
+                        var html = "";
+                        if (cellvalue.indexOf("2") >= 0) {
+                            html = "<input type=\"checkbox\" name=\"authorizeType\" value=\"2\" checked=\"checked\" onclick=\"selMe(this,'" + rowObject.ModuleButtonId + "')\"  itemId=\"" + rowObject.ModuleButtonId + "\"  itemName=\"" + rowObject.FullName + "\" moduleId=\"" + moduleId + "\" itemCode=\"" + rowObject.EnCode + "\">";
+                        } else {
+                            html = "<input type=\"checkbox\" name=\"authorizeType\"   value=\"2\" onclick=\"selMe(this,'" + rowObject.ModuleButtonId + "')\"  itemId=\"" + rowObject.ModuleButtonId + "\"  itemName=\"" + rowObject.FullName + "\" moduleId=\"" + moduleId + "\" itemCode=\"" + rowObject.EnCode + "\">";
+                        }
+                        return html;
+                    }
+                },
+                {
+                    label: "本子部门", name: "AuthorizeType", align: "center", sortable: false,
+                    formatter: function (cellvalue, options, rowObject) {
+                        var html = "";
+                        if (cellvalue.indexOf("3") >= 0) {
+                            html = "<input type=\"checkbox\" name=\"authorizeType\" value=\"3\" checked=\"checked\" onclick=\"selMe(this,'" + rowObject.ModuleButtonId + "')\"  itemId=\"" + rowObject.ModuleButtonId + "\"  itemName=\"" + rowObject.FullName + "\" moduleId=\"" + moduleId + "\" itemCode=\"" + rowObject.EnCode + "\">";
+                        } else {
+                            html = "<input type=\"checkbox\" name=\"authorizeType\"  value=\"3\" onclick=\"selMe(this,'" + rowObject.ModuleButtonId + "')\"  itemId=\"" + rowObject.ModuleButtonId + "\"  itemName=\"" + rowObject.FullName + "\" moduleId=\"" + moduleId + "\" itemCode=\"" + rowObject.EnCode + "\">";
+                        }
+                        return html;
+                    }
+                },
+                {
+                    label: "本机构", name: "AuthorizeType", align: "center", sortable: false,
+                    formatter: function (cellvalue, options, rowObject) {
+                        var html = "";
+                        if (cellvalue.indexOf("4") >= 0) {
+                            html = "<input type=\"checkbox\" name=\"authorizeType\" value=\"4\" checked=\"checked\"  onclick=\"selMe(this,'" + rowObject.ModuleButtonId + "')\"  itemId=\"" + rowObject.ModuleButtonId + "\"  itemName=\"" + rowObject.FullName + "\" moduleId=\"" + moduleId + "\" itemCode=\"" + rowObject.EnCode + "\">";
+                        } else {
+                            html = "<input type=\"checkbox\" name=\"authorizeType\"   value=\"4\" onclick=\"selMe(this,'" + rowObject.ModuleButtonId + "')\"  itemId=\"" + rowObject.ModuleButtonId + "\"  itemName=\"" + rowObject.FullName + "\" moduleId=\"" + moduleId + "\" itemCode=\"" + rowObject.EnCode + "\">";
+                        }
+                        return html;
+                    }
+                },
+                {
+                    label: "全部", name: "AuthorizeType", align: "center", sortable: false,
+                    formatter: function (cellvalue, options, rowObject) {
+                        var html = "";
+                        if (cellvalue.indexOf("5") >= 0) {
+                            html = "<input type=\"checkbox\" name=\"authorizeType\" value=\"5\" checked=\"checked\" onclick=\"selMe(this,'" + rowObject.ModuleButtonId + "')\"  itemId=\"" + rowObject.ModuleButtonId + "\"  itemName=\"" + rowObject.FullName + "\" moduleId=\"" + moduleId + "\" itemCode=\"" + rowObject.EnCode + "\">";
+                        } else {
+                            html = "<input type=\"checkbox\" name=\"authorizeType\"   value=\"5\" onclick=\"selMe(this,'" + rowObject.ModuleButtonId + "')\"  itemId=\"" + rowObject.ModuleButtonId + "\"  itemName=\"" + rowObject.FullName + "\" moduleId=\"" + moduleId + "\" itemCode=\"" + rowObject.EnCode + "\">";
+                        }
+                        return html;
+                    }
+                }
+            ],
+            treeGrid: true,
+            treeGridModel: "nested",
+            ExpandColumn: "EnCode",
+            rowNum: "all",
+            rownumbers: true
+        });
+    }
+
+    //初始化页面
+    function initialPage() {
+        //layout布局
+        $('#layout').layout({
+            applyDemoStyles: true,
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+        //resize重设(表格、树形)宽高
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                // $('#gridTable').setGridWidth(($('.gridPanel').width()));
+                //$("#gridTable").setGridHeight($(window).height() - 141);
+                // $("#ModuleTree").setTreeHeight($(window).height() - 10);
+
+            }, 200);
+            e.stopPropagation();
+        });
+        $("#ModuleButton").height($(window).height() - 75);
+    }
+    //按钮操作（上一步、下一步、完成、关闭）
+    function buttonOperation() {
+        var $finish = $("#btn_finish");
+        //完成提交保存
+        $finish.click(function () {
+            var postData = {};
+            postData["jobId"] = jobId;
+            postData["moduleIds"] = String($("#ModuleTree").getCheckedAllNodes());
+            postData["moduleButtonIds"] = moduleButtonIds;
+            postData["moduleColumnIds"] = "";
+            postData["authorizeDataJson"] = JSON.stringify(GetDataAuthorize());
+            $.SaveForm({
+                close: false,
+                url: "../../AuthorizeManage/PermissionJob/SaveAuthorize",
+                param: postData,
+                loading: "正在授权...",
+                success: function () {
+                    $.currentIframe().$("#gridTable").trigger("reloadGrid");
+                }
+            })
+        })
+    }
+    //提交数据
+    function AcceptClick() {
+        var nodes = $("#ModuleTree").getCheckedAllNodes();
+        var currItem = $("#ModuleTree").getCurrentNode();
+        if (currItem == undefined) {
+            dialogMsg("请选择功能菜单！", 2);
+            return false;
+        }
+        var postData = {};
+        postData["authorizeType"] = authorizeType;
+        postData["jobId"] = objectId;
+        postData["moduleIds"] = String(nodes);
+        // postData["moduleIds"] = currItem.id;
+        postData["moduleButtonIds"] = moduleButtonIds;
+        postData["moduleColumnIds"] = currItem.id;
+        postData["authorizeDataJson"] = JSON.stringify(GetDataAuthorize());
+        $.SaveForm({
+            close: false,
+            url: "../../AuthorizeManage/PermissionJob/SaveAuthorize",
+            param: postData,
+            loading: "正在保存授权...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        });
+    }
+    function selMe(obj, ModuleButtonId) {
+        if (obj.checked) {
+            $(obj).parent().parent().find("input:checkbox").removeAttr("checked");
+            obj.checked = true;
+            moduleButtonIds += ModuleButtonId + ",";
+        } else {
+            moduleButtonIds = moduleButtonIds.replace(ModuleButtonId + ",", "");
+        }
+    }
+    //获取数据范围权限选中值、返回Json
+    function GetDataAuthorize() {
+        var dataAuthorize = [];//存储功能和数据的权限设置数据
+        $("input[name='authorizeType']:checked").each(function (i, dom) {
+            var authorizeType = $(dom).val();
+            var rowdata = {
+                IsRead: 0,
+                AuthorizeType: authorizeType,
+                ItemId: $(dom).attr("itemId"),
+                ItemName: $(dom).attr("itemName"),
+                ResourceId: $(dom).attr("moduleId"),
+                ItemCode: $(dom).attr("itemCode")
+            }
+            dataAuthorize.push(rowdata);
+        });
+        return dataAuthorize;
+    }
+</script>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west" style="width:300px;">
+        <div class="west-Panel">
+            <div class="panel-Title">功能菜单</div>
+            <div id="ModuleTree" style="margin: 10px;"></div>
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title">功能及数据权限</div>
+
+            <div class="gridPanel" style="margin-top:10px;">
+                <table id="gridTable"></table>
+            </div>
+        </div>
+    </div>
+    @*<div class="ui-layout-east" >
+            <div class="east-Panel" >
+                <div class="panel-Title">功能权限</div>
+               <div id="ModuleButton">
+
+               </div>
+            </div>
+        </div>*@
+</div>
+@*<div class="form-button" id="wizard-actions">
+        <a id="btn_finish"  class="btn btn-success">完成</a>
+    </div>*@
+
+
+
+

@@ -1,0 +1,128 @@
+﻿@using Newtonsoft.Json
+@model  IEnumerable<BSFramework.Application.Entity.PublicInfoManage.ViewMode.NnoticeModel>
+@{
+    ViewBag.Title = "IndexNoticePartView";
+    Layout = null;
+}
+
+<script src="~/Content/scripts/jquery/jquery-2.0.3.min.js"></script>
+<script src="~/Content/scripts/utils/framework-ui.js"></script>
+<link href="~/Content/styles/framework-ui.css" rel="stylesheet" />
+<script src="~/Content/styles/static/js/rem.js"></script>
+<link href="~/Content/styles/static/css/indexmanage.css" rel="stylesheet" />
+<script>
+    /**
+     * 详情
+     * @@param Id
+     */
+    var ShowDetail = (Id, jsonStr) => {
+        sessionStorage.setItem("notice_" + Id, jsonStr)
+        var url = '/..@Url.Action("IndexShowDetail","Notice")?Id=' + Id;
+            dialogOpen({
+                id: "Detail",
+                title: '通知公告详情',
+                url: url,
+                width: "1000px",
+                height: "900px",
+                btn: ['确定'],
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+    }
+    /** 更多 */
+    var More = () => {
+        top.openTab("e3f5f7f5-023e-4fb6-80de-d7538b242588", "../RoutineSafetyWork/Announcement/Index?mId=e3f5f7f5-023e-4fb6-80de-d7538b242588", "通知公告")
+        //var path = top.location.origin + top.location.pathname;
+        //console.log(path)
+        //parent.addTabSK();
+    }
+
+    $(function () {
+        $.ajax({
+            url: "@Url.Action("AjaxNoticData")",
+            type: "POST",
+            dataType:"JSON",
+            success: (data) => {
+                if (!!data && data.length > 0) {
+                    var contentHtml = "";
+                    $.each(data, (index, item) => {
+                        if (index > 4) return false;
+                        contentHtml += ' <tr onclick=\'ShowDetail("' + item.Id + '","' + JSON.stringify(item) + '")\' > ';
+                        contentHtml += ' <td>' + item.Title + '</td>';
+                        contentHtml += '  <td>' + item.ReleaseTime + '</td>';
+                        contentHtml += '  </tr>';
+                    });
+                    $("#tab_content").append(contentHtml);
+                }
+            },
+            error: (error) => {
+                console.error(error)
+            }
+        })
+
+    })
+</script>
+@*<div class="container-fluid">
+        <div class="row div_border">
+            <div class="col-xs-10"><span style="font-size:18px;"><b>通知公告</b></span></div>
+            <div class="col-xs-2" style="cursor:pointer;" onclick="More()">更多>></div>
+        </div>
+        @if (Model != null && Model.Count() > 0)
+        {
+            foreach (var item in Model)
+            {
+                <div class="row div_border" style=" min-height:35px; ">
+                    <div class="col-xs-12 aa">
+                        <div class="col-xs-10 padding_leftRight_0" style="cursor:pointer;" onclick='ShowDetail("@item.Id","@Html.Raw(HttpUtility.JavaScriptStringEncode( JsonConvert.SerializeObject(item,new JsonSerializerSettings() {  DateFormatString="yyyy-MM-dd HH:mm:ss"})))")'>@item.Title</div>
+                        <div class="col-md-2  padding_leftRight_0">@Html.Raw(item.ReleaseTime.HasValue ? item.ReleaseTime.Value.ToString("yyyy-MM-dd") : "")</div>
+                    </div>
+                </div>
+            }
+        }
+    </div>*@
+
+<div>
+    <div class="item_title">
+        <b>通知公告</b>
+        <span style="float:right;margin-right:10px;cursor:pointer;">    <a onclick='top.openTab("e3f5f7f5-023e-4fb6-80de-d7538b242588", "../RoutineSafetyWork/Announcement/Index?mId=e3f5f7f5-023e-4fb6-80de-d7538b242588", "通知公告")'>更多>>></a></span>
+    </div>
+    <div class="content chart2_content" style="display:block;">
+        <table cellpadding="0" cellspacing="0" id="tab_content">
+            @*@if (Model != null && Model.Count() > 0)
+            {
+                foreach (var item in Model.Take(5))
+                {
+                    <tr onclick='ShowDetail("@item.Id","@Html.Raw(HttpUtility.JavaScriptStringEncode(JsonConvert.SerializeObject(item, new JsonSerializerSettings() { DateFormatString = "yyyy-MM-dd HH:mm:ss" })))")'>
+                        <td>@item.Title</td>
+                        <td>@Html.Raw(item.ReleaseTime.HasValue ? item.ReleaseTime.Value.ToString("yyyy-MM-dd") : "")</td>
+                    </tr>
+                }
+            }*@
+        </table>
+    </div>
+</div>
+
+<style>
+    /*.aa {
+        display: flex;
+        align-items: center;
+    }
+
+    .div_border {
+        border-bottom: 1px solid #d9d9d9;
+        padding: 10px 0px
+    }
+
+    .padding_leftRight_0 {
+        padding-left: 0px;
+        padding-right: 0px;
+    }*/
+    td:first-child {
+        word-wrap: break-word;
+        width: 80%;
+        text-align: left;
+        padding-left: 10px;
+    }
+</style>
+

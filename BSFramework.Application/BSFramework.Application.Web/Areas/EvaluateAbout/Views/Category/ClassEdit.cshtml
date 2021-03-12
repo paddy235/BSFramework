@@ -1,0 +1,102 @@
+﻿@model BSFramework.Application.Web.Areas.EvaluateAbout.Models.CategoryModel
+
+@{
+    ViewBag.Title = "考评标准类别";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<script src="~/Content/scripts/business/Common.js" type="text/javascript"></script>
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.url.js")"></script>
+
+<style>
+    #ParentCategoryId {
+        display:none;
+    }
+</style>
+
+<script>
+    function fn$select() {
+        dialogOpen({
+            id: "Category",
+            title: "选择类别",
+            url: '/..@Url.Action("Select")',
+            width: "300px",
+            height: "500px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick(fn$selectover);
+            }
+        });
+    }
+
+    function fn$selectover(node) {
+        if (node) {
+            jQuery('#pcid').val(node.value);
+            jQuery('#pcategory').val(node.text);
+        }
+    }
+
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+
+        var json = jQuery('#form1').serializeJSON();
+        json["ParentCategory"] = $("#ParentCategoryId").val();
+        $.SaveForm({
+            url: '@Url.Action("ClassEdit")' + "/" + json.CategoryId,
+            param: json,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().fn$refreshtree(jQuery('#pcid').val());
+            }
+        })
+    }
+
+    jQuery(function () {
+        var node = $.currentIframe().currentNode;
+
+        if (node) {
+            jQuery('#pcid').val(node.value);
+            jQuery('#pcategory').val(node.text);
+        }
+    });
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right:30px;">
+            @Html.HiddenFor(x => x.CategoryId)
+            <table class="form">
+                <tr>
+                    <td class="formTitle">类别名称<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Category, new { @class = "form-control", placeholder = "请输入类别名称", isvalid = "yes", checkexpession = "NotNull" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">排序</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.SortCode, new { @class = "form-control", placeholder = "请输入序号", isvalid = "yes" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">上级类别</td>
+                    <td class="formValue">
+                        @*@Html.TextBoxFor(x => x.ParentCategory.Category,  new { @class = "form-control",@readonly = "false", placeholder = "请选择上级类别", onfocus = "this.blur()", id = "pcategory", onclick = "fn$select();" })
+                        <span class="input-button" onclick="fn$select();" title="选择上级类别">...</span>
+                        @Html.HiddenFor(x => x.ParentCategory.CategoryId, new { id = "pcid", @readonly = "false" })*@
+                        <input class="form-control" id="ParentCategory" readonly="readonly" style="" value="@Html.Raw(ViewData["parentCategory"])" />
+                        <input  class="form-control" id="ParentCategoryId" hidden="hidden" readonly="readonly" style="" value="@Html.Raw(ViewData["parentCategoryId"])" />
+                    </td>
+                </tr>
+               
+            </table>
+        </div>
+        <div id="ExpandInfo" class="tab-pane">
+            <div class="app_layout app_preview" style="border-top: 1px solid #ccc;" id="frmpreview"></div>
+        </div>
+    </div>
+</div>
+

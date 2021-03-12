@@ -1,0 +1,536 @@
+﻿@{
+    ViewBag.Title = "IndexCard";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+
+}
+<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group a.btn {
+            margin-top: 4px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+</style>
+<script>
+    var selectedRowIndex, currentNode;
+    var ck=@ViewBag.ck;
+    jQuery(function () {
+        if (ck==0) {
+            $("#addType").css("display","none");
+            $("#updateType").css("display","none");
+            $("#deleteType").css("display","none");
+            $("#import").css("display", "none");
+        }
+
+        $('#layout').layout({
+            applyDemoStyles: false,
+            west: {
+                size: 300,
+            },
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#grid').setGridWidth(($('.gridPanel').width()));
+                $("#grid").setGridHeight($(window).height() - 51 - jQuery('#titlebar').height() - jQuery('#toolbar').height() - 29);
+                jQuery('#tree').height(jQuery(window).height() - 50);
+            }, 100);
+            e.stopPropagation();
+
+        });
+
+
+        //jQuery('.toolbar').authorizeButton();
+
+        fn$loadtree();
+        var colModel= getcolModel();
+        jQuery('#grid').jqGrid({
+            url: '@Url.Action("GetCarkItems")',
+            datatype: "json",
+            height: $(window).height() - 51 - jQuery('#titlebar').height() - jQuery('#toolbar').height() - 29,
+            autowidth: true,
+            colModel: colModel,
+            rownumbers: true,
+            rowNum: 20,
+            viewrecords: true,
+            pager: '#gridPager',
+            gridComplete: function () {
+                var gridid = this.id;
+                $("#" + this.id).setSelection(selectedRowIndex, false);
+                var rows = $("#" + this.id).jqGrid("getRowData");//获取当前页记录行数据
+                //查询用户对该模块的数据操作权限
+                $(rows).each(function (i, item) {
+                    if (ck==1) {
+                        var html = "";
+
+                        html += "<a href=\"javascript:fn$edit('" + item.ID + "')\" title=\"修改\">修改</a>";
+                        html += "<a href=\"javascript:fn$delete('" + item.ID + "')\" title=\"删除\">删除</a>";
+                        //html += "<a href=\"javascript:fn$approve('" + item.ID + "')\" title=\"核准\">核准</a>";
+                        //html += "<a href=\"javascript:btn_edit('" + uId + "')\" title=\"编辑\">编辑</a>";
+                        //html += "<a href=\"javascript:btn_delete('" + uId + "')\" title=\"删除\">删除</a>";
+                        $("td[aria-describedby='" + gridid + "_action']").eq(i).html(html);
+                    }else{
+
+                        var html = "无";
+                        $("td[aria-describedby='" + gridid + "_action']").eq(i).html(html);
+                    }
+                });
+
+            }
+
+            //onSelectRow: function (rowid) {
+            //    selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            //}
+        })
+    });
+
+    function getcolModel() {
+        var colModel="";
+        if (ck==0) {
+            colModel= [
+                            { label: '主键', name: 'ID', hidden: true },
+                            { label: 'FilePath', name: 'FilePath', hidden: true },
+                            { label: "应急处置卡名称", name: "Name", width: 200, align: "center", sortable: false },
+                            { label: "类别", name: "TypeName", width: 80, align: "left", sortable: false },
+                            {
+                                label: "附件", name: "Path", width: 500, align: "left", sortable: false,
+                                formatter: function (cellvalue, options, rowObject) {
+                                    return "<a style='color:blue;' href=\"javascript:Download('" + rowObject.FileId + "')\" title=\"" + cellvalue + "\">" + cellvalue + "</a>"
+                                }
+                            },
+                            { label: "操作人", name: "CREATEUSERNAME", width: 80, align: "center", sortable: false },
+                            {
+                                label: "操作时间", name: "CreateDate", width: 120, align: "center", sortable: false
+                            ,
+                                formatter: function (cellvalue, options, rowObject) {
+                                    if (formatDate(cellvalue, 'yyyy-MM-dd') < formatDate("1900-01-01", 'yyyy-MM-dd')) {
+                                        return "";
+                                    } else {
+                                        return formatDate(cellvalue, 'yyyy-MM-dd');
+                                    }
+
+                                },
+                                formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                            },
+                            { label: "查看次数", name: "seenum", width: 120, align: "center", sortable: false },
+            ]
+        }else{
+        colModel= [
+                    { label: '主键', name: 'ID', hidden: true },
+                    { label: 'FilePath', name: 'FilePath', hidden: true },
+
+                    {
+                        label: '操作', name: 'action', width: 135, align: 'center', sortable: false
+                    },
+                    { label: "应急处置卡名称", name: "Name", width: 200, align: "center", sortable: false },
+                    { label: "类别", name: "TypeName", width: 80, align: "left", sortable: false },
+                    {
+                        label: "附件", name: "Path", width: 500, align: "left", sortable: false,
+                        formatter: function (cellvalue, options, rowObject) {
+                            return "<a style='color:blue;' href=\"javascript:Download('" + rowObject.FileId + "')\" title=\"" + cellvalue + "\">" + cellvalue + "</a>"
+                        }
+                    },
+                    { label: "操作人", name: "CREATEUSERNAME", width: 80, align: "center", sortable: false },
+                    {
+                        label: "操作时间", name: "CreateDate", width: 120, align: "center", sortable: false
+                    ,
+                        formatter: function (cellvalue, options, rowObject) {
+                            if (formatDate(cellvalue, 'yyyy-MM-dd') < formatDate("1900-01-01", 'yyyy-MM-dd')) {
+                                return "";
+                            } else {
+                                return formatDate(cellvalue, 'yyyy-MM-dd');
+                            }
+
+                        },
+                        formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                    },
+                    { label: "查看次数", name: "seenum", width: 120, align: "center", sortable: false },
+        ]
+        }
+        return colModel;
+    }
+    function Download(fileId) {
+        $.download("@Url.Action("DownloadFile")", "keyValue=" + fileId, 'post');
+    }
+    function fn$loadtree() {
+        jQuery('#tree').treeview({
+            height: $(window).height() - 50,
+            url: '@Url.Action("GetAllCardType")',
+            onnodeclick: function (node) {
+                jQuery('#grid').jqGrid("setGridParam", {
+                    postData: { key: jQuery('#itemcontent-key').val(), typeid: node.value },
+                    page: 1
+                }).trigger("reloadGrid");
+            }
+        });
+    }
+
+    function fn$addcategory() {
+        currentNode = jQuery('#tree').getCurrentNode();
+
+        dialogOpen({
+            id: "Form",
+            title: '新增类别',
+            url: '/../@Url.Action("EditCardType", new  { id = string.Empty})',
+            width: "500px",
+            height: "200px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    function fn$refreshtree(id) {
+        fn$loadtree();
+    }
+
+    function fn$refresh() {
+        jQuery('#grid').trigger("reloadGrid");
+    }
+
+    function fn$search() {
+        jQuery('#grid').jqGrid("setGridParam", {
+            postData: { key: jQuery('#itemcontent-key').val() },
+            page: 1
+        }).trigger("reloadGrid");
+    }
+
+    function fn$gosearch() {
+        jQuery('#itemcontent-key').val("")
+        jQuery('#grid').jqGrid("setGridParam", {
+            postData: { key: jQuery('#itemcontent-key').val() },
+            page: 1
+        }).trigger("reloadGrid");
+    }
+    function fn$deletecategory() {
+        var node = jQuery('#tree').getCurrentNode();
+        if (!node) {
+            dialogMsg('请选择类别！', 0);
+            return;
+        }
+
+        $.RemoveForm({
+            url: '/..@Url.Action("Delete")' + '/' + node.id,
+            success: function (data) {
+                fn$loadtree();
+            }
+        });
+    }
+    function fn$EditCardType() {
+        var node = jQuery('#tree').getCurrentNode();
+        if (!node) {
+            dialogMsg('请选择类别！', 0);
+            return;
+        }
+
+        dialogOpen({
+            id: "Form",
+            title: '修改类别',
+            url: '/../@Url.Action("EditCardType")?type=1&id=' + node.value+"&text="+node.text,
+            width: "500px",
+            height: "200px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    @*function fn$additem() {
+        currentNode = jQuery('#tree').getCurrentNode();
+
+        dialogOpen({
+            id: "Form",
+            title: '新增考评内容',
+            url: '/../@Url.Action("Edit2",new  { id = string.Empty})',
+            width: "800px",
+            height: "320px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }*@
+
+    function fn$edit(id) {
+        dialogOpen({
+            id: "Form",
+            title: '修改应急处置卡',
+            url: '/../@Url.Action("EditCard", new  { id = string.Empty})/' + id,
+            width: "800px",
+            height: "320px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+    function fn$delete(id) {
+        $.RemoveForm({
+            url: '/..@Url.Action("DeleteItem")' + '/' + id,
+            success: function (data) {
+                fn$refresh();
+            }
+        });
+    }
+
+    function fn$import() {
+        var node = jQuery('#tree').getCurrentNode();
+        if (!node) {
+            dialogMsg('请选择类别！', 0);
+            return;
+        }
+        if (node.hasChildren) {
+            dialogMsg('请不要选择父类！', 0);
+            return;
+        }
+        dialogOpen({
+            id: "Form",
+            title: '新增处置卡',
+            url: '/../@Url.Action("ImportCard")?TypeId=' + node.value,
+            width: "600px",
+            height: "600px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+</script>
+<script>
+    var selectedRowIndexExpand, currentNodeExpand;
+        jQuery(function () {
+        if (ck==0) {
+            $("#addType").css("display","none");
+            $("#updateType").css("display","none");
+            $("#deleteType").css("display","none");
+            $("#import").css("display", "none");
+        }
+
+        $('#layout').layout({
+            applyDemoStyles: false,
+            west: {
+                size: 300,
+            },
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#grid').setGridWidth(($('.gridPanel').width()));
+                $("#grid").setGridHeight($(window).height() - 51 - jQuery('#titlebar').height() - jQuery('#toolbarExpand').height() - 29);
+                jQuery('#tree').height(jQuery(window).height() - 50);
+            }, 100);
+            e.stopPropagation();
+
+        });
+
+        fn$loadtree();
+            var colModel = getcolModelExpand();
+            jQuery('#gridExpand').jqGrid({
+            url: '@Url.Action("GetCarkItems")',
+            datatype: "json",
+                height: $(window).height() - 51 - jQuery('#titlebar').height() - jQuery('#toolbarExpand').height() - 29,
+            autowidth: true,
+            colModel: colModel,
+            rownumbers: true,
+            rowNum: 20,
+            viewrecords: true,
+            pager: '#gridPager',
+            gridComplete: function () {
+                var gridid = this.id;
+                $("#" + this.id).setSelection(selectedRowIndex, false);
+                var rows = $("#" + this.id).jqGrid("getRowData");//获取当前页记录行数据
+                //查询用户对该模块的数据操作权限
+                $(rows).each(function (i, item) {
+                    if (ck==1) {
+                        var html = "";
+
+                        html += "<a href=\"javascript:fn$edit('" + item.ID + "')\" title=\"修改\">修改</a>";
+                        html += "<a href=\"javascript:fn$delete('" + item.ID + "')\" title=\"删除\">删除</a>";
+
+                        $("td[aria-describedby='" + gridid + "_action']").eq(i).html(html);
+                    }else{
+
+                        var html = "无";
+                        $("td[aria-describedby='" + gridid + "_action']").eq(i).html(html);
+                    }
+                });
+
+            }
+
+
+        })
+        });
+
+    function getcolModelExpand() {
+        var colModel = "";
+
+            colModel = [
+                { label: '主键', name: 'ID', hidden: true },
+                { label: 'FilePath', name: 'FilePath', hidden: true },
+
+                {
+                    label: '操作', name: 'action', width: 135, align: 'center', sortable: false
+                },
+                { label: "应急处置卡名称", name: "Name", width: 200, align: "center", sortable: false },
+                { label: "类别", name: "TypeName", width: 80, align: "left", sortable: false },
+                {
+                    label: "附件", name: "Path", width: 500, align: "left", sortable: false,
+                    formatter: function (cellvalue, options, rowObject) {
+                        return "<a style='color:blue;' href=\"javascript:Download('" + rowObject.FileId + "')\" title=\"" + cellvalue + "\">" + cellvalue + "</a>"
+                    }
+                },
+                { label: "操作人", name: "CREATEUSERNAME", width: 80, align: "center", sortable: false },
+                {
+                    label: "操作时间", name: "CreateDate", width: 120, align: "center", sortable: false
+                    ,
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (formatDate(cellvalue, 'yyyy-MM-dd') < formatDate("1900-01-01", 'yyyy-MM-dd')) {
+                            return "";
+                        } else {
+                            return formatDate(cellvalue, 'yyyy-MM-dd');
+                        }
+
+                    },
+                    formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                },
+                { label: "查看次数", name: "seenum", width: 120, align: "center", sortable: false },
+            ]
+
+        return colModel;
+    }
+
+</script>
+
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                应急处置卡类别
+            </div>
+            <div id="tree"></div>
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div id="titlebar" style="height:40px" class="panel-Title">
+                应急处置卡
+                <div class="btn-group" style="float:right;margin-right:50px">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#ExpandInfo" data-toggle="tab">本单位处置卡</a></li>
+                        <li><a href="#BaseInfo" data-toggle="tab">处置卡库</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tab-content">
+                <div id="ExpandInfo" class="tab-pane active">
+
+                    <div id="toolbarExpand" class="titlePanel">
+                        <div class="title-search">
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <label for="person">处置卡</label>
+                                    <input type="text" class="form-control" id="itemcontent-keyExpand">
+                                </div>
+                                <div class="form-group">
+                                    <a id="btn_SearchExpand" class="btn btn-primary" onclick="fn$search();"><i class="fa fa-search"></i> 查询</a>
+                                    <a class="btn btn-primary" onclick="fn$gosearch();">重置</a>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="toolbar">
+                            <div class="btn-group">
+                                <a id="addTypeExpand" class="btn btn-default" onclick="fn$addcategory()"><i class="fa fa-plus"></i> 新增类别</a>
+                                <a id="deleteTypeExpand" class="btn btn-default" onclick="fn$deletecategory()"><i class="fa fa-trash-o"></i> 删除类别</a>
+                                <a id="updateTypeExpand" class="btn btn-default" onclick="fn$EditCardType()"><i class="fa fa-trash-o"></i> 修改类别</a>
+                            </div>
+                            <div class="btn-group">
+                                @*<a id="add" class="btn btn-default" onclick="fn$additem()"><i class="fa fa-plus"></i>&nbsp;新增</a>*@
+                                <a id="importExpand" class="btn btn-default" onclick="fn$import()"><i class="fa fa-file-excel-o"></i>&nbsp;新增</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gridPanel">
+                        <table id="gridExpand"></table>
+                        <div id="gridPagerExpand"></div>
+                    </div>
+
+                </div>
+                <div id="BaseInfo" class="tab-pane">
+
+                    <div id="toolbar" class="titlePanel">
+                        <div class="title-search">
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <label for="person">处置卡</label>
+                                    <input type="text" class="form-control" id="itemcontent-key">
+                                </div>
+                                <div class="form-group">
+                                    <a id="btn_Search" class="btn btn-primary" onclick="fn$search();"><i class="fa fa-search"></i> 查询</a>
+                                    <a class="btn btn-primary" onclick="fn$gosearch();">重置</a>
+                                </div>
+                            </div>
+
+                            @*<table>
+                                    <tr>
+                                        <td>
+                                            <div id="queryCondition" class="btn-group">
+                                                <a class="btn btn-default dropdown-text" data-toggle="dropdown">选择条件</a>
+                                                <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                                                <ul class="dropdown-menu">
+                                                    <li><a data-value="Account">账户</a></li>
+                                                    <li><a data-value="RealName">姓名</a></li>
+                                                    <li><a data-value="Mobile">手机</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        <td style="padding-left: 2px;">
+                                            <input id="txt_Keyword" type="text" class="form-control" placeholder="请输入要查询关键字" style="width: 200px;" />
+                                        </td>
+                                        <td style="padding-left: 5px;">
+                                            <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                                        </td>
+                                    </tr>
+                                </table>*@
+                        </div>
+                        <div class="toolbar">
+                            <div class="btn-group">
+                                <a id="addType" class="btn btn-default" onclick="fn$addcategory()"><i class="fa fa-plus"></i> 新增类别</a>
+                                <a id="deleteType" class="btn btn-default" onclick="fn$deletecategory()"><i class="fa fa-trash-o"></i> 删除类别</a>
+                                <a id="updateType" class="btn btn-default" onclick="fn$EditCardType()"><i class="fa fa-trash-o"></i> 修改类别</a>
+                            </div>
+                            <div class="btn-group">
+                                @*<a id="add" class="btn btn-default" onclick="fn$additem()"><i class="fa fa-plus"></i>&nbsp;新增</a>*@
+                                <a id="import" class="btn btn-default" onclick="fn$import()"><i class="fa fa-file-excel-o"></i>&nbsp;新增</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gridPanel">
+                        <table id="grid"></table>
+                        <div id="gridPager"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

@@ -1,0 +1,144 @@
+﻿
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="~/Content/styles/static/js/rem.js"></script>
+    <link href="~/Content/styles/static/css/indexmanage.css" rel="stylesheet" />
+    <link href="~/Content/styles/framework-ui.css" rel="stylesheet" />
+    <!-- jQuery 2.1.4 -->
+    <script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/plugins/echarts/echarts.min.js")"></script>
+    <script>
+        $(function () {
+            getData();
+        })
+         function getData() {
+           $.ajax({
+            url: "@Url.Action("GetTodayJob", "IndexManage", new { area = "SystemManage" })",
+            type: "post",
+            dataType: "json",
+            async: false,
+               success: function (data) {
+                var setData = new Array();
+                var setName = new Array();
+                   for (var item in data) {
+                       setData.push(data[item]);
+                       setName.push(item);
+                   }
+                   chartData(setData, setName)
+            }
+           });
+
+
+        }
+        function chartData(setData, setName) {
+            var option = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    top: '8%',
+                    containLabel: true
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: setName,
+                        axisTick: {
+                            alignWithLabel: true
+                        },
+                        axisLabel: {
+                            textStyle: {
+                                color: '#000',
+                                fontSize: 14
+                            }
+                        },
+                        axisLine: {
+                            show: true
+                        }
+
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value',
+                        show: true
+                    }
+                ],
+                series: [
+
+                    {
+                        name: '',
+                        type: 'bar',
+                        barWidth: '50%',
+                        data: setData,
+                        itemStyle: {
+                            normal: {
+                                color: function (params) {
+                                    var colorList = ['#00afff', '#bf2caf', '#ffb01b', '#5264ff', '#13f2a3']
+                                    return colorList[params.dataIndex]
+                                },
+                                label: {
+                                    show: true,
+                                    position: 'top',
+                                    formatter: '{c}',
+                                    textStyle: {
+                                        color: 'auto',
+                                        fontSize: '14',
+                                        fontFamily: '微软雅黑',
+                                    }
+                                }
+                            }
+                        }
+
+                    },
+                ]
+            };
+            var chart = echarts.init(document.getElementById('chart1'));
+            chart.getZr().on('click', function (params) {
+                let point = [params.offsetX, params.offsetY];
+                if (chart.containPixel('grid', point)) {
+
+                    //var y  = chart.convertFromPixel({ seriesIndex: 0 },
+                    //    point
+                    //)[1];
+                    let xIndex = chart.convertFromPixel({ seriesIndex: 0 },
+                        point
+                    )[0];
+                    let op = chart.getOption();
+                    let name = op.xAxis[0].data[xIndex];
+                    top.openTab('', '@Url.Action("RiskLevelDetail", "WorkMeeting", new { area= "Works" })?RiskLevel=' + name+'','任务统计');
+                }
+            }
+            );
+
+            @*chart.on('click', function (params) {
+                top.openTab('','@Url.Action("RiskLevelDetail", "WorkMeeting", new { area= "Works" })','任务统计');
+            });*@
+            chart.setOption(option);
+
+        }
+
+    </script>
+</head>
+<body>
+    <div>
+        <div class="item_title">
+            <a  style="cursor:pointer;" onclick="top.openTab('','@Url.Action("RiskLevelDetail", "WorkMeeting", new { area= "Works" })','任务统计')">  <h2>今日作业</h2></a>
+        </div>
+        <div class="content">
+            <div id="chart1" style="min-height:300px;"></div>
+        </div>
+    </div>
+</body>
+</html>

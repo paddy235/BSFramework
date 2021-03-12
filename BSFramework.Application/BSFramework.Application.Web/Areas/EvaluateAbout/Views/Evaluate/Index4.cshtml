@@ -1,0 +1,367 @@
+﻿@using BSFramework.Entity.EvaluateAbout
+
+@model IList<BSFramework.Entity.EvaluateAbout.EvaluateCalcEntity>
+
+@{
+    ViewBag.Title = "考评";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/skin.css")">
+<script src="@Url.Content("~/Content/scripts/plugins/highcharts/highcharts.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/highcharts/highcharts-more.js")"></script>
+<style>
+    #table td {
+        padding: 8px 10px;
+    }
+
+        #table td:first-child {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        #table td div {
+            position: relative;
+        }
+
+        #table td span {
+            position: absolute;
+            width: 100px;
+            left: 50%;
+            margin-left: -50px;
+            top: 50%;
+            margin-top: -10px;
+            line-height: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        #table td em {
+            display: block;
+            height: 40px;
+            background: #9E78FF;
+            font-size: 16px;
+        }
+
+        #table td:nth-child(2) em {
+            background: #5FE2C2;
+        }
+
+    #table .current td {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    #table .current:nth-child(2) td {
+        padding-bottom: 10px;
+    }
+
+    #table .current .title {
+        font-weight: bold;
+        font-size: 40px;
+        color: #5FE2C2;
+    }
+
+    #table .current .title-2 {
+        color: #9E78FF;
+    }
+
+    #table .current:nth-child(2) .title {
+        color: #9E78FF;
+    }
+
+    #table .current .sub-title {
+        font-size: 16px;
+        font-weight: bold;
+        color: #9E78FF;
+    }
+
+    #table .sub-title:nth-child(2) {
+        color: #5FE2C2;
+    }
+
+    .bs-area-2 {
+        position: relative;
+    }
+
+        .bs-area-2 > .row {
+            height: 50px;
+            position: absolute;
+            top: -20px;
+            width: 100%;
+        }
+
+        .bs-area-2 > img {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-top: -12px;
+            margin-left: -30px;
+            z-index: 1000;
+        }
+
+    .table-align {
+        display: flex;
+        height: 100%;
+        align-items: center;
+    }
+</style>
+<script>
+    var pcts;
+    jQuery(function () {
+
+        var categories = jQuery.parseJSON('@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.categories))');
+
+        jQuery('#chart').highcharts({
+            chart: {
+                polar: true,
+                type: 'line'
+            },
+            title: {
+                enabled: false,
+                text: '考评PK',
+                x: 50,
+                style: {
+                    'font-weight': 'bold',
+                }
+
+            },
+            pane: {
+                size: '80%'
+            },
+            xAxis: {
+                categories: categories,
+                tickmarkPlacement: 'on',
+                lineWidth: 0,
+            },
+            yAxis: {
+                gridLineInterpolation: 'polygon',
+                lineWidth: 0,
+                min: 0,
+                labels: {
+                    enabled: false
+                }
+            },
+            tooltip: {
+                shared: true,
+                formatter: function () {
+                    var s = this.x;
+                    jQuery.each(this.points, function (i, o) {
+                        var pct = pcts[i], point = this;
+                        item = jQuery.grep(pct.Data, function (oo) {
+                            return oo.Category == point.key;
+                        });
+                        s += '<br/> <span style="color:' + point.color + '">\u25CF</span> ' + this.series.name + ': <b>' + parseFloat(item[0].ActualScore).toFixed(2) + '</b>';
+                    });
+                    return s;
+                }
+            },
+            legend: {
+                align: 'left',
+                verticalAlign: 'bottom',
+                layout: 'vertical'
+            },
+            series: []
+        });
+
+        jQuery.getJSON('@Url.Action("GetCalcScore3")', { evaluateid: jQuery('#season1').val(), groupid: '@Html.Raw(ViewBag.DeptId)', othergroupid: jQuery('#season2').val() }, function (json) {
+            pcts = json;
+            jQuery.each(json, function (i) {
+                var serie = {
+                    name: this.Season,
+                    pointPlacement: 'on',
+                    data: []
+                };
+
+                if (i == 0) {
+                    serie.dashStyle = 'longdash';
+                }
+
+                jQuery.each(this.Data, function (di, dd) {
+                    serie.data.push(dd.Pct);
+                });
+
+
+                jQuery('#chart').highcharts().addSeries(serie);
+            });
+
+            jQuery('.bs-area-2 > img').fadeOut();
+
+            var total = 0, total2 = 0;
+            jQuery.each(pcts[1].Data, function () {
+                total += this.ActualScore;
+                //jQuery('#table').append('<tr><td>' + this.Category + '</td><td>' + this.ActualScore + '</td></tr>');
+                jQuery('#table').append('<tr><td>' + this.Category + '</td><td><div><span>' + this.ActualScore + ' </span><em style="width:' + this.Pct + '%;"></em></div></td></tr>');
+            });
+
+            jQuery.each(pcts[2].Data, function (i) {
+                total2 += this.ActualScore;
+                jQuery('#table').find('tr:eq(' + i + ')').append('<td><div><span>' + this.ActualScore + ' </span><em style="width:' + this.Pct + '%;"></em></div></td>');
+            });
+
+            jQuery('#table').prepend('<tr class="current"><td>&nbsp;</td><td class="sub-title">排名' + pcts[1].Seq + '</td><td class="sub-title">排名' + pcts[2].Seq + '</td></tr>');
+            jQuery('#table').prepend('<tr class="current"><td width="33.3333%">' + '综合得分' + '</td><td  class="title title-1" width="33.3333%">' + total + '</td><td  class="title title-2" width="33.3333%">' + total2 + '</td></tr>');
+        });
+
+        jQuery('#season1').change(function () {
+            var season = jQuery(this).find('option:checked').text();
+
+            jQuery.getJSON('@Url.Action("GetCalcScore3")', { evaluateid: jQuery('#season1').val(), groupid: '@Html.Raw(ViewBag.DeptId)', othergroupid: jQuery('#season2').val() }, function (json) {
+                var data = [], total = 0;
+                pcts = json;
+
+                jQuery.each(json[0].Data, function (i) {
+                    data.push(this.Pct);
+                    total += this.ActualScore;
+                });
+                jQuery('#chart').highcharts().series[0].update({ name: json[0].Season });
+                jQuery('#chart').highcharts().series[0].setData(data);
+
+                data = [];
+                total = 0;
+                jQuery.each(json[1].Data, function (i) {
+                    data.push(this.Pct);
+                    total += this.ActualScore;
+                    jQuery('#table').find('tr:eq(' + (i + 2) + ')').find('td:eq(1)').html('<div><span>' + this.ActualScore + ' </span><em style="width:' + this.Pct + '%;"></em></div>');
+                });
+                jQuery('#table').find('tr:eq(0)').find('td:eq(1)').text(total);
+                jQuery('#table').find('tr:eq(1)').find('td:eq(1)').text('排名' + json[1].Seq);
+                jQuery('#chart').highcharts().series[1].update({ name: json[1].Season });
+                jQuery('#chart').highcharts().series[1].setData(data);
+
+                data = [];
+                total = 0;
+                jQuery.each(json[2].Data, function (i) {
+                    data.push(this.Pct);
+                    total += this.ActualScore;
+                    jQuery('#table').find('tr:eq(' + (i + 2) + ')').find('td:eq(2)').html('<div><span>' + this.ActualScore + ' </span><em style="width:' + this.Pct + '%;"></em></div>');
+                });
+                jQuery('#table').find('tr:eq(0)').find('td:eq(2)').text(total);
+                jQuery('#table').find('tr:eq(1)').find('td:eq(2)').text('排名' + json.Seq);
+                jQuery('#chart').highcharts().series[2].update({ name: json[2].Season });
+                jQuery('#chart').highcharts().series[2].setData(data);
+
+                //jQuery.each(json.Data, function (i) {
+                //    data.push(this.Pct);
+                //    total += this.ActualScore;
+                //    //jQuery('#table').find('tr:eq(' + (i + 2) + ')').find('td:eq(2)').html('<div><span>' + this.ActualScore + ' </span><em style="width:' + this.Pct + '%;"></em></div>');
+                //});
+                jQuery('#table').find('tr:eq(0)').find('td:eq(2)').text(total);
+                jQuery('#table').find('tr:eq(1)').find('td:eq(2)').text('排名' + json[2].Seq);
+
+                //jQuery('#chart').highcharts().series[2].update({ name: json.Season });
+                //jQuery('#chart').highcharts().series[2].setData(data);
+                //pcts[2] = json;
+            });
+        });
+
+        jQuery('#season2').change(function () {
+            var season = jQuery(this).find('option:checked').text();
+
+            jQuery.getJSON('@Url.Action("GetCalcScore3")', { evaluateid: jQuery('#season1').val(), groupid: '@Html.Raw(ViewBag.DeptId)', othergroupid: jQuery('#season2').val() }, function (json) {
+                var data = [], total = 0;
+                pcts = json;
+
+                jQuery.each(json[0].Data, function (i) {
+                    data.push(this.Pct);
+                    total += this.ActualScore;
+                });
+                jQuery('#chart').highcharts().series[0].update({ name: json[0].Season });
+                jQuery('#chart').highcharts().series[0].setData(data);
+
+                data = [];
+                total = 0;
+                jQuery.each(json[1].Data, function (i) {
+                    data.push(this.Pct);
+                    total += this.ActualScore;
+                    jQuery('#table').find('tr:eq(' + (i + 2) + ')').find('td:eq(1)').html('<div><span>' + this.ActualScore + ' </span><em style="width:' + this.Pct + '%;"></em></div>');
+                });
+                jQuery('#table').find('tr:eq(0)').find('td:eq(1)').text(total);
+                jQuery('#table').find('tr:eq(1)').find('td:eq(1)').text('排名' + json[1].Seq);
+                jQuery('#chart').highcharts().series[1].update({ name: json[1].Season });
+                jQuery('#chart').highcharts().series[1].setData(data);
+
+                data = [];
+                total = 0;
+                jQuery.each(json[2].Data, function (i) {
+                    data.push(this.Pct);
+                    total += this.ActualScore;
+                    jQuery('#table').find('tr:eq(' + (i + 2) + ')').find('td:eq(2)').html('<div><span>' + this.ActualScore + ' </span><em style="width:' + this.Pct + '%;"></em></div>');
+                });
+                jQuery('#table').find('tr:eq(0)').find('td:eq(2)').text(total);
+                jQuery('#table').find('tr:eq(1)').find('td:eq(2)').text('排名' + json[2].Seq);
+                jQuery('#chart').highcharts().series[2].update({ name: json[2].Season });
+                jQuery('#chart').highcharts().series[2].setData(data);
+            });
+        });
+    });
+
+</script>
+<!-- Content Wrapper. Contains page content -->
+<div class="main-content">
+    <div class="container-fluid bs-box">
+        <div class="bs-header">
+            <div class="title">
+                <a href="@Url.Action("Index3")">
+                    <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+                    数据对标
+                </a>
+            </div>
+            <div class="more">
+                @*<a href="javascript:;">
+                        <img src="@Url.Content("~/Content/styles/static/images/icon-21.png")" alt="">
+                        考评统计
+                    </a>*@
+            </div>
+        </div>
+        <div class="bs-body" style="padding:20px">
+            @*background:url('@Url.Content("~/Content/scripts/layui/css/modules/layer/default/loading-0.gif")') no-repeat center center;"*@
+            <div class="bs-area-2" style="padding:50px 40px 0 0;">
+                <img src="~/Content/scripts/layui/css/modules/layer/default/loading-0.gif" />
+                <div class="row" style="padding:0px 15px">
+                    <div class="col-md-4">
+                        <label style="font-size:18px;">考评季度</label>
+                        <span class="my-select" style="width:260px;">
+                            <select id="season1" style="border:0px solid gray; border-bottom-width:1px;">
+                                @{
+                                    var evaluations = ViewBag.evaluations as IList<EvaluateEntity>;
+                                    foreach (var item in evaluations)
+                                    {
+                                        <option value="@Html.Raw(item.EvaluateId)">@Html.Raw(item.EvaluateSeason)</option>
+                                    }
+                                }
+                            </select>
+                            <span class="icon"></span>
+                        </span>
+                    </div>
+                    <div class="col-md-2" style="text-align:right;">
+                        <label style="line-height:60px;font-size:18px;color:#8660E5">@Html.Raw(ViewBag.DeptName)</label>
+                        <label style="line-height:60px;font-size:22px; margin-left:20px;">PK</label>
+                    </div>
+                    <div class="col-md-3">
+                        <span class="my-select" style="width:260px;">
+                            <select id="season2" style="border:0px solid gray; border-bottom-width:1px;">
+                                @{
+                                    var groups = ViewBag.groups as IList<BSFramework.Application.Entity.BaseManage.DepartmentEntity>;
+                                    foreach (var item in groups)
+                                    {
+                                        <option value="@Html.Raw(item.DepartmentId)">@Html.Raw(item.FullName)</option>
+                                    }
+                                }
+                            </select>
+                            <span class="icon"></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="pull-left" style="width:60%;">
+                    <div id="chart" style="height:100%;">
+                    </div>
+                </div>
+                <div class="pull-right table-align" style="width:40%;">
+                    <table id="table" style="width:100%;"></table>
+                </div>
+            </div>
+        </div>
+        <div class="bs-footer">武汉博晟安全技术股份有限公司 版权所有</div>
+    </div>
+</div>
+<!-- /.content-wrapper -->

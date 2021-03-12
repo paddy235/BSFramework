@@ -1,0 +1,285 @@
+.warp ul.main {
+    margin-top: -10px;
+}
+
+    .warp ul.main:first-child {
+        margin-top: 0px;
+    }
+
+.answer p, .answer h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    line-height: 30px;
+}
+
+.rightSmall {
+    width: 7%;
+    position: absolute;
+    top: 0;
+    right: 40px;
+}
+
+    .rightSmall li {
+        height: 36px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 30px;
+    }
+
+.top {
+    width: 95%;
+    display: flex;
+    flex-wrap: wrap;
+    overflow: hidden;
+}
+
+    .top h1, .top p {
+    }
+
+    .top p {
+        border-bottom: 1px solid #ccc;
+    }
+
+    .top li {
+        width: 33%;
+        height: 44px;
+        display: flex;
+        margin-top: 26px;
+        align-items: center;
+    }
+
+        .top li p {
+            width: 61%;
+        }
+
+        .top li:first-child {
+            width: 100%;
+        }
+
+            .top li:first-child h1 {
+                width: 4.5%;
+            }
+
+            .top li:first-child p {
+                width: 86%;
+            }
+
+    .top h1 {
+        width: 14%;
+        color: #000000;
+        font-weight: 700;
+    }
+
+    .top h1 {
+        width: 14%;
+        font-size: 16px;
+        color: #000000;
+        font-weight: 700;
+    }
+
+.main {
+    background: url(../images/educate/yellow3.png)no-repeat 0 10px;
+    background-size: 1% 100%;
+    height: 416px;
+}
+
+    .main li {
+        padding-left: 2%;
+        display: flex;
+        line-height: 32px;
+        align-items: center;
+    }
+
+        .main li:nth-last-of-type(2) {
+            padding-left: 2%;
+            display: flex;
+            line-height: 32px;
+            align-items: flex-start;
+        }
+
+            .main li:nth-last-of-type(2) dt p:last-child {
+                width: 81%;
+            }
+
+        .main li h1 {
+            color: #000000;
+            width: 100px;
+            font-weight: 800;
+            font-size: 16px;
+            padding-right: 2%;
+        }
+
+.dianping:hover {
+    cursor: pointer;
+}
+
+.evaluate .left {
+    width: 30%;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+}
+
+.evaluate .right {
+    display: flex;
+    justify-content: space-around;
+}
+
+.main dl {
+    width: 100%;
+}
+
+.main dt {
+    display: flex;
+    line-height: 42px;
+    margin: 20px;
+}
+
+    .main dt p {
+        text-align: center;
+        height: 42px;
+        line-height: 42px;
+    }
+
+    .main dt span {
+        margin: 20px;
+    }
+
+    .main dt p:first-child {
+        width: 60px;
+        background: #f1f4fa;
+        margin-right: 20px;
+    }
+
+.main p:last-child {
+    border-bottom: 1px solid #ccc;
+    width: 80%;
+    display: flex;
+    margin: 0;
+    align-items: center;
+}
+
+.main dt img {
+    width: 9%;
+    height: 90px;
+    margin: 0 20px 20px 0;
+}
+
+.rightBottom {
+    width: 263px;
+    height: 236px;
+    padding: 20px;
+    position: absolute;
+    bottom: 0;
+    right: 0px;
+    z-index: 9;
+    border-left: 2px solid #e3ebfd;
+    border-top: 2px solid #e3ebfd;
+}
+
+    .rightBottom img {
+        margin-bottom: 20px;
+        margin-right: 10px;
+    }
+
+    .rightBottom button {
+        width: 40%;
+        height: 45px;
+    }
+
+    .rightBottom div {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+.result-bottom {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+    .result-bottom li {
+        width: 40%;
+        display: flex;
+    }
+
+        .result-bottom li:first-child h1 {
+            width: 6.5%;
+        }
+
+        .result-bottom li:first-child p {
+            text-indent: 20px;
+        }
+
+        .result-bottom li:first-child {
+            width: 80%;
+            height: 140px;
+            align-items: flex-start;
+        }
+
+.resultEvaluate {
+    height: 136px;
+    border: 2px solid #e3ebfd;
+}
+
+.evaluteContent {
+    width: 374px;
+    padding: 0 52px;
+}
+
+    .evaluteContent li {
+        line-height: 48px;
+        text-align: center;
+        font-size: 16px;
+        color: #374757;
+        border-bottom: 1px solid #ccc;
+    }
+
+        .evaluteContent li:hover {
+            background: #3669e1;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .evaluteContent li:hover {
+            background: #3669e1;
+            color: #fff;
+            cursor: pointer;
+        }
+
+    .evaluteContent div {
+        border-bottom: 1px solid #ccc;
+        height: 48px;
+        justify-content: center;
+        align-items: center;
+        background: url(../../dist/img/shizi.png)no-repeat center;
+    }
+
+        .evaluteContent div:hover {
+            cursor: pointer;
+        }
+
+    .evaluteContent input {
+        outline: none;
+        width: 100%;
+        border: 0;
+        text-align: center;
+    }
+
+    .evaluteContent .checkedEva {
+        background: #3669e1;
+        color: #fff;
+    }
+
+.autocompleter-list li {
+    width: auto;
+    height: 44px;
+    display: flex;
+    margin-top: 0px;
+    /*line-height: 30px;*/
+    padding: 6px 12px;
+}

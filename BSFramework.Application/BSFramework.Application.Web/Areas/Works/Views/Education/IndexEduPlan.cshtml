@@ -1,0 +1,469 @@
+﻿@using BSFramework.Application.Entity.SystemManage
+@{
+    ViewBag.Title = "IndexEduPlan";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+<script src="@Url.Content("~/Content/scripts/plugins/datepicker/WdatePicker.js")"></script>
+<script src="~/Content/scripts/plugins/AdminPrettyDesktopFirst/js/LoadData.js"></script>
+<script>
+
+    var _parentId = "";
+    var _isOrg = "";
+    var userId = top.currUserId; //当前用户Id
+    var deptCode = '@ViewBag.code';//当前用户所属部门Code
+    var orgCode = top.currUserOrgCode;//当前用户所属机构Code
+    var deptid = '@ViewBag.deptid';
+    var searchtype = request("searchtype");
+    var departmentId = "0";
+    $(function () {
+        InitialPage();
+        GetTree();
+        GetGrid();
+        LoadTodo();
+    });
+    //待办
+    function LoadTodo() {
+        //隐藏左侧组织结构，审核状态下拉框,审核状态列
+        if (searchtype && searchtype == "todo") {
+            $(".ui-layout-west").hide();
+            $("#colstate").hide(); //审核状态下拉框
+            var $gridTable = $('#gridTable');
+            $gridTable.hideCol(["VerifyState"]);
+            $(window).resize();
+
+            //查询
+            $('#btn_Search').trigger("click");
+        }
+    }
+    //加载组织机构树   url: "../../BaseManage/User/GetDeptTreeJson",
+    function GetTree() {
+        var url = '/..@Url.Action("GetDepartmentTree", "Department", new { area = "BaseManage"})?deptid=' + deptid;
+        @*if('@ViewBag.all'=='y')
+        {
+           // url = "../../BaseManage/User/GetDeptTreeJson";
+            url = '/..@Url.Action("GetDeptTreeJson", "User", new { area = "BaseManage" })';
+        }*@
+        var item = {
+            height: $(window).height() - 50,
+            url: url,
+            onnodeclick: function (item) {
+                deptCode = item.Code;
+                deptid = item.id;
+                $('#btn_Search').trigger("click");
+            }
+        };
+        //初始化
+        $("#itemTree").treeview(item);
+
+
+      $.ajax({
+            url: '@Url.Action("GetEduPlanVerifyList", "Education", new { area = "Works",page=1,rows=5000 })',
+            type: 'post',
+            success: function (data) {
+                $("#VerifyTimes").text(data.total);
+
+            }
+        });
+
+
+
+    }
+    //初始化页面
+    function InitialPage() {
+        if (!searchtype) {
+            $('#layout').layout({
+                applyDemoStyles: false,
+                onresize: function () {
+                    $(window).resize()
+                }
+            });
+        }
+        // resize重设(表格、树形)宽高
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#gridTable').setGridWidth(($('.gridPanel').width()));
+                $("#gridTable").setGridHeight($(window).height() - 170);
+                //$("#itemTree").setTreeHeight($(window).height());
+            }, 200);
+            e.stopPropagation();
+        });
+        //$('#layout').layout({
+        //    applyDemoStyles: false,
+        //    onresize: function () {
+        //        $(window).resize()
+        //    }
+        //});
+    }
+    function btn_add() {
+        dialogOpen({
+            id: "Add",
+            title: '新增计划',
+            width: "1000px",
+            url: '/../@Url.Action("IndexAddEduPlan")',
+            height: "750px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+
+        })
+    }
+
+
+    //加载表格
+    function GetGrid() {
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTable');
+        var year = $('#year').val();
+        var month = $('#month').val();
+        var edutype = jQuery('#type').val();
+        var state = jQuery('#state').val();
+        if (state == "全部") {
+            state = "";
+        }
+        var queryJson = {
+            txt_Keyword: $("#txt_Keyword").val(),
+            year: year,
+            state: state,
+            month: month,
+            edutype: edutype,
+            deptCode: deptCode
+        }
+
+        $gridTable.jqGrid({
+            url: "../../Works/Education/GetEduPlanInfo",
+            datatype: "json",
+            height: $(window).height() - 170,
+            postData: queryJson,
+            autowidth: true,
+            colModel: [
+               { label: '主键', name: 'id', hidden: true },
+                 {
+                     label: '操作', name: 'oper', width: 150, align: 'center', formatter: function (cellvalue, options, rowObject) {
+                         var html = '<a href="javascript:ndetail(\'' + rowObject.ID + '\')">查看</a>'
+
+                         html += '<a href="javascript:edit(\'' + rowObject.ID + '\')" code=\"edit\" >修改 </a>'
+                         html += '<a href="javascript:del(\'' + rowObject.ID + '\')" code=\"delete\" >删除</a>'
+                         return html;
+                     }
+                 },
+                {
+                    label: '培训类型', name: 'TrainTypeName', index: 'TrainTypeName', width: 150, align: 'center'
+                },
+                {
+                    label: '培训时间', name: 'time', index: 'time', width: 150, align: 'center',
+                    formatter: function (cellvaue, options, rowObject) {
+
+                        if (rowObject.TrainDateMonth) {
+                            return rowObject.TrainDateYear + "年" + rowObject.TrainDateMonth + "月";
+
+                        } else {
+                            return rowObject.TrainDateYear + "年";
+                        }
+                    }
+                },
+                {
+                    label: '组织部门', name: 'GroupName', index: 'SubmitDate', width: 300, align: 'center'
+                },
+                {
+                    label: '培训对象', name: 'TrainUserName', index: 'TrainUserName', width: 300, align: 'center'
+                },
+                 {
+                     label: '培训主题', name: 'TrainProject', index: 'TrainProject', width: 350, align: 'center'
+                 },
+                  {
+                      label: '培训内容', name: 'TrainContent', index: 'TrainContent', width: 350, align: 'center'
+                  },
+                   {
+                       label: '完成情况', name: 'workState', index: 'workState', width: 150, align: 'center'
+                   }
+
+            ],
+            viewrecords: true,
+            rowNum: 30,
+            // rowList: [30, 50, 100],
+            pager: "#gridPager",
+            sortname: 'CreateDate',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            shrinkToFit: true,
+            forceFit: true,
+            onSelectRow: function () {
+                selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            },
+            loadError: function (xhr, status, error) {
+                //top.location.href = "../../Login/Index?Login_Error=1";
+            }
+
+        });
+        //$gridTable.authorizeColModel()
+        ////查询条件
+        //$("#queryCondition .dropdown-menu li").click(function () {
+        //    var text = $(this).find('a').html();
+        //    var value = $(this).find('a').attr('data-value');
+        //    $("#queryCondition .dropdown-text").html(text).attr('data-value', value)
+        //});
+        //查询事件
+        $("#btn_Search").click(function () {
+            var year = $('#year').val();
+            var month = $('#month').val();
+            var edutype = jQuery('#type').val();
+            var state = jQuery('#state').val();
+            if (state == "全部") {
+                state = "";
+            }
+            var queryJson = {
+                txt_Keyword: $("#txt_Keyword").val(),
+                year: year,
+                state: state,
+                month: month,
+                edutype: edutype,
+                deptCode: deptCode
+            }
+            $gridTable.jqGrid('setGridParam', {
+                postData: queryJson, page: 1
+            }).trigger('reloadGrid');
+        });
+        $("#btn_SearchAll").click(function () {
+            //$('#from').val('');
+            //$('#to').val('');
+            $('#year').val('');
+            $('#month').val('');
+            jQuery('#state').val('0');
+            jQuery('#type').val('0');
+            $("#txt_Keyword").val('');
+            $('#btn_Search').trigger("click");
+        });
+        //查询回车
+        $('#txt_Keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+
+    }
+    function fn$refresh() {
+        var year = $('#year').val();
+        var month = $('#month').val();
+        var edutype = jQuery('#type').val();
+        var state = jQuery('#state').val();
+        if (state == "全部") {
+            state = "";
+        }
+        var queryJson = {
+            txt_Keyword: $("#txt_Keyword").val(),
+            year: year,
+            state: state,
+            month: month,
+            edutype: edutype,
+            deptCode: deptCode
+        }
+        $('#gridTable').jqGrid('setGridParam', {
+            postData: queryJson, page: 1
+        }).trigger('reloadGrid');
+    }
+
+    function ndetail(id) {
+        url = '/../@Url.Action("IndexAddEduPlan")?keyValue=' + id + "&mode=detail"
+        dialogOpen({
+            id: "Detail",
+            title: '查看',
+            url: url,
+            width: "1000px",
+            height: "750px",
+            btn: null
+            //callBack: function (iframeId) {
+            //    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            //}
+        });
+    }
+
+    function VeriFydetail() {
+        url = '/../@Url.Action("EduPlanVeriFy")'
+        dialogOpen({
+            id: "DetailVeriFy",
+            title: '查看',
+            url: url,
+            width: "1000px",
+            height: "750px",
+            btn: null
+            //callBack: function (iframeId) {
+            //    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            //}
+        });
+    }
+    function edit(id) {
+        url = '/../@Url.Action("IndexAddEduPlan")?keyValue=' + id + "&mode=edit"
+        dialogOpen({
+            id: "edit",
+            title: '修改',
+            url: url,
+            width: "1000px",
+            height: "750px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+    //删除
+    function del(keyValue) {
+        //  var keyValue = $("#gridTable").jqGridRowValue("id");
+        if (keyValue) {
+            $.RemoveForm({
+                url: "/../@Url.Action("delEduPlanInfoDetail")",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#gridTable").trigger("reloadGrid");
+                }
+            })
+        } else {
+            dialogMsg('请选择需要删除的记录！', 0);
+        }
+    }
+    function ExportData() {
+        var year = $('#year').val();
+        var month = $('#month').val();
+        var edutype = jQuery('#type').val();
+        var state = jQuery('#state').val();
+        if (state == "全部") {
+            state = "";
+        }
+        var txt_Keyword = $("#txt_Keyword").val();
+        window.location.href = '@Url.Action("ExportData")?year=' + year + '&month=' + month + '&edutype=' + edutype + '&state=' + state + '&txt_Keyword=' + txt_Keyword + "&deptCode=" + deptCode;
+    }
+
+    function ExportDataIn() {
+        dialogOpen({
+            id: 'Formimport',
+            title: '导入',
+            url: '/../@Url.Action("importPlanInfo")?type="1"',
+            width: '680px',
+            height: '415px',
+            btn: null
+
+        });
+
+    }
+
+    //function getAduitstate() {
+    //    debugger;
+    //    return (searchtype && searchtype == "todo") ? "3" : $("#state").val();
+    //}
+</script>
+
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+
+                <div class="col-md-10">
+                    组织机构
+                </div>
+                <div class="col-md-2 text-right" style="padding-right:8px;">
+                    <i class="fa fa-arrow-left" onclick="setBar(this)" style="cursor:pointer;" title="展开/收起"></i>
+                </div>
+
+            </div>
+            <div id="itemTree"></div>
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+
+            <div class="panel-Title">
+                培训计划
+                @*<div class="btn-group" style="float:right;margin-right:50px">
+                        <a onclick="VeriFydetail()">审核记录：<label id="VerifyTimes"></label>次</a>
+                    </div>*@
+            </div>
+            <div class="titlePanel">
+                <div class="title-search">
+                    <table>
+                        <tr>
+
+                            <td style="padding-left: 15px;">
+                                <label for="type">培训类型</label>
+                                <select id="type">
+                                    @{
+                                        var etype = ViewBag.etype as List<DataItemDetailEntity>;
+                                        foreach (var i in etype)
+                                        {
+                                            <option value="@i.ItemValue">@i.ItemName</option>
+                                        }
+                                    }
+                                </select>
+                            </td>
+
+                            <td style="padding-left: 15px;" id="colstate">
+                                <label for="type">完成情况</label>
+                                <select id="state">
+                                    <option value="全部">全部</option>
+                                    <option value="未完成">未完成</option>
+                                    <option value="已完成">已完成</option>
+                                </select>
+                            </td>
+                            <td style="padding-left: 15px; ">
+                                选择日期
+                            </td>
+                            @*<td style="padding-left: 5px; ">
+                                    <input id="from" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker();" style="width: 150px;" />
+                                </td>
+                                <td style="padding-left: 5px; ">
+                                    --
+                                </td>
+                                <td style="padding-left: 5px; ">
+                                    <input id="to" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker();" style="width: 150px;" />
+                                </td>*@
+                            <td style="padding-left: 5px; ">
+                                <input id="year" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker({ dateFmt: 'yyyy' });" style="width: 150px;" />
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                年
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                <input id="month" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker({ dateFmt: 'M' });" style="width: 150px;" />
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                月
+                            </td>
+
+                            <td style="padding-left: 5px;">
+                                <input id="txt_Keyword" type="text" class="form-control" placeholder="请输入要关键字" style="width: 200px;" />
+                            </td>
+                            <td style="padding-left: 15px;">
+                                <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                                <a id="btn_SearchAll" class="btn btn-primary">&nbsp;全部</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="toolbar">
+
+                    <div class="btn-group">
+                        <a id="lr-add" class="btn btn-default" onclick="btn_add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+                    </div>
+                    <div class="btn-group">
+                        <a id="lr-add" class="btn btn-default" onclick="ExportDataIn()"><i class="fa fa-pencil-square-o"></i>&nbsp;导入</a>
+                    </div>
+                    <div class="btn-group">
+                        <a id="lr-add" class="btn btn-default" onclick="ExportData()"><i class="fa fa-pencil-square-o"></i>&nbsp;导出</a>
+                    </div>
+
+
+                    <div class="btn-group">
+                        @*<a id="replace" class="btn btn-default" onclick="reload();"><i class="fa fa-refresh"></i>&nbsp;刷新</a>*@
+                    </div>
+                    <div class="btn-group">
+                    </div>
+                    <script>$('.toolbar').authorizeButton()</script>
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="gridTable"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>

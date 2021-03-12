@@ -1,0 +1,340 @@
+﻿@{
+    ViewBag.Title = "EvaluateForm";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<style type="text/css">
+    /*table tr {
+        line-height: 60px;
+    }*/
+</style>
+<script>
+    var userid = "@ViewBag.userid";
+    var deptid = "@ViewBag.deptid"
+    var keyValue = request('keyValue');
+    $(function () {
+        initControl();
+    })
+    //初始化控件
+    function initControl() {
+
+        $("input[name=isdept]").change(function () {
+            $("#deptname").val("");
+            $("#deptid").val("");
+            var isdept = $(this).val();
+            if (isdept == "0") {
+                $("input[name=ckradio]").each(function (i, o) {
+                    $(o).attr("disabled", false);
+                });
+            } else {
+
+                $("input[name=ckradio]").each(function (i, o) {
+                    $(o).attr("disabled", "disabled");
+                    if (i == 0) {
+                        $(o).prop("checked", true);
+                    } else {
+                        $(o).prop("checked", "");
+                    }
+                });
+            }
+        });
+        @*//负责人
+        $("#userjobs").ComboBox({
+            url: "/..@Url.Action("getRoles")",
+            description: "==请选择==",
+            height: "220px",
+            //id: "Value",
+            id: "Text",
+            text: "Text"
+        });*@
+        ////部门性质
+        //$("#module").ComboBox({
+        //    url: "../../SystemManage/DataItemDetail/GetDataItemListJson",
+        //    param: { EnCode: "EvaluateDept" },
+        //    //id: "ItemValue",
+        //    id: "ItemName",
+        //    text: "ItemName",
+        //    description: "==请选择==",
+        //    height: "200px"
+        //});
+        ////加载角色
+        //$("#userroleid").ComboBox({
+        //    url: top.contentPath + "/BaseManage/Role/GetListJson",
+        //    id: "RoleId",
+        //    //id: "FullName",
+        //    text: "FullName",
+        //    description: "==请选择==",
+        //    height: "220px",
+        //    allowSearch: true,
+        //}).bind("change", function () {
+        //    var value = $(this).attr('data-value');
+        //    var text = $(this).attr('data-text');
+        //    $("#userrole").val(text);
+        //});
+        //.bind("change", function () {
+        //    var value = $(this).attr('data-value');
+        //    if (value == "班组") {
+        //        jQuery('#TeamType').parent().show();
+        //        jQuery('#TeamType').parent().prev().show();
+        //    } else
+        //    {
+        //        jQuery('#TeamType').parent().hide();
+        //        jQuery('#TeamType').parent().prev().hide();
+        //    }
+        //})
+        //$("#TeamType").ComboBox({
+        //    url: "../../SystemManage/DataItemDetail/GetTeamTypeListJson",
+        //    param: { EnCode: "TeamType" },
+        //    id: "ItemValue",
+        //    text: "ItemName",
+        //    description: "==请选择==",
+        //    height: "150px"
+        //});
+        //获取表单
+        if (!!keyValue) {
+            $.SetForm({
+                url: "/..@Url.Action("getEvaluateSet")",
+                param: { keyValue: keyValue },
+                success: function (data) {
+
+                    $("#form1").formDeserialize(data);
+                    if (!data.deptname) {
+
+
+                        $("input[name=isdept]").each(function (i, o) {
+                            if (data.isgroup) {
+                                if ($(o).val()=="1") {
+                                    $(o).attr("checked", "checked");
+                                }
+                            } else {
+                                if ($(o).val() == "0") {
+                                    $(o).attr("checked", "checked");
+                                }
+                            }
+                            });
+
+
+
+                        if (data.isprofessional) {
+                            $("input[name=ckradio]").each(function (i, o) {
+                                if ($(o).val() == "1") {
+                                    $(o).attr("checked", "checked");
+                                }
+                            });
+                        }
+                    }
+
+                }
+            });
+        }
+    }
+
+    function fn$select() {
+        dialogOpen({
+            id: "SelectDept",
+            title: "选择部门",
+            url: '/..@Url.Action("SelectDept")',
+            width: "300px",
+            height: "500px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick(fn$selectover2);
+            }
+        });
+    }
+    function fn$selectover2(node) {
+        if (node) {
+            $("input[name=ckradio]").each(function (i, o) {
+                $(o).attr("disabled", false);
+            });
+            $("input[name=isdept]").each(function (i, o) {
+                $(o).removeAttr("checked");
+            });
+            $('#deptname').val(node.text);
+            $('#deptid').val(node.value);
+        }
+    }
+
+    function moduleList() {
+
+        var moduleListStr = $("#module").val();
+        dialogOpen({
+            id: "ButtonForm",
+            title: '添加按钮',
+            url: "/..@Url.Action("moduleGroup")?moduleListStr=" + moduleListStr,
+            width: "450px",
+            height: "300px",
+            callBack: function (iframeId) {
+                top.frames[iframeId].AcceptClick(function (dataJson) {
+                    var str = "";
+                    var strname = "";
+                    for (var i = 0; i < dataJson.length; i++) {
+                        if (i == (dataJson.length - 1)) {
+                            str += dataJson[i].ItemValue;
+                            strname += dataJson[i].ItemName;
+                        } else {
+                            str += dataJson[i].ItemValue + ",";
+                            strname += dataJson[i].ItemName + ",";
+                        }
+                    }
+                    $("#module").val(str);
+                    $("#modulename").val(strname)
+                });
+            }
+        });
+    }
+    //保存表单
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var postData = $("#form1").formSerialize(keyValue);
+        if (postData["module"] == "") {
+            dialogMsg('请选择模块！', 0);
+
+            return;
+        }
+        if (postData["evaluatesort"] == "") {
+            dialogMsg('请填写评价排序！', 0);
+            return;
+        }
+        var ckisdept="";
+        $("input[name=isdept]").each(function (i, o) {
+            if ($(o).prop("checked")) {
+                ckisdept = $(o).val();
+            }
+        });
+
+        if (ckisdept == undefined && postData["deptname"] == "") {
+            dialogMsg('请选择评价部门！', 0);
+            return;
+        }
+        if (postData["deptname"] != "") {
+            postData["isdept"] = false;
+            postData["isgroup"] = false;
+        } else {
+            postData["isdept"] = ckisdept == "0";
+            postData["isgroup"] = ckisdept == "1";
+        }
+
+        if (postData["userrole"] == "==请选择==") {
+            postData["userrole"] = "";
+        }
+        if (postData["userroleid"] == "==请选择==") {
+            postData["userroleid"] = "";
+        }
+        var isprofessional = "";
+        $("input[name=ckradio]").each(function (i, o) {
+            if ($(o).prop("checked")) {
+                isprofessional = $(o).val();
+            }
+        });
+        postData["isprofessional"] = isprofessional == "1";
+
+        $.SaveForm({
+            url: "/..@Url.Action("SaveEvaluateSet")?keyValue=" + keyValue,
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#grid").resetSelection();
+                $.currentIframe().$("#grid").trigger("reloadGrid");
+            }
+        })
+    }
+    function sel1() {
+        var jobname = $("#userjobs").val();
+        selectRole(userid,deptid,jobname, 1, 2, window.document.body, 'userjobs');
+
+    }
+    /// <summary>
+    /// 选择角色
+    /// </summary>
+    ///<param name="deptId">查询条件，根据mode的值查询方式会不同</param>
+    /// <param name="checkMode">单选或多选，0:单选，1:多选</param>
+    /// <param name="mode">查询模式，0:获取机构ID为Ids下所有的部门(即OrganizeId=Ids)，1:获取部门ParentId为Ids下所有部门(即ParentId=Ids)，2:获取部门的parentId在Ids中的部门(即ParentId in(Ids))，3:获取部门Id在Ids中的部门(即DepartmentId in(Ids))</param>
+    ///<param name="winObject">窗体中需要查找domId的对象，一般可写成window.document.body或this.parentNode</param>
+    ///<param name="domId">接收返回值的dom节点的ID，多个用逗号分隔，顺序依次为用户名称,用户账号，用户Id（多选用逗号分隔）</param>
+    function selectRole(userid, deptid, jobname, checkMode, mode, winObject, domId) {
+        return dialogOpen({
+            id: "Role",
+            title: "选择岗位",
+            url: '/..@Url.Action("SelectJob", "Activity")?deptId=' + deptid + "&userid=" + userid + "&checkMode=" + checkMode + "&mode=" + mode + "&jobname=" + jobname,
+            width: "250px",
+            height: "500px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick(winObject, domId);
+            }
+        });
+    }
+
+</script>
+<div style="margin-left: 10px; margin-top: 20px; margin-right: 30px;">
+    <table class="form">
+        <colgroup>
+            <col style="width:120px;" />
+            <col />
+            <col style="width:120px;" />
+            <col />
+        </colgroup>
+
+        <tr>
+            <th class="formTitle">模块名称<font face="宋体">*</font></th>
+            <td class="formValue">
+                <input id="modulename" type="text" class="form-control" placeholder="请输入名称" isvalid="yes" onclick="moduleList()" checkexpession="NotNull" />
+
+                <input id="module" type="text" class="form-control" placeholder="请输入名称" isvalid="yes" style="display:none" checkexpession="NotNull" />
+                @*<div id="module" type="select" class="ui-select" checkexpession="NotNull" isvalid="yes"></div>*@
+            </td>
+            <th class="formTitle">评价顺序<font face="宋体">*</font></th>
+            <td class="formValue">
+                <input id="evaluatesort" type="text" class="form-control" placeholder="请输入名称" isvalid="yes" checkexpession="NotNull" />
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">评价部门<font face="宋体">*</font></th>
+            <td class="formValue">
+                <input id="deptname" class="form-control" placeholder="点击选择部门" readonly="readonly" onclick="fn$select();" value="" />
+                <input type="hidden" id="deptid" value="" />
+            </td>
+            <td class="formTitle">
+                <input type="radio" name="isdept" value="0" />所属部门
+                <input type="radio" name="isdept" value="1" />所属班组
+            </td>
+            <td class="formValue"></td>
+        </tr>
+        @*<tr>
+            <th class="formTitle">评价角色</th>
+            <td class="formValue" colspan="3">
+                <div id="userroleid" type="select" class="ui-select"  isvalid="yes"></div>
+                <input type="hidden" id="userrole" value="" />
+               <input id="userrole" type="text" class="form-control" placeholder="请输入名称" isvalid="yes" checkexpession="NotNull" />
+            </td>
+        </tr>*@
+        <tr>
+            <th class="formTitle">评价岗位</th>
+            <td class="formValue" colspan="3">
+                @*<div id="userjobs" type="select" class="ui-select"  isvalid="yes"></div>*@
+                <input id="userjobs" type="text" class="form-control" placeholder="请选择岗位" isvalid="yes" checkexpession="NotNull" readonly onclick="sel1();" />
+                <span class="input-button" onclick="sel();" title="选取图标">...</span>
+
+                @*<input id="userjobs" type="text" class="form-control" placeholder="请输入名称" isvalid="yes" checkexpession="NotNull" />*@
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">启用专业类别</th>
+            <td class="formValue" colspan="3">
+                <input type="radio" name="ckradio" value="0" checked="checked" disabled="disabled" />否
+                <input type="radio" name="ckradio" value="1" disabled="disabled" />是
+            </td>
+
+        </tr>
+        <tr>
+            <th class="formTitle">排序</th>
+            <td class="formValue">
+                <input id="sort" type="text" class="form-control" placeholder="请输入名称" isvalid="yes"  />
+            </td>
+            <th class="formTitle"></th>
+            <td class="formValue"></td>
+        </tr>
+
+
+    </table>
+</div>

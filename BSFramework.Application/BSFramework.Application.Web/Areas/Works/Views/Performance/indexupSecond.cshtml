@@ -1,0 +1,182 @@
+﻿
+@{
+    ViewBag.Title = "indexup";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+
+}
+
+<script>
+    var deptid = '@ViewBag.deptid';
+    $(function () {
+
+        var time = '@ViewBag.time';
+        if (time.split('-').length > 1) {
+            $("#months").val(time.split('-')[1] + "月");
+            $("#years").val(time.split('-')[0] + "年");
+        } else {
+            $("#years").val(time.split('-')[0] + "年");
+        }
+
+        GetGrid(time);
+
+    });
+    function getall() {
+        $("#months").val("");
+        var time = $("#years").val();
+        go(time.replace("年", ""))
+    }
+
+    function datebind() {
+        var nowtime = '@ViewBag.time';
+        var nowyear = nowtime.split('-')[0] + "年";
+        if ($("#years").val() != nowyear) {
+            WdatePicker({
+                onpicked: get,
+                dateFmt: 'MM月',
+                minDate: '%y-01'
+            });
+
+        } else {
+            WdatePicker({
+                dateFmt: 'MM月', minDate: '%y-01', maxDate: '%y-#{%M-1}', onpicked: get
+            })
+        }
+    }
+
+    function get() {
+        var time = "";
+        var nowtime = '@ViewBag.time';
+        var nowyear = nowtime.split('-')[0] + "年";
+        if ($("#years").val() == nowyear) {
+            var date = new Date()
+            var nowmonth = date.getMonth();
+            var ck = $("#months").val().replace("月", "");
+            if ("0" + nowmonth < ck) {
+                $("#months").val("0"+nowmonth + "月");
+            }
+        }
+        var Strtime = $("#years").val() + $("#months").val();
+
+        var year = Strtime.replace("年", "-");
+        var month = year.replace("月", "-");
+        var nowtime = '@ViewBag.time';
+        if (month.split('-').length > 1) {
+            var str = month.split('-')[1];
+            if (str < 10) {
+                time = month.substring(0, 4) + month.substring(4, month.length).replace(str, str) + "01";
+            } else {
+                time = month + "01";
+            }
+        } else {
+            time = $("#year").val().replace("年", "");
+        }
+
+        go(time)
+    }
+    function go(time) {
+
+
+
+        $.ajax({
+            url: "/..@Url.Action("getupListSecond")?time=" + time + "&deptid=" + deptid,
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data) {
+
+                    $("#gridTable").jqGrid('clearGridData');
+                    $("#gridTable").jqGrid('setGridParam', {  // 重新加载数据
+                        datatype: 'local',
+                        data: data.rows  //  newdata 是符合格式要求的需要重新加载的数据
+                    }).trigger("reloadGrid");
+                    $("#num").text(data.records);
+                } else {
+
+                }
+            }
+        });
+
+
+    }
+    //加载表格
+    function GetGrid(time) {
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            datatype: "local",
+            height: $(window).height() - 165,
+            shrinkToFit: false,
+            gridview: true,
+            autowidth: true,
+            colModel: [
+                    {
+                        label: '部门', name: 'parentname', width: 135, align: 'parentname', sortable: false
+                    },
+                    { label: '班组', name: 'departmentname', index: 'departmentname', width: 350, align: 'center' },
+
+                    { label: '未提交的月度绩效', name: 'time', index: 'time', width: 200, align: 'center' }
+
+            ],
+            rownumbers: true,
+            viewrecords: true,
+            rowNum: 1000
+
+        });
+        $.ajax({
+            url: "/..@Url.Action("getupListSecond")?time=" + time + "&deptid=" + deptid,
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data) {
+                    $("#gridTable").jqGrid('setGridParam', {  // 重新加载数据
+                        datatype: 'local',
+                        data: data.rows  //  newdata 是符合格式要求的需要重新加载的数据
+                    }).trigger("reloadGrid");
+                    $("#num").text(data.records);
+                } else {
+
+                }
+            }
+        });
+
+    }
+
+
+</script>
+
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 20px;">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right:30px;">
+            <div class="title-search">
+                <div class="form-inline">
+                    <div class="form-group">
+                        <label for="team">绩效考核月度</label>
+                        <input type="text" class="form-control" id="years" onfocus="WdatePicker({ dateFmt: 'yyyy年', maxDate: '%y', onpicked: get});" readonly="readonly">
+                        <input type="text" class="form-control" id="months" onfocus=datebind() " readonly="readonly">
+                    </div>
+                    <div class="form-group">
+                        <a id="btn_Search" class="btn btn-primary" onclick="get()"><i class="fa fa-search"></i>&nbsp;查询</a>
+                    </div>
+                    <div class="form-group">
+                        <a id="btn_All" class="btn btn-primary" onclick="getall()"><i class="fa fa-search"></i>&nbsp;全部</a>
+                    </div>
+                </div>
+            </div>
+            <div class="title-search">
+                <div class="form-inline">
+                    <div class="form-group">
+                        <label for="team">总计：</label>
+                        <label for="team" id="num"></label>个
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="gridPanel">
+            <table id="gridTable"></table>
+            <div id="gridPager"></div>
+        </div>
+    </div>
+</div>
+
+

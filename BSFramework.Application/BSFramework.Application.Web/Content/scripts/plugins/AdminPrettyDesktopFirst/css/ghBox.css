@@ -1,0 +1,116 @@
+.ghBox {
+  width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 43px;
+}
+.ghBox .tap {
+  width: 100%;
+  /*padding-bottom: 43px;*/
+}
+.ghBox .tap p {
+  font-size: 20px;
+  width: 100%;
+  margin: 42px 0;
+  color: #020202;
+}
+.ghBox .tap .botb{
+  border-bottom: 1px solid #ddd;
+  height: 45px;
+  margin-bottom: 20px;
+}
+.ghBox .tap p span {
+  float: left;
+  border-left: 6px solid #349dff;
+  padding-left: 12px;
+}
+.ghBox .tap p em {
+  float: right;
+  font-size: 16px;
+  color: #999;
+}
+.ghBox .tap p em:hover{
+   color: #333;
+}
+.ghBox .tap p em img {
+  margin-left: 6px;
+  margin-top: -3px;
+}
+.ghBox .tap p em {
+  cursor: pointer;
+}
+.ghBox .tap .leftBox {
+  width: 342px;
+  height: 718px;
+  border: 1px solid #cfe6f8;
+  float: left;
+}
+.ghBox .tap .leftBox p {
+  text-align: center;
+}
+.ghBox .tap .leftBox P:nth-of-type(1) {
+  font-size: 14px;
+  margin-top: 132px;
+  margin-bottom: 0;
+  color: #9c9c9c;
+}
+.ghBox .tap .leftBox P:nth-of-type(2) {
+  font-size: 20px;
+  margin-top: 16px;
+  margin-bottom: 24px;
+  color: #848484;
+}
+.ghBox .tap .leftBox i {
+  width: 36px;
+  height: 3px;
+  background-color: #3c9cff;
+  display: block;
+  margin: 0 auto;
+}
+.ghBox .tap .leftBox img {
+  margin: 0 auto;
+  display: block;
+  margin-top: 114px;
+}
+.ghBox .tap .rightBox {
+  float: right;
+  width: 856px;
+  height: 718px;
+}
+.ghBox .tap .rightBox li {
+  float: left;
+  margin-left: 68px;
+}
+.ghBox .tap .rightBox li span {
+  display: block;
+  width: 358px;
+  height: 238px;
+  border: 1px solid #cfe6f8;
+  z-index: 99999;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.ghBox .tap .rightBox li span:hover{
+  border: 1px solid #1ba8f8;
+}
+.ghBox .tap .rightBox li span img {
+  margin: 0 auto;
+  display: block;
+}
+.ghBox .tap .rightBox li p:nth-of-type(1) {
+  font-size: 18px;
+  color: #000;
+  margin: 15px 0;
+  cursor: pointer;
+}
+.ghBox .tap .rightBox li p:nth-of-type(2) {
+  font-size: 16px;
+  color: #656565;
+  margin: 0 0 78px 0;
+  cursor: pointer;
+}
+.ghBox .tap .rightBox li p:hover{
+   color: #999;
+}
+.ghBox .tap .rightBox li:nth-of-type(4) img {
+  margin-top: 0;
+}

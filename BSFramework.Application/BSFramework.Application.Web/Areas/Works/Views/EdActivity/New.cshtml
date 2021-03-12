@@ -1,0 +1,693 @@
+﻿@using BSFramework.Application.Entity.BaseManage
+
+@model BSFramework.Application.Entity.EducationManage.EdActivityEntity
+
+@{
+    ViewBag.Title = "New";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .Validform_checktip {
+        text-align: center;
+        font-size: 12px;
+        line-height: 20px;
+    }
+
+    .Validform_wrong {
+        color: red;
+    }
+
+    #mypeople li {
+        line-height: 55px;
+    }
+
+        #mypeople li.on {
+            background-position: 10px top;
+            background-color: #3669e1;
+            color: #fff;
+        }
+
+    .addr.sign .my-nav li {
+        background: none;
+        text-align: center;
+        padding-left: 0;
+    }
+
+        .addr.sign .my-nav li.on {
+            background: #3669e1;
+            color: #fff;
+        }
+</style>
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/launch-activity.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/app.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/before.css")" />
+<script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/base.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script>
+    var QuestionList = new Array();
+    var myfiles = new Array();
+
+    $(function () {
+        $('.main-sidebar').niceScroll({
+            autohidemode: false
+        });
+        $('.table-today tr').hover(function () {
+            $(this).addClass('hover');
+        }, function () {
+            $(this).removeClass('hover');
+        });
+        $('.table-today tr').click(function () {
+            $(this).toggleClass('actives');
+        })
+        $('.user>.dropdown-menu').css({
+            left: $('.user').innerWidth() - $('.user>.dropdown-menu').width() - 65
+        });
+
+        fn$date();
+
+        if (jQuery('#Subject').val() == "*")
+            jQuery('#Subject').val('');
+
+        jQuery('#filebox').change(function () {
+            if (!jQuery('#Subject').val())
+                jQuery('#Subject').val('*');
+            jQuery('#isfile').val('true');
+            jQuery('form').submit();
+        });
+
+        jQuery('#ActivityLimited').click(function () {
+            var size = jQuery('#mylong li').size();
+            var h = 56 * (size + 1);
+            var winH = $(window).height();
+            if (h > winH - 100) {
+                h = winH - 100
+            }
+
+            layer.open({
+                area: ['300px', h + 'px'],
+                title: '选择时长',
+                type: 1,
+                content: $('#mylong')
+            });
+        });
+
+        jQuery('#mylong li').click(function () {
+            jQuery('#mylong li').removeClass('on');
+            jQuery(this).addClass('on');
+            jQuery('#ActivityLimited').val(jQuery(this).text());
+            layer.closeAll();
+        });
+
+        jQuery('#ActivityPlace').click(function () {
+            var size = jQuery('#myplace li').size();
+            var h = 56 * (size + 1) + 10;
+            var winH = $(window).height();
+            if (h > winH - 100) {
+                h = winH - 100
+            }
+
+            layer.open({
+                area: ['300px', h + 'px'],
+                title: '活动地点',
+                type: 1,
+                content: $('#myplace')
+            });
+        });
+
+        jQuery('#myplace li').click(function () {
+            jQuery('#myplace li').removeClass('on');
+            jQuery(this).addClass('on');
+            jQuery('#ActivityPlace').val(jQuery(this).text());
+            layer.closeAll()
+        });
+
+        jQuery('#AlertType').click(function () {
+            var size = jQuery('#myalert li').size();
+            var h = 56 * (size + 1) + 10;
+            var winH = $(window).height();
+            if (h > winH - 100) {
+                h = winH - 100
+            }
+
+            layer.open({
+                area: ['300px', h + 'px'],
+                title: '提醒时间',
+                type: 1,
+                content: $('#myalert')
+            });
+        });
+
+        jQuery('#myalert li').click(function () {
+            jQuery('#myalert li').removeClass('on');
+            jQuery(this).addClass('on');
+            jQuery('#AlertType').val(jQuery(this).text());
+
+            layer.closeAll();
+        });
+
+        jQuery('#users button').click(function () {
+            layer.closeAll();
+            return false;
+        });
+
+        jQuery('#ChairPerson').click(function () {
+            item = jQuery(this).prev().attr('id');
+
+            jQuery('#mypeople li').removeClass('on');
+            if (jQuery(this).val()) {
+                jQuery('#mypeople [data-id="' + jQuery('#' + item).val() + '"]').addClass('on');
+            }
+
+            var size = jQuery('#mypeople li').size();
+            var h = 56 * (size + 1) + 10;
+            var winH = $(window).height();
+            if (h > winH - 100) {
+                h = winH - 100
+            }
+
+            layer.open({
+                area: ['300px', h + 'px'],
+                title: '选择主持人',
+                type: 1,
+                content: $('#mypeople')
+            });
+        });
+
+        jQuery('#mypeople li').click(function () {
+            jQuery('#mypeople li').removeClass('on');
+            jQuery(this).addClass('on');
+            jQuery('#' + item).val(jQuery(this).data('id'));
+            jQuery('#' + item).next().val(jQuery(this).text());
+            layer.closeAll();
+        });
+
+        jQuery('#RecordPerson').click(function () {
+            item = jQuery(this).prev().attr('id');
+
+            jQuery('#mypeople li').removeClass('on');
+            if (jQuery(this).val()) {
+                jQuery('#mypeople [data-id="' + jQuery('#' + item).val() + '"]').addClass('on');
+            }
+
+            var size = jQuery('#mypeople li').size();
+            var h = 56 * (size + 1) + 10;
+            var winH = $(window).height();
+            if (h > winH - 100) {
+                h = winH - 100
+            }
+
+            layer.open({
+                area: ['300px', h + 'px'],
+                title: '选择记录人',
+                type: 1,
+                content: $('#mypeople')
+            });
+        });
+
+        jQuery('#Persons').click(function () {
+            var size = jQuery('#users li').size();
+            var h = 52 * (size + 1) + 60;
+            var winH = $(window).height();
+            if (h > winH - 100) {
+                h = winH - 100
+            }
+
+            layer.open({
+                area: ['300px', h + 'px'],
+                title: '选择参加人员',
+                type: 1,
+                content: $('#users'),
+                end() {
+                    $('#users').hide();
+                }
+            });
+        });
+
+        jQuery('.my-radio').click(function () {
+            if (jQuery(this).hasClass('on')) {
+                jQuery(this).prev().prev().val('False');
+                jQuery(this).removeClass('on');
+            }
+            else {
+                jQuery(this).prev().prev().val('True');
+                jQuery(this).addClass('on');
+            }
+
+            var names = '', userids = '';
+            jQuery('#users li span.on').each(function () {
+                userids += jQuery(this).parent().data('id') + ','
+                names += jQuery(this).prev().text() + ','
+            });
+
+            jQuery('#PersonId').val(userids.replace(/,$/, ''));
+            jQuery('#Persons').val(names.replace(/,$/, ''));
+        });
+
+        var myfiles = jQuery.parseJSON(jQuery('#filedata').val() || '[]');
+        jQuery.each(myfiles, function () {
+            jQuery('#filelist').append('<li><div class="left">' + this.FileName + '</div><div class="pull-right right"><button class="my-btn remove" onclick="fn$delete(this);" data-id="' + this.FileId + '">删除</button><a class="my-btn bg-3669e1 c-fff mg-l-20" href="@Url.Action("DownloadFile", "ResourceFile", new { area = "PublicInfoManage" })?keyValue=' + this.FileId + '" > 下载</a></div></li>');
+        });
+
+        jQuery('.sf').Validform({
+            tiptype: 3
+        });
+        $('#showModal').click(function () {
+            //var len = $('.Validform_wrong').length;
+            //if (!len) {
+            //    $('#modal6').modal();
+            //}
+            if (!jQuery('#PlanStartTime').val()) {
+                layer.msg('请选择活动时间');
+                return;
+            }
+            if (!jQuery('#ActivityLimited').val()) {
+                layer.msg('请选择活动时长');
+                return;
+            }
+            if (!jQuery('#ActivityPlace').val()) {
+                layer.msg('请选择活动地点');
+                return;
+            }
+            if (!jQuery('#Subject').val()) {
+                layer.msg('请输入活动主题');
+                return;
+            }
+            if (!jQuery('#ChairPerson').val()) {
+                layer.msg('请选择主持人');
+                return;
+            }
+            if (!jQuery('#RecordPerson').val()) {
+                layer.msg('请选择记录人');
+                return;
+            }
+            $('#modal6').modal();
+        })
+
+        //
+        QuestionList = jQuery.parseJSON(jQuery('#QuestionList').val() || '[]');
+        //if (QuestionList.length > 0) {
+        //    $("#QuestionListDiv").css("display", "");
+        //}
+        jQuery.each(QuestionList, function () {
+            if (this.safetydayid) {
+                this.sort = (jQuery('#table_set tr').length);
+                jQuery('#table_set').append("<tr class='grid-row'><td>" + (jQuery('#table_set tr').length + 1) + "</td>" +
+               "<td>" + this.topictitle +
+               "</td><td>" + this.topictype + "</td>" +
+               "<td><a class='c-orange' onclick='btn_show(\"" + this.Id + "\")' style='color:orange;cursor:pointer;'>查看</a></td></tr>");
+            } else {
+            jQuery('#table_set').append("<tr class='grid-row'><td>" + (jQuery('#table_set tr').length + 1) + "</td>" +
+                "<td>" + this.topictitle +
+                "</td><td>" + this.topictype + "</td>" +
+                "<td><a class='c-orange' onclick='btn_webshow(" + jQuery('#table_set tr').length + ",this);' style='color:orange;cursor:pointer;'>查看</a>  "
+                + "<a class='c-orange' onclick='btn_Edit(" + jQuery('#table_set tr').length + ",this);' style='color:orange;cursor:pointer;'>编辑</a>  " +
+                "<a class='c-orange' onclick='btn_del(" + jQuery('#table_set tr').length + ",this);' style='color:orange;cursor:pointer;'>删除</a></td></tr>");
+            }
+
+        });
+    });
+
+    function fn$date() {
+        $('.datetime').each(function () {
+            var id = $(this).attr('id');
+            layui.use('laydate', function () {
+                var laydate = layui.laydate;
+                laydate.render({
+                    elem: '#' + id,
+                    type: 'datetime',
+                    format: 'yyyy-MM-dd HH:mm'
+                });
+            });
+        });
+    }
+
+    function fn$delete(e) {
+        jQuery('#delete').val(jQuery(e).data('id'));
+        if (!jQuery('#Subject').val())
+            jQuery('#Subject').val('*');
+    }
+
+    var url = '@Html.Raw(Url.Action("New"))';
+    function fn$over() {
+        jQuery('.sf').submit();
+    }
+     function btn_add() {
+        dialogOpen({
+            id: 'QuestionTitle',
+            title: '添加题目',
+            url: '/..@Url.Action("webQuestion", "QuestionBank")',
+            width: '800px',
+            height: ($(top.window).height() - 500) + 'px',
+            callBack: function (iframeId) {
+
+                //top.jQuery('#QuestionTitle').get(0).AcceptClick();
+                //top.frames[iframeId].AcceptClick();
+                //top.frames[iframeId].childNodes[0].AcceptClick();
+                top.frames[iframeId].childNodes[0].contentWindow.AcceptClick();
+            }
+        });
+    }
+    function btn_show(id) {
+        dialogOpen({
+            id: 'QuestionDetail',
+            title: '查看试题',
+            url: '/..@Url.Action("Detail","QuestionBank")?keyvalue=' + id,
+            width: '700px',
+            height: ($(top.window).height() - 600) + 'px',
+            btn: null
+
+        });
+    }
+    function btn_webshow(num) {
+        dialogOpen({
+            id: 'QuestionDetail',
+            title: '查看试题',
+            url: '/..@Url.Action("webDetail", "QuestionBank")?num=' + num,
+            width: '700px',
+            height: ($(top.window).height() - 600) + 'px',
+            btn: null
+        });
+    }
+    function btn_Edit(num) {
+        dialogOpen({
+            id: 'QuestionTitle',
+            title: '编辑题目',
+            url: '/..@Url.Action("webQuestion", "QuestionBank")?num=' + num,
+            width: '800px',
+            height: ($(top.window).height() - 500) + 'px',
+            callBack: function (iframeId) {
+                top.frames[iframeId].childNodes[0].contentWindow.AcceptClick();
+            }
+        });
+    }
+    function btn_del(num, o) {
+        QuestionList.splice(num, 1);
+        jQuery('#table_set').html("");
+        jQuery.each(QuestionList, function () {
+            if (this.safetydayid) {
+                jQuery('#table_set').append("<tr class='grid-row'><td>" + (jQuery('#table_set tr').length + 1) + "</td>" +
+               "<td>" + this.topictitle +
+               "</td><td>" + this.topictype + "</td>" +
+               "<td><a class='c-orange' onclick='btn_show(\"" + this.Id + "\");' style='color:orange;cursor:pointer;'>查看</a></td></tr>");
+            } else {
+                jQuery('#table_set').append("<tr class='grid-row'><td>" + (jQuery('#table_set tr').length + 1) + "</td>" +
+      "<td>" + this.topictitle +
+      "</td><td>" + this.topictype + "</td>" +
+      "<td><a class='c-orange' onclick='btn_webshow(" + jQuery('#table_set tr').length + ",this);' style='color:orange;cursor:pointer;'>查看</a>  "
+      + "<a class='c-orange' onclick='btn_Edit(" + jQuery('#table_set tr').length + ",this);' style='color:orange;cursor:pointer;'>编辑</a>  " +
+      "<a class='c-orange' onclick='btn_del(" + jQuery('#table_set tr').length + ",this);' style='color:orange;cursor:pointer;'>删除</a></td></tr>");
+           }
+
+        });
+        QuestionBankVal();
+    }
+
+    function JsonBack() {
+        jQuery('#table_set').html("");
+        jQuery.each(QuestionList, function () {
+            if (this.safetydayid) {
+                jQuery('#table_set').append("<tr class='grid-row'><td>" + (jQuery('#table_set tr').length + 1) + "</td>" +
+               "<td>" + this.topictitle +
+               "</td><td>" + this.topictype + "</td>" +
+               "<td><a class='c-orange' onclick='btn_show(\"" + this.Id + "\");' style='color:orange;cursor:pointer;'>查看</a></td></tr>");
+            } else {
+                jQuery('#table_set').append("<tr class='grid-row'><td>" + (jQuery('#table_set tr').length + 1) + "</td>" +
+      "<td>" + this.topictitle +
+      "</td><td>" + this.topictype + "</td>" +
+      "<td><a class='c-orange' onclick='btn_webshow(" + jQuery('#table_set tr').length + ",this);' style='color:orange;cursor:pointer;'>查看</a>  "
+      + "<a class='c-orange' onclick='btn_Edit(" + jQuery('#table_set tr').length + ",this);' style='color:orange;cursor:pointer;'>编辑</a>  " +
+      "<a class='c-orange' onclick='btn_del(" + jQuery('#table_set tr').length + ",this);' style='color:orange;cursor:pointer;'>删除</a></td></tr>");
+            }
+
+        });
+        QuestionBankVal();
+    }
+    function QuestionBankVal() {
+        $("#QuestionList").val(JSON.stringify(QuestionList));
+    }
+
+</script>
+
+<div class="main-content">
+    <div class="container-fluid">
+        @using (Html.BeginForm("New", "EdActivity", FormMethod.Post, new { @class = "sf", enctype = "multipart/form-data" }))
+        {
+            @Html.HiddenFor(x => x.ActivityId)
+            @Html.HiddenFor(x => x.ActivityType)
+            @Html.HiddenFor(x => x.GroupId)
+            @Html.HiddenFor(x => x.safetyday)
+            <input type="hidden" id="isfile" name="isfile" value="false" />
+            <input type="hidden" id="delete" name="delete" value="" />
+            <div class="title clearfix">
+                <a class="pull-left" href="@Url.Action("Index","Education")">
+                    <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+                    @Html.Raw(Model.ActivityType)基本信息
+                </a>
+                <div class="pull-right" style="margin-top:-3px;">
+                    @*@if (@Model.ActivityType == "安全日活动")
+                        {*@
+                    <button class="my-btn bg-ffb319 lh-36 h-36 w-140" style="font-weight: normal;" id="showModal" type="button">
+                        <img src="@Url.Content("~/Content/styles/static/images/activity-icon-1.png")" alt="">
+                        活动预约
+                    </button>
+                    @*}
+                        else
+                        {
+                            <button class="my-btn bg-ffb319 lh-36 h-36 w-140" style="font-weight: normal;" id="showModal" type="button">
+                                <img src="@Url.Content("~/Content/styles/static/images/activity-icon-1.png")" alt="">
+                                开始活动
+                            </button>
+                        }*@
+                    @*<input type="submit" value="submit" />*@
+                </div>
+            </div>
+            <div class="bg-f5f8fe pd-10 my-body">
+                <div class="bd-b-e3ebfd bg-fff pd-10">
+                    <div class="clearfix">
+                        <div class="pull-left my-form-control w-30-">
+                            <label>活动时间</label>
+                            <div>
+                                @Html.TextBoxFor(x => x.PlanStartTime, "{0:yyyy-MM-dd HH:mm}", new { @class = "datetime", nullmsg = "不能为空", datatype = "*", placeholder = "请选择" })
+                            </div>
+                        </div>
+                        <div class="pull-left my-form-control w-30-">
+                            <label>活动时长</label>
+                            <div>
+                                @Html.TextBoxFor(x => x.ActivityLimited, new { nullmsg = "不能为空", datatype = "*", placeholder = "请选择活动时长" })
+                                @*<select>
+                                        <option value="value"> 半个小时</option>
+                                        <option value="value"> 一个小时</option>
+                                        <option value="value"> 而个小时</option>
+                                        <option value="value"> 三个小时</option>
+                                        <option value="value"> 四个小时</option>
+                                    </select>*@
+                            </div>
+                        </div>
+                        <div class="pull-left my-form-control w-30-">
+                            <label>活动地点</label>
+                            <div>
+                                @Html.TextBoxFor(x => x.ActivityPlace, new { nullmsg = "不能为空", datatype = "s1-100", placeholder = "请输入活动地点" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix">
+                        <div class="pull-left my-form-control w-30-">
+                            <label>主持人</label>
+                            <div>
+                                <input type="hidden" id="people1" name="people1" />
+                                @Html.TextBoxFor(x => x.ChairPerson, new { nullmsg = "不能为空", datatype = "s1-100", placeholder = "请选择主持人" })
+                            </div>
+                        </div>
+                        <div class="pull-left my-form-control w-30-">
+                            <label>记录人</label>
+                            <div>
+                                <input type="hidden" id="people2" name="people2" />
+                                @Html.TextBoxFor(x => x.RecordPerson, new { nullmsg = "不能为空", datatype = "s1-100", placeholder = "请选择记录人", onclick = "this.blur()" })
+                            </div>
+                        </div>
+                        <div class="pull-left my-form-control w-30-">
+                            <label>提醒</label>
+                            <div>
+                                @Html.TextBoxFor(x => x.AlertType, new { nullmsg = "不能为空", datatype = "s1-100", placeholder = "请选择提醒" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix">
+                        @*<div class="pull-left my-form-control w-30-">
+                                <label>参与领导</label>
+                                <div>
+                                    @Html.TextBoxFor(x => x.Leader)
+                                </div>
+                            </div>*@
+                        <div class="pull-left my-form-control w-30-" style="width:90%;">
+                            <label>活动主题</label>
+                            <div>
+                                @Html.TextBoxFor(x => x.Subject, new { nullmsg = "不能为空", datatype = "*", @autofocus = true })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix my-form-control w-90- input-textarea">
+                        <label>参加人员</label>
+                        <div style="position: relative;">
+                            @Html.HiddenFor(x => x.PersonId)
+                            @Html.TextAreaFor(x => x.Persons, new { onfocus = "this.blur()" })
+                        </div>
+                    </div>
+                    <div class="clearfix my-form-control w-90- input-textarea">
+                        <label>活动议题</label>
+                        <div style="position: relative;">
+                            @Html.TextAreaFor(x => x.Remark)
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-fff pd-10 launch-activity-list">
+                    <div class="clearfix pd-b-20 pd-t-10">
+                        <div class="pull-left f-18 f-w c-0d0d0d">会议材料</div>
+                        <div class="pull-right add">
+                            <input id="filebox" type="file" style="opacity:0;" name="file" />
+                        </div>
+                    </div>
+                    <div style="overflow-y:auto; ">
+                        @Html.Hidden("filedata", ViewData["files"])
+                        <ul class="clearfix" id="filelist"></ul>
+                    </div>
+                </div>
+                @{
+
+                    @Html.Hidden("QuestionList", ViewData["QuestionList"])
+                    if (Model.ActivityType == "安全学习日")
+                    {
+
+                        <div class="bg-fff pd-10 launch-activity-list" id="QuestionListDiv">
+                            <div class="clearfix pd-b-20 pd-t-10">
+                                <div class="pull-left f-18 f-w c-0d0d0d">试题</div>
+                                <div class="pull-right add" onclick="btn_add()">
+
+                                </div>
+                            </div>
+                            <div style="overflow-y:auto; ">
+
+                                <table class="table" style="border:1px solid #e3ebfd;text-align:center">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align:center">序号</th>
+                                            <th style="text-align:center">题目</th>
+                                            <th style="text-align:center"> 题型</th>
+                                            <th style="text-align:center">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table_set"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    }
+                }
+            </div>
+            <footer class="main-footer">
+                武汉博晟安全技术股份有限公司   版权所有
+            </footer>
+            <div class="sign" style="display:none;" id="users">
+                <ul class="nav my-nav">
+                    @for (int i = 0; i < Model.ActivityPersons.Count; i++)
+                    {
+                        <li data-id="@Html.Raw(Model.ActivityPersons[i].PersonId)">
+                            @Html.HiddenFor(x => x.ActivityPersons[i].ActivityPersonId)
+                            @Html.HiddenFor(x => x.ActivityPersons[i].PersonId)
+                            @Html.HiddenFor(x => x.ActivityPersons[i].Person)
+                            @Html.HiddenFor(x => x.ActivityPersons[i].IsSigned)
+                            <span>@Html.DisplayFor(x => x.ActivityPersons[i].Person)</span>
+                            <span class="my-radio @(Model.ActivityPersons[i].IsSigned ? "on" : string.Empty)"></span>
+                        </li>
+                    }
+                </ul>
+                <div class="text-center mg-t-10">
+                    <button class="btn bg-3669e1 c-fff" style="width:200px;">确定</button>
+                </div>
+            </div>
+        }
+    </div>
+
+</div>
+
+<div class="sign addr" style="display:none;" id="myplace">
+    <ul class="nav my-nav" style="text-align:center;">
+        <li class="on">班组办公室</li>
+        <li>班组学习室</li>
+        <li>会议室一</li>
+        <li>其他</li>
+    </ul>
+</div>
+
+<div class="sign" style="display:none;" id="mypeople">
+    <ul class="nav my-nav">
+        @for (int i = 0; i < Model.ActivityPersons.Count; i++)
+        {
+            <li data-id="@Html.Raw(Model.ActivityPersons[i].PersonId)">@Html.Raw(Model.ActivityPersons[i].Person)</li>
+        }
+    </ul>
+</div>
+
+<div class="sign addr" style="display:none;" id="mylong">
+    <ul class="nav my-nav">
+        <li>30分钟</li>
+        <li>45分钟</li>
+        <li>1小时</li>
+        <li>1.5小时</li>
+        <li>2小时</li>
+        <li>2.5小时</li>
+        <li>3小时</li>
+        <li>3.5小时</li>
+        <li>4小时</li>
+        <li>4.5小时</li>
+    </ul>
+</div>
+
+<div class="sign addr" style="display:none;" id="myalert">
+    <ul class="nav my-nav">
+        <li class="on">无提醒</li>
+        <li>准时提醒</li>
+        <li>提前5分钟</li>
+        <li>提前10分钟</li>
+        <li>提前15分钟</li>
+        <li>提前半小时</li>
+        <li>提前1小时</li>
+        <li>提前1天</li>
+        <li>提前2天</li>
+        <li>提前3天</li>
+    </ul>
+</div>
+<div class="modal fade launch-modal" id="modal6" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-my" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">友好提示</h4>
+            </div>
+            <div class="modal-body">
+                @*@if (Model.ActivityType == "安全日活动")
+                    {*@
+                <div class="text-center c-0d0d0d f-18 pd-t-20 pd-b-20">
+                    是否活动预约，请确认！
+                </div>
+                @*}
+                    else
+                    {
+                        <div class="text-center c-0d0d0d f-18 pd-t-20 pd-b-20">
+                            活动开始就无法变更，请确认！
+                        </div>
+                    }*@
+                <div class="text-center mg-t-20 mg-b-20">
+                    <button class="my-btn mg-r-15 bg-3669e1" data-dismiss="modal" onclick="fn$over();">确定</button>
+                    <button class="my-btn bd" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

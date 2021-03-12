@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+
+<html style="overflow-y:scroll;">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="~/Content/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/Content/styles/static/css/index.css">
+    <link rel="stylesheet" href="~/Content/styles/static/css/extend.css">
+    <link rel="stylesheet" href="~/Content/styles/font-awesome.min.css">
+    <script src="~/Content/scripts/jquery/jquery-2.0.3.min.js"></script>
+    <script src="~/Content/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/Content/scripts/nicescroll/nicescroll.min.js"></script>
+    <script src="~/Content/scripts/base.js"></script>
+    <script>
+        //jQuery('.nav > li > a').each(function (i, e) {
+        //    if (document.location.href.indexOf(jQuery(e).attr('href')) >= 0)
+        //        jQuery(e).parent().addClass('active');
+        //});
+        jQuery(function () {
+            jQuery(function () {
+                if (typeof JsObj != 'undefined') {
+                    jQuery(document).on('focus', 'input:text,input:password,textarea', function () {
+                        JsObj.ShowInput();
+                    });
+                    jQuery(document).on('blur', 'input:text,input:password,textarea', function () {
+                        JsObj.CloseInput();
+                    });
+                }
+            });
+
+        });
+    </script>
+</head>
+<body oncontextmenu="self.event.returnValue=false">
+    <div>
+        @RenderBody()
+    </div>
+</body>
+</html>

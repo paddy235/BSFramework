@@ -1,0 +1,3 @@
+2020-10-23 13:49:46 用户：超级管理员  id：System开始编辑积分配置 
+ {"Id":null,"Score":2.0,"Standard":"班前一课","Sort":100,"ScoreType":"自动","IsOpen":1,"Remark":null,"CreateDate":"0001-01-01T00:00:00","CreateUserId":null,"CreateUserName":null,"ModifyDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null} 
+------------------------------------------------------------

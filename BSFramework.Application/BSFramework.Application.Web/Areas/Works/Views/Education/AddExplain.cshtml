@@ -1,0 +1,157 @@
+﻿@model BSFramework.Application.Entity.PublicInfoManage.FileInfoEntity
+
+@{
+    ViewBag.Title = "AddExplain";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")" />
+
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/hammer.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<style>
+    .imgDiv {
+        display: inline-block;
+        position: relative;
+    }
+
+        .imgDiv .delete {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: 50px;
+            height: 50px;
+            display: none;
+        }
+    table tr td {
+    height:50px;
+    }
+</style>
+<script>
+    $(function () {
+        $('#uploadFile').change(cp);
+
+        $(":radio").click(function () {
+            var des = $(this).val();
+            $("#Description").val(des);
+        });
+    });
+
+    function AcceptClick() { //新增
+        if (!valid()) {
+            return false;
+        }
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var name=$("#FileName").val();
+        var des = $("#Description").val();
+        var id = $("#FileId").val();
+        var sortCode = $("#SortCode").val();
+        $.SaveForm({
+            url: '/..@Url.Action("SaveFileInfo")',
+            param: { id: id, name: name, des: des, sortCode: sortCode },
+            loading: "数据提交中...",
+            success: function (data) {
+                if (data.success) {
+                    $.currentIframe().$("#gridTable").trigger("reloadGrid");
+                } 
+            }
+        });
+    }
+    function valid() {
+        var name = $("#FileName").val();
+        var file = $("#fname").val();
+        if (name == "") {
+            dialogMsg('文件名称不能为空！', 0);
+            return false;
+        }
+        if (file == "") {
+            dialogMsg('请上传附件！', 0);
+            return false;
+        }
+        return true;
+    }
+
+    function cp() {
+        var des = $("#Description").val();
+        $.ajaxFileUpload({
+            url: "@Url.Action("UploadFileNew1")?id=" + $("#FileId").val()+"&des="+des,
+            secureuri: false,
+            fileElementId: 'uploadFile',
+            dataType: 'json',
+            success: function (data) {
+                if (data.message == "1") {
+                    alert(data.resultdata.mes);
+                    $('#uploadFile').change(cp);
+                } else {
+                    var name = $("#FileName").val();
+                    if (name == "") {
+                        $("#FileName").val(data.resultdata.name);
+                    }
+                    $("#fname").val(data.resultdata.name);
+                    $("#FileId").val(data.resultdata.fileid);
+                    $('#uploadFile').change(cp);
+                }
+            }
+        });
+    }
+
+
+    
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style=" padding-right: 30px;">
+            @Html.HiddenFor(x => x.CreateUserId)
+            @Html.HiddenFor(x => x.FileId)
+            @Html.HiddenFor(x => x.Description)
+            <table class="form" style="margin-top:20px;">
+
+                        <tr>
+                            <td class="formTitle">文件名称<font face="宋体">*</font></td>
+                            <td class="formValue" colspan="2" >
+                                @Html.TextBoxFor(x => x.FileName, new { @class = "form-control" })
+                                <span style="color:red">*文件名以模块名称为准,例：教育培训、工器具管理</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">文件类型</td>
+                            <td class="formValue" colspan="2">
+                                <input type="radio" value="操作说明书" id="jk" name="filedes" checked="checked" /><label for="jk">操作说明书</label>
+                                <input type="radio" value="操作介绍视频" id="wd" name="filedes" /><label for="wd">操作介绍视频</label>
+                            </td>
+                       
+                        </tr>
+                        <tr>
+                            <td class="formTitle">排序</td>
+                            <td class="formValue" colspan="2">
+                                <input type="text" id="SortCode" name="SortCode"  isvalid="yes" checkexpession="NumOrNull" class="form-control" placeholder="必须为数字" value="@Model.SortCode" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">附件</td>
+                            <td class="formValue" >
+                                <input type="text" class="form-control" id="fname" readonly="readonly" />
+                                <input type="file" name="uploadFile" id="uploadFile" style="display:none;">
+                                
+                            </td>
+                            <td class ="formValue">
+                                <label for="uploadFile" style="margin-left:20px;color:blue;text-align:center;vertical-align:middle;font-size:12px;">选择文件</label>
+                                </td>
+</tr>
+                   
+
+
+
+            </table>
+        </div>
+    </div>
+</div>
+

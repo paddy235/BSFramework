@@ -1,0 +1,125 @@
+Debug: 2019-09-03 08:50:36-1567471836948
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-03 08:50:37-1567471837493
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-03 08:52:13-1567471933427
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-03 09:12:29-1567473149800
+LaunchActivity LaunchActivity
+
+Info: 2019-09-03 09:12:46-1567473166158
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-03 09:13:27-1567473207662
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-03 13:48:11-1567489691149
+LaunchActivity LaunchActivity
+
+Error: 2019-09-03 13:48:42-1567489722990
+SuspensionWindowService-info size:w176h144
+w320h240
+w352h288
+w640h480
+using size:640x480
+focus:fixed;
+
+Info: 2019-09-03 13:49:56-1567489796107
+SuspensionWindowService java.lang.IllegalStateException
+	at android.media.MediaRecorder.stop(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.stopRecord(HardwareManager.java:352)
+	at com.bossien.video_support.suspension.HardwareManager.destroy(HardwareManager.java:404)
+	at com.bossien.video_support.SuspensionWindowService.onDestroy(SuspensionWindowService.java:133)
+	at android.app.ActivityThread.handleStopService(ActivityThread.java:2924)
+	at android.app.ActivityThread.access$2200(ActivityThread.java:151)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1406)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Info: 2019-09-03 13:49:56-1567489796109
+java.lang.IllegalStateException
+	at android.media.MediaRecorder.stop(Native Method)
+	at com.bossien.video_support.suspension.HardwareManager.stopRecord(HardwareManager.java:352)
+	at com.bossien.video_support.suspension.HardwareManager.destroy(HardwareManager.java:404)
+	at com.bossien.video_support.SuspensionWindowService.onDestroy(SuspensionWindowService.java:133)
+	at android.app.ActivityThread.handleStopService(ActivityThread.java:2924)
+	at android.app.ActivityThread.access$2200(ActivityThread.java:151)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1406)
+	at android.os.Handler.dispatchMessage(Handler.java:102)
+	at android.os.Looper.loop(Looper.java:135)
+	at android.app.ActivityThread.main(ActivityThread.java:5254)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
+
+Info: 2019-09-03 14:12:34-1567491154220
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-03 14:13:25-1567491205109
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-03 14:14:08-1567491248761
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-03 14:14:29-1567491269478
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-03 15:17:19-1567495039189
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-03 15:19:15-1567495155610
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-03 15:20:42-1567495242310
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-03 15:41:16-1567496476347
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-03 15:43:12-1567496592882
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-03 15:49:04-1567496944294
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-03 15:50:10-1567497010520
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-03 15:59:41-1567497581640
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-03 16:00:54-1567497654211
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-03 16:13:15-1567498395894
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-03 16:24:41-1567499081314
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-03 16:25:52-1567499152360
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-03 16:30:15-1567499415977
+BaseApplication onTrimMemory ... level:20
+
+Info: 2019-09-03 16:42:53-1567500173296
+BaseApplication onTrimMemory ... level:20
+
+Debug: 2019-09-03 17:35:09-1567503309556
+LaunchActivity LaunchActivity
+
+Debug: 2019-09-03 17:49:54-1567504194021
+LaunchActivity LaunchActivity
+

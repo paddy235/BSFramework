@@ -1,0 +1,80 @@
+﻿@charset 'utf-8';
+.sign.modal .my-nav li{
+	border-bottom:1px solid #cad3df;
+	line-height: 50px;
+	padding-left:66px;
+	font-size:16px;
+	color:#374757;
+	background: url("../images/sign-icon.png") no-repeat 10px bottom;
+}
+.sign .my-radio.on {
+    background-position: right center;
+}
+
+
+/*下拉框*/
+.my-form-control > div > select{
+    border:none;
+    border-bottom:2px solid #e3ebfd;
+    width: 100%;
+    padding: 0 5px;
+    height:48px;
+    outline:none;
+    line-height: 48px;
+    color: #7d8286;
+}
+
+/*违章页面*/
+.peccancy-form select{
+    outline:none;
+}
+.peccancy-form select.block{
+    width:100%;
+}
+.peccancy-form .my-select{
+    font-size:16px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: transparent transparent #e3ebfd transparent;
+}
+.peccancy-form div[class^="col-"] > div input[type="text"]{
+   position:relative,z-index:1;background:none;
+}
+.peccancy-form div[class^="col-"] > div img{
+    position:absolute;
+    right:30px;
+    top:-5px;
+}
+
+#temp .item{
+    margin-bottom:20px;
+}
+
+#temp .Validform_checktip {
+    position:absolute;
+    line-height:20px;
+    bottom: -20px;
+    left:0;
+    font-size:14px;
+}
+
+#temp .Validform_wrong{
+    color:red;
+}
+
+
+.container-fluid .my-body > div{
+    height:100%;
+    padding-bottom:50px;
+    position:relative;
+}
+.container-fluid .my-body > div .pagination{
+    position:absolute;
+    bottom:-10px;
+    left:50%;
+    transform:translate(-50%,0);
+    
+}
+.warp .aside{
+    position:fixed;
+}

@@ -1,0 +1,203 @@
+.sc-calendar {
+  text-align: center;
+  font-family: "Microsoft Yahei";
+  color: #4A4A4A;
+  float: left;
+  margin-right: 20px;
+  -moz-user-select: none;
+  /*火狐*/
+  -webkit-user-select: none;
+  /*webkit浏览器*/
+  -ms-user-select: none;
+  /*IE10*/
+  user-select: none;
+  -webkit-text-size-adjust: none;
+  font-size: 16px;
+}
+
+.sc-header {
+  height: 90px;
+  border: 0;
+  display: flex;
+  padding:27px 0 14px 1%;
+  background: #fff;
+  box-sizing: border-box;
+}
+.sc-body {
+  height: 600px;
+  width:82%;
+  padding-left: 1%;
+  background: #fff;
+  border:1px solid #e3ecfd ;
+  border-top: 0;
+}
+.sc-week {
+  font-weight: 400;
+  font-size: 20px;
+  color: #4A4A4A;
+}
+.sc-days {
+  height: 600px;
+}
+.sc-item {
+	display: flex;
+  height: 106px;
+  float: left;
+  font-weight: 600;
+  color: #565555;
+  width: 14.285%;
+  padding-left: 3%;
+  background-color: #ffffff;
+  border-width: 0 0 1px 1px;
+  border-color: #e3ecfd;
+  border-style: solid;
+  box-sizing: border-box;
+}
+.item-nolunar {
+  padding-top: 20px;
+}
+.sc-item:nth-child(7n) .day, .sc-item:nth-child(7n+6) .day {
+  color: rgba(224, 8, 8, 0.74);
+}
+.sc-vocation {
+  background-color: #FFEBEC;
+}
+.sc-mark{
+  background-color: #E5FBFA;
+}
+.sc-vocation:before {
+  content: '休';
+  display: block;
+  position: absolute;
+  font-size: 0.7em;
+  width: 1.2em;
+  font-weight: 100;
+  color: white;
+  background-color: #E00808;
+  margin-top: -10px;
+}
+.sc-othermenth {
+  color: #C1C0C0 !important;
+}
+.sc-othermenth .day, .sc-othermenth .lunar-day {
+  color: #C1C0C0 !important;
+}
+.sc-active-day, .sc-selected {
+  background-color: #3668e1;
+  color: white;
+  cursor: pointer;
+}
+/*.sc-today {
+  background-color: #3668e1;
+  color: white;}*/
+.sc-item .day {
+  font-size: 1.5em;
+}
+.sc-today .day {
+  color: white !important;
+}
+.sc-item .lunar-day {
+  font-size: 10px;
+  font-weight: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sc-festival .lunar-day {
+  color: #E00808;
+}
+
+/*.sc-item:last-child, .sc-item:nth-child(7n) {
+  border-width: 0 1px 1px 1px;
+}*/
+
+.sc-week-item {
+  float: left;
+  width: 14.285%;
+  background-color: #f5f8ff;
+  border-width: 1px 0 1px 1px;
+  border-color: #e3ecfd;
+  border-style: solid;
+  box-sizing: border-box;
+  overflow: hidden;
+  line-height: 48px;
+  text-overflow: ellipsis;
+}
+.sc-item-small{
+  font-size: 10px !important;
+}
+
+.sc-week-item:nth-child(7n), .sc-week-item:nth-child(7n+6) {
+  color: rgba(224, 8, 8, 0.74)!important;
+}
+.sc-actions {
+ display: flex;
+ align-items: center;
+  height: 100%;
+  box-sizing: border-box;
+  margin-right: 34px;
+}
+.sc-actions:last-child {
+  display: none;
+}
+.sc-actions-big{
+  width: 50%;
+}
+@media screen and (max-width : 500px){
+.sc-actions{
+  width: 50%;
+}
+}
+.sc-header select {
+  border-color: rgba(0, 0, 0, 0);
+  height: 50px;
+  appearance: none;
+  font-family: "Microsoft Yahei";
+  color: #606060;
+  font-size: 13px ;
+  width: 130px;
+  line-height: 48px;
+  border: 1px solid #ccc;
+  text-indent: 10px;
+}
+.sc-header .sc-select-month{
+  border: 1px solid #ccc;
+  border-right: 0;
+  border-left: 0;
+  text-align: center;
+}
+.sc-header input {
+  border-color: rgba(0, 0, 0, 0);
+  padding: 0.2em;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  font-family: "Microsoft Yahei";
+  color: #606060;
+}
+.sc-actions div {
+  display: inline-block;
+  /*border: 1px solid #ccc;*/
+  vertical-align: bottom;
+  width: 60px;
+  font-size: 1.5em;
+  line-height: 48px;
+  border:1px solid #ccc;
+  
+}
+.sc-return-today {
+  display: block;
+  background-color: #fff;
+  border-radius: 2px;
+  /* border: 1px solid #ccc; */
+  font-size: 20px;
+  line-height: 48px;
+  width: 120px;
+  border:1px solid #3769e2;
+  color:#3769e2;
+}
+
+.sc-time {
+  display: block;
+  margin-top: 3px;
+  font-size: 0.8em;
+}

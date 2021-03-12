@@ -1,0 +1,312 @@
+﻿@model BSFramework.Application.Entity.ToolManage.ToolInventoryEntity
+@using BSFramework.Application.Entity.PublicInfoManage
+@{
+    ViewBag.Title = "Form2";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")" />
+
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/hammer.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<style>
+    .images-container {
+        min-height: 120px;
+    }
+
+        .images-container li {
+            list-style: none;
+            float: left;
+            padding: 0px 5px;
+        }
+
+    .yinpin li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+
+    .items li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+
+    table tr {
+        height: 45px;
+    }
+
+    .imgDiv {
+        display: inline-block;
+        position: relative;
+    }
+
+        .imgDiv .delete {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: 50px;
+            height: 50px;
+            display: none;
+        }
+    .photo-list ul li img {
+        width: 172px;
+        height: 162px;
+    }
+</style>
+<script>
+    var contentPath = '@Url.Content("~")'.substr(0, '@Url.Content("~")'.length - 1);
+    $(function () {
+        //init();
+        $('#uploadFile').change(cp);
+        $('#uploadFile1').change(cp1);
+        $('#uploadFile2').change(cp2);
+        if ('@Model.Path' != "") {
+            document.getElementById('uploadPreview').src = '@Model.Path';
+        }
+    });
+    function init() {
+        $(".imgDiv").mouseenter(function () {
+            $(this).find(".delete").show();
+        });
+        $(".imgDiv").mouseleave(function () {
+            $(this).find(".delete").hide();
+        });
+    }
+
+    function AcceptClick() { //新增
+        if (!valid()) {
+            return false;
+        }
+       
+        var name = $("#Name").val();
+            $.ajax({
+            url: '@Url.Action("CheckGlassWareName")',
+            type: 'post',
+            data: { name: name },
+            loading: "数据提交中...",
+            success: function (data) {
+                if (data.success) {
+                    dialogMsg('工器具已存在！', 0);
+                } else {
+                    saveform();
+                }
+            }
+        });
+
+    }
+    function AcceptClick1() {
+        if (!valid()) {
+            return false;
+        }
+
+        saveform();
+
+    }
+    function saveform() {
+        var json = jQuery('#form1').serializeJSON();
+        $.SaveForm({
+            url: '/..@Url.Action("SaveToolInventory")',
+            param: json,
+            loading: "数据提交中...",
+            success: function (data) {
+
+                if (data.success) {
+                    $.currentIframe().$("#gridTable").trigger("reloadGrid");
+                } else {
+                    //alert('1');
+                }
+            }
+        });
+    }
+
+    function video(id) {
+        var id = '@Model.ID';
+        dialogOpen({
+            id: "Detail",
+            title: '查看详情',
+            url: '/../@Url.Action("GlassWareVideo")/' + id,
+            width: "1050px",
+            height: "720px",
+            btn: null
+        });
+    }
+    function valid() {
+        var name = $("#GlassWareName").val();
+        if (name == "") {
+            dialogMsg('名称不能为空！', 0);
+            return false;
+        }
+
+        return true;
+    }
+    function cp() { //图片
+        $.ajaxFileUpload({
+            url: "@Url.Action("UploadFileNew1")?uptype=0&id=@Model.ID",
+            secureuri: false,
+            fileElementId: 'uploadFile',
+            dataType: 'json',
+            success: function (data) {
+                if (data.message == "1")
+                {
+                    alert("请上传图片！");
+                    $('#uploadFile').change(cp);
+                } else {
+                    document.getElementById('uploadPreview').src = top.location.origin + contentPath + data.resultdata.path;
+                    $("#Path").val(top.location.origin + contentPath + data.resultdata.path);
+                    $('#uploadFile').change(cp);
+                }
+            }
+        });
+    }
+    function cp2() { //操作规程
+        $.ajaxFileUpload({
+            url: "@Url.Action("UploadFileNew1")?uptype=2&id=@Model.ID",
+            secureuri: false,
+        fileElementId: 'uploadFile2',
+        dataType: 'json',
+        success: function (data) {
+            if (data.message == "1") {
+                var obj = document.getElementById('uploadFile2');
+                obj.outerHTML = obj.outerHTML;
+                alert("请上传PDF文件！");
+                $('#uploadFile2').change(cp2);
+            } else {
+                dialogMsg('上传成功！', 1);
+                $("#File").val(top.location.origin + contentPath + data.resultdata.path);
+                $('#uploadFile2').change(cp2);
+            }
+        }
+    });
+    }
+    function cp1() { //操作视频
+        $.ajaxFileUpload({
+            url: "@Url.Action("UploadFileNew1")?uptype=1&id=@Model.ID",
+            secureuri: false,
+            fileElementId: 'uploadFile1',
+            dataType: 'json',
+            success: function (data) {
+                if (data.message == "1") {
+                    var obj = document.getElementById('uploadFile1');
+                    obj.outerHTML = obj.outerHTML;
+                    alert("请上传MP4视频文件！");
+                    $('#uploadFile1').change(cp1);
+                } else {
+                    $("#Video").val(top.location.origin + contentPath + data.resultdata.path);
+                    dialogMsg('上传成功！', 1);
+                    $('#uploadFile1').change(cp1);
+                }
+            }
+        });
+    }
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style=" padding-right: 30px;">
+            <table class="form">
+
+                <tr>
+                    <td class="formTitle">名称<font face="宋体">*</font></td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+                        @Html.HiddenFor(x => x.CreateDate)
+                        @Html.HiddenFor(x => x.DeptId)
+                        @Html.HiddenFor(x => x.BZId)
+                        @Html.HiddenFor(x => x.ID)
+                        @Html.HiddenFor(x=>x.DeptCode)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">类别<font face="宋体"></font></td>
+                    <td class="formValue" colspan="3">
+                       @Html.DropDownList("Type", ViewData["types"] as IEnumerable<SelectListItem>, new { @class = "form-control", style = "width:120px" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">规格型号<font face="宋体"></font></td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextBoxFor(x => x.Spec, new { @class = "form-control" })
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">图片</td>
+                    <td class="formValue" colspan="3">
+                        <div class="file">
+                            <label for="uploadFile">
+                                <img id="uploadPreview" style="width: 160px; height: 160px; " src="~/Content/styles/static/images/tools/photo-add.png" />
+                                <br />
+                                点击框可修改图片
+                                <input type="file" name="uploadFile" id="uploadFile" style="display:none;">
+                                @*<input type="hidden" id="tempImageSrc" />*@
+                                @Html.HiddenFor(x => x.Path)
+                            </label>
+                        </div>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle">基本信息<font face="宋体"></font></td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.Info, new { @style = "height:120px;", @class = "form-control" })
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle" rowspan="2">
+                        相关文件
+                    </td>
+
+                    <td style="text-align:center;">
+                        @{
+                            if (!string.IsNullOrEmpty(Model.File))
+                            {
+                                <a id="msds" onclick="msds()" href="@Model.File" target="_blank" style="text-decoration:none;color:blue;">操作规程</a>
+                            }
+                            else
+                            {
+                                <a id="msds" style="text-decoration: none; color: blue;" target="_blank">操作规程</a>
+                            }
+                        }
+
+                    </td>
+                    <td>
+                        <input type="file" name="uploadFile2" id="uploadFile2" style="display:none;">
+                        <label for="uploadFile2" style="margin-left:20px;color:blue;text-align:center;vertical-align:middle;font-size:12px;">上传</label>
+                        @Html.HiddenFor(x => x.File)
+                    </td>
+                </tr>
+                <tr>
+
+                    <td style="text-align:center;">
+                        @{
+                            if (!string.IsNullOrEmpty(Model.Video))
+                            {
+                                <a id="video1" onclick="video()" style="text-decoration:none;color:blue;" target="_blank">操作视频</a>
+                            }
+                            else
+                            {
+                                <a id="video1" style="text-decoration: none; color: blue;" target="_blank">操作视频</a>
+                            }
+                        }
+
+                    </td>
+                    <td>
+                        <input type="file" name="uploadFile1" id="uploadFile1" style="display:none;">
+                        <label for="uploadFile1" style="margin-left:20px;color:blue;text-align:center;vertical-align:middle;font-size:12px;">上传</label>
+                        @Html.HiddenFor(x => x.Video)
+                    </td>
+                </tr>
+
+
+
+            </table>
+        </div>
+    </div>
+</div>

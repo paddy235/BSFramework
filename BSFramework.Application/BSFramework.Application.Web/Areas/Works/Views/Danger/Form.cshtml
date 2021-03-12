@@ -1,0 +1,956 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model IEnumerable<BSFramework.Application.Entity.BaseManage.UserEntity>
+@System.Web.Optimization.Scripts.Render("~/Content/scripts/utils/js")
+<link rel="stylesheet" href="@Url.Content("~/Content/scripts/plugins/jquery-autocompleter/css/main.css")" />
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/qrcode/qrcode.min.js")"></script>
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")">
+<link rel="stylesheet" href="@Url.Content("~/content/scripts/layui/css/layui.css")">
+<link rel="stylesheet" href="@Url.Content("~/content/styles/static/css/peccancy.css")">
+<link rel="stylesheet" href="@Url.Content("~/content/styles/static/css/warning.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/before.css")" />
+<script src="@Url.Content("~/Content/scripts/plugins/audiojs/audio.min.js")"></script>
+<script src="@Url.Content("~/Content/styles/static/js/nicescroll.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jquery-autocompleter/js/jquery.autocompleter.js")"></script>
+<style>
+    .autocompleter {
+        width: 400px;
+        position: absolute;
+        z-index: 2;
+    }
+
+    .find1 {
+        left: 160px;
+    }
+
+    .find2 {
+        top: 80px;
+    }
+</style>
+
+<script type="text/javascript">
+    //记录是否修改过
+    var change = "0";
+    var olddangerous;
+    var oldmeasure;
+
+
+
+    var keyValue = request("id");
+    var ary_user;
+    $(function () {
+        jQuery('.nav-header div:eq(1)').width(jQuery('.nav-header').width() - jQuery('.nav-header div:first').width() - jQuery('.nav-header div:last').width() - 2);
+
+        jQuery('#jobuser-modal ul').on('click', 'li', function () {
+            jQuery(this).find('span.my-radio').toggleClass('on');
+            var userid = jQuery(this).data('id');
+            var username = jQuery(this).text().trim();
+            if (jQuery(this).find('span.my-radio').hasClass('on')) {
+                ary_user.push({ userid: userid, username: username });
+            } else {
+                ary_user = jQuery.grep(ary_user, function (o) {
+                    return o.userid == userid;
+                }, true);
+            }
+        });
+
+        $(".main-sidebar-nav").find("li").removeClass("active");
+        $(".main-sidebar-nav").find("li").eq(2).addClass("active");
+        if (keyValue.length == 0) {
+            $.get("GetJobListJson", function (data) {
+                var html = "";
+                var json = JSON.parse(data);
+                if (json.length == 0) {
+                    jQuery('#btnSave').parent().hide();
+                    dialogMsg("没有待训练的工作任务！", 2);
+                    return false;
+                }
+                $(json).each(function (j, item) {
+                    if (j == 0) {
+                        html += '<li data-id="' + item.id + '" class="active">';
+                        show(item.id);
+                    } else {
+                        html += "<li data-id='" + item.id + "'>";
+                    }
+                    html += "<a onclick=show('" + item.id + "',this) style='cursor:pointer;'>" + item.jobname + "</a></li>";
+                });
+                $(".nav-header .my-nav").html(html);
+
+                var navWidth = 0;
+                $('.nav-header .my-nav li').each(function () {
+                    navWidth += $(this).width();
+                });
+                $('.nav-header .my-nav').css('width', navWidth + 20);
+
+            });
+        } else {
+            $(".nav-warp").hide();
+            $("#bar").hide();
+            $(".title").show();
+            show(keyValue);
+
+        }
+        jQuery('#user-modal li span').click(function () {
+            if (jQuery(this).hasClass('on')) {
+                jQuery(this).removeClass('on');
+                jQuery(this).next().val('False');
+            }
+            else {
+                jQuery(this).addClass('on');
+                jQuery(this).next().val('True');
+            }
+        });
+
+        $('#jobname').autocompleter({
+            source: '@Url.Action("FindTrainings")',
+            customClass: ['find1'],
+            highlightMatches: true,
+            empty: false,
+            cache: false,
+            limit: 5,
+            customLabel: 'JobName',
+            customValue: 'JobName',
+            callback: function (value, index, selected) {
+                jQuery('#templateid').val(selected.Id);
+                @*var dangerid = jQuery('.my-nav li.active').data('id');
+                var jobid = selected.Id;
+                $("#jobtemplateid").val(jobid);
+                jQuery.post('@Url.Action("UpdateTraingItems")', { dangerid: dangerid, jobid: jobid }, function (data) {
+                    if (data.success) {
+                        show(data.data.Id);
+                        layer.closeAll();
+                    } else {
+                        layer.alert(data.message, { icon: 2 });
+                    }
+                }, 'json');*@
+            }
+        });
+
+        $('#job').autocompleter({
+            source: '@Url.Action("FindTrainings")',
+            customClass: ['find1'],
+            highlightMatches: true,
+            empty: false,
+            cache: false,
+            limit: 5,
+            customLabel: 'JobName',
+            customValue: 'JobName',
+            callback: function (value, index, selected) {
+                var dangerid = jQuery('.my-nav li.active').data('id');
+                var jobid = selected.Id;
+                $("#jobtemplateid").val(jobid);
+                jQuery.post('@Url.Action("UpdateTraingItems")', { dangerid: dangerid, jobid: jobid }, function (data) {
+                    if (data.success) {
+                        show(data.data.Id);
+                        layer.closeAll();
+                    } else {
+                        layer.alert(data.message, { icon: 2 });
+                    }
+                }, 'json');
+            }
+        });
+
+        $('#dangerous').autocompleter({
+            source: '@Url.Action("FindDangerous")',
+            customClass: ['find2'],
+            highlightMatches: true,
+            empty: false,
+            cache: false,
+            limit: 5,
+            customLabel: 'Dangerous',
+            customValue: 'Dangerous',
+            callback: function (value, index, selected) {
+                jQuery('#measure').val(selected.Measure);
+            }
+        });
+
+        jQuery('.my-checkbox').click(function () {
+            jQuery(this).toggleClass('actives');
+        });
+
+        jQuery('#users').on('click', 'li span.my-radio', function () {
+            jQuery(this).toggleClass('on');
+        });
+
+        jQuery('#btnDelete').click(function () {
+            layer.confirm('确定删除“' + jQuery('#JobName').val() + "”", function () {
+                layer.msg('删除中...', { icon: 16, shade: 0.1, time: 0 });
+                jQuery.post('@Url.Action("Delete")', { id: keyValue }, function (data) {
+                    if (data.type == 1) {
+                        layer.msg('删除成功！', { icon: 1, shade: 0.1, time: 1000 });
+                        window.location.href = window.location.href;
+                    }
+                    else {
+                        layer.alert(data.message || '删除失败！', { icon: 2, shade: 0.1 });
+                    }
+                }, 'json');
+            });
+        });
+    });
+    function selMe(obj) {
+        //if (isOk) {
+        //    $("#user-modal li").find(".my-radio").removeClass('on');
+        //}
+        //if (jQuery(obj).hasClass('on')) {
+        //    jQuery(obj).removeClass('on');
+        //}
+        //else {
+        //    jQuery(obj).addClass('on');
+        //}
+        var isover = !jQuery(obj).hasClass('on');
+        var itemid = jQuery(obj).parent().parent().data('id');
+        jQuery.post('@Url.Action("UpdateTrainingState")', { itemid: itemid, isover: isover }, function (data) {
+            if (data.success) {
+                if (data.data.IsOver == '1')
+                    jQuery('#measures tr[data-id="' + data.data.Id + '"] td:eq(4) span').addClass('on');
+                else
+                    jQuery('#measures tr[data-id="' + data.data.Id + '"] td:eq(4) span').removeClass('on');
+                layer.closeAll();
+                return true;
+            } else {
+                layer.alert(data.message, { icon: 2 });
+            }
+        }, 'json');
+    };
+    var node = null;
+    var isOk = false;
+    var idx = 0;
+    function selUser(obj, rowIndex) {
+        isOk = false;
+        $("#users li").find(".my-radio").removeClass("on");
+        node = obj;
+        idx = rowIndex;
+        var users = jQuery(obj).val();
+        var ary_users = users.split(',');
+        $("#users li").each(function (j, dom) {
+            var user = jQuery(this).text().trim();
+            if (jQuery.inArray(user, ary_users) >= 0)
+                jQuery(this).find(".my-radio").addClass("on");
+        });
+
+        jQuery(obj).parent().parent().parent().find('tr').removeClass('select');
+        jQuery(obj).parent().parent().addClass('select');
+
+        layer.open({
+            //area: ['300px', ($(window).height() - 100) + 'px'],
+            title: '选择责任人',
+            type: 1,
+            content: $('#user-modal'),
+            end: function () {
+                $('#user-modal').hide();
+            }
+        });
+
+    }
+    function selDutyUser(obj) {
+        return;
+        isOk = true;
+        node = obj;
+        $("#users li").find(".my-radio").removeClass("on");
+        node = obj;
+        $("#users li").each(function (j, dom) {
+            if ($(obj).val().length > 0) {
+                var arr = $(obj).val().split(',');
+                $(arr).each(function (i, str) {
+                    if ($.trim($(dom).text()) == str) {
+                        $(dom).find(".my-radio").addClass("on");
+                    }
+
+                });
+            }
+        });
+        layer.open({
+            //area: ['300px', ($(window).height() - 100) + 'px'],
+            title: '选择责任人',
+            type: 1,
+            content: $('#user-modal'),
+            end: function () {
+                $('#user-modal').hide();
+            }
+        });
+    }
+    var picArr = new Array();
+    function show(id, obj) {
+        if (!obj) obj = jQuery('.my-nav li[data-id=\'' + id + '\']').find('a').get(0);
+        $(".my-nav li").removeAttr("class");
+        $(obj).parent().attr("class", "active");
+        //$("#qrcode").children().remove();
+        //var qrcode = new QRCode(document.getElementById("qrcode"), {
+        //    width: 120,
+        //    height: 120
+        //});
+        //qrcode.clear();
+        //qrcode.makeCode(id + "|危险预知训练");
+
+        keyValue = id;
+        $.post("GetFormJson", { keyValue: id }, function (data) {
+            var json = JSON.parse(data);
+            $(".content").formDeserialize(json.formData);
+            var status = json.formData.Status;
+            if (json.formData.Status == 2) {
+                $("#btnOver").remove();
+                $("#btnSave").remove();
+
+                var time = json.formData.JobTime + "";
+                var str = time.substring(0, time.length - 3);
+                time = json.formData.OperDate + "";
+                str += "-" + time.substring(10, time.length - 3);
+                $("#JobTime").val(str);
+            } else {
+                //layui.use('laydate', function () {
+                //    var laydate = layui.laydate;
+                //    laydate.render({
+                //        elem: '#JobTime',
+                //        type: 'datetime'
+                //    });
+                //});
+            }
+
+            if (json.formData.FromJob == '1') jQuery('#btnDelete').hide();
+            else jQuery('#btnDelete').show();
+
+            if (json.formData.Sno == null) {
+                $("#Sno").val("@DateTime.Now.ToString("yyyyMMddHHmmss")");
+            }
+            $("#Measure").val(json.formData.Measure);
+            $("#StopMeasure").val(json.formData.StopMeasure);
+            $("#ScoreRemark").val(json.formData.ScoreRemark);
+            $("#JobId").val(json.formData.JobId);
+            $("#photos").empty();
+            $("#audios").empty();
+            if (json.files.length > 0) {
+                var pics = "";
+                var audios = "";
+                picArr = new Array();
+                var path = '@Url.Content("~")'.substr(0, '@Url.Content("~")'.length - 1);
+                var k = 0;
+                $(json.files).each(function (j, item) {
+                    var exts = ".gif;.jpg;.bmp";
+                    var filePath = path + item.FilePath.substring(1, item.FilePath.length);
+                    if (exts.lastIndexOf(item.FileExtensions) >= 0) {
+                        picArr.push({
+                            src: filePath
+                        });
+                        if (status == 0) {
+                            pics += '<li><img onclick="playPic(this,' + k + ')" src="' + filePath + '" style="width:160px;height:120px;" /><button onclick="delFile(\'' + item.FileId + '\',\'' + (item.FileName + item.FileExtensions) + '\',this)"></button></li>';
+                        } else {
+                            pics += '<li><img onclick="playPic(this,' + k + ')" src="' + filePath + '" style="width:160px;height:120px;" /></li>';
+                        }
+
+                        k++;
+                    } else if ('.mp3;.wma'.lastIndexOf(item.FileExtensions) >= 0) {
+                        if (status == 0) {
+                            audios += '<li><div onclick="play(this)" class="play-audio"  data-url="' + filePath + '"><img src="../../Content/styles/static/images/horn-icon.png"  width="24" />&nbsp;&nbsp;' + item.FileName + '</div><button onclick="delFile(\'' + item.FileId + '\',\'' + (item.FileName + item.FileExtensions) + '\',this)"></button></li>';
+                        } else {
+                            audios += '<li><div onclick="play(this)" class="play-audio"  data-url="' + filePath + '"><img src="../../Content/styles/static/images/horn-icon.png"  width="24" />&nbsp;&nbsp;' + item.FileName + '</div></li>';
+                        }
+
+
+                        //audios += '<div class="col-sm-3"><a href="' + filePath + '" target="_blank" class="btn btn-primary btn-lg">查看</a></div></li>';
+                    }
+
+                });
+
+                $("#photos").html(pics); $("#audios").html(audios);
+                //json = {
+                //    "data": picArr
+                //}
+                //$('.images-container').delegate('li', 'click', function () {
+                //    json.start = jQuery(this).index();
+                //    layer.photos({
+                //        photos: json,
+                //        anim: 5
+                //    })
+                //});
+            };
+            var html = "";
+            $(json.measures).each(function (j, item) {
+                html += '<tr data-id="' + item.Id + '"><td>' + (j + 1) + '</td><td>' + item.DangerSource + '</td><td align="left">' + item.Measure + '</td><td title="点击选择责任人"><input type="text" value=\"' + (item.DutyMan == null ? "" : item.DutyMan) + '\" onclick="selUser(this,' + j + ')" onfocus="this.blur();" userid="' + item.UserId + '"  id="' + item.Id + '" class="item0" placeholder="点击选择负责人" style="border-style:none;height:35px;text-align:center;" /></td><td class="sign thing" align="center">' + (item.IsOver == 0 || item.IsOver == null ? '<span class="my-radio" style="float:none;" onclick="selMe(this)"></span>' : '<span class="my-radio on" style="float:none;" onclick="selMe(this)"></span>') + '</td><td><span style="color:orange;cursor:pointer;" onclick="fn$edititem(this)">修改</span> <span style="color:orange;cursor:pointer;" onclick="fn$deleteitem(this)">删除</span></td></tr>';
+            });
+            $("#measures").html(html);
+
+            html = "";
+            $(json.users).each(function (j, user) {
+                html += '<li style="border-bottom: 1px solid #cad3df; line-height: 50px; padding-left: 66px; font-size: 16px; color: #374757; background: url(../../content/styles/static/images/sign-icon.png) no-repeat 10px bottom;">';
+                html += '<span>' + user.username + '</span> <span class="my-radio" id="' + user.userid + '"></span></li>';
+            });
+            $("#users").html(html);
+            $('.main-content').getNiceScroll().resize();
+        });
+    }
+    function playPic(obj, idx) {
+        var json = {
+            "data": picArr
+        }
+        json.start = idx;
+        layer.photos({
+            photos: json,
+            anim: 5
+        })
+    }
+    function delFile(fileId, fileName, obj) {
+        var dlg = dialogConfirm("确定删除吗？", function (r) {
+            if (r) {
+                $.post("../Safetyday/RemoveFile", { fileName: fileName, recId: keyValue, __RequestVerificationToken: $("input[name='__RequestVerificationToken']").val() }, function (data) {
+                    $(obj).parent().remove();
+                    layer.close(dlg);
+                });
+            }
+        });
+    }
+    function play(obj) {
+        var url = $(obj).data('url');
+        $('#audio').attr('src', url);
+        audiojs.events.ready(function () {
+            audiojs.createAll();
+        })
+        layer.open({
+            type: 1,
+            area: ['460px', '36px'],
+            content: $('#audio-warp '),
+            title: false,
+            end: function () {
+                $('#audio-warp').html('<audio id="audio" autoplay></audio>').css('display', 'none');
+            }
+        });
+    }
+    function sure() {
+        var ids = "";
+        var names = "";
+        $("#user-modal").find(".on").each(function (j, dom) {
+            ids += $(dom).attr("id") + ",";
+            names += $(dom).prev().text() + ",";
+        });
+        ids = ids.substring(0, ids.length - 1);
+        names = names.substring(0, names.length - 1);
+        if (isOk) {
+            $(node).val(names);
+        } else {
+            $(node).val(names);
+            $(node).attr("userid", ids);
+        }
+
+        var dangerid = jQuery('.my-nav li.active').data('id');
+        var itemid = jQuery('#measures tr.select').data('id');
+        jQuery.post('@Url.Action("UpdateTrainingPerson")', { itemid: itemid, userid: ids, users: names }, function (data) {
+            if (data.success) {
+                //show(data.data.DangerId);
+                jQuery('#measures tr[data-id="' + data.Id + '"] td:eq(2) input:text').text(data.data.DutyMan);
+                layer.closeAll();
+                return true;
+            } else {
+                layer.alert(data.message, { icon: 2 });
+            }
+        }, 'json');
+
+        layer.closeAll();
+        return false;
+    }
+    //提交表单
+    function SubmitData(status) {
+        if (!$('.content').Validform()) {
+            return false;
+        }
+        if (status == 0) {
+            $("#btnSave").attr("disabled", true);
+        }
+        if (status == 1) {
+            $("#btnOver").attr("disabled", true);
+        }
+        var postData = $(".content").formSerialize(keyValue);
+        var arr = new Array();
+        $("#measures").find(".item0").each(function (j, dom) {
+            arr.push({
+                Id: $(dom).attr("id"),
+                DutyMan: $(dom).val(),
+                UserId: $(dom).attr("userid"),
+                IsOver: $(dom).parent().next().find("span").hasClass('on') ? 1 : 0
+            });
+        });
+        postData["measures"] = JSON.stringify(arr);
+        postData["Status"] = status;
+        postData["Measure"] = $("#Measure").val();
+        postData["StopMeasure"] = $("#StopMeasure").val();
+        postData["ScoreRemark"] = $("#ScoreRemark").val();
+        postData["JobId"] = $("#JobId").val();
+        $.SaveForm({
+            url: "SaveForm?keyValue=" + keyValue + "&jobtemplateid=" + $("#jobtemplateid").val() + "&status=" + status,
+            param: postData,
+            loading: "正在处理...",
+            success: function () {
+                $("#btnSave").removeAttr("disabled");
+                $("#btnOver").removeAttr("disabled");
+                if (status == 2) {
+                    if ($(".my-nav").find("li").length > 1) {
+                        $(".my-nav").find(".active").remove();
+                        $(".my-nav").find("li").eq(0).find("a").trigger("click");
+                    } else {
+                        $("#btnOver").remove();
+                        $("#btnSave").remove();
+                    }
+                }
+
+                if (status == 2)
+                    window.location.href = window.location.href;
+                else show(keyValue);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                if (status == 2) {
+                    $("#btnOver").removeAttr("disabled");
+                } else {
+                    $("#btnSave").removeAttr("disabled");
+                }
+            }
+        })
+    }
+    function over() {
+        dialogConfirm("确定结束训练吗？", function (r) {
+            if (r) {
+                SubmitData(2);
+
+            }
+        });
+    }
+
+    function fn$new() {
+        jQuery('#jobname').val('');
+        jQuery('#jobuser').val('');
+        jQuery('#jobusers').val('');
+        ary_user = [];
+
+        layer.open({
+            area: ['600px', '300px'],
+            title: '新增危险预知训练',
+            type: 1,
+            content: jQuery('#container1'),
+            end: function () {
+
+            }
+        });
+    }
+
+    function fn$select() {
+        jQuery('#jobuser-modal ul li span.my-radio').removeClass('on');
+
+        jQuery.each(ary_user, function () {
+            jQuery('#jobuser-modal ul li[data-id="' + this.userid + '"] span.my-radio').addClass('on');
+        });
+
+        var size = jQuery('#jobuser-modal ul li').size();
+
+        var h = size * 50;
+        if (h > jQuery(window).height() - 200) {
+            h = jQuery(window).height() - 200;
+            jQuery('#jobuser-modal ul').height(h - 120);
+        } else h = 'auto';
+
+        layer.open({
+            area: ['400px', h == 'auto' ? 'auto' : h + 'px'],
+            title: '选择作业人',
+            type: 1,
+            content: jQuery('#jobuser-modal')
+        });
+    }
+
+    function fn$selectok() {
+        var jobusers = []; displayname = '';
+        jQuery.each(ary_user, function (i) {
+            jobusers.push({ UserId: this.userid, UserName: this.username });
+            displayname += this.username + ',';
+        });
+
+        jQuery('#jobuser').val(displayname.replace(/,$/, ''));
+        jQuery('#jobusers').val(JSON.stringify(jobusers));
+        layer.close(layer.index);
+    }
+
+    function fn$newok() {
+        if (!jQuery('#jobname').val()) { layer.alert('请输入作业任务！', { icon: 0 }); return false; }
+        if (!jQuery('#jobuser').val()) { layer.alert('请选择作业人！', { icon: 0 }); return false; }
+
+        var data = { JobName: jQuery('#jobname').val(), JobUser: jQuery('#jobuser').val(), JobUsers: jQuery.parseJSON(jQuery('#jobusers').val()), TemplateId: jQuery('#templateid').val() };
+        layer.alert("保存中");
+
+        jQuery.post('@Url.Action("AddDanger")', { json: JSON.stringify(data) }, function (data) {
+            if (data.success) {
+                jQuery('.nav-header .my-nav').append('<li data-id="' + data.data.Id + '"><a onclick="show(\'' + data.data.Id + '\', this)" style="cursor:pointer;">' + data.data.JobName + '</a></li>');
+                jQuery('.nav-header .my-nav').width(10000);
+                var w = 0;
+                jQuery('.nav-header .my-nav li').each(function () { w += jQuery(this).width(); });
+                jQuery('.nav-header .my-nav').width(w + 20);
+
+                show(data.data.Id);
+
+                var divWidth = jQuery('.nav-header .nav-warp').width();
+                jQuery('.nav-header .nav-warp').scrollLeft(divWidth);
+
+                layer.closeAll();
+                return true;
+            } else {
+                layer.alert(data.message, { icon: 2 });
+            }
+        }, 'json');
+        return false;
+    }
+
+    function fn$newitem() {
+        jQuery('#container2').removeAttr('data-dangerid');
+        jQuery('#container2').data('id', '');
+
+        jQuery('#container2 tr:eq(2)').show();
+        jQuery('#container2 tr:eq(2) span').addClass('actives');
+
+        jQuery('#dangerous').val('');
+        jQuery('#measure').val('');
+
+        layer.open({
+            area: ['600px', '400px'],
+            title: '新增训练项',
+            type: 1,
+            content: jQuery('#container2')
+        });
+    }
+
+    function fn$newitemok() {
+        if (!jQuery('#dangerous').val()) {
+            layer.alert('请输入危险因素！', { icon: 0 });
+            return false;
+        }
+        if (!jQuery('#measure').val()) {
+            layer.alert('请输入防范措施！', { icon: 0 });
+            return false;
+        }
+
+        var data = { DangerSource: jQuery('#dangerous').val(), Measure: jQuery('#measure').val(), DangerId: keyValue, Id: jQuery('#container2').data('id') };
+        if (olddangerous != jQuery('#dangerous').val() || oldmeasure != jQuery('#measure').val()) {
+            change = "1";
+        }
+        if (data.Id) {
+            jQuery.post('@Url.Action("EditItem")', data, function (data) {
+                if (data.success) {
+                    //show(data.data.DangerId, jQuery('.my-nav li[data-id=\'' + data.data.DangerId + '\']').find('a').get(0));
+                    jQuery('#measures tr[data-id="' + data.data.Id + '"] td:eq(1)').text(data.data.DangerSource);
+                    jQuery('#measures tr[data-id="' + data.data.Id + '"] td:eq(2)').text(data.data.Measure);
+                    layer.closeAll();
+                    return true;
+                } else {
+                    layer.alert(data.message, { icon: 2 });
+                }
+            }, 'json');
+        } else {
+            jQuery.post('@Url.Action("AddItem")', { json: JSON.stringify(data) }, function (data) {
+                if (data.success) {
+                    jQuery('#measures').append('<tr data-id="' + data.data.Id + '"><td>' + (jQuery('#measures').children().size() + 1) + '</td><td>' + data.data.DangerSource + '</td><td align="left">' + data.data.Measure + '</td><td title="点击选择责任人"><input type="text" value=\"' + (data.data.DutyMan == null ? "" : data.data.DutyMan) + '\" onclick="selUser(this,' + (jQuery('#measures').children().size() + 1) + ')" onfocus="this.blur();" userid="' + data.data.UserId + '"  id="' + data.data.Id + '" class="item0" placeholder="点击选择负责人" style="border-style:none;height:35px;text-align:center;" /></td><td class="sign thing" align="center">' + (data.data.IsOver == 0 || data.data.IsOver == null ? '<span class="my-radio" style="float:none;" onclick="selMe(this)"></span>' : '<span class="my-radio on" style="float:none;" onclick="selMe(this)"></span>') + '</td><td><span style="color:orange;cursor:pointer;" onclick="fn$edititem(this)">修改</span> <span style="color:orange;cursor:pointer;" onclick="fn$deleteitem(this)">删除</span></td></tr>');
+                    if (jQuery('#container2 tr:eq(2) span').hasClass('actives')) {
+                        jQuery('#dangerous').val('');
+                        jQuery('#measure').val('');
+                    } else {
+                        layer.closeAll();
+                    }
+                    return true;
+                } else {
+                    layer.alert(data.message, { icon: 2 });
+                }
+            }, 'json');
+        }
+        return false;
+    }
+
+    function fn$edititem(e) {
+        jQuery('#container2').data('dangerid', jQuery('my-nav li.active').data('id'));
+        jQuery('#container2').data('id', jQuery(e).parent().parent().data('id'));
+
+        jQuery('#container2 tr:eq(2)').hide();
+        jQuery('#container2 tr:eq(2) span').removeClass('actives');
+
+        jQuery('#dangerous').val(jQuery(e).parent().parent().find('td:eq(1)').text());
+        jQuery('#measure').val(jQuery(e).parent().parent().find('td:eq(2)').text());
+
+        olddangerous = jQuery('#dangerous').val();
+        oldmeasure = jQuery('#measure').val();
+
+        layer.open({
+            area: ['600px', '400px'],
+            title: '修改训练项',
+            type: 1,
+            content: jQuery('#container2')
+        });
+    }
+
+    function fn$deleteitem(e) {
+        jQuery(e).parent().parent().addClass('select');
+
+        layer.confirm('确定要删除该训练项？', { icon: 3 }, function () {
+            var dataid = jQuery('#measures .select').data('id');
+            jQuery.post('@Url.Action("DeleteItem")/' + dataid, function (data) {
+                if (data.success) {
+                    change = "1";
+                    //jQuery('.my-nav li.active a').click();
+                    jQuery('#measures tr[data-id="' + data.data + '"]').remove();
+                    layer.closeAll();
+                } else {
+                    layer.alert(data.message, { icon: 2 });
+                }
+            }, 'json');
+        }, function () { });
+    }
+
+    function fn$find() {
+        jQuery('#job').val('');
+
+        layer.open({
+            area: ['600px', '300px'],
+            title: '找相似',
+            type: 1,
+            content: jQuery('#container3')
+        });
+    }
+</script>
+<div id="audio-warp" style="height:36px;width:460px;display: none;">
+    <audio id="audio" autoplay></audio>
+</div>
+<div class="my-modal sign" id="user-modal" style="display:none; ">
+    <ul class="nav" id="users"></ul>
+    <div class="text-center mg-t-10">
+        <button class="btn bg-3669e1 c-fff my-close" style="width:200px;" onclick="sure()">确定</button>
+    </div>
+</div>
+<input type="hidden" id="JobId">
+<input type="hidden" id="jobtemplateid">
+<div class="main-content">
+    <div class="container-fluid warning">
+        <div class="title" style="display:none;">
+            <a href="Index">
+                <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+                历史记录
+            </a>
+        </div>
+        <div class="mg-b-10" id="bar">
+            <div class="nav-header" style="padding-right:0px;">
+                <div style="float:left;width:50px;"><img src="@Url.Content("~/Content/styles/static/images/add-icon.png")" style="cursor:pointer;" onclick="fn$new();" /></div>
+                <div class="nav-warp" style="float:left;">
+                    <ul class="clearfix my-nav" style="width:10000px;overflow-x:auto;"></ul>
+                </div>
+                <div class="" style="float:left;">
+                    <a href="Index">
+                        <img src="@Url.Content("~/content/styles/static/images/index_29.png")" alt="">
+                        历史记录
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="bg-e3ebfd pd-10 peccancy-form">
+            <div class="bg-fff">
+                <div class="bd-2b-e3ebfd content" style="border-bottom:10px solid #e3ebfd;">
+                    <div class="pd-t-10 pd-b-10">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label>作业任务</label>
+                                <div>
+                                    <input placeholder="" class="block" type="text" id="JobName" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <img src="@Url.Content("~/Content/images/find.png")" style="cursor:pointer;" onclick="fn$find()" />
+                            </div>
+                            <div class="col-md-6">
+                                <label>工作票编号</label>
+                                <div>
+                                    <input placeholder="" class="block" type="text" id="TicketId">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>作业人</label>
+                                <div>
+                                    <input placeholder="" class="block" type="text" id="JobUser" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label>作业地点</label>
+                                <div>
+                                    <input placeholder="" class="block" type="text" id="JobAddress">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <table class="table text-center table-striped no-mg vertical">
+                    <thead>
+                        <tr>
+                            <th width="5%" class="bg-fff">序号</th>
+                            <th width="30%" class="bg-fff">潜在的危险因素及其后果</th>
+                            <th width="30%" class="bg-fff">采取的安全防范措施</th>
+                            <th width="10%" class="bg-fff">措施落实责任人</th>
+                            <th width="10%" class="bg-fff">措施是否落实</th>
+                            <th width="8%" class="bg-fff">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="measures"></tbody>
+                </table>
+                <table class="table">
+                    <tr>
+                        <td><a class="add icon-btn" onclick="fn$newitem();"></a></td>
+                    </tr>
+                </table>
+                <div style="border-top:10px solid #e3ebfd;padding-top:10px;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label style="width:200px;">措施及责任人变更情况</label>
+                            <div style="margin-left:200px;">
+                                <input type="text" class="block" id="Measure">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="width:280px;">工作中断后措施及责任人变更情况</label>
+                            <div style="margin-left:280px;">
+                                <input class="block" type="text" id="StopMeasure">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pd-20 bg-fff bd-2t-e3ebfd warp" style="padding-bottom:0;">
+                    <div class="clearfix audio">
+                        <div class="pull-left f-18 f-w c-0d0d0d left">现场音频</div>
+                        <div class="pull-left right">
+                            <ul id="audios" style="margin-top:20px; margin-left:50px;"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="pd-20 bg-fff bd-2t-e3ebfd warp">
+                    <div class="mg-b-10">
+                        <div class="f-18 f-w c-0d0d0d">现场照片</div>
+                    </div>
+                    <div class="clearfix photo">
+                        <ul id="photos" class="images-container"></ul>
+                    </div>
+                </div>
+                <div class="pd-20 bg-fff bd-2t-e3ebfd warp">
+                    <div class="mg-b-10">
+                        <div class="f-18 f-w c-0d0d0d">效果评价</div>
+                    </div>
+                    <div class="assess" style="height:250px;">
+                        <div class="clearfix" style="height: 250px;">
+                            <div class="pull-right" style="margin-top:0px;">
+                                <div class="aside pd-10 bd-e3ebfd" style="bottom:80px;width:200px;">
+                                    @*<div class="clearfix mg-b-20" style="margin-bottom:6px;">
+                                            <div class="pull-left" style="" id="qrcode">
+
+                                            </div>
+                                            <div class="pull-right mg-l-10" style="font-size:8px;margin-right:0px;margin-top:0px;">
+                                                <p>用APP扫码</p>
+                                                <p>可上传训练</p>
+                                                <p class="c-3669e1">图片和音频</p>
+                                            </div>
+                                        </div>*@
+                                    <input type="button" id="btnSave" class="bg-3669e1" style="border:none;color:white;width:100%;font-size:18px;line-height:48px;" value="保存记录" onclick="SubmitData(0)">
+                                    <input type="button" id="btnOver" class="bg-3669e1" style="border:none;color:white;width:100%;font-size:18px;line-height:48px;margin-top:5px;" value="结束训练" onclick="over()">
+                                    <input type="button" id="btnDelete" class="bg-3669e1" style="border:none;color:white;width:100%;font-size:18px;line-height:48px;margin-top:5px;" value="删除记录">
+                                </div>
+                            </div>
+                            <div style="height:100%;">
+                                <textarea style="height:200px;width: 90%;" id="ScoreRemark"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="put-in" id="container1">
+    <table>
+        <tr>
+            <td>作业任务</td>
+            <td>
+                <input type="text" id="jobname" class="my-input" placeholder="请输入" maxlength="200" style="width:400px;">
+                <input type="hidden" id="templateid" name="templateid" />
+            </td>
+        </tr>
+        <tr>
+            <td>作业人</td>
+            <td>
+                <input type="hidden" id="jobusers" class="my-input" placeholder="请输入" />
+                <input type="text" id="jobuser" class="my-input" readonly="readonly" onclick="fn$select()" placeholder="请输入" style="width:400px;" />
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="padding-top:20px;">
+                <button class="btn-bg" style="background-color: #3669e1;" onclick="if(!fn$newok()) return false;">确认</button>
+                <button class="btn-bd" style="border-radius: 0;margin-left:10px;" type="button" onclick="layer.closeAll();">取消</button>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="put-in" id="container3">
+    <table>
+        <tr>
+            <td>作业任务</td>
+            <td style="position:relative;">
+                <input type="text" id="job" class="my-input" placeholder="请输入" maxlength="200" style="width:400px;">
+            </td>
+        </tr>
+
+        @*<tr>
+                <td></td>
+                <td style="padding-top:20px;">
+                    <button class="btn-bg" style="background-color: #3669e1;" onclick="if(!fn$newok()) return false;">确认</button>
+                    <button class="btn-bd" style="border-radius: 0;margin-left:10px;" type="button" onclick="layer.closeAll();">取消</button>
+                </td>
+            </tr>*@
+    </table>
+</div>
+<div class="put-in" id="container2">
+    <table>
+        <tr>
+            <td>危险因素</td>
+            <td style="position:relative;">
+                <textarea type="text" id="dangerous" class="my-input" placeholder="请输入" maxlength="200" style="width:400px;height:80px;"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>防范措施</td>
+            <td>
+                <textarea type="text" id="measure" class="my-input" placeholder="请输入" maxlength="200" style="width:400px;height:80px;"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>继续新增</td>
+            <td>
+                <span class="my-checkbox actives" style="margin-left:5px;"></span>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="padding-top:20px;">
+                <button class="btn-bg" style="background-color: #3669e1;" onclick="if(!fn$newitemok()) return false;">确认</button>
+                <button class="btn-bd" style="border-radius: 0;margin-left:10px;" type="button" onclick="layer.closeAll();">取消</button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="sign my-modal" id="jobuser-modal">
+    <ul class="nav my-nav" style="overflow-y:auto;">
+        @foreach (var item in Model)
+        {
+            <li data-id="@Html.Raw(item.UserId)">
+                <span>@Html.Raw(item.RealName)</span><span class="my-radio"></span>
+            </li>
+        }
+    </ul>
+    <div class="text-center mg-t-10">
+        <button class="btn bg-3669e1 c-fff my-close" style="width:200px;" onclick="fn$selectok();">确定</button>
+    </div>
+</div>
+
+
+@Html.AntiForgeryToken()
+

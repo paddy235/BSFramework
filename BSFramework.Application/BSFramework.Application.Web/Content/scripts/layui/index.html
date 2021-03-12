@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="css/layui.css">
+</head>
+<body>
+	<div id="container">
+		
+	</div>
+	<script src="jquery.js"></script>
+	<script src="lay/modules/laypage.js"></script>
+	<script>
+ 	console.log( laypage )
+	layui.use('laypage',function(){
+		var laypage = layui.laypage;
+		laypage.render({
+			elem : 'container',
+			count : 300,
+			limit : 500,
+			limits : [100,200,300,400,500],
+			layout : ['count','prev','page','next','limit','skip']
+		})
+	});
+
+	</script>
+</body>
+</html>

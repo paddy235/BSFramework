@@ -1,0 +1,243 @@
+﻿@model IList<BSFramework.Application.Entity.Activity.ActivityCategoryEntity>
+@{ ViewBag.Title = "Index";
+                Layout = "~/Views/Shared/_Layout.cshtml"; }
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/record.css")" />
+<script src="@Url.Content("~/Content/scripts/base.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/hammer.js")"></script>
+<script>
+    var tId;
+    var tType;  //点击编辑
+    $(function () {
+        //获取菜单(菜单控制)
+        InitMenu(undefined, $("div"));
+
+        $('.main-sidebar,.main-content').niceScroll({
+            autohidemode: false
+        });
+        $('.table-today tr').hover(function () {
+            $(this).addClass('hover');
+        }, function () {
+            $(this).removeClass('hover');
+        });
+        $('.table-today tr').click(function () {
+            $(this).toggleClass('actives');
+        })
+        $('.user>.dropdown-menu').css({
+            left: $('.user').innerWidth() - $('.user>.dropdown-menu').width() - 65
+        });
+        $('.clearfix').delegate('.item', 'click', function (e) {
+            e.stopPropagation();
+        })
+        $('.clearfix').delegate('.item button:not(".edit")', 'click', function (e) {
+            if (del(e.target.id)) {
+                //var $p = $(this).parents('.item');
+                //$p.remove();
+            } else {
+                return false;
+            }
+        })
+        $('.clearfix > div').each(function () {
+            var mc = new Hammer(this);
+            mc.on('press', function (e) {
+                $('.clearfix').addClass('remove');
+                $('body').bind('click', clickHand);
+                return false;
+            })
+        })
+    });
+
+    function fn$all() {
+        jQuery('#name').val('');
+    }
+
+    function fn$new() {
+        jQuery('#CreateTime').val(new Date().toLocaleDateString());
+        jQuery('#ActivityCategory').val('');
+        tType = "";
+        layer.open({
+            type: 1,
+            title: '新增活动类型',
+            content: $('.add-container'),
+            area: ['500px', '320px']
+        });
+    }
+
+    function fn$doNew() {
+        var url = '@Url.Action("PostCategory")';
+        if (tType == "edit") {
+            url = '@Url.Action("EditCategoryType")';
+        }
+        var category = jQuery('#ActivityCategory').val();
+        var categoryId = jQuery('#ActivityCategoryId').val();
+        if (!category.trim()) {
+            $("#info").text("请输入活动类型");
+            v = layer.open({
+                type: 1,
+                title: '提示消息',
+                content: $('.messInfo'),
+                area: ['300px', '180px']
+            }); return false;
+        }
+        jQuery.post(url, { id: tId, ActivityCategory: category, ActivityCategoryId: categoryId }, function (data) {
+            if (tType == "edit") {
+                if (data.message == "true") {
+                    layer.closeAll();
+                    window.location.reload();
+                } else if (data.message == "false") {
+                    layer.msg("系统班组活动类型,不允许编辑");
+                    return false;
+                } else {
+                    layer.msg(data.message);
+                    return false;
+                }
+            } else {
+                if (data.success) {
+                    layer.closeAll();
+                    window.location.reload();
+                } else {
+                    $("#info").text(data.message);
+                    v = layer.open({
+                        type: 1,
+                        title: '提示消息',
+                        content: $('.messInfo'),
+                        area: ['300px', '180px']
+                    });
+                }
+            }
+        }, 'json');
+    }
+
+
+    function fn$goto(e) {
+        window.location.href = jQuery(e).data('href');
+    }
+</script>
+
+<div class="main-content">
+
+    <div class="container-fluid">
+        @*@using (Html.BeginForm("Index", "Activity", FormMethod.Post, new { @class = "sf" }))
+            {*@
+
+        <div class="title col-md-11">
+            <a href="javascript:;">
+                @*<img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">*@
+                班组活动
+            </a>
+        </div>
+        @*<div class="col-md-1">
+                <a style="margin-right:30px;" id="put-in" onclick="fn$new();">
+                    <img src="@Url.Content("~/Content/styles/static/images/add-icon-1.png")" style="margin-top:-2px;" alt="">
+                    新增类型
+                </a>
+            </div>*@
+        <div class="bg-f5f8fe pd-20 pd-t-80  my-body">
+            @*<div class="text-center">
+                    <span class="my-input mg-r-15" style="width:40%;">
+                        <input id="name" type="text" name="name" placeholder="输入查询关键词" value="@Html.Raw(ViewData["name"])">
+                    </span>
+                    <button class="my-btn bg-3669e1 mg-r-15">
+                        <img src="@Url.Content("~/Content/styles/static/images/search-icon.png")" alt="">
+                        搜索
+                    </button>
+                    <button class="my-btn bg-8fadce" onclick="fn$all();">全部</button>
+                </div>*@
+            @Html.Partial("~/Areas/Works/Views/Activity/ActivityMenu.cshtml")
+        </div>
+
+        <footer class="main-footer">
+            武汉博晟安全技术股份有限公司   版权所有
+        </footer>
+        @*}*@
+    </div>
+</div>
+<script>
+    //''
+    $(function () {
+
+    })
+    function clickHand() {
+        $('.clearfix').removeClass('remove');
+    }
+    function del(id) {
+        layer.confirm('确定要删除此班组活动类型？', { btn: ['确定', '取消'] }, function () {
+            layer.closeAll();
+            layer.load("删除中");
+            jQuery.post('@Url.Action("Del")', { id: id }, function (data) {
+                layer.closeAll();
+                if (data.success) {
+                    layer.msg("删除成功");
+                    window.location.reload();
+                }
+                else {
+                    layer.msg(data.message)
+                };
+            }, 'json');
+        });
+    }
+    function edit(id) {
+        jQuery('#CreateTime').val(new Date().toLocaleDateString());
+        //jQuery('#ActivityCategory').val('');
+        tId = id;
+        tType = "edit";
+        $.ajax({
+            url: '@Url.Action("editCategory")',
+            type: 'post',
+            data: { id: id },
+            success: function (data) {
+                data = JSON.parse(data);
+                //document.getElementById('uploadPreview').src = data.resultdata.path;
+                //$("#tempImageSrc").val(data.resultdata.path);
+                $("#ActivityCategory").val(data.resultdata.name);
+                $("#ActivityCategoryId").val(data.resultdata.id);
+            }
+        });
+        iframeIndex = layer.open({
+            type: 1,
+            title: '修改类别',
+            content: $('.add-container'),
+            area: ['500px', '420px']
+        })
+    }
+    //''
+</script>
+<div class="add-container">
+    <table>
+        <tr>
+            <td>活动类型</td>
+            <td>
+                <input type="text" id="ActivityCategory" name="ActivityCategory" class="my-input" placeholder="请输入" maxlength="6" />
+                <input type="hidden" id="ActivityCategoryId" name="ActivityCategoryId" class="my-input" placeholder="请输入" maxlength="6" />
+            </td>
+        </tr>
+        <tr>
+            <td>登记人</td>
+            <td>
+                <input type="text" id="CreateUser" name="CreateUser" class="my-input" value="@Html.Raw(ViewBag.user)" readonly="readonly" />
+            </td>
+        </tr>
+        <tr>
+            <td>登记时间</td>
+            <td>
+                <input type="text" id="CreateTime" name="CreateTime" class="my-input" placeholder="请输入" readonly="readonly" />
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="padding-top:20px;">
+                <button class="btn-bg" onclick="if (!fn$doNew()) return false;" style="background-color: #3669e1;">确认</button>
+                <button class="btn-bd" type="button" style="border-radius: 0;margin-left:10px;" onclick="layer.closeAll();">取消</button>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="messInfo">
+    <div style="text-align:center;">
+        <h4 id="info" style="margin-top:35px;"></h4>
+        <button class="btn bg-3669e1 c-fff" style="margin-top:10px;width:70px;" onclick="layer.close(v);">确认</button>
+    </div>
+</div>

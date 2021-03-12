@@ -1,0 +1,154 @@
+﻿@model BSFramework.Application.Entity.EducationManage.EduBaseInfoEntity
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/before.css")" />
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script>
+    function AcceptClick() {
+
+        if (!valid()) {
+            return false;
+        }
+        var json = jQuery('#form1').serializeJSON();
+        $.SaveForm({
+            url: '@Url.Action("SaveFormReport")',
+            param: json,
+            loading: "数据提交中...",
+            success: function (data) {
+                if (data.success) {
+                    $.currentIframe().$("#gridTable").trigger("reloadGrid");
+                }
+            }
+        });
+
+    }
+    function valid() {
+        var d = $("#AppraiseContent").val();
+
+
+        if (d == "") {
+            dialogMsg('效果评价不能为空！', 0);
+            return false;
+        }
+        return true;
+    }
+</script>
+<div style="margin-left: 10px; margin-right: 10px;overflow-y:auto;">
+    @Html.HiddenFor(x=>x.ID)
+    <div class="tab-content" style="padding-top: 15px; ">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right:30px;">
+            <table class="form">
+                <tr>
+                    <td class="formTitle">讲课题目</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextBoxFor(x=>x.Theme, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">课件</td>
+                    <td class="formValue">
+                        <ul><li>
+                            <a href="#">课件地址</a>
+                            </li></ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">授课人</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.ImpartPeople, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">培训时间</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.ActivityDate, new { @class = "form-control", @readonly = "readonly", Value = string.Format("{0:yyyy-MM-dd HH:mm:ss}", Model.ActivityDate) })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">缺席人员</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextBox("Answer","", new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+                <tr style="height:50px;">
+                    <td class="formTitle"><h4>讲课记录</h4></td>
+                </tr>
+                <tr>
+                    <td class="formTitle">音频</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextArea("mp3", new { @class = "form-control", @readonly = "readonly", style = "height:60px;" })
+                    </td>
+                </tr>
+                @*<tr>
+                    <td class="formTitle">图片</td>
+                    <td class="formValue" colspan="3">
+                        <ul class="images-container">
+                            @for (int i = 0; i < Model.Files.Count; i++)
+                            {
+                                <li><img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = Model.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:160px;height:120px;"></li>
+                            }
+                        </ul>
+                    </td>
+                </tr>*@
+                <tr >
+                    <td class="formTitle">描述</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.Describe, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">记录人</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x=>x.RegisterPeople, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">记录时间</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.RegisterDate, new { @class = "form-control", @readonly = "readonly", Value = string.Format("{0:yyyy-MM-dd HH:mm:ss}", Model.RegisterDate) })
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4"><hr /></td>
+                </tr>
+                <tr>
+                    <td class="formTitle">补课人</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextBox("BookPeoples","", new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    </tr>
+                <tr>
+                    <td class="formTitle">补课时间</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextBox("BookDates","", new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4"><hr /></td>
+                </tr>
+                <tr>
+                    <td class="formTitle">效果评价<font face="宋体">*</font></td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.AppraiseContent, new { @class = "form-control" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">评价人</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.AppraisePeople, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">评价时间</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.AppraiseDate, new { @class = "form-control", @readonly = "readonly", Value = string.Format("{0:yyyy-MM-dd HH:mm:ss}",Model.AppraiseDate) })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">评分</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Grade, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</div>

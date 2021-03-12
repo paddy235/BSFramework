@@ -1,0 +1,153 @@
+﻿@charset "UTF-8";
+.main3_left{
+    width: calc(45.2% - 10px);
+}
+.main3_sec1{
+    width: 100%;
+    height: 420px;
+    margin-bottom: 20px;
+    background: url("../images/main3_sec1bg.png") no-repeat;
+    background-size: 100% 100%;
+}
+.more_a{
+    color: #def5ff;
+    float: right;
+    font-size: 16px;
+    background: url("../images/more_icon.png") no-repeat right center;
+    padding-right: 15px;
+    line-height: 48px;
+}
+.more_a:hover{
+    opacity: .8;
+}
+.notice_list{
+    height: 330px;
+    padding-right: 10px;
+}
+.notice_list li{
+    height: 33px;
+    line-height: 33px;
+}
+.notice_list li a{
+    display: block;
+    position: relative;
+    color: #c7e6fa;
+    padding-left: 15px;
+    height: 33px;
+    font-size: 16px;
+    padding-right: 5px;
+}
+.notice_list li a:hover{
+    opacity: .8;
+}
+.notice_list li a:before{
+    content: '。';
+    position: absolute;
+    left: 0;
+    top: -6px;
+    color: #738fa0;
+}
+.notice_list li a p{
+    float: left;
+    width: calc(100% - 110px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    padding-right: 45px;
+}
+.notice_list li a span{
+    float: right;
+    color: #738fa0;
+}
+.new_icon{
+    position: absolute;
+    width: 45px;
+    height: 33px;
+    background: url("../images/new_icon.png") no-repeat right center;
+}
+.main3_sec2{
+    width: 100%;
+    height: 450px;
+    margin-bottom: 20px;
+    background: url("../images/main3_sec2bg.png") no-repeat;
+    background-size: 100% 100%;
+}
+.sec2_left{
+    height: 100%;
+    width: 310px;
+}
+.sec2_right{
+    height: 100%;
+    width: calc(100% - 310px);
+    padding-left: 9px;
+}
+.teamList_div h2{
+    margin-bottom: 15px;
+}
+.team_list li{
+    float: left;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    padding: 0 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.team_list1 li,.team_list2 li{
+    width: 145px;
+    background: url("../images/teamLi_bg1.png") no-repeat;
+}
+.team_list3{
+    height: 310px;
+}
+.team_list3 li{
+    width: calc(33.33% - 10px);
+    background: url("../images/teamLi_bg2.png") no-repeat;
+    background-size: 100% 100%;
+}
+.team_list3 li:nth-last-child(1),.team_list3 li:nth-last-child(2),.team_list3 li:nth-last-child(3){
+    /*margin-bottom: 0;*/
+}
+.main3_right{
+    width: calc(54.8% - 10px);
+}
+.main3_sec3{
+    width: 100%;
+    height: 420px;
+    margin-bottom: 20px;
+    background: url("../images/main3_sec3bg.png") no-repeat;
+    background-size: 100% 100%;
+}
+.table_div3{
+    height: 294px;
+}
+.colorRed{
+    color: #f55561;
+}
+.main3_sec4{
+    width: 100%;
+    height: 450px;
+    margin-bottom: 20px;
+    background: url("../images/main3_sec4bg.png") no-repeat;
+    background-size: 100% 100%;
+}
+#sec4_chart{
+    height: 360px;
+}
+@media screen and (max-width: 1540px) {
+    .new_icon{
+        right: 0;
+    }
+}
+@media screen and (max-width: 1560px){
+    .team_list3 li{
+        width: calc(50% - 10px);
+    }
+    .team_list3 li:nth-last-child(3){
+        margin-bottom: 10px;
+    }
+}

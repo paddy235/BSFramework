@@ -1,0 +1,166 @@
+﻿@{
+    ViewBag.Title = "Index2";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group a.btn {
+            margin-top: 4px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+</style>
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+<script type="text/javascript">
+    var selectedRowIndex;
+    jQuery(function () {
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#grid').setGridWidth(($('.gridPanel').width()));
+                $("#grid").setGridHeight($(window).height() - 140);
+            }, 200);
+            e.stopPropagation();
+        });
+
+        jQuery('#grid').jqGrid({
+            autowidth: true,
+            colModel: [
+                    { label: 'EmergencyReportId', name: 'EmergencyReportId', hidden: true },
+                    {
+                        label: '状态', name: 'state', index: 'state', width: 240, align: 'center',
+                        formatter: function (cellvaue, options, rowObject) {
+                            if (cellvaue == "未评价") {
+                                return "<a style='color:red;' href=\"javascript:ndetail('" + rowObject.EmergencyReportId + "')\" title=\"未评价\">" + cellvaue + "</a>"
+                            }
+                            else {
+                                return "<a style='color:blue;' href=\"javascript:detail('" + rowObject.EmergencyReportId + "')\" title=\"已评价\">" + cellvaue + "</a>"
+                            }
+                        }
+                    },
+                    { label: '演练部门', name: 'deptname', width: 200, align: 'center', sortable: false },
+                    { label: '演练名称', name: 'emergencyreportname', width: 200, align: 'center', sortable: false },
+                    { label: '应急预案名称', name: 'emergencyname', width: 600, align: 'center', sortable: false },
+                    { label: '应急预案类型', name: 'emergencytype', width: 600, align: 'center', sortable: false },
+                    { label: '演练方式', name: 'rehearsetype', width: 200, align: 'center', sortable: false },
+                    {
+                        label: '演练时间', name: 'planstarttime', index: 'MODIFYDATE', width: 180, align: 'center', sortable: false, formatter: 'date',
+                        formatter: function (cellvalue, options, rowObject) {
+                            if (formatDate(cellvalue, 'yyyy-MM-dd') < formatDate("1900-01-01", 'yyyy-MM-dd')) {
+                                return "";
+                            } else {
+                                return formatDate(cellvalue, 'yyyy-MM-dd');
+                            }
+
+                        }, formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                    },
+                    { label: '演练地点', name: 'emergencyplace', width: 200, align: 'center', sortable: false },
+            ],
+            height: $(window).height() - 140,
+            url: '@Url.Action("GetDataManoeuvre")?date=' + new Date().getTime(),
+            datatype: "json",
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 20,
+            rownumbers: true,
+            pager: "#gridPager",
+            gridComplete: function () {
+                //var gridid = this.id;
+                //$("#" + this.id).setSelection(selectedRowIndex, false);
+                //var rows = $("#" + this.id).jqGrid("getRowData");//获取当前页记录行数据
+                ////查询用户对该模块的数据操作权限
+                //$(rows).each(function (i, item) {
+                //    var html = "";
+
+                //    html += "<a href=\"javascript:fn$score('" + item.EvaluateId + "')\" title=\"打分\" style='color:blue;'>打分</a>";
+                //    //html += "<a href=\"javascript:fn$approve('" + item.ID + "')\" title=\"核准\">核准</a>";
+                //    //html += "<a href=\"javascript:btn_edit('" + uId + "')\" title=\"编辑\">编辑</a>";
+                //    //html += "<a href=\"javascript:btn_delete('" + uId + "')\" title=\"删除\">删除</a>";
+                //    $("td[aria-describedby='" + gridid + "_action']").eq(i).html(html);
+                //});
+            }
+        });
+        $("#btn_Search").click(function () {
+            var obj = {
+                ToCompileDeptIdSearch: jQuery('#ToCompileDeptIdSearch').val(),
+                EmergencyTypeSearch: jQuery('#EmergencyTypeSearch').val(),
+                meetingstarttime: jQuery('#meetingstarttime').val(),
+                meetingendtime: jQuery('#meetingendtime').val(),
+            };
+            jQuery('#grid').jqGrid('setGridParam', {
+                postData: obj, page: 1
+            }).trigger('reloadGrid');
+        });
+    });
+    //查看
+    function detail(id) {
+        var dlg = dialogOpen({
+            id: 'Detail',
+            title: '查看演练信息',
+            url: '/..@Url.Action("Detail2")?keyValue=' + id,
+            width: '800px',
+            height: '600px',
+            btn: ["关闭"],
+            callBack: function (iframeId) {
+                top.layer.close(dlg);
+            }
+        })
+        // }
+    }
+    function ndetail(id) {
+        var url = '/..@Url.Action("Detail3")?keyValue=' + id;
+        dialogOpen({
+            id: "Detail3",
+            title: '查看演练信息',
+            url: url,
+            width: "800px",
+            height: "800px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+</script>
+<div class="titlePanel">
+    <div class="title-search">
+        <div class="form-inline">
+            <div class="form-group">
+                <label for="ToCompileDeptIdSearch">演练部门</label>
+                @Html.DropDownList("ToCompileDeptIdSearch", ViewData["Depart"] as IEnumerable<SelectListItem>, new { @class = "form-control", style = "width:200px" })
+            </div>
+            <div class="form-group">
+                <label for="EmergencyTypeSearch">应急预案类型</label>
+                @Html.DropDownList("EmergencyTypeSearch", ViewData["EmergencyType"] as IEnumerable<SelectListItem>, new { @class = "form-control", style = "width:200px" })
+            </div>
+            <div class="form-group">
+                <label for="team">日期</label>
+                <input type="text" class="form-control" id="meetingstarttime" onfocus="WdatePicker();" readonly="readonly">
+                - <input type="text" class="form-control" id="meetingendtime" onfocus="WdatePicker();" readonly="readonly">
+            </div>
+            <div class="form-group">
+                <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+            </div>
+        </div>
+    </div>
+    <div class="toolbar">
+
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="grid"></table>
+    <div id="gridPager"></div>
+</div>
+

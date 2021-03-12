@@ -1,0 +1,263 @@
+﻿@{
+    ViewBag.Title = "用户管理";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<style>
+    #user-container ul {
+    }
+
+    .user-item {
+        float: left;
+        margin: 3px;
+        padding: 2px;
+        border-radius: 3px;
+        border: 1px #ddd solid;
+    }
+</style>
+<script src="~/Content/scripts/jquery/jquery.url.js"></script>
+<script>
+    var deptId = jQuery.getUrlArgs('deptId');
+    var deep = false;
+    var checkMode = '';
+    var deptid = '';
+    var selectedRowIndex = -1;
+
+    $(function () {
+        deptid = jQuery.getUrlArgs('deptid');
+        checkMode = jQuery.getUrlArgs('checkMode');
+        if (!deptid) deptid = '@ViewBag.deptid';
+
+        $('#layout').layout({
+            west: {
+                size: 300
+            },
+            east: {
+                size:300
+            },
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $("#grid").setGridHeight($(window).height() - 198);
+                $("#departments").height($(window).height() - 50);
+            }, 200);
+            e.stopPropagation();
+        });
+
+        $("#departments").height($(window).height() - 50);
+        $("#user-container").height($(window).height() - 50);
+
+
+        GetGrid();
+    });
+
+    function onNodeSelected(node) {
+        deptid = node.value;
+        deep = false;
+        $('#btn_Search').trigger("click");
+    }
+
+    function selRow(obj, checked) {
+        if (checked) {
+            if (!jQuery('#user-container ul #' + obj.UserId).size()) {
+                jQuery("#user-container ul").append('<li class="user-item" id="' + obj.UserId + '" data-account="' + obj.Account + '" data-userid="' + obj.UserId + '" data-realname="' + obj.RealName + '" + data-deptid="' + obj.DepartmentId + '" data-deptname="' + obj.DepartmentName + '" data-mobile="' + obj.Mobile + '">' + obj.RealName + '</li>');
+            }
+        } else {
+            jQuery('#user-container ul #' + obj.UserId).remove();
+        }
+    }
+
+    //加载表格
+    function GetGrid() {
+        var queryJson = {
+            condition: $("#queryCondition").find('.dropdown-text').attr('data-value'),
+            keyword: $("#txt_Keyword").val(),
+            deptid: deptid,
+            deep: deep
+        }
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            postData: queryJson,
+            url: "/..@Url.Action("GetList")",
+            datatype: "json",
+            height: $(window).height() - 170,
+            autowidth: true,
+            multiselect: checkMode == 'multiple',
+            multiselectWidth:30,
+            colModel: [
+                { label: '主键', name: 'UserId', hidden: true, key:true },
+                { label: '', name: 'DepartmentId', hidden: true },
+                { label: '', name: 'DepartmentCode', hidden: true },
+                { label: '', name: 'OrganizeCode', hidden: true },
+                { label: '账户', name: 'Account', index: 'Account', width: 100, align: 'center' },
+
+                { label: '姓名', name: 'RealName', index: 'RealName', width: 100, align: 'center' },
+                {
+                    label: '性别', name: 'Gender', index: 'Gender', width: 45, align: 'center',
+                    formatter: function (cellvalue, options, rowObject) {
+                        return cellvalue == 1 ? "男" : "女";
+                    }
+                },
+                { label: '手机', name: 'Mobile', index: 'Mobile', width: 100, align: 'center' },
+                {
+                    label: '公司', name: 'OrganizeName', index: 'CompanyName', hidden:true, width: 120, align: 'center'
+
+                },
+                {label: '部门', name: 'DeptName', index: 'DeptName', hidden: true, width: 200, align: 'center'                },
+                { label: '部门2', name: 'DepartmentName', index: 'DepartmentName', hidden: true, width: 200, align: 'center'                },
+                { label: '岗位', name: 'DutyName', index: 'DutyName', width: 100, align: 'center' },
+                { label: '职位', name: 'PostName', index: 'PostName', width: 100, align: 'center' },
+                {
+                    label: '角色', name: 'RoleName', index: 'RoleName', width: 100, align: 'center'
+
+                },
+                { label: '主管', name: 'Manager', index: 'Manager', hidden: true, width: 100, align: 'center' }
+            ],
+            viewrecords: true,
+            rowNum: 10,
+            rowList: [10, 20, 30],
+            pager: "#gridPager",
+            sortname: 'CreateDate',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: true,
+            gridview: true,
+            onSelectRow: function (id, checked) {
+                if (checkMode == 'single') {
+                    selRow({ UserId: selectedRowIndex }, false);
+                }
+                var rowObject = jQuery('#gridTable').jqGrid('getRowData', id);
+                selRow(rowObject, checked);
+                selectedRowIndex = id;
+            },
+            onSelectAll: function (aRowids, checked) {
+                jQuery.each(aRowids, function (i, o) {
+                    var rowObject = jQuery('#gridTable').jqGrid('getRowData', o);
+                    selRow(rowObject, checked);
+                });
+            }
+        });
+        //查询条件
+        $("#queryCondition .dropdown-menu li").click(function () {
+            var text = $(this).find('a').html();
+            var value = $(this).find('a').attr('data-value');
+            $("#queryCondition .dropdown-text").html(text).attr('data-value', value)
+        });
+        //查询事件
+        $("#btn_Search").click(function () {
+            var queryJson = {
+                condition: $("#queryCondition").find('.dropdown-text').attr('data-value'),
+                keyword: $("#txt_Keyword").val(),
+            }
+            $gridTable.jqGrid('setGridParam', {
+                postData: { deptid: deptid, deep: deep, key: $("#queryCondition").find('.dropdown-text').attr('data-value'), value: $("#txt_Keyword").val() }, page: 1
+            }).trigger('reloadGrid');
+        });
+        //查询回车
+        $('#txt_Keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+    }
+
+    function AcceptClick(callback) {
+        var jDom = jQuery('#user-container ul li');
+        var list = [];
+        jDom.each(function (i, o) {
+            list.push({
+                UserId: jQuery(o).data('userid'),
+                Account: jQuery(o).data('account'),
+                RealName: jQuery(o).data('realname'),
+                DeptId: jQuery(o).data('deptid'),
+                DeptName: jQuery(o).data('deptname'),
+                Mobile: jQuery(o).data('mobile')
+            });
+        });
+        debugger;
+        if (list.length == 1) {
+            if (typeof (callback) == 'function') {
+                callback(list[0]);
+            }
+        } else if (list.length > 1) {
+            callback(list);
+        } else {
+            dialogAlert('请选择人员！', 0);
+            return;
+        }
+        dialogClose();
+    }
+
+    function getTreeMode() {
+        return false;
+    }
+</script>
+<div class="ui-layout" id="layout" style="height:100%;padding:10px;">
+    <div class="ui-layout-west">
+        <div>
+            <div class="panel-Title">
+                <a href="javascript:selectAll();">组织机构树</a>
+            </div>
+            @Html.Partial("~/Areas/BaseManage/Views/Department/Tree.cshtml")
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div>
+            <div class="panel-Title">用户信息</div>
+            <div class="titlePanel" style="border-top:none;">
+                <div class="title-search">
+                    <table>
+                        <tr>
+                            <td>
+                                <div id="queryCondition" class="btn-group">
+                                    <a class="btn btn-default dropdown-text" data-toggle="dropdown">选择条件</a>
+                                    <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a data-value="Account">账户</a></li>
+                                        <li><a data-value="RealName">姓名</a></li>
+                                        <li><a data-value="Mobile">手机</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                            <td style="padding-left: 2px;">
+                                <input id="txt_Keyword" type="text" class="form-control" placeholder="请输入要查询关键字" style="width: 200px;" />
+                            </td>
+                            <td style="padding-left: 5px;">
+                                <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="toolbar">
+                    <div class="btn-group">
+                        <a id="lr-replace" class="btn btn-default" onclick="reload();"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+                    </div>
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="gridTable"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+    <div class="ui-layout-east">
+        <div>
+            <div class="panel-Title">
+                @*<a href="javascript:selectAll();">已选中的用户</a>*@
+            </div>
+            <div id="user-container" style="border:1px #c5c5c5 solid;border-top:none;">
+                <ul></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+

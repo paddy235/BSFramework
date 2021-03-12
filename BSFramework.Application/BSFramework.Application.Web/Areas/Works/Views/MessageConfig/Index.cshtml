@@ -1,0 +1,176 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group a.btn {
+            margin-top: 4px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+</style>
+@section Scripts {
+    <script>
+        var selectedRowIndex;
+
+        jQuery(function () {
+            $(window).resize(function (e) {
+                window.setTimeout(function () {
+                    $('#grid').setGridWidth(($('.gridPanel').width()));
+                    $("#grid").setGridHeight($(window).height() - 110);
+                }, 200);
+                e.stopPropagation();
+            });
+
+            jQuery('#grid').jqGrid({
+                colModel: [
+                    { label: '主键', name: 'ReportId', hidden: true, align: 'center', key: true },
+                    {
+                        label: '操作', name: 'action', width: 120, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                            var html = "";
+                            html += "<a href=\"javascript:fn$edit('" + rowObject.ConfigId + "')\" title=\"修改\" style=\"color:blue;padding-left:0px;\">修改</a> ";
+                            //html += "<a href=\"javascript:fn$delete('" + rowObject.BudgetId + "')\" title=\"删除\" style=\"color:blue;padding-left:0px;\">删除</a> ";
+                            return html;
+                        }
+                    },
+                    { label: '消息组', name: 'ConfigKey', index: 'ConfigKey', width: 120, align: 'center', sortable: false },
+                    {
+                        label: '启用', name: 'Enabled', index: 'Enabled', width: 120, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                            return cellvalue ? "<i class=\"fa fa-toggle-on\"></i>" : "<i class=\"fa fa-toggle-off\"></i>";
+                        }
+                    },
+                    {
+                        label: '费用类型', name: 'Category', index: 'Category', width: 120, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                            if (cellvalue == 'Message') return '消息';
+                            if (cellvalue == 'Todo') return '待办';
+                        }
+                    },
+                    { label: '接收方式', name: 'RecieveType', index: 'RecieveType', width: 180, align: 'center', sortable: false },
+                    { label: '标题', name: 'Title', index: 'Title', width: 180, align: 'center', sortable: false },
+                    { label: '消息模板', name: 'Template', index: 'Template', width: 180, align: 'center', sortable: false },
+                ],
+                height: $(window).height() - 110,
+                url: '@Url.Action("GetData")',
+                datatype: "json",
+                mtype: 'POST',
+                postData: { title: jQuery('#title').val() },
+                viewrecords: true,
+                gridview: true,
+                sortable: false,
+                shrinkToFit: false,
+                rowNum: -1,
+                rownumbers: true,
+                //footerrow: true,
+                altRows: true,
+                //pager: "#gridPager",
+                //gridComplete: function () {
+                //    for (var i = 1; i <= 12; i++) {
+                //        var col = 'Budget' + i;
+                //        var total = jQuery('#grid').getCol(col, false, 'sum');
+                //        var json = '{"' + col + '":' + total + '}';
+                //        jQuery('#grid').footerData('set', JSON.parse(json), { formatter: 'number', formatoptions: { decimalSeparator: '.', thousandsSeparator: ',', decimalPlaces: 2, defaultValue: 0 } });
+                //    }
+                //    var total = jQuery('#grid').getCol('Total', false, 'sum');
+                //    jQuery('#grid').footerData('set', { Total: total }, { formatter: 'number', formatoptions: { decimalSeparator: '.', thousandsSeparator: ',', decimalPlaces: 2, defaultValue: 0 } });
+                //}
+            });
+        });
+
+        function fn$query() {
+            jQuery('#grid').jqGrid('setGridParam', { postData: { title: jQuery('#title').val() } }).trigger("reloadGrid");
+        }
+
+        function fn$delete(id) {
+            $.RemoveForm({
+                url: '/..@Url.Action("Remove")' + '/' + id,
+                success: function (data) {
+                    fn$refresh();
+                }
+            });
+        }
+
+        function fn$edit(id) {
+            dialogOpen({
+                id: "Edit",
+                title: '修改',
+                url: '/..@Url.Action("Detail")/' + id,
+                width: "500px",
+                height: "360px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.fn$ok();
+                }
+            });
+        }
+
+        function fn$add() {
+            dialogOpen({
+                id: "Add",
+                title: '新增',
+                url: '/..@Url.Action("Detail")',
+                width: "500px",
+                height: "360px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.fn$ok();
+                }
+            });
+        }
+
+        function fn$import() {
+            dialogOpen({
+                id: "Import",
+                title: '导入',
+                url: '/..@Url.Action("Import")',
+                width: "500px",
+                height: "200px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.fn$ok();
+                }
+            });
+        }
+
+        function fn$refresh() {
+            fn$query();
+        }
+
+    </script>
+}
+<div class="titlePanel">
+    <div class="title-search">
+        <div class="form-inline">
+            <div class="form-group">
+                <label for="title">标题</label>
+                <input id="title" class="form-control" style="width:120px" />
+                @*<input type="text" class="form-control" id="key">*@
+            </div>
+            <div class="form-group">
+                <a id="btn_Search" class="btn btn-primary" onclick="fn$query();"><i class="fa fa-search"></i>查询</a>
+                @*<a id="build" class="btn btn-primary" onclick="fn$build();"><i class="fa fa-search"></i>生成</a>*@
+            </div>
+        </div>
+    </div>
+    <div class="toolbar">
+        <div class="btn-group">
+            @*<a id="add" class="btn btn-default" onclick="fn$add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+                <a id="import" class="btn btn-default" onclick="fn$import()"><i class="fa fa-file-excel-o"></i>&nbsp;导入</a>*@
+        </div>
+        @*<script>$('.toolbar').authorizeButton()</script>*@
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="grid"></table>
+    <div id="gridPager"></div>
+</div>

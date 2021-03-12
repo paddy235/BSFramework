@@ -1,0 +1,165 @@
+﻿@{
+    ViewBag.Title = "ActivityType";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+<script src="~/Content/scripts/plugins/AdminPrettyDesktopFirst/js/LoadData.js"></script>
+<script>
+    var deptId = "@ViewBag.deptid";
+    $(function () {
+
+        InitialPage();
+        GetGrid();
+    });
+
+    //初始化页面
+    function InitialPage() {
+        $('#layout').layout({
+            applyDemoStyles: false,
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+    }
+
+    //加载表格
+    function GetGrid() {
+
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            url: '/..@Url.Action("GetActivityCategoryListJson")',
+            datatype: "json",
+            height: $(window).height() - 200, 
+
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'ActivityCategoryId', hidden: true },
+                {
+                    label: '操作', name: 'action', width: 135, align: 'center', sortable: false
+                },
+                { label: '活动类型', name: 'ActivityCategory', index: 'ActivityCategory', width: 350, align: 'center' },
+                { label: '开展范围', name: 'deptname', index: 'deptname', width: 800, align: 'center' },
+                { label: '提交人', name: 'CreateUser', index: 'CreateUser', width: 200, align: 'center' },
+                {
+                    label: '提交时间', name: 'CreateTime', index: 'CreateTime', width: 200, align: 'center', sortable: false,
+                    formatter: function (cellvalue, options, rowObject) {
+                        return formatDate(cellvalue, 'yyyy-MM-dd');
+                    },
+                    formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                }
+
+            ],
+            viewrecords: true,
+            rowNum: 30,
+            // rowList: [30, 50, 100],
+            pager: "#gridPager",
+            //sortname: 'createdate',
+            //sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            gridComplete: function () {
+                var gridid = this.id;
+                $("#" + this.id).setSelection(selectedRowIndex, false);
+                var rows = $("#" + this.id).jqGrid("getRowData");//获取当前页记录行数据
+                //查询用户对该模块的数据操作权限
+                $(rows).each(function (i, item) {
+                    var html = "";
+                    html += "<a href=\"javascript:show('" + item.ActivityCategoryId + "')\" title=\"修改\">修改</a>";
+                    html += "<a href=\"javascript:del('" + item.ActivityCategoryId + "')\" title=\"删除\">删除</a>";
+                    $("td[aria-describedby='" + gridid + "_action']").eq(i).html(html);
+
+                });
+            }
+           
+        });
+
+        $("#btn_Add").click(function () {
+            dialogOpen({
+                id: "Add",
+                title: '新增类型',
+                width: "1000px",
+                url: '/../@Url.Action("TypeDetail")',
+                height: "500px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+
+            })
+        });
+
+    }
+    function del(id) {
+        if (id) {
+            $.RemoveForm({
+                msg: "注：已有活动记录的班组，不可删除，清理未生成记录的班组。",
+                url: "/../@Url.Action("delCategory")?id=" + id,
+                param: { keyValue: id },
+                success: function (data) {
+                        $("#gridTable").trigger("reloadGrid");
+                }
+            })
+        }
+
+    }
+
+    //查看
+    function show(id) {
+        dialogOpen({
+            id: "Add",
+            title: '新增类型',
+            width: "1000px",
+            url: '/../@Url.Action("TypeDetail")?keyvalue=' + id,
+            height: "750px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+
+        })
+    }
+ 
+    function ref() {
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid('setGridParam', {
+            page: 1
+        }).trigger('reloadGrid');
+    }
+
+</script>
+
+
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+
+            <div class="titlePanel">
+                <div class="title-search">
+                    <div class="form-inline">
+
+                    </div>
+                </div>
+
+                <div class="toolbar">
+                    <div class="form-group">
+                        <a id="btn_Add" class="btn btn-primary"><i class="fa  fa-plus"></i>&nbsp;新增</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="gridPanel">
+            <table id="gridTable"></table>
+            <div id="gridPager"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+

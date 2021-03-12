@@ -1,0 +1,81 @@
+﻿@{
+    ViewBag.Title = "危险预知训练台帐";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+<script src="@Url.Content("~/Content/scripts/plugins/datepicker/WdatePicker.js")"></script>
+<script>
+
+    $(function () {
+        InitialPage();
+
+        GetGrid();
+    });
+    //初始化页面
+    function InitialPage() {
+        $('#layout').layout({
+            applyDemoStyles: false,
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+    }
+    //加载表格
+    function GetGrid() {
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTable');
+        var name='@ViewBag.name';
+        var from = '@ViewBag.from';
+        var to = '@ViewBag.to';
+        $gridTable.jqGrid({
+            url: "../../Danger/GetDangerJsonNew?name="+name+"&from="+from+"&to="+to,
+            datatype: "json",
+            height: $(window).height() - 80,
+            autowidth: true,
+            colModel: [
+                 { label: '主键', name: 'ID', hidden: true, align: 'center' },
+                 {
+                     label: '工作任务', name: 'jobname', name: 'jobname', width: 300, align: 'center'
+                 },
+                 { label: '工作负责人', name: 'jobuser', index: 'jobuser', width: 200, align: 'center' },
+                 { label: '班组', name: 'groupname', index: 'groupname', width: 220, align: 'center' },
+                 {
+                     label: '作业时间', name: 'time', index: 'jobtime', width: 280, align: 'center'
+                 },
+                 //{ label: '完成状态', name: 'status', index: 'status', width: 200, align: 'center' },
+                 { label: '评价状态', name: 'number', index: 'appraisecontent', width: 180, align: 'center' }
+            ],
+            viewrecords: true,
+            rowNum: 30,
+            // rowList: [30, 50, 100],
+            pager: "#gridPager",
+            sortname: 'jobtime',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            onSelectRow: function () {
+                selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            },
+            loadError: function (xhr, status, error) {
+                //top.location.href = "../../Login/Index?Login_Error=1";
+            }
+
+        });
+    }
+
+
+
+</script>
+
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+
+            <div class="gridPanel">
+                <table id="gridTable"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>

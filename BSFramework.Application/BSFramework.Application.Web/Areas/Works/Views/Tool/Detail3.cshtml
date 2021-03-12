@@ -1,0 +1,204 @@
+﻿@model BSFramework.Application.Entity.ToolManage.ToolInfoEntity
+@using BSFramework.Application.Entity.ToolManage
+@{
+    ViewBag.Title = "Detail3";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<style>
+    .images-container {
+        min-height: 120px;
+    }
+
+        .images-container li {
+            list-style: none;
+            float: left;
+            padding: 0px 5px;
+        }
+
+    .yinpin li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+
+    .items li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+
+    /*table tr {
+        height: 45px;
+    }*/
+</style>
+<script>
+    jQuery(function () {
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#grid').setGridWidth(($('.gridPanel').width()));
+                $("#grid").setGridHeight($(window).height() - 140);
+            }, 200);
+            e.stopPropagation();
+        });
+        var id = jQuery('#ID').val();
+        jQuery('#grid').jqGrid({
+            colModel: [
+                { label: '检验日期', name: 'CheckDate', width: 150, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d H:i', newformat: 'Y-m-d H:i' } },
+                { label: '检验结果', name: 'CheckResult', width: 100, align: 'center', sortable: false },
+                { label: '检验人', name: 'CheckPeople', width: 100, align: 'center', sortable: false },
+                { label: '编号', name: 'Numbers', width: 100, align: 'center', sortable: false },
+                { label: '有效期', name: 'ValiDate', width: 100, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' } },
+            {
+                label: '检验凭据', name: '', width: 150, align: 'center', sortable: false,
+                formatter: function (cellvaue, options, rowObject) {
+                    if (rowObject.Path) {
+                        return "<a style='' href=\"" + rowObject.Path + ")\" title=\"\">查看</a>";
+                    } else
+                    {
+                        return "";
+                    }
+                }
+            }
+            ],
+            height: 200,
+            autowidth: true,
+            url: '@Url.Action("GetCheck")?keyValue=' + id,
+            datatype: "json",
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 10,
+            rownumbers: true,
+            pager: "#gridPager",
+            gridComplete: function () {
+            }
+        });
+    });
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style=" padding-right: 30px;">
+            <table class="form">
+
+                <tr>
+                    <td class="formTitle">名称</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextBoxFor(x => x.Name, new { @class = "form-control", @readonly = "readonly" })
+                        @Html.HiddenFor(x => x.CreateDate)
+                        @Html.HiddenFor(x => x.ID)
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">规格型号</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Spec, new { @class = "form-control", @readonly = "readonly" })
+
+                    </td>
+                    <td class="formTitle">数量</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Total, new { @class = "form-control", @readonly = "readonly" })
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">编号</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextBoxFor(x => x.Numbers, new { @class = "form-control", @readonly = "readonly" })
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">出厂日期</td>
+                    <td class="formValue">
+                        @Html.TextBox("OutDate", (Model.OutDate.HasValue ? Model.OutDate.Value.ToString("yyyy-MM-dd") : string.Empty), new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">生产厂家</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.ProFactory, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">有效期</td>
+                    <td class="formValue">
+                        @if (Model.ValiDate.HasValue)
+                        {
+                            @Html.TextBox("ValiDate", (Model.ValiDate.HasValue ? Model.ValiDate.Value.ToString("yyyy-MM-dd") : string.Empty), new { @class = "form-control", @readonly = "readonly" })
+                        }
+                    </td>
+                    <td class="formTitle">检验周期</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.CheckCycle, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">检验提醒</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Remind, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">说明书</td>
+                    <td class="formValue">
+                        @*@Html.TextBoxFor(x => x.Certificate, new { @class = "form-control", @readonly = "readonly" })*@
+                        <a href="@Model.CerPath" style="text-decoration:none;" title="@Model.Certificate" target="_blank"><p style="width: 200px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">@Model.Certificate</p></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">检验报告</td>
+                    <td class="formValue">
+                        @*@Html.TextBoxFor(x => x.CheckReport, new { @class = "form-control", @readonly = "readonly" })*@
+                        <a href="@Model.CheckPath" style="text-decoration:none;" title="@Model.CheckReport" target="_blank"><p style="width: 200px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">@Model.CheckReport</p></a>
+                    </td>
+                    <td class="formTitle">合格证</td>
+                    <td class="formValue">
+                        @*@Html.TextBoxFor(x => x.HGZ, new { @class = "form-control", @readonly = "readonly" })*@
+                        <a href="@Model.HGZPath" style="text-decoration:none;" title="@Model.HGZ" target="_blank"><p style="width: 200px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">@Model.HGZ</p></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">登记人</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.RegPersonName, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">登记日期</td>
+                    <td class="formValue">
+                        @Html.TextBox("RegDate", (Model.RegDate.HasValue ? Model.RegDate.Value.ToString("yyyy-MM-dd") : string.Empty), new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <div class="pd-20 bg-fff bd-t-e3ebfd">
+                            <div class="f-18 f-w c-0d0d0d">检验记录</div>
+
+                            <div class="f-16 c-4a4e50 lh-36 pd-b-20" style="word-break:break-all;height:auto;min-height:110px;padding-top:10px;padding-left:10px;">
+                                @*@Html.DisplayFor(x => x.Remark)*@
+                                <div class="gridPanel">
+                                    <table id="grid"></table>
+                                    <div id="gridPager"></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+</div>
+<script>
+    //videojs('my-video')
+    $('.drugs-content li').niceScroll()
+    $('.drugs-nav li').click(function () {
+        let index = $(this).index()
+        $(this).addClass('select').siblings().removeClass('select')
+        $('.drugs-content li').eq(index).show().siblings().hide()
+    })
+
+</script>

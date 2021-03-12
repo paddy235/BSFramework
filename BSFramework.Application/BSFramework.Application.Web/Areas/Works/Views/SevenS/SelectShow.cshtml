@@ -1,0 +1,70 @@
+﻿@{
+    ViewBag.Title = "人员选择";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+<script>
+    jQuery(function () {
+        $('#search').bind('keyup', function (event) {
+            if (event.keyCode == "13") {
+                search();
+            }
+        });
+
+
+        $('#layout').layout({
+            applyDemoStyles: false,
+            west: {
+                size: 300,
+            },
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+
+        jQuery('#tree').treeview({
+            height: $(window).height() - 50,
+            url: '@Url.Action("SelectUser")'
+
+        });
+    });
+    function search() {
+        var getval = $("#search").val();
+
+         jQuery('#tree').treeview({
+            height: $(window).height() - 50,
+             url: '@Url.Action("SelectUserByval")?keyvalue=' + getval
+        });
+    }
+    function AcceptClick(callback) {
+        var node = jQuery('#tree').getCurrentNode();
+        var userid = '@ViewBag.userid'.trim();
+        if (node.id == userid) {
+            dialogMsg('不能选择提案人员！', 0);
+            return;
+
+        }
+        var sort=@ViewBag.sort;
+        if (sort==6) {
+            dialogMsg('不能再次选择下一级人员！', 0);
+            return;
+        }
+        if (node.ckselect!="") {
+            dialogMsg(node.ckselect, 0);
+            return;
+        }
+
+        callback(node);
+        dialogClose();
+    }
+</script>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-center">
+        <div class="panel">
+            <div class="panel-Title">
+                <input id="search" class="form-control" placeholder="选择人员" />
+            </div>
+            <div id="tree"></div>
+        </div>
+    </div>
+</div>

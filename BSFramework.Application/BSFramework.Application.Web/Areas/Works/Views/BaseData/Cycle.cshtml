@@ -1,0 +1,1000 @@
+﻿
+@{ ViewBag.Title = "Cycle";
+    Layout = "~/Views/Shared/_OrderForm.cshtml"; }
+<style type="text/css">
+    html {
+        overflow-y: auto;
+    }
+    .form-control[readonly]{background-color:transparent;}
+    .container{margin-top:20px;}
+    textarea{resize:none;height:110px !important;}
+    .plan_must{color: #fd7949;}
+    input[type="text"]{height:50px;}
+    .row{margin-bottom:15px;}
+    .col-sm-2 label{line-height:50px;margin-bottom:0;}
+    .select_people,.select_people_two,.select_work,.select_jobtype,.select_isexplain,.select_isend,.select_isweek,.select_islastday,.select_kyt,.select_cycle,.select_cycle_type{background:url('@Url.Content("~/Content/styles/static/images/select_icon.png")') no-repeat 95% 16px;}
+    .sign.modal .my-nav li {border-bottom: 1px solid #cad3df;line-height: 50px;padding-left: 66px;font-size: 16px;color: #374757;}
+    .radio{padding-left:30px;}
+    .select_month label.col-sm-1{padding:15px 0;width:10%;}
+    .select_month label span,.select_week label span{border:1px solid #b0b8c1;display:inline-block;height:19px;width:19px;position:relative;top:4px;margin-right:7px;}
+    .select_month label span.selected,.select_week label span.selected{border-color:#3669e1;background:url('@Url.Content("~/Content/styles/static/images/checked_icon.png")') no-repeat center center;}
+    .checkbox-inline+.checkbox-inline{margin-left:0;}
+    .select_week label.col-sm-1{padding:10px 0;width:14%;}
+    .select_month,.select_week{display:none;}
+    .submit{display:inline-block;width:130px;height:40px;line-height:40px;text-align:center;color:#fff;border:none;font-size:16px;border-radius:4px;float:right;background:#3669e1;}
+    .my-nav{max-height:500px;overflow-y:auto;}
+    #selectCycle .my-nav li,#selectKyt .my-nav li{text-align:center;padding-left:0;cursor:pointer;}
+    #selectCycle .my-nav li:hover,#selectKyt .my-nav li:hover,#selectCycle .my-nav li.active_on,#selectKyt .my-nav li.active_on{background:#3669e1;color:#fff;}
+
+    .select_month_first label.col-sm-1{padding:10px 0;width:15%;}
+    .select_month_first label span,.select_week label span{border:1px solid #b0b8c1;display:inline-block;height:19px;width:19px;position:relative;top:4px;margin-right:7px;}
+    .select_month_first label span.selected,.select_week label span.selected{border-color:#3669e1;background:url('@Url.Content("~/Content/styles/static/images/checked_icon.png")') no-repeat center center;}
+    .select_month_first{display:none;}
+    .select_type{display:none;}
+    .select_month_two label.col-sm-1{padding:10px 0;width:15%;}
+    .select_month_two label span,.select_week label span{border:1px solid #b0b8c1;display:inline-block;height:19px;width:19px;position:relative;top:4px;margin-right:7px;}
+    .select_month_two label span.selected,.select_week label span.selected{border-color:#3669e1;background:url('@Url.Content("~/Content/styles/static/images/checked_icon.png")') no-repeat center center;}
+    .select_month_two,.select_choose_two{display:none;}
+
+     .select_work label.col-sm-1{padding:10px 0;width:15%;}
+    .select_work label span{border:1px solid #b0b8c1;display:inline-block;height:19px;width:19px;position:relative;top:4px;margin-right:7px;}
+        .select_work label span.selected {
+            border-color: #3669e1;
+            background: url('@Url.Content("~/Content/styles/static/images/checked_icon.png")') no-repeat center center;
+        }
+
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2">
+            <label>周期展示</label>
+        </div>
+        <div class="col-sm-10">
+            <input id="cycleShow" type="text" class="form-control " readonly>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            <label>周期<label class="plan_must">*</label></label>
+        </div>
+        <div class="col-sm-4">
+            <input class="form-control select_cycle" id="Cycle" name="Cycle" onclick="this.blur();" placeholder="请选择" type="text" value="每天" />
+        </div>
+        <div class="col-sm-2   select_isend_title">
+            <label>是否截止</label>
+        </div>
+        <div class="col-sm-4  select_isend_title">
+            <input type="text" class="form-control select_isend" id="isendText" name="isendText" placeholder="请选择" />
+            <input id="isend" name="isend" type="hidden" value="false" />
+        </div>
+
+    </div>
+
+    <div class="row select_month_first">
+        <div class="col-sm-2">
+            <label>月份<label class="plan_must">*</label></label>
+        </div>
+        <div class="col-sm-10">
+            <label class="checkbox-inline col-sm-1"><span></span>一月</label>
+            <label class="checkbox-inline col-sm-1"><span></span>二月</label>
+            <label class="checkbox-inline col-sm-1"><span></span>三月</label>
+            <label class="checkbox-inline col-sm-1"><span></span>四月</label>
+            <label class="checkbox-inline col-sm-1"><span></span>五月</label>
+            <label class="checkbox-inline col-sm-1"><span></span>六月</label>
+            <label class="checkbox-inline col-sm-1"><span></span>七月</label>
+            <label class="checkbox-inline col-sm-1"><span></span>八月</label>
+            <label class="checkbox-inline col-sm-1"><span></span>九月</label>
+            <label class="checkbox-inline col-sm-1"><span></span>十月</label>
+            <label class="checkbox-inline col-sm-1"><span></span>十一月</label>
+            <label class="checkbox-inline col-sm-1"><span></span>十二月</label>
+        </div>
+    </div>
+    <div class="row select_type">
+        <div class="col-sm-2">
+            <label>方式<label class="plan_must">*</label></label>
+        </div>
+        <div class="col-sm-4">
+            <input type="text" id="Cycletype" class="form-control select_cycle_type" readonly placeholder="请选择" value="">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2  select_choose_first">
+            <label>跳过双休</label>
+        </div>
+        <div class="col-sm-4 select_choose_first">
+            <input type="text" class="form-control select_isweek" id="isweekText" name="isweekText" placeholder="请选择" />
+            <input id="isweek" name="isweek" type="hidden" value="false" />
+        </div>
+        <div class="col-sm-2 select_choose_two">
+            <label>最后一天</label>
+        </div>
+        <div class="col-sm-4  select_choose_two">
+            <input type="text" class="form-control select_islastday" id="islastdayText" name="islastdayText" placeholder="请选择" />
+            <input id="islastday" name="islastday" type="hidden" value="false" />
+        </div>
+    </div>
+    <div class="row select_month_two">
+        <div class="col-sm-2">
+            <label>周<label class="plan_must">*</label></label>
+        </div>
+        <div class="col-sm-10">
+            <label class="checkbox-inline col-sm-1"><span></span>第一周</label>
+            <label class="checkbox-inline col-sm-1"><span></span>第二周</label>
+            <label class="checkbox-inline col-sm-1"><span></span>第三周</label>
+            <label class="checkbox-inline col-sm-1"><span></span>第四周</label>
+            <label class="checkbox-inline col-sm-1"><span></span>第五周</label>
+        </div>
+    </div>
+    <div class="row select_month">
+        <div class="col-sm-2">
+            <label>日期<label class="plan_must">*</label></label>
+        </div>
+        <div class="col-sm-10">
+            <label class="checkbox-inline col-sm-1"><span></span>1</label><label class="checkbox-inline col-sm-1"><span></span>2</label><label class="checkbox-inline col-sm-1"><span></span>3</label>
+            <label class="checkbox-inline col-sm-1"><span></span>4</label><label class="checkbox-inline col-sm-1"><span></span>5</label><label class="checkbox-inline col-sm-1"><span></span>6</label>
+            <label class="checkbox-inline col-sm-1"><span></span>7</label><label class="checkbox-inline col-sm-1"><span></span>8</label><label class="checkbox-inline col-sm-1"><span></span>9</label>
+            <label class="checkbox-inline col-sm-1"><span></span>10</label><label class="checkbox-inline col-sm-1"><span></span>11</label><label class="checkbox-inline col-sm-1"><span></span>12</label>
+            <label class="checkbox-inline col-sm-1"><span></span>13</label><label class="checkbox-inline col-sm-1"><span></span>14</label><label class="checkbox-inline col-sm-1"><span></span>15</label>
+            <label class="checkbox-inline col-sm-1"><span></span>16</label><label class="checkbox-inline col-sm-1"><span></span>17</label><label class="checkbox-inline col-sm-1"><span></span>18</label>
+            <label class="checkbox-inline col-sm-1"><span></span>19</label><label class="checkbox-inline col-sm-1"><span></span>20</label><label class="checkbox-inline col-sm-1"><span></span>21</label>
+            <label class="checkbox-inline col-sm-1"><span></span>22</label><label class="checkbox-inline col-sm-1"><span></span>23</label><label class="checkbox-inline col-sm-1"><span></span>24</label>
+            <label class="checkbox-inline col-sm-1"><span></span>25</label><label class="checkbox-inline col-sm-1"><span></span>26</label><label class="checkbox-inline col-sm-1"><span></span>27</label>
+            <label class="checkbox-inline col-sm-1"><span></span>28</label><label class="checkbox-inline col-sm-1"><span></span>29</label><label class="checkbox-inline col-sm-1"><span></span>30</label>
+        </div>
+    </div>
+
+    <div class="row select_week">
+        <div class="col-sm-2">
+            <label>日期<label class="plan_must">*</label></label>
+        </div>
+        <div class="col-sm-10">
+            <label class="checkbox-inline col-sm-1"><span></span>星期一</label>
+            <label class="checkbox-inline col-sm-1"><span></span>星期二</label>
+            <label class="checkbox-inline col-sm-1"><span></span>星期三</label>
+            <label class="checkbox-inline col-sm-1"><span></span>星期四</label>
+            <label class="checkbox-inline col-sm-1"><span></span>星期五</label>
+            <label class="checkbox-inline col-sm-1"><span></span>星期六</label>
+            <label class="checkbox-inline col-sm-1"><span></span>星期天</label>
+        </div>
+    </div>
+    <input id="CycleDate" name="CycleDate" type="hidden" value="" />
+    <div class=" select_work">
+        <div class="col-sm-2">
+            <label>班次<label class="plan_must">*</label></label>
+        </div>
+        <div class="col-sm-10">
+            @{ var banci = (IList<SelectListItem>)ViewData["banci"]; }
+            @if (banci != null)
+            {
+                foreach (var item in banci)
+                {
+<label class="checkbox-inline col-sm-1"><span></span>  @Html.Raw(item.Text)</label>}
+}
+            <input id="worksetname" name="worksetname" type="hidden" value="false" />
+        </div>
+    </div>
+
+</div>
+
+
+
+<div class="modal fade sign" id="selectislastday" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">选择是否</h4>
+            </div>
+            <div class="modal-body" style="padding-top:0;">
+                @*<div class="radio">
+                        <label><input type="radio" value="是" name="Kyt" data-dismiss="modal" />是</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" value="否" name="Kyt" data-dismiss="modal" />否</label>
+                    </div>*@
+                <ul class="nav my-nav">
+                    <li data-dismiss="modal">是</li>
+                    <li data-dismiss="modal">否</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!--选择是否KYT弹出窗-->
+<div class="modal fade sign" id="selectisweek" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">选择是否无双休</h4>
+            </div>
+            <div class="modal-body" style="padding-top:0;">
+                @*<div class="radio">
+                        <label><input type="radio" value="是" name="Kyt" data-dismiss="modal" />是</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" value="否" name="Kyt" data-dismiss="modal" />否</label>
+                    </div>*@
+                <ul class="nav my-nav">
+                    <li data-dismiss="modal">是</li>
+                    <li data-dismiss="modal">否</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--选择是否弹出窗-->
+<div class="modal fade sign" id="selectisend" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">选择是否截止</h4>
+            </div>
+            <div class="modal-body" style="padding-top:0;">
+                @*<div class="radio">
+                        <label><input type="radio" value="是" name="Kyt" data-dismiss="modal" />是</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" value="否" name="Kyt" data-dismiss="modal" />否</label>
+                    </div>*@
+                <ul class="nav my-nav">
+                    <li data-dismiss="modal">是</li>
+                    <li data-dismiss="modal">否</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--选择周期弹出窗-->
+<div class="modal fade sign" id="selectCycle" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">选择周期</h4>
+            </div>
+            <div class="modal-body" style="padding-top:0;">
+                @*<div class="radio">
+                        <label><input type="radio" value="每天" name="cycle" data-dismiss="modal" />每天</label>
+                    </div>
+                    <div class="radio">
+                        <label class="week"><input type="radio" value="每周" name="cycle" data-dismiss="modal" />每周</label>
+                    </div>
+                    <div class="radio">
+                        <label class="month"><input type="radio" value="每月" name="cycle" data-dismiss="modal" />每月</label>
+                    </div>*@
+                <ul class="nav my-nav">
+                    <li data-dismiss="modal" class="day">每天</li>
+                    <li data-dismiss="modal" class="week">每周</li>
+                    <li data-dismiss="modal" class="month">每月</li>
+                    <li data-dismiss="modal" class="year">每年</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!--选择周期弹出窗-->
+<div class="modal fade sign" id="selectCycleType" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">选择方式</h4>
+            </div>
+            <div class="modal-body" style="padding-top:0;">
+                <ul class="nav my-nav">
+                    <li data-dismiss="modal" class="typedate">日期</li>
+                    <li data-dismiss="modal" class="typeweek">周</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+<script>
+    var cycle = request('cycle');
+    var cycledate = request('cycledate');
+    var isweek = request('isweek');
+    var islastday = request('islastday');
+    var isend = request('isend');
+    var worksetname = request('worksetname');
+    $(function () {
+        if (cycledate) {
+            jQuery('#CycleDate').val(cycledate);
+        } if (cycle) {
+            jQuery('#Cycle').val(cycle);
+        }
+        if (isweek) {
+            jQuery('#isweek').val(isweek);
+        }
+        if (islastday) {
+            jQuery('#islastday').val(islastday);
+        } if (isend) {
+            jQuery('#isend').val(isend);
+        }
+        if (worksetname) {
+            jQuery('.select_work label span').each(function (i, o) {
+                if ((worksetname).indexOf(jQuery(o).parent().text().trim()) >= 0) {
+                    jQuery(o).addClass('selected');
+                }
+            });
+        }
+
+
+        $('.select_isend').click(function () {
+            $('#selectisend').modal();
+        });
+        $('.select_isweek').click(function () {
+            $('#selectisweek').modal();
+        });
+        $('.select_islastday').click(function () {
+            $('#selectislastday').modal();
+        });
+        $('.select_cycle').click(function () {
+            $('#selectCycle').modal();
+        });
+        $('.select_cycle_type').click(function () {
+            $('#selectCycleType').modal();
+        });
+        //每月下节点选择日期
+        $('.typedate').click(function () {
+            $('.select_week').fadeOut();
+            $('.select_month').fadeIn();
+            $('.select_choose_first').fadeIn();
+            $('.select_choose_two').fadeIn();
+            $('.select_month_two').fadeOut();
+            //jQuery('.select_week label span.selected').removeClass('selected');
+            jQuery('.select_month label span.selected').removeClass('selected');
+        });
+        //每月下节点选择每周
+        $('.typeweek').click(function () {
+            $('.select_week').fadeOut();
+            $('.select_month_two').fadeIn();
+            $('.select_week').fadeIn();
+            $('.select_month').fadeOut();
+            $('.select_choose_first').fadeOut();
+            $('.select_choose_two').fadeOut();
+            //jQuery('.select_week label span.selected').removeClass('selected');
+            jQuery('.select_month label span.selected').removeClass('selected');
+        });
+        //每周
+        $('.week').click(function () {
+            $('.select_week').fadeIn(); $('.select_isend_title').fadeIn();
+            $('.select_type').fadeOut();
+            $('.select_month_two').fadeOut();
+            $('.select_month_first').fadeOut();
+            $('.select_month').fadeOut();
+            $('.select_choose_first').fadeOut();
+            $('.select_choose_two').fadeOut();
+            //jQuery('.select_week label span.selected').removeClass('selected');
+            jQuery('.select_month label span.selected').removeClass('selected');
+            jQuery('#CycleDate').val('');
+        });
+        //每月
+        $('.month').click(function () {
+            $('.select_type').fadeIn(); $('.select_isend_title').fadeIn();
+            //$('.select_month').fadeIn();
+            $('.select_week').fadeOut();
+            //$('.select_month_two').fadeOut();
+            $('.select_month_first').fadeOut();
+            $('.select_month').fadeOut();
+            $('.select_choose_first').fadeOut();
+            $('.select_choose_two').fadeOut();
+            jQuery('#Cycletype').val('');
+            // $('.select_month').fadeOut();
+            jQuery('.select_week label span.selected').removeClass('selected');
+            //jQuery('.select_month label span.selected').removeClass('selected');
+            jQuery('#CycleDate').val('');
+        });
+        //每年
+        $('.year').click(function () {
+            $('.select_type').fadeIn(); $('.select_isend_title').fadeIn();
+            $('.select_month_first').fadeIn();
+            //$('.select_month').fadeIn();
+            $('.select_week').fadeOut();
+            $('.select_month').fadeOut();
+            $('.select_choose_first').fadeOut();
+            $('.select_choose_two').fadeOut();
+            jQuery('#Cycletype').val('');
+            jQuery('.select_week label span.selected').removeClass('selected');
+            //jQuery('.select_month label span.selected').removeClass('selected');
+            jQuery('#CycleDate').val('');
+        });
+        //每天
+        $('.day').click(function () {
+            $('.select_type').fadeOut(); $('.select_isend_title').fadeOut();
+            $('.select_week').fadeOut();
+            $('.select_month_two').fadeOut();
+            $('.select_month_first').fadeOut();
+            $('.select_month').fadeOut();
+            $('.select_choose_first').fadeIn();
+            $('.select_choose_two').fadeOut();
+            jQuery('#Cycletype').val('');
+            jQuery('.select_week label span.selected').removeClass('selected');
+            jQuery('.select_month label span.selected').removeClass('selected');
+            jQuery('#CycleDate').val('');
+        });
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#JobTime',
+                type: 'time',
+                range: true,
+                format: 'HH:mm'
+            });
+        });
+
+        var show = jQuery('#Cycle').val();
+        if (jQuery('#Cycle').val() == '每周') {
+            $('.select_month').fadeOut();
+            $('.select_week').fadeIn(); $('.select_isend_title').fadeIn();
+            $('.select_choose_first').fadeOut();
+            jQuery('.select_week label span').each(function (i, o) {
+                if ((',' + jQuery('#CycleDate').val().replace(';', ',') + ',').indexOf(',' + jQuery(o).parent().text().trim() + ',') >= 0) {
+                    jQuery(o).addClass('selected');
+                    show += jQuery(o).parent().text().trim() + "、"
+                }
+            });
+            show = show.substr(0, show.length - 1);
+        } else if (jQuery('#Cycle').val() == '每月') {
+            $('.select_type').fadeIn();
+            if ((jQuery('#CycleDate').val()).indexOf("周") >= 0) {
+                $("#Cycletype").val("周")
+                $('.select_month_two').fadeIn();
+                $('.select_choose_first').fadeOut();
+                $('.select_isend_title').fadeIn();
+                $('.select_week').fadeIn();
+                jQuery('.select_month_two label span').each(function (i, o) {
+                    if ((',' + jQuery('#CycleDate').val().replace(';', ',').replace(';', ',') + ',').indexOf(',' + jQuery(o).parent().text().trim() + ',') >= 0) {
+                        jQuery(o).addClass('selected');
+                        show += jQuery(o).parent().text().trim() + "、"
+                    }
+                });
+                show = show.substr(0, show.length - 1);
+
+                jQuery('.select_week label span').each(function (i, o) {
+                    if ((',' + jQuery('#CycleDate').val().replace(';', ',').replace(';', ',') + ',').indexOf(',' + jQuery(o).parent().text().trim() + ',') >= 0) {
+                        jQuery(o).addClass('selected');
+                        show += jQuery(o).parent().text().trim() + "、"
+                    }
+                });
+            } else {
+                $("#Cycletype").val("日期")
+                $('.select_choose_two').fadeIn(); $('.select_isend_title').fadeIn();
+                $('.select_month').fadeIn();
+                jQuery('.select_month label span').each(function (i, o) {
+                    if ((',' + jQuery('#CycleDate').val().replace(';', ',').replace(';', ',') + ',').indexOf(',' + jQuery(o).parent().text().trim() + ',') >= 0) {
+                        jQuery(o).addClass('selected');
+                        show += jQuery(o).parent().text().trim() + "、"
+                    }
+                });
+            }
+
+
+            show = show.substr(0, show.length - 1);
+        } else if (jQuery('#Cycle').val() == '每年') {
+            $('.select_month_first').fadeIn(); $('.select_isend_title').fadeIn();
+            $('.select_type').fadeIn();
+            jQuery('.select_month_first label span').each(function (i, o) {
+                if ((',' + jQuery('#CycleDate').val().replace(';', ',') + ',').indexOf(',' + jQuery(o).parent().text().trim() + ',') >= 0) {
+                    jQuery(o).addClass('selected');
+                    show += jQuery(o).parent().text().trim() + "、"
+                }
+            });
+            show = show.substr(0, show.length - 1);
+            if ((jQuery('#CycleDate').val()).indexOf("周") >= 0) {
+                $("#Cycletype").val("周")
+                $('.select_choose_first').fadeOut();
+                $('.select_month_two').fadeIn(); $('.select_isend_title').fadeIn();
+                $('.select_week').fadeIn();
+                jQuery('.select_month_two label span').each(function (i, o) {
+                    if ((',' + jQuery('#CycleDate').val().replace(';', ',').replace(';', ',') + ',').indexOf(',' + jQuery(o).parent().text().trim() + ',') >= 0) {
+                        jQuery(o).addClass('selected');
+                        show += jQuery(o).parent().text().trim() + "、"
+                    }
+                });
+                show = show.substr(0, show.length - 1);
+
+                jQuery('.select_week label span').each(function (i, o) {
+                    if ((',' + jQuery('#CycleDate').val().replace(';', ',').replace(';', ',') + ',').indexOf(',' + jQuery(o).parent().text().trim() + ',') >= 0) {
+                        jQuery(o).addClass('selected');
+                        show += jQuery(o).parent().text().trim() + "、"
+                    }
+                });
+            } else {
+                $("#Cycletype").val("日期")
+                $('.select_choose_two').fadeIn();
+                $('.select_isend_title').fadeIn();
+                $('.select_month').fadeIn();
+                jQuery('.select_month label span').each(function (i, o) {
+                    if ((',' + jQuery('#CycleDate').val().replace(';', ',').replace(';', ',') + ',').indexOf(',' + jQuery(o).parent().text().trim() + ',') >= 0) {
+                        jQuery(o).addClass('selected');
+                        show += jQuery(o).parent().text().trim() + "、"
+                    }
+                });
+            }
+
+
+
+            show = show.substr(0, show.length - 1);
+        } else {
+            $('.select_month').fadeOut();
+            $('.select_week').fadeOut();
+            $('.select_isend_title').fadeOut();
+
+        }
+
+        jQuery('.select_work label span.selected').each(function (i, o) {
+            show += jQuery(o).parent().text().trim()
+
+        });
+        jQuery("#cycleShow").val(show);
+        if (jQuery('#isexplain').val() == 'true') {
+            jQuery('#isexplain').prev().val('是');
+        } else {
+            jQuery('#isexplain').prev().val('否');
+        }
+
+        if (jQuery('#islastday').val() == 'true') {
+            jQuery('#islastday').prev().val('是');
+        } else {
+            jQuery('#islastday').prev().val('否');
+        }
+        if (jQuery('#isweek').val() == 'true') {
+            jQuery('#isweek').prev().val('是');
+        } else {
+            jQuery('#isweek').prev().val('否');
+        }
+        if (jQuery('#isend').val() == 'true') {
+            jQuery('#isend').prev().val('是');
+        } else {
+            jQuery('#isend').prev().val('否');
+        }
+        if (jQuery('#EnableTraining').val() == 'true') {
+            jQuery('#EnableTraining').prev().val('是');
+        } else {
+            jQuery('#EnableTraining').prev().val('否');
+        }
+
+
+
+
+        jQuery('#selectislastday li').click(function () {
+            jQuery('#islastdayText').val(jQuery(this).text().trim());
+            jQuery('#islastday').val(jQuery(this).text().trim() == '是' ? 'true' : 'false');
+            var isend = jQuery('#isend').val();
+            if (isend) {
+                jQuery('.select_month label span.selected').each(function (i, o) {
+                    jQuery(o).removeClass("selected");
+                });
+                jQuery('.select_week label span.selected').each(function (i, o) {
+                    jQuery(o).removeClass("selected");
+                });
+            }
+        });
+        jQuery('#selectisweek li').click(function () {
+            jQuery('#isweekText').val(jQuery(this).text().trim());
+            jQuery('#isweek').val(jQuery(this).text().trim() == '是' ? 'true' : 'false');
+        });
+        jQuery('#selectisend li').click(function () {
+            jQuery('.select_month label span.selected').each(function (i, o) {
+                jQuery(o).removeClass("selected");
+            });
+            jQuery('.select_week label span.selected').each(function (i, o) {
+                jQuery(o).removeClass("selected");
+            });
+            jQuery('#islastdayText').val("否");
+            jQuery('#islastday').val('false');
+            jQuery('#isendText').val(jQuery(this).text().trim());
+            jQuery('#isend').val(jQuery(this).text().trim() == '是' ? 'true' : 'false');
+        });
+
+
+        jQuery('#selectCycle li').click(function () {
+            jQuery('#Cycle').val(jQuery(this).text().trim());
+            showCycle();
+        });
+        jQuery('#selectCycleType li').click(function () {
+            jQuery('#Cycletype').val(jQuery(this).text().trim());
+        });
+        jQuery('.select_week label span').click(function () {
+            if (jQuery('#isend').val() == "true") {
+                if (jQuery('.select_week label span.selected').size() == 1) {
+                    if (!jQuery(this).hasClass('selected')) {
+                        layer.msg("已选择截止日期！");
+                        return false;
+                    }
+                }
+            }
+            if (jQuery(this).hasClass('selected')) {
+                jQuery(this).removeClass('selected');
+            }
+            else {
+                jQuery(this).addClass('selected');
+            }
+
+            showCycle();
+
+        });
+        jQuery('.select_month_two label span').click(function () {
+            if (jQuery(this).hasClass('selected')) {
+                jQuery(this).removeClass('selected');
+            }
+            else {
+                jQuery(this).addClass('selected');
+            }
+
+            showCycle();
+        });
+        jQuery('.select_month_first label span').click(function () {
+            if (jQuery(this).hasClass('selected')) {
+                jQuery(this).removeClass('selected');
+            }
+            else {
+                jQuery(this).addClass('selected');
+            }
+
+            showCycle();
+        });
+        jQuery('.select_month label span').click(function () {
+            if (jQuery('#isend').val() == "true" && jQuery('#islastday').val() == "true") {
+                layer.msg("已勾选最后一天，不用再次选择日期！");
+                return false;
+
+            }
+            if (jQuery('#isend').val() == "true") {
+                if (jQuery('.select_month label span.selected').size() == 1) {
+                    if (!jQuery(this).hasClass('selected')) {
+                        layer.msg("已选择截止日期！");
+                        return false;
+                    }
+                }
+            }
+            if (jQuery(this).hasClass('selected')) {
+                jQuery(this).removeClass('selected');
+            }
+            else {
+                jQuery(this).addClass('selected');
+            }
+            showCycle();
+        });
+
+
+        jQuery('.select_work label span').click(function () {
+            jQuery('.select_work label span.selected').each(function (i, o) {
+                if (this != o) {
+                    jQuery(o).removeClass("selected");
+                }
+             
+
+            });
+            if (jQuery(this).hasClass('selected')) {
+                jQuery(this).removeClass('selected');
+            }
+            else {
+                jQuery(this).addClass('selected');
+            }
+            showCycle();
+        });
+
+    });
+
+    function showCycle() {
+        var show = jQuery('#Cycle').val();
+        var ck = false;
+        if (jQuery('#Cycle').val() == '每周') {
+            jQuery('.select_week label span.selected').each(function (i, o) {
+                show += jQuery(o).parent().text().trim() + "、"
+                ck = true;
+            });
+            if (ck) {
+                show = show.substr(0, show.length - 1);
+            }
+
+        } else if (jQuery('#Cycle').val() == '每月') {
+            if (jQuery('#Cycletype').val() == "周") {
+
+                jQuery('.select_month_two label span.selected').each(function (i, o) {
+                    show += jQuery(o).parent().text().trim() + "、"
+                    ck = true;
+                });
+
+                if (ck) {
+                    show = show.substr(0, show.length - 1);
+                    ck = false;
+                }
+                jQuery('.select_week label span.selected').each(function (i, o) {
+                    show += jQuery(o).parent().text().trim() + "、"
+                    ck = true;
+                });
+            } else {
+
+
+                jQuery('.select_month label span.selected').each(function (i, o) {
+                    show += jQuery(o).parent().text().trim() + "、"
+                    ck = true;
+                });
+            }
+            if (ck) {
+                show = show.substr(0, show.length - 1);
+                ck = false;
+            }
+        } else if (jQuery('#Cycle').val() == '每年') {
+
+            jQuery('.select_month_first label span.selected').each(function (i, o) {
+                show += jQuery(o).parent().text().trim() + "、"
+                ck = true;
+            });
+            if (ck) {
+                show = show.substr(0, show.length - 1);
+                ck = false;
+            }
+            if (jQuery('#Cycletype').val() == "周") {
+
+
+                jQuery('.select_month_two label span.selected').each(function (i, o) {
+                    show += jQuery(o).parent().text().trim() + "、"
+                    ck = true;
+                });
+                if (ck) {
+                    show = show.substr(0, show.length - 1);
+                    ck = false;
+                }
+
+                jQuery('.select_week label span.selected').each(function (i, o) {
+                    show += jQuery(o).parent().text().trim() + "、"
+                    ck = true;
+                });
+            } else {
+
+                jQuery('.select_month label span.selected').each(function (i, o) {
+                    show += jQuery(o).parent().text().trim() + "、"
+                    ck = true;
+                });
+            }
+            if (ck) {
+                show = show.substr(0, show.length - 1);
+                ck = false;
+            }
+        } else {
+
+        }
+
+        jQuery('.select_work label span.selected').each(function (i, o) {
+            show += jQuery(o).parent().text().trim()
+
+        });
+        jQuery("#cycleShow").val(show);
+
+    }
+
+    function fn$submit() {
+        //确认值
+        //存储规则字段的值
+        //去除多操作后不展示选项的赋值
+        var weeks = '';
+        jQuery('#CycleDate').val(weeks.replace(/,$/, ''));
+        if (jQuery('#Cycle').val() == '每月') {
+            if (jQuery('#Cycletype').val() == '日期') {
+                if (jQuery('#islastdayText').val() != "是") {
+                    if (jQuery('.select_month label span.selected').size() == 0) {
+                        layer.msg("请勾选日期！");
+                        return false;
+                    }
+                    jQuery('.select_month label span.selected').each(function (i, o) {
+                        weeks += jQuery(o).parent().text().trim() + ',';
+                    });
+                } else {
+                    jQuery('.select_month label span.selected').each(function (i, o) {
+                        weeks += jQuery(o).parent().text().trim() + ',';
+                    });
+
+                }
+            }
+
+
+            if (jQuery('#Cycletype').val() == '') {
+                layer.msg("请选择日期方式！");
+                return false;
+            }
+
+            if (jQuery('#Cycletype').val() == '') {
+                layer.msg("请选择日期方式！");
+                return false;
+            }
+            if (jQuery('#Cycletype').val() == '周') {
+                if (jQuery('.select_month_two label span.selected').size() == 0) {
+                    layer.msg("请勾选第几周！");
+                    return false;
+                }
+
+                jQuery('.select_month_two label span.selected').each(function (i, o) {
+                    weeks += jQuery(o).parent().text().trim() + ',';
+                });
+                weeks = weeks.substr(0, weeks.length - 1) + ";"
+                if (jQuery('.select_week label span.selected').size() == 0) {
+                    layer.msg("请勾选星期几！");
+                    return false;
+                }
+
+                jQuery('.select_week label span.selected').each(function (i, o) {
+                    weeks += jQuery(o).parent().text().trim() + ',';
+                });
+                jQuery('#islastdayText').val("否");
+                jQuery('#islastday').val(false);
+                jQuery('#isweekText').val("否");
+                jQuery('#isweek').val(false);
+            }
+
+        } else if (jQuery('#Cycle').val() == '每年') {
+            if (jQuery('.select_month_first label span.selected').size() == 0) {
+                layer.msg("请勾选月份！");
+                return false;
+            }
+            jQuery('.select_month_first label span.selected').each(function (i, o) {
+                weeks += jQuery(o).parent().text().trim() + ',';
+            });
+            weeks = weeks.substr(0, weeks.length - 1) + ";"
+            if (jQuery('#Cycletype').val() == '') {
+                layer.msg("请选择日期方式！");
+                return false;
+            }
+
+            if (jQuery('#Cycletype').val() == '日期') {
+                if (jQuery('#islastdayText').val() != "是") {
+                    if (jQuery('.select_month label span.selected').size() == 0) {
+                        layer.msg("请勾选日期！");
+                        return false;
+                    }
+                    jQuery('.select_month label span.selected').each(function (i, o) {
+                        weeks += jQuery(o).parent().text().trim() + ',';
+                    });
+                } else {
+                    jQuery('.select_month label span.selected').each(function (i, o) {
+                        weeks += jQuery(o).parent().text().trim() + ',';
+                    });
+
+                }
+
+            }
+
+            if (jQuery('#Cycletype').val() == '周') {
+                if (jQuery('.select_month_two label span.selected').size() == 0) {
+                    layer.msg("请勾选第几周！");
+                    return false;
+                }
+
+                jQuery('.select_month_two label span.selected').each(function (i, o) {
+                    weeks += jQuery(o).parent().text().trim() + ',';
+                });
+                weeks = weeks.substr(0, weeks.length - 1) + ";"
+                if (jQuery('.select_week label span.selected').size() == 0) {
+                    dialogMsg('请勾选星期几！', -1);
+                    return false;
+                }
+
+                jQuery('.select_week label span.selected').each(function (i, o) {
+                    weeks += jQuery(o).parent().text().trim() + ',';
+                });
+                jQuery('#islastdayText').val("否");
+                jQuery('#islastday').val(false);
+                jQuery('#isweekText').val("否");
+                jQuery('#isweek').val(false);
+            }
+
+
+        }
+        else if (jQuery('#Cycle').val() == '每周') {
+            if (jQuery('.select_week label span.selected').size() == 0) {
+                layer.msg("请勾选星期几！");
+                return false;
+            }
+            jQuery('.select_week label span.selected').each(function (i, o) {
+                weeks += jQuery(o).parent().text().trim() + ',';
+            });
+            jQuery('#islastdayText').val("否");
+            jQuery('#islastday').val(false);
+            jQuery('#isweekText').val("否");
+            jQuery('#isweek').val(false);
+        }
+        if (jQuery('.select_work label span.selected').size() == 0) {
+            layer.msg("请勾选班次！");
+            return false;
+        }
+        jQuery('.select_work label span.selected').each(function (i, o) {
+            $("#worksetname").val(jQuery(o).parent().text().trim());
+
+        });
+
+
+        if (jQuery('#Cycle').val() == '每天') {
+            jQuery('#islastdayText').val("否");
+            jQuery('#islastday').val(false);
+            jQuery('#isend').val("否");
+            jQuery('#isend').val(false);
+            //jQuery('#isweekText').val("否");
+            //jQuery('#isweek').val(false);
+        }
+        jQuery('#CycleDate').val(weeks.replace(/,$/, ''));
+        return true;
+    }
+
+    function AcceptClick(options) {
+        var ck = fn$submit();
+        if (!ck) {
+            return false;
+        }
+        var winObject = options.winObjects;
+        var islastday = $(winObject).find("#islastday").eq(0)
+        if (islastday != undefined) {
+            islastday.val($("#islastday").val());
+        }
+        var isweek = $(winObject).find("#isweek").eq(0)
+        if (isweek != undefined) {
+            isweek.val($("#isweek").val());
+        }
+        var isend = $(winObject).find("#isend").eq(0)
+        if (isend != undefined) {
+            isend.val($("#isend").val());
+        }
+        var worksetname = $(winObject).find("#worksetname").eq(0)
+        if (worksetname != undefined) {
+            worksetname.val($("#worksetname").val());
+        }
+        var $CycleDate = $(winObject).find("#CycleDate").eq(0)
+        if ($CycleDate != undefined) {
+            $CycleDate.val($("#CycleDate").val());
+        }
+        var Cycle = $(winObject).find("#Cycle").eq(0)
+        if (Cycle != undefined) {
+            Cycle.val($("#Cycle").val());
+        }
+        var show = $("#cycleShow").val();
+
+        if (jQuery('#isend').val() == "true") {
+            if (show.indexOf(';') >= 0) {
+                show += " " + "截止"
+            } else {
+                show += ";" + "截止"
+            }
+
+        }
+        if (jQuery('#isweek').val() == "true") {
+            if (show.indexOf(';') >= 0) {
+                show += " " + "跳过双休"
+            } else {
+                show += ";" + "跳过双休"
+            }
+            show += " " + ""
+        }
+        if (jQuery('#islastday').val() == "true") {
+            if (show.indexOf(';') >= 0) {
+                show += " " + "最后一天"
+            } else {
+                show += ";" + "最后一天"
+            }
+        }
+        var cycleShow = $(winObject).find("#cycleShow").eq(0)
+        if (cycleShow != undefined) {
+            cycleShow.val(show);
+        }
+        if (options.callBack) {
+            options.callBack();
+        }
+        dialogClose();
+    }
+
+</script>

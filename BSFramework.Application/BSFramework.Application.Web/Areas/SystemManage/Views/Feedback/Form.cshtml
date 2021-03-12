@@ -1,0 +1,196 @@
+﻿@{
+    ViewBag.Title = "意见反馈";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script src="~/Content/scripts/business/Common.js" type="text/javascript"></script>
+<link href="~/Content/scripts/plugins/uploadify/uploadify.css" rel="stylesheet" />
+<link href="~/Content/scripts/plugins/uploadify/uploadify.extension.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/uploadify/jquery.uploadify.min.js"></script>
+<script>
+    var keyValue = request('keyValue');
+    var actiontype = request("actiontype");
+    $(function () {
+        initControl();
+        //图片加载
+        GetGrid();
+        //图片控件初始化
+        uploadify();
+
+        if (actiontype == "view")
+        {
+            $("#uploadify").css("display", "none");
+            $("#uploadify-queue").css("display", "none");
+        }
+    })
+    //初始化控件
+    function initControl() {
+        var curDate = "@DateTime.Now.ToString("yyyy-MM-dd")";
+        $("#OpinionDate").val(curDate);
+        $.SetForm({
+            url: "../../SystemManage/Feedback/GetInitDataJson",
+            success: function (data)
+            {
+                $("#OpinionPersonName").val(data.User.UserName);
+                $("#OpinionPersonID").val(data.User.UserId);
+                //反馈部门
+                $("#OpinionDeptName").val(data.User.DeptName);
+                $("#OpinionDeptCode").val(data.User.DeptCode);
+                //反馈图片
+                $("#OpinionPhoto").val(data.OpinionPhoto);
+            }
+        });
+      
+        //获取表单
+        if (!!keyValue) {
+            $.SetForm({
+                url: "../../SystemManage/Feedback/GetFormJson",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#form1").formDeserialize(data);
+                }
+            });
+        }
+       
+    }
+    //保存表单
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var postData = $("#form1").formSerialize(keyValue);
+        $.SaveForm({
+            url: "../../SystemManage/Feedback/SaveForm?keyValue=" + keyValue,
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+
+    //上传图片
+    function uploadify() {
+        var folderId = $("#OpinionPhoto").val();
+        $("#uploadify").uploadify({
+            method: 'post',
+            uploader: '../../PublicInfoManage/ResourceFile/UploadifyFile?folderId=' + folderId,
+            swf: top.contentPath + '/Content/scripts/plugins/uploadify/uploadify.swf',
+            buttonText: "上传图片",
+            height: 30,
+            width: 90,
+            fileTypeExts: '*.bmp;*.ico;*.gif;*.jpeg;*.jpg;*.png;*.psd;',
+            removeCompleted: false,
+            onSelect: function (file) {
+                $("#" + file.id).prepend('<div style="float:left;width:50px;margin-right:2px;"><img src="' + top.contentPath + '/Content/images/filetype/' + file.type.replace('.', '') + '.png" style="width:40px;height:40px;" /></div>');
+                $('.border').hide();
+            },
+            onUploadSuccess: function (file) {
+                $("#" + file.id).find('.uploadify-progress').remove();
+                $("#" + file.id).find('.data').html(' 恭喜您，上传成功！');
+                $("#" + file.id).prepend('<a class="succeed" title="成功" onclick="javascript:$(this).parent().remove();"><i class="fa fa-check-circle"></i></a>');
+                Loading(false);
+                $("#picgridTable").trigger("reloadGrid");
+                Loading(false);
+            },
+            onUploadError: function (file) {
+                $("#" + file.id).removeClass('uploadify-error');
+                $("#" + file.id).find('.uploadify-progress').remove();
+                $("#" + file.id).find('.data').html(' 很抱歉，上传失败！');
+                $("#" + file.id).prepend('<span class="error" title="失败"><i class="fa fa-exclamation-circle"></i></span>');
+            }
+        });
+        $("#uploadify-button").prepend('<i style="opacity: 0.6;" class="fa fa-cloud-upload"></i>&nbsp;');
+        $("#uploadify-queue").css("height", "61px");
+    }
+
+
+    function GetGrid() {
+        var folderId = $("#OpinionPhoto").val();
+        var selectedRowIndex = 0;
+        var $gridTable = $('#picgridTable');
+        $gridTable.jqGrid({
+            url: "../../PublicInfoManage/ResourceFile/GetImageListJsonByFolder?folderId=" + folderId,
+            datatype: "json",
+            height: $(window).height() - 400,
+            autowidth: true,
+            colModel: [
+                { label: '标记', name: 'FilePath', hidden: true },
+                { label: 'FolderId', name: 'FolderId', hidden: true },
+                { label: 'FileType', name: 'FileType', hidden: true },
+                {
+                    label: '操作', name: 'FileId', index: 'FileId', width: 120, align: 'center',
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (actiontype != "view") {
+                            var html = "&nbsp;&nbsp;<a href=javascript:DelPic('" + rowObject.FileId + "')  title='删除'><i class='fa fa-trash-o'></i></a>";
+                            return html;
+                        }
+                        else {
+                            return "";
+                        }
+                    }
+                },
+                {
+                    label: '文件名', width: $(".profile-content").width() - 350, align: 'center',
+                    formatter: function (cellvalue, options, rowObject) {
+                        return "<div style='cursor:pointer;'><div style='float: left;'><img src='" + top.contentPath + "/Content/images/filetype/" + rowObject.FileType +
+                            ".png' style='width:35px;height:35px;padding:5px;margin-left:-7px;margin-right:5px;' /></div>" +
+                            "<div style='float: left;line-height:35px;'><a href='" + top.contentPath + rowObject.FilePath.replace("~", "") + "' target='_blank'>" + rowObject.FileName + "</a></div></div>";
+                    }
+                },
+            ],
+            pager: false,
+            rowNum: "20",
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            ondblClickRow: function (id) {
+
+            }
+        });
+    }
+
+
+    //删除图片
+    function DelPic(key) {
+        $.RemoveForm({
+            url: "../../PublicInfoManage/ResourceFile/ThoroughRemoveForm",
+            param: { keyValue: key, fileType: "" },
+            success: function (data) {
+                $("#picgridTable").resetSelection();
+                $("#picgridTable").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<div style="margin: 10px;">
+    <table class="form" style="table-layout: auto;width:100%">
+        <tr>
+            <th class="formTitle">意见反馈人<font face="宋体">*</font></th>
+            <td class="formValue">
+                <input id="OpinionPersonName" type="text" class="form-control" placeholder="" isvalid="yes" checkexpession="NotNull" disabled="disabled" readonly />
+                <input type="hidden" id="OpinionPersonID" />
+                <input type="hidden" id="OpinionDeptName" />
+                <input type="hidden" id="OpinionDeptCode" />
+            </td>
+            <th class="formTitle">意见反馈时间<font face="宋体">*</font></th>
+            <td class="formValue">
+                <input id="OpinionDate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker()" isvalid="yes" checkexpession="NotNull" errormsg="意见反馈时间" disabled="disabled" readonly />
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">反馈内容<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <textarea id="OpinionContent" class="form-control" style="width: 98%; height: 80px;" errormsg="反馈内容" isvalid="yes" checkexpession="NotNull"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">反馈图片</th>
+            <td class="formValue" colspan="3">
+                <input id="OpinionPhoto" type="hidden" /><!--反馈图片-->
+                <input id="uploadify" name="uploadify" type="file" />
+                <!--照片-->
+                <table id="picgridTable"></table>
+            </td>
+        </tr>
+    </table>
+</div>

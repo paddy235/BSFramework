@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewBag.Title = "IndexShowDetail";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+<script>
+    var keyValue = request('Id');
+    $(function () {
+        var json = JSON.parse(sessionStorage.getItem("notice_" +keyValue));
+        //console.log(json);
+        //var elemt = window.frames.parent[0].document.getElementById(keyValue);
+        //console.log(elemt)
+        //var Content = $(elemt).find("input[name=Content]").val();
+        //var Publisher = $(elemt).find("input[name=Publisher]").val();
+        //var PublisherDept = $(elemt).find("input[name=PublisherDept]").val();
+        //var Title = $(elemt).find("input[name=Title]").val();
+        //var ReleaseTime = $(elemt).find("input[name=ReleaseTime]").val();
+
+        $("#Title").html(json.Title);
+        $("#Publisher").html(json.Publisher);
+        $("#ReleaseTime").html(json.ReleaseTime);
+        $("#Content").html(json.Content);
+    })
+    function AcceptClick() {
+        dialogClose();
+    }
+</script>
+<table id="tb_content" style="width:100%;  text-align:center;">
+    <tr>
+        <td colspan="2" style="text-align:center;"><h1 id="Title"></h1></ td >
+    </tr>
+    <tr>
+        <td id="Publisher"></td>
+        <td id="ReleaseTime"></td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <div style="word-break:break-word" id="Content"></div>
+        </td>
+    </tr>
+</table>
+

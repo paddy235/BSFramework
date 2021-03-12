@@ -1,0 +1,21 @@
+﻿@{
+    ViewBag.Title = "考评类别";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+<script>
+    jQuery(function () {
+        jQuery('#tree').treeview({
+            height: $(window).height(),
+            url: '/..@Url.Action("Tree")'
+        });
+    });
+
+    function AcceptClick(callback) {
+        var node = jQuery('#tree').getCurrentNode();
+        if (!!callback)
+            callback(node);
+        dialogClose();
+    }
+</script>
+<div id="tree"></div>

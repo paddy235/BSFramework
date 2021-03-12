@@ -1,0 +1,92 @@
+﻿@model BSFramework.Application.Entity.BaseManage.RoleEntity
+@{
+    ViewBag.Title = "FormDuty";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")" />
+
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/hammer.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<script>
+
+
+    function AcceptClick() {
+        if (!valid()) {
+            return false;
+        }
+        var json = jQuery('#form1').serializeJSON();
+        $.SaveForm({
+            url: '/..@Url.Action("SaveDuty")',
+            param: json,
+            loading: "数据提交中...",
+            success: function (data) {
+                    $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        });
+
+    }
+    function valid() {
+        var name = $("#DutyContent").val();
+        if (name == "") {
+            dialogMsg('岗位职责不能为空！', 0);
+            return false;
+        }
+
+        return true;
+    }
+</script>
+<style>
+    table tr {
+    height:45px;
+    }
+</style>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" >
+            <table class="form">
+                <tr>
+                    <td class="formTitle">岗位名称</td>
+                    <td class="formValue" >
+                        @Html.TextBoxFor(x => x.FullName, new { @class = "form-control", @readonly = "readonly" })
+                        @Html.HiddenFor(x=>x.RoleId)
+                        
+                    </td>
+                    <td class="formTitle">部门名称</td>
+                    <td class="formValue" >
+
+                        @Html.TextBoxFor(x => x.DepartmentName, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle" >岗位职责<font face="宋体">*</font></td>
+                </tr>
+                <tr>
+                    <td class="formValue" colspan="4">
+                       @Html.TextAreaFor(x => x.DutyContent, new { @style = "height:450px;margin-left:5px;", @class = "form-control",placeholder = "" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle">修订人员</td>
+                    <td class="formValue" >
+
+                        @Html.TextBoxFor(x => x.ReviseUserName, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">修订时间</td>
+                    <td class="formValue" >
+
+                        @Html.TextBoxFor(x => x.ReviseDate, new { @class = "form-control", @readonly = "readonly", Value = string.Format("{0:yyyy-MM-dd HH:mm}", Model.ReviseDate.Value) })
+                    </td>
+                </tr>
+               
+            </table>
+        </div>
+    </div>
+</div>

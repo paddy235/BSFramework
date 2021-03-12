@@ -1,0 +1,16 @@
+﻿@{
+    ViewBag.Title = "选择部门";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+@section scripts{
+    <script>
+        function AcceptClick(callback) {
+            if (typeof (callback) == 'function') {
+                callback(getCheckedNodes());
+            }
+            dialogClose();
+        }
+    </script>
+}
+@Html.Partial("Tree")
+

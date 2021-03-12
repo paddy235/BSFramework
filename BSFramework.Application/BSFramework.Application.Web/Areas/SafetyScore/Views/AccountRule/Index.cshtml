@@ -1,0 +1,194 @@
+﻿@using System.Diagnostics;
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+
+<script src="~/Content/scripts/plugins/AdminPrettyDesktopFirst/js/LoadData.js"></script>
+<script type="text/javascript">
+
+    var activitytype = request("activitytype");
+    $(function () {
+        InitialPage();
+        GetGrid();
+    });
+    //初始化页面
+    function InitialPage() {
+        //resize重设布局;
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#gridTable').setGridWidth(($('.gridPanel').width()));
+                $('#gridTable').setGridHeight($(window).height() - 136.5);
+            }, 200);
+            e.stopPropagation();
+        });
+    }
+    //加载表格
+    function GetGrid() {
+        var queryJson = {
+            activitytype: activitytype
+        }
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            autowidth: true,
+            height: $(window).height() - 170.5,
+            postData: { queryJson: JSON.stringify(queryJson) },
+            url: "@Url.Action("GetPagedList")",
+            datatype: "json",
+            colModel: [
+                { label: 'Id', name: 'Id', hidden: true },
+                 {
+                     label: '操作', name: 'oper', width: 100, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+
+                         var html = '<a href="javascript:show(\'' + rowObject.Id + '\')"><i class="fa fa-eye"></i></a>';
+
+                         if ("@(BSFramework.Application.Code.OperatorProvider.Provider.Current().IsSystem || ViewBag.UserRole.Contains("厂级部门用户"))" =="True") {
+                             html += "<a code='edit' href=javascript:edit('" + rowObject.Id + "')  title='修改'><i class='fa fa-pencil-square-o'></i></a>";
+
+                             html += "<a code='delete' href=javascript:del('" + rowObject.Id + "')  title='删除'><i class='fa fa-trash-o'></i></a>";
+                         }
+
+                         return html;
+                     }
+                },
+                { label: '标准', name: 'Standard', index: 'Standard', width: 1000, align: 'center', sortable: false },
+                { label: '分值', name: 'Score', index: 'Score', width: 100, align: 'center', sortable: false },
+                { label: '备注', name: 'Remark', index: 'Remark', width: 300, align: 'center', sortable: false },
+                { label: '计分类型', name: 'ScoreType', index: 'ScoreType', width: 200, align: 'center', sortable: false },
+                {
+                    label: '是否启用', name: 'IsOpen', index: 'IsOpen', width: 100, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        if (rowObject.IsOpen === 1) {
+                            return '是';
+                        } else {
+                            return '否';
+                        }
+                    }
+                },
+            ],
+            onSelectRow: function () {
+                selectedRowIndex = $('#' + this.id).getGridParam('selrow');
+            },
+            gridComplete: function () {
+                $('#' + this.id).setSelection(selectedRowIndex, false);
+            },
+            viewrecords: true,
+            rowNum: 30,
+             rowList: [30, 50, 100],
+            pager: "#gridPager",
+            rownumbers: true,
+        });
+    }
+
+    /**新增*/
+    function add() {
+        dialogOpen({
+            id: 'Form',
+            title: "添加积分规则",
+            url: '/..@Url.Action("Form")?actiontype=add',
+            width: ($(top.window).width() - 500) + "px",
+            height: ($(top.window).height() - 500) + "px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        })
+    }
+    /**
+        * 编辑
+        * @@param {string}  keyValue 主键
+        */
+    function edit(keyValue) {
+       dialogOpen({
+            id: 'Form',
+            title: "修改",
+            url: '/..@Url.Action("Form")?actiontype=edit&keyValue=' + keyValue,
+            width: ($(top.window).width() - 500) + "px",
+            height: ($(top.window).height() - 500) + "px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        })
+    }
+
+        /**
+        * 查看
+        * @@param {string}  keyValue 主键
+        */
+    function show(keyValue) {
+       dialogOpen({
+            id: 'Form',
+            title: "查看",
+           url: '/..@Url.Action("Form")?actiontype=show&keyValue=' + keyValue,
+           btn: [],
+            width: ($(top.window).width() - 500) + "px",
+            height: ($(top.window).height() - 500) + "px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        })
+    }
+
+    /**删除*/
+    function del(keyValue) {
+           if (keyValue) {
+            $.RemoveForm({
+                url: '@Url.Action("Remove")',
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $('#gridTable').trigger('reloadGrid');
+                }
+            })
+        } else {
+            dialogMsg('请选择需要删除的数据！', 0);
+        }
+    }
+
+    /**导入 */
+    var importFile=()=> {
+            dialogOpen({
+            id: 'ImportPage',
+            title: "导入",
+           url: '/..@Url.Action("ImportPage")',
+           btn: ["确定","取消"],
+            width: ($(top.window).width() - 800) + "px",
+            height: ($(top.window).height() - 500) + "px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        })
+    }
+
+    function ref() {
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid('setGridParam', {  page: 1  }).trigger('reloadGrid');
+    }
+</script>
+<div class="ui-layout-center">
+    <div class="center-Panel" style="margin:0px 10px;">
+        <div class="panel-Title">积分标准</div>
+        <div class="titlePanel">
+            <div class="title-search">
+                <table>
+                    <tr>
+                        <td style="padding-left: 5px;">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="toolbar">
+                <div class="btn-group">
+                    @if (BSFramework.Application.Code.OperatorProvider.Provider.Current().IsSystem || ViewBag.UserRole.Contains("厂级部门用户"))
+                    {
+                        <a id="add" code="add" class="btn btn-default" onclick="add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+                        <a id="import" code="import" class="btn btn-default" onclick="importFile()"><i class="fa fa-upload"></i>&nbsp;导入</a>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="gridPanel">
+            <table id="gridTable"></table>
+            <div id="gridPager"></div>
+        </div>
+    </div>
+</div>

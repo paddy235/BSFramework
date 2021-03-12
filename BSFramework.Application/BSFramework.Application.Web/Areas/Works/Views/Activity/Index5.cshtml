@@ -1,0 +1,507 @@
+﻿@{
+    ViewBag.Title = "教育培训信息";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<script src="@Url.Content("~/Content/scripts/plugins/datepicker/WdatePicker.js")"></script>
+<script src="~/Content/scripts/plugins/AdminPrettyDesktopFirst/js/LoadData.js"></script>
+
+<style>
+
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group a.btn {
+            margin-top: 4px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+</style>
+<script>
+    var _parentId = "";
+    var _isOrg = "";
+    var userId = top.currUserId; //当前用户Id
+    var deptCode = top.currUserDeptCode;//当前用户所属部门Code
+    var orgCode = top.currUserOrgCode;//当前用户所属机构Code
+    var currUserAccount = "@BSFramework.Application.Code.OperatorProvider.Provider.Current().Account";
+    var deptid = '@ViewBag.deptid';
+    var category = '@ViewBag.category';
+    var userrole = '@BSFramework.Application.Code.OperatorProvider.Provider.Current().RoleName';
+
+    var getDeptid = request('id');
+    var start = request('start');
+    var end = request('end');
+    $(function () {
+        if (!userrole.indexOf('部门级用户') < 0 || !userrole.indexOf('部门管理员') < 0) {
+            $("#lr-pj").css("display", "none");
+        }
+        InitialPage();
+        GetGrid();
+    });
+
+    //初始化页面
+    function InitialPage() {
+        $('#layout').layout({
+            west: {
+                size: 300
+            },
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $("#gridTable").setGridHeight($(window).height() - 170);
+                $("#departments").height($(window).height() - 50);
+            }, 200);
+            e.stopPropagation();
+        });
+
+        $("#departments").height($(window).height() - 50);
+    }
+
+    function onNodeSelected(item) {
+        deptid = item.id;
+        deptCode = item.Code;
+
+        $('#btn_Search').trigger("click");
+    }
+    //加载表格
+    function GetGrid() {
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTable');
+        var queryJson = {};
+        var selectCk = true;
+        if (category == "安全日活动") {
+            if (getDeptid) {
+                deptid = getDeptid;
+                queryJson = {
+                    sdt: start,
+                    edt:end
+                };
+                selectCk = false;
+            jQuery('#sdt').val(start);
+            jQuery('#edt').val(end)
+            }
+            $gridTable.jqGrid({
+                autowidth: true,
+                height: $(window).height() - 170,
+                url: "../../Works/Activity/GetActivityPageList?category=" + category + '&deptid=' + deptid,
+                datatype: "json",
+                viewrecords: true,
+
+                rowNum: 20,
+                postData: { queryJson: JSON.stringify(queryJson),isEvaluate: jQuery('#isEvaluate').val() },
+                // rowList: [30, 50, 100],
+                pager: "#gridPager",
+                sortname: 'planstarttime',
+                sortorder: 'desc',
+                rownumbers: true,
+                gridview: true,
+                shrinkToFit: true,
+                forceFit: true,
+                multiselect: selectCk,
+                colModel: [
+                    { label: 'Id', name: 'activityid', hidden: true },
+                    { label: 'hassub', name: 'hassub', hidden: true },
+                    {
+                        label: '操作', name: 'oper', width: 150, align: 'center', formatter: function (cellvalue, options, rowObject) {
+                            var html = '<a href="javascript:btn_show(\'' + rowObject.activityid + '\', ' + rowObject.hassub + ')">查看</a>'
+                            if (!getDeptid) {
+                                html += '<a href="javascript:btn_edit(\'' + rowObject.activityid + '\')" code=\"edit\" >修改 </a>'
+                                html += '<a href="javascript:btn_delete(\'' + rowObject.activityid + '\')" code=\"delete\" >删除</a>'
+                            }
+                            return html;
+                        }
+                    },
+                    { label: '部门', name: 'deptname', width: 200, align: 'center', sortable: true },
+                    { label: '班组', name: 'fullname', width: 200, align: 'center', sortable: true },
+                    { label: '活动主题', name: 'subject', width: 600, align: 'center', sortable: true },
+                    {
+                        label: '活动时间', name: 'starttime', width: 200, align: 'center', sortable: true, formatter: function (cellvalue, options, rowObject) {
+
+                            return rowObject.starttime.indexOf("0001") >= 0 ? "" : rowObject.starttime.substring(0, 16) + " ~ " + rowObject.endtime.substring(11, 16);
+                        }
+                    },
+                    { label: '活动类型', name: 'activitytype', width: 130, align: 'center', sortable: true },
+
+                    {
+                        label: '活动状态', name: 'state', width: 100, align: 'center', sortable: true, formatter: function (cellvalue, options, rowObject) {
+                            if (cellvalue == "Prepare") {
+                                return "准备中";
+                            }
+                            else if (cellvalue == "Ready") {
+                                return "准备好";
+                            }
+                            else if (cellvalue == "Study") {
+                                return "学习中";
+                            }
+                            else {
+                                return "已完成";
+                            }
+
+                        }
+                    },
+                   { label: '活动地点', name: 'activityplace', width: 200, align: 'center', sortable: true },
+                   {
+                       label: '评价状态', name: 'number', width: 200, align: 'center', sortable: true, formatter: function (cellvalue, options, rowObject) {
+                           if (cellvalue == "0") {
+                               return "本人未评价";
+                           } else {
+                               if (Number(rowObject.pjcount) > 0) {
+                                   return "本人已评价（" + cellvalue + "人)";
+                               }
+                               else {
+                                   return "本人未评价（" + cellvalue + "人)";
+                               }
+                           }
+                       }
+                   }
+                ],
+                onSelectRow: function () {
+                    selectedRowIndex = $('#' + this.id).getGridParam('selrow');
+                },
+                gridComplete: function () {
+                    $('#' + this.id).setSelection(selectedRowIndex, false);
+                    @if (!BSFramework.Application.Code.OperatorProvider.Provider.Current().IsSystem)
+                    {
+                        @Html.Raw("AuthiruzeBtn($('.toolbar'), $('#gridTable'));");//操作按钮权限控制
+                    }
+                }
+            });
+        } else {
+            $("#lr-pj").css("display", "none");
+            if (getDeptid) {
+                deptid = getDeptid;
+                queryJson = {
+                    sdt: start,
+                    edt: end
+                };
+                jQuery('#sdt').val(start);
+                jQuery('#edt').val(end);
+
+            }
+            $gridTable.jqGrid({
+                autowidth: true,
+                height: $(top.window).height() - 303,
+                url: "../../Works/Activity/GetPageListJson?category=" + category + '&deptid=' + deptid,
+                datatype: "json",
+                viewrecords: true,
+                rowNum: 20,
+                postData: { queryJson: JSON.stringify(queryJson), isEvaluate: jQuery('#isEvaluate').val() },
+                // rowList: [30, 50, 100],
+                pager: "#gridPager",
+                sortname: 'planstarttime',
+                sortorder: 'desc',
+                rownumbers: true,
+                gridview: true,
+                shrinkToFit: true,
+                forceFit: true,
+                colModel: [
+                    { label: 'Id', name: 'activityid', hidden: true },
+                    {
+                        label: '操作', name: 'oper', width: 150, align: 'center', formatter: function (cellvalue, options, rowObject) {
+                            var html = '<a href="javascript:btn_show(\'' + rowObject.activityid + '\', ' + rowObject.hassub + ')">查看</a>'
+
+                            html += '<a href="javascript:btn_edit(\'' + rowObject.activityid + '\')" code=\"edit\" >修改 </a>'
+                            html += '<a href="javascript:btn_delete(\'' + rowObject.activityid + '\')" code=\"delete\" >删除</a>'
+                            return html;
+                        }
+                    },
+                    { label: '部门', name: 'deptname', width: 200, align: 'center', sortable: true },
+                    { label: '班组', name: 'fullname', width: 200, align: 'center', sortable: true },
+                    { label: '活动主题', name: 'subject', width: 600, align: 'center', sortable: true },
+                    {
+                        label: '活动时间', name: 'starttime', width: 200, align: 'center', sortable: true, formatter: function (cellvalue, options, rowObject) {
+
+                            return rowObject.starttime.indexOf("0001") >= 0 ? "" : rowObject.starttime.substring(0, 16) + " ~ " + rowObject.endtime.substring(11, 16);
+                        }
+                    },
+                    { label: '活动类型', name: 'activitytype', width: 130, align: 'center', sortable: true },
+
+                    {
+                        label: '活动状态', name: 'state', width: 100, align: 'center', sortable: true, formatter: function (cellvalue, options, rowObject) {
+                            if (cellvalue == "Prepare") {
+                                return "准备中";
+                            }
+                            else if (cellvalue == "Ready") {
+                                return "准备好";
+                            }
+                            else if (cellvalue == "Study") {
+                                return "学习中";
+                            }
+                            else {
+                                return "已完成";
+                            }
+
+                        }
+                    },
+                   { label: '活动地点', name: 'activityplace', width: 200, align: 'center', sortable: true },
+                   {
+                       label: '评价状态', name: 'number', width: 200, align: 'center', sortable: true, formatter: function (cellvalue, options, rowObject) {
+                           if (cellvalue == "0") {
+                               return "本人未评价";
+                           } else {
+                               if (Number(rowObject.pjcount) > 0) {
+                                   return "本人已评价（" + cellvalue + "人)";
+                               }
+                               else {
+                                   return "本人未评价（" + cellvalue + "人)";
+                               }
+                           }
+                       }
+                   }
+                ],
+                onSelectRow: function () {
+                    selectedRowIndex = $('#' + this.id).getGridParam('selrow');
+                },
+                gridComplete: function () {
+                    $('#' + this.id).setSelection(selectedRowIndex, false);
+                    @if (!BSFramework.Application.Code.OperatorProvider.Provider.Current().IsSystem)
+                    {
+                        @Html.Raw("AuthiruzeBtn($('.toolbar'), $('#gridTable'));");//操作按钮权限控制
+                    }
+                }
+            });
+        }
+        //查询事件
+        $("#btn_Search").click(function () {
+            var queryJson = {
+                keyword: $("#txt_Keyword").val(),
+                //deptid: deptid,
+                sdt: jQuery('#sdt').val(),
+                edt: jQuery('#edt').val(),
+                activitytype: jQuery('#category').val()
+            };
+            $gridTable.jqGrid('setGridParam', {
+                postData: { queryJson: JSON.stringify(queryJson), select: deptid, isEvaluate: jQuery('#isEvaluate').val() },
+                page: 1
+            }).trigger('reloadGrid');
+        });
+        $("#btn_SearchAll").click(function () {
+            $("#txt_Keyword").val('');
+            var queryJson = {
+                keyword: "",
+                deptid: deptid
+            }
+            $gridTable.jqGrid('setGridParam', {
+                postData: { queryJson: JSON.stringify(queryJson) },
+                page: 1
+            }).trigger('reloadGrid');
+        });
+        //查询回车
+        $('#txt_Keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+    }
+    //新增
+    function btn_add() {
+        dialogOpen({
+            id: 'Form',
+            title: '添加班组安全日活动',
+            url: '/..@Url.Action("Form", "Activity")',
+            width: '800px',
+            height: '600px',
+            callBack: function (iframeId) {
+                top.frames[iframeId].AcceptClick();
+            }
+        });
+    }
+
+    //编辑
+    function btn_edit(id) {
+        dialogOpen({
+            id: "Form",
+            title: '修改',
+            url: '/../@Url.Action("Detail2")/' + id,
+            width: "1200px",
+            height: "800px",
+            callBack: function (iframeId) {
+                // end();
+                top.frames[iframeId].AcceptClick();
+            }
+        });
+    }
+
+    //查看
+    function btn_show(id, hassub) {
+        if (hassub) {
+            dialogOpen({
+                id: "Edit",
+                title: '查看',
+                url: '/../@Url.Action("Detail4")/' + id,
+                width: ($(window).width() - 100) + 'px',
+                height: ($(top.window).height() - 80) + "px",
+                btn: null,
+                callBack: function (iframeId) {
+                    //end();
+                }
+            });
+        } else {
+            dialogOpen({
+                id: "Edit",
+                title: '查看',
+                url: '/../@Url.Action("Form")/' + id,
+                width: ($(window).width() - 100) + 'px',
+                height: ($(top.window).height() - 80) + "px",
+                btn: null,
+                callBack: function (iframeId) {
+                    //end();
+                }
+            })
+        }
+    }
+
+
+    //删除
+    function btn_delete(id) {
+        $.RemoveForm({
+            url: '../../Works/Activity/RemoveForm',
+            param: { keyValue: id },
+            success: function (data) {
+                $('#gridTable').trigger('reloadGrid');
+            }
+        })
+    }
+
+
+    function pj() {
+        var ids = $('#gridTable').jqGrid("getGridParam", "selarrrow");
+        var id = "";
+        $(ids).each(function (index,o) {
+            var row = $('#gridTable').jqGrid("getRowData", o);
+            id += row.activityid + ",";
+        });
+        var isEvaluate = 0;
+        $.SetForm({
+            url: "/..@Url.Action("GetIsEvaluate")",
+            param: { keyValue: id },
+            success: function (data) {
+                isEvaluate = data;
+            }
+        });
+        if (isEvaluate == 0) {
+            dialogOpen({
+                id: "form1",
+                title: '评价',
+                url: encodeURI('/..@Url.Action("Evaluate")?id=' + id + "&iframeId=" + jQuery(self.frameElement).attr('id')),
+                width: "500px",
+                height: "330px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        } else if (isEvaluate > 0) {
+            layer.msg("无权限评价此活动");
+        } else if (isEvaluate == -1) {
+            layer.msg("此活动尚未结束");
+        }
+    }
+
+    function fn$refresh() {
+        jQuery('#gridTable').trigger("reloadGrid");
+    }
+</script>
+
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                <div class="col-md-10">
+                    组织机构
+                </div>
+                <div class="col-md-2 text-right" style="padding-right:8px;">
+                    <i class="fa fa-arrow-left" onclick="setBar(this)" style="cursor:pointer;" title="展开/收起"></i>
+                </div>
+            </div>
+            @Html.Partial("~/Areas/BaseManage/Views/Department/Tree.cshtml")
+
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title"></div>
+            <div class="titlePanel">
+                <div class="title-search form-inline">
+                    @*<div class="form-group">
+
+                            <label for="level">活动类型</label>
+                            @Html.DropDownList("category", ViewData["categories"] as IEnumerable<SelectListItem>, new { @class = "form-control", style = "width:120px" })
+                        </div>*@
+                    <div class="form-group">
+                        <label for="team">日期</label>
+                        <input type="text" class="form-control" id="sdt" onfocus="WdatePicker();" readonly="readonly">
+                        - <input type="text" class="form-control" id="edt" onfocus="WdatePicker();" readonly="readonly">
+                    </div>
+                    <div class="form-group">
+                        <label for="team">状态</label>
+                        <select id="isEvaluate" class="form-control" style="width:120px">
+                            <option>全部</option>
+                            <option>本人已评价</option>
+                            <option>本人未评价</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                    </div>
+
+                    @*<table>
+                            <tr>
+                                <td>
+                                        <input id="txt_Keyword" type="text" class="form-control" placeholder="请输入活动主题或班组名称或活动地点关键字进行搜索" style="width: 400px;" />
+                                    </td>
+                                <td></td>
+                                <td style="padding-left: 15px; ">
+                                    选择日期
+                                </td>
+                                <td style="padding-left: 5px; ">
+                                    <input id="from" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker();" style="width: 150px;" />
+                                </td>
+                                <td style="padding-left: 5px; ">
+                                    --
+                                </td>
+                                <td style="padding-left: 5px; ">
+                                    <input id="to" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker();" style="width: 150px;" />
+                                </td>
+
+                                <td style="padding-left: 5px;">
+                                    <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i> 查询</a>
+
+                                    <a id="btn_SearchAll" class="btn btn-primary"><i class="fa fa-search-plus"></i> 全部</a>
+                                </td>
+                            </tr>
+                        </table>*@
+                </div>
+                <div class="toolbar">
+                    <div class="btn-group">
+                        <a id="lr-pj" class="btn btn-default" onclick="pj()"><i class="fa fa-refresh"></i>&nbsp;批量评价</a>
+                        <a id="lr-replace" class="btn btn-default" onclick="reload()"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+                        @*<a id="lr-add" class="btn btn-default" onclick="btn_add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+                            <a id="lr-edit" class="btn btn-default" onclick="btn_edit()"><i class="fa fa-pencil-square-o"></i>&nbsp;查看</a>*@
+                        @*<a id="lr-delete" class="btn btn-default" onclick="btn_delete()"><i class="fa fa-trash-o"></i>&nbsp;删除</a>*@
+                    </div>
+                    <div class="btn-group">
+                        <a id="dafen" code="dafen" class="btn btn-default" onclick="dafen()"><i class="fa fa-check"></i>&nbsp;考评打分</a>
+                    </div>
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="gridTable"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>

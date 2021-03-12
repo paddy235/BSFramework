@@ -1,0 +1,298 @@
+﻿@{
+    ViewBag.Title = "化验仪器库";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<script>
+    $(function () {
+        InitialPage();
+        GetGrid();
+    });
+    //初始化页面
+    function InitialPage() {
+        //resize重设(表格、树形)宽高
+        //$(window).resize(function (e) {
+        //    window.setTimeout(function () {
+        //        $('#gridTable').setGridWidth(($('.gridPanel').width()));
+        //        $("#gridTable").setGridHeight($(window).height() - 136.5);
+        //    }, 200);
+        //    e.stopPropagation();
+        //});
+    }
+    function GetGrid() {
+        var selectedRowIndex = 0;
+        var $grid = $("#gridTable");
+        $grid.jqGrid({
+            height: $(window).height() - 136.5,
+            url: '@Url.Action("GetPageListJson")?type=玻璃器皿',
+            datatype: "json",
+            autowidth: true,
+            multiselect: true,
+            colModel: [
+                { label: '主键', name: 'GlassWareId', hidden: true, align: 'center' },
+                {
+                    label: '操作', name: '', index: '', width: 180, align: 'center',
+                    formatter: function (cellvaue, options, rowObject) {
+                        return "<a style='' href=\"javascript:detailnew('" + rowObject.GlassWareId + "')\" title=\"\">查看</a><a style='' href=\"javascript:editnew('" + rowObject.GlassWareId + "')\" title=\"\">修改</a><a style='' href=\"javascript:delglass('" + rowObject.GlassWareId + "')\" title=\"\">删除</a>"
+                    }
+                },
+                {
+                    label: '玻璃器皿', name: 'GlassWareName', index: 'GlassWareName', width: 600, align: 'center'
+                },
+                {
+                    label: '相关文件', name: 'OperateVideo', index: 'OperateVideo', width: 300,sortable:false, align: 'center',
+                    formatter: function (cellvaue, options, rowObject) {
+                        var html = "";
+                        if (rowObject.OperateVideo != "") {
+                            html += "<a style='text-decoration:none;color:blue;' href=\"javascript:video('" + rowObject.GlassWareId + "')\" title=\"\" target=\"_blank\">操作视频</a>";
+                        }
+                        return html;
+                    }
+                }
+            ],
+            height: $(window).height() - 130,
+            viewrecords: true,
+            rowNum: 20,
+            rowList: [20, 50, 100],
+            pager: "#gridPager",
+            sortname: 'CreateDate',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            onSelectRow: function () {
+                selectedRowIndex = $grid.getGridParam('selrow');
+            },
+            gridComplete: function () {
+                $grid.setSelection(selectedRowIndex, false);
+            }
+
+        });
+        $("#btn_Search").click(function () {
+            var queryJson = {
+                GlassWareName: jQuery('#txt_Keyword').val()
+
+            };
+            $grid.jqGrid('setGridParam', {
+                postData: { queryJson: JSON.stringify(queryJson) },
+            }).trigger('reloadGrid');
+        });
+        $("#btn_SearchAll").click(function () {
+
+            $("#txt_Keyword").val('');
+            $('#btn_Search').trigger("click");
+        });
+        $("#refresh").click(function () {
+
+            $("#txt_Keyword").val('');
+            $('#btn_Search').trigger("click");
+        });
+        //查询回车事件
+        $('#txt_Keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+
+    }
+    function imp() {
+        dialogOpen({
+            id: "Form",
+            title: '新增',
+            url: '/../@Url.Action("ImportNew")/',
+            width: "700px",
+            height: "500px",
+            btn: null
+        });
+    }
+    //新增
+    function btn_add() {
+        var height = "700px";
+        dialogOpen({
+            id: "Form",
+            title: '新增',
+            url: '/../@Url.Action("FormGlassWare")',
+            width: "1100px",
+            height: height,
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+
+    }
+    //详细
+    function detail() {
+        var height = "700px";
+        var keyValue = $("#grid").jqGridRowValue("JobId");
+        if (keyValue) {
+            dialogOpen({
+                id: "Detail",
+                title: '查看详情',
+                url: '/../@Url.Action("Detail")/' + keyValue,
+                width: "1100px",
+                height: height,
+                btn: null
+            });
+        } else {
+            dialogMsg('请选择数据！', 0);
+        }
+    }
+    function detailnew(id) {
+        var height = "700px";
+        dialogOpen({
+            id: "GlassWareDetail",
+            title: '查看详情',
+            url: '/../@Url.Action("GlassWareDetail")/' + id,
+            width: "1100px",
+            height: height,
+            btn: null
+        });
+    }
+    //编辑
+    function edit() {
+        var height = "700px";
+        var keyValue = $("#grid").jqGridRowValue("JobId");
+        if (keyValue) {
+            dialogOpen({
+                id: "Form",
+                title: '编辑',
+                url: '/../@Url.Action("Form")/' + keyValue,
+                width: "1100px",
+                height: height,
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        } else {
+            dialogMsg('请选择数据！', 0);
+        }
+    }
+    function editnew(id) {
+        var height = "700px";
+        dialogOpen({
+            id: "FormGlassWare",
+            title: '修改',
+            url: '/../@Url.Action("FormGlassWare")/' + id,
+            width: "1100px",
+            height: height,
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick1();
+            }
+        });
+
+    }
+    //删除
+    function del() {
+        var keyValue = $("#grid").jqGridRowValue("JobId");
+        if (keyValue) {
+            $.RemoveForm({
+                url: '/../@Url.Action("DeleteOne")/',
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#grid").resetSelection();
+                    $("#grid").trigger("reloadGrid");
+                }
+            })
+        } else {
+            dialogMsg('请选择数据！', 0);
+        }
+    }
+    function delglass(id) {
+        $.RemoveForm({
+            url: '/../@Url.Action("DeleteGlassWare")/',
+            param: { keyValue: id },
+            success: function (data) {
+                $("#gridTable").resetSelection();
+                $("#gridTable").trigger("reloadGrid");
+            }
+        });
+
+    }
+    function editlist(id) {
+        dialogOpen({
+            id: "Form",
+            title: '编辑',
+            url: '/../@Url.Action("EditList")/' + id,
+            width: "1600px",
+            height: "700px",
+            btn: null
+        });
+    }
+    function exp() {
+        var ids = $('#gridTable').jqGrid('getGridParam', 'selarrrow');
+        if (ids.length < 1)
+        {
+            alert('请选择要导出的数据！');
+            return;
+        }
+        var idstr = '';
+        ids.forEach(function (value, i)
+        {
+            idstr += $('#gridTable').getCell(ids[i], "GlassWareId") + ",";
+        })
+        @*$.ajax({
+            url: '@Url.Action("expword")',
+            type: 'post',
+            data: { ids: idstr },
+            loading: "数据提交中...",
+            success: function (data) {
+
+            }
+        });*@
+        window.location.href = '@Url.Action("expword")?ids=' + idstr+'&type=2';
+    }
+    function imp() {
+        dialogOpen({
+            id: "Form",
+            title: '新增',
+            url: '/../@Url.Action("ImportNew")/?type=3',
+            width: "800px",
+            height: "500px",
+            btn: null
+        });
+    }
+    function video(id) {
+        dialogOpen({
+            id: "Detail",
+            title: '查看详情',
+            url: '/../@Url.Action("GlassWareVideo")/' + id,
+            width: "1050px",
+            height: "720px",
+            btn: null
+        });
+    }
+</script>
+
+<div class="titlePanel">
+    <div class="title-search">
+        <table>
+            <tr>
+                <td style="padding-left: 2px;">
+                    <input id="txt_Keyword" type="text" class="form-control" placeholder="请输入要查询关键字" style="width: 200px;" />
+                </td>
+                <td style="padding-left: 5px;">
+                    <a id="btn_Search" class="btn btn-primary" style="line-height:15px;"><i class="fa fa-search"></i>&nbsp;查询</a>
+                    <a id="btn_SearchAll" class="btn btn-primary" style="line-height:15px;">&nbsp;全部</a>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+    @*<div class="toolbar">
+        <div class="btn-group">
+            
+        </div>
+        <script>$('.toolbar').authorizeButton()</script>
+    </div>*@
+    <div class="toolbar">
+        <div class="btn-group">
+            <a id="refresh" class="btn btn-default"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+            <a id="lr-add" class="btn btn-default" onclick="btn_add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+            <a id="exp" class="btn btn-default" onclick="exp()"><i class="fa fa-download"></i>&nbsp;导出二维码</a>
+            <a id="exp" class="btn btn-default" onclick="imp()"><i class="fa fa-upload"></i>&nbsp;导入</a>
+        </div>
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="gridTable"></table>
+    <div id="gridPager"></div>
+</div>

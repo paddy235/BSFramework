@@ -1,0 +1,163 @@
+﻿
+@{
+    ViewBag.Title = "answerscore";
+    Layout = "~/Views/Shared/_OrderForm.cshtml";
+}
+<style>
+    .getuser {
+        background: #eae1e1
+    }
+
+    .usertr:hover {
+        background: #eae1e1
+    }
+</style>
+<script>
+    var QuestionList = new Array();
+    var userlist = new Array();
+    $(function () {
+
+        QuestionList = jQuery.parseJSON(jQuery('#QuestionList').val() || '[]');
+        userlist = jQuery.parseJSON(jQuery('#usertitle').val() || '[]');
+
+        jQuery.each(userlist, function (i, o) {
+            if (i == 0) {
+                if (o.iscomplete) {
+                    jQuery('#usertable').append(
+                        "<tr class='usertr getuser' data-sort='" + i + "'><td>" + (i + 1) + ".&nbsp;</td><td>" + o.username + "&nbsp;</td><td>" + o.score + "</td></tr>"
+                    )
+                } else {
+                    jQuery('#usertable').append(
+                        "<tr class='usertr getuser' data-sort='" + i + "'><td>" + (i + 1) + ".&nbsp;</td><td>" + o.username + "&nbsp;</td><td>无</td></tr>"
+                    )
+                }
+            } else {
+                if (o.iscomplete) {
+                    jQuery('#usertable').append(
+                        "<tr class='usertr' data-sort='" + i + "'><td>" + (i + 1) + ".&nbsp;</td><td>" + o.username + "&nbsp;</td><td>" + o.score + "</td></tr>"
+                    )
+                } else {
+                    jQuery('#usertable').append(
+                        "<tr class='usertr' data-sort='" + i + "'><td>" + (i + 1) + ".&nbsp;</td><td>" + o.username + "&nbsp;</td><td>无</td></tr>"
+                    )
+                }
+            }
+
+        });
+
+        Question(0);
+
+        $("#usertable tr").click(function () {
+            $(this).addClass("getuser").siblings().removeClass("getuser");
+            var sort = $(this).data("sort");
+            Question(sort);
+        })
+    });
+    function Question(num) {
+        $("#from1").html("");
+        var entity = userlist[num].useranswer;
+        if (userlist[num].iscomplete) {
+            $("#ckfrom").css("display", "none");
+            $("#from1").css("display", "");
+
+            jQuery.each(QuestionList, function (i, o) {
+                var questionStr = "";
+                questionStr += "<tr> <td class='formValue' style='word - wrap: break-word; word -break: break-all'><span style='color:darkturquoise'>(" + o.topictype + ")</span>" + o.topictitle + "</td></tr>";
+                if (o.topictype.indexOf("判断") >= 0) {
+                    //是否正确
+                    if (o.istrue == entity[i].istrue) {
+                        if (entity[i].answer == "正确") {
+                            questionStr += "<tr><td class='formValue' style='word-wrap:break-word;word-break:break-all'><span style='font-weight:bold;color:chartreuse;border: 1px solid #2e82ff;'>A</span>&nbsp;&nbsp;正确</td></tr>";
+                            questionStr += "<tr><td class='formValue' style='word-wrap:break-word;word-break:break-all'>B&nbsp;&nbsp;错误</td></tr>";
+                        } else {
+                            questionStr += "<tr><td class='formValue' style='word-wrap:break-word;word-break:break-all'>A&nbsp;&nbsp;正确</td></tr>";
+                            questionStr += "<tr><td class='formValue' style='word-wrap:break-word;word-break:break-all'><span style='font-weight:bold;color:chartreuse;border: 1px solid #2e82ff;'>B</span>&nbsp;&nbsp;错误</td></tr>";
+                        }
+                    }
+                    else {
+                        if (entity[i].answer == "正确") {
+                            questionStr += "<tr><td class='formValue' style='word-wrap:break-word;word-break:break-all'><span style='font-weight:bold;color:red;'>A</span>&nbsp;&nbsp;正确</td></tr>";
+                            questionStr += "<tr><td class='formValue' style='word-wrap:break-word;word-break:break-all'><span style='font-weight:bold;color:chartreuse'>B</span>&nbsp;&nbsp;错误</td></tr>";
+                        } else {
+                            questionStr += "<tr><td class='formValue' style='word-wrap:break-word;word-break:break-all'><span style='font-weight:bold;color:chartreuse'>A</span>&nbsp;&nbsp;正确</td></tr>";
+                            questionStr += "<tr><td class='formValue' style='word-wrap:break-word;word-break:break-all'><span style='font-weight:bold;color:red;'>B</span>&nbsp;&nbsp;错误</td></tr>";
+                        }
+                    }
+                } else {
+                    for (var j = 0; j < o.TheAnswer.length; j++) {
+                        if (o.topictype.indexOf("选") >= 0) {
+                            var code = entity[i].answer.split(',');
+                            //选择
+                            if (entity[i].answer.indexOf(o.TheAnswer[j].answer) >= 0) {
+                                if (o.TheAnswer[j].istrue) {
+                                    questionStr += "<tr><td class='formValue' style='word-wrap:break-word;word-break:break-all'><span style='font-weight:bold;color:chartreuse;border: 1px solid #2e82ff;'>" + o.TheAnswer[j].answer + "</span>&nbsp;&nbsp;" + o.TheAnswer[j].description + "</td></tr>";
+
+                                } else {
+                                    questionStr += "<tr><td class='formValue' style='word-wrap:break-word;word-break:break-all'><span style='font-weight:bold;color:red'>" + o.TheAnswer[j].answer + "</span>&nbsp;&nbsp;" + o.TheAnswer[j].description + "</td></tr>";
+
+                                }
+                            } else {
+                                if (o.TheAnswer[j].istrue) {
+                                    questionStr += "<tr><td class='formValue' style='word-wrap:break-word;word-break:break-all'><span style='font-weight:bold;color:chartreuse'>" + o.TheAnswer[j].answer + "</span>&nbsp;&nbsp;" + o.TheAnswer[j].description + "</td></tr>";
+
+                                } else {
+                                    questionStr += "<tr><td class='formValue' style='word-wrap:break-word;word-break:break-all'>" + o.TheAnswer[j].answer + "&nbsp;&nbsp;" + o.TheAnswer[j].description + "</td></tr>";
+                                }
+                                //未选择
+
+                            }
+
+                        } else {
+
+                        }
+                    }
+                }
+
+                questionStr += "<tr><td class='formValue' style='word-wrap:break-word;word-break:break-all'>试题解析:&nbsp;&nbsp;" + o.description + "</td></tr>";
+                jQuery('#from1').append(
+                    questionStr
+                )
+            });
+        } else {
+            $("#ckfrom").css("display", "");
+            $("#from1").css("display", "none");
+        }
+    }
+
+</script>
+<table>
+    <tr>
+        <td>
+            <div style="height:20px;">
+                <div style="float: left;width:150px;font-size:20px;font-weight:bold;">排名</div> <div style="float: left;font-size:20px;font-weight:bold"> 答题详情</div>
+                <div style="float: right;font-size:20px;font-weight:bold">
+                    说明：
+
+                    <span style='font-weight:bold;color:chartreuse;border: 1px solid #2e82ff;'>答对项</span>
+
+                    <span style='font-weight:bold;color:red;'>答错项</span>
+                    <span style='font-weight:bold;color:chartreuse;'>正确项</span>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="padding-top: 5px">
+                <div style="float: left; overflow-y: auto;width:150px;height:700px;border-top:1px  groove;border-right:1px groove;padding-top:20px;overflow-x:auto;">
+                    <table id="usertable">
+                    </table>
+                    @Html.Hidden("usertitle", ViewData["usertitle"])
+
+                </div>
+                <div style="float: left;overflow-y: auto; width:750px;height:700px; border-top:1px groove;padding-top:20px;padding-left:10px;">
+                    @Html.Hidden("QuestionList", ViewData["QuestionList"])
+                    <div id="ckfrom">暂无数据</div>
+                    <table id="from1" class="form">
+                    </table>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+

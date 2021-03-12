@@ -1,0 +1,211 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/record.css")" />
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<style>
+    .my-input {
+        padding: 10px;
+    }
+
+        .my-input input[type="text"] {
+            position: relative;
+            z-index: 100;
+            background: none;
+        }
+</style>
+<script>
+    $(function () {
+            //获取菜单(菜单控制)
+            InitMenu(undefined, $("div"));
+
+        $('.main-sidebar,.main-content').niceScroll({
+            autohidemode: false
+        });
+        $('.table-today tr').hover(function () {
+            $(this).addClass('hover');
+        }, function () {
+            $(this).removeClass('hover');
+        });
+        $('.table-today tr').click(function () {
+            $(this).toggleClass('actives');
+        })
+        $('.user>.dropdown-menu').css({
+            left: $('.user').innerWidth() - $('.user>.dropdown-menu').width() - 65
+        });
+
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#from',
+                type: 'date',
+            });
+            laydate.render({
+                elem: '#to',
+                type: 'date',
+            });
+        })
+    });
+
+    function fn$viewall() {
+        jQuery('#from').val('');
+        jQuery('#to').val('');
+        jQuery('#name').val('');
+    }
+
+</script>
+<!-- Content Wrapper. Contains page content -->
+
+@using (Html.BeginForm("Index", "Search"))
+{
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="title">
+                <a href="javascript:;">
+                    @*<img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">*@
+                    台账管理
+                </a>
+            </div>
+            <div class="bg-f5f8fe pd-20 my-body" style="padding-top:30px;">
+                <div class="text-center">
+                    <span class="my-input mg-r-15">
+                        <input type="text" name="from" id="from" value="@Html.Raw(ViewData["from"])">
+                        <img src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                    </span>
+                    -
+                    <span class="my-input mg-r-15">
+                        <input type="text" name="to" id="to" value="@Html.Raw(ViewData["to"])">
+                        <img src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                    </span>
+                    <span class="my-input mg-r-15">
+                        <input type="text" name="name" id="name" value="@Html.Raw(ViewData["name"])" placeholder="请输入关键字搜索">
+                    </span>
+                    <button class="my-btn bg-3669e1 mg-r-15">
+                        <img src="@Url.Content("~/Content/styles/static/images/search-icon.png")" alt="">
+                        搜索
+                    </button>
+                    <button class="my-btn bg-8fadce" onclick="fn$viewall();">全部</button>
+                </div>
+                <div>
+                    <div class="mg-auto activity-list">
+                        <div class="clearfix" style="margin:-20px 0 0 0;">
+                            <div class="pull-left item" style="margin:25px">
+                                <a href="@Url.Action("NewIndex", "EduTrain" , new { area="Works" })">
+                                    <img src="@Url.Content("~/Content/styles/static/images/book-1.png")" alt="">
+                                    <div class="btn-group">
+                                        <a href="javascript:;" style="background-image: none;padding-left:0;">
+                                            @*共有记录<b>0</b>条*@
+                                        </a>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="pull-left item" style="margin:25px">
+                                <a href="@Url.Action("List", "Workmeeting", new { page = 1, pagesize = 12, from = ViewData["from"], to = ViewData["to"] })">
+                                    <img src="@Url.Content("~/Content/styles/static/images/item2.png")" alt="">
+                                    <div class="btn-group">
+                                        <a href="javascript:;" style="background-image: none;padding-left:0;">
+                                            共有记录<b>@ViewData["item2"]</b>条
+                                        </a>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="pull-left item" style="margin:25px">
+                                <a href="@Url.Action("List", "Activity", new { page = 1, pagesize = 12, from = ViewData["from"], to = ViewData["to"], name = ViewData["name"] })">
+                                    <img src="@Url.Content("~/Content/styles/static/images/item3.png")" alt="">
+                                    <div class="btn-group">
+                                        <a href="javascript:;" style="background-image: none;padding-left:0;">
+                                            共有记录<b>@ViewData["item3"]</b>条
+                                        </a>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="pull-left item" style="margin:25px">
+                                <a href="@Url.Action("List", "Notice", new { area = "PublicInfoManage", page = 1, pagesize = 12, from = ViewData["from"], to = ViewData["to"] })">
+                                    <img src="@Url.Content("~/Content/styles/static/images/item7.png")" alt="">
+                                    <div class="btn-group">
+                                        <a href="javascript:;" style="background-image: none;padding-left:0;">
+                                            共有记录<b>@ViewData["item7"]</b>条
+                                        </a>
+                                    </div>
+                                    </a>
+</div>
+                            <div class="pull-left item" style="margin:25px">
+                                <a href="@Url.Action("BorrowList", "Tool", new {  f = ViewData["from"], t = ViewData["to"], n = ViewData["name"] })">
+                                    <img src="@Url.Content("~/Content/styles/static/images/book-5.png")" alt="">
+                                    <div class="btn-group">
+                                        <a href="javascript:;" style="background-image: none;padding-left:0;">
+                                            共有记录<b>@ViewData["item4"]</b>条
+                                        </a>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="pull-left item" style="margin:25px">
+                                <a href="@Url.Action("OutList", "Drug", new { page = 1, pagesize = 10, from = ViewData["from"], to = ViewData["to"], DrugName = ViewData["name"] })">
+                                    <img src="@Url.Content("~/Content/styles/static/images/item9.png")" alt="">
+                                    <div class="btn-group">
+                                        <a href="javascript:;" style="background-image: none;padding-left:0;">
+                                            共有记录<b> @ViewData["item5"]</b>条
+                                        </a>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="pull-left item" style="margin:25px" code="lllegal_standingbook"><!--违章台账-->
+                                <a href="@Url.Action("List", "Lllegal", new { page = 1, pagesize = 10, f = ViewData["from"], t = ViewData["to"], n = ViewData["name"] })">
+                                    <img src="@Url.Content("~/Content/styles/static/images/item10.png")" alt="">
+                                    <div class="btn-group">
+                                        <a href="javascript:;" style="background-image: none;padding-left:0;">
+                                            共有记录<b>@ViewData["item6"]</b>条
+                                        </a>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="pull-left item" style="margin:25px">
+                                <a href="@Url.Action("emergencyHistoryRecord", "ERCHTMSEmergency" , new { area="Works", page = 1, pagesize = 12 })">
+                                    <img src="@Url.Content("~/Content/styles/static/images/item13.png")" alt="">
+                                    <div class="btn-group">
+                                        <a href="javascript:;" style="background-image: none;padding-left:0;">
+                                            共有记录<b>@ViewData["item8"]</b>条
+                                        </a>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="pull-left item" style="margin:25px">
+                                <a href="@Url.Action("List", "ERCHTMS2" , new { area="Works", page = 1, pagesize = 12,ctype=1 })">
+                                    <img src="@Url.Content("~/Content/styles/static/images/item11.png")" alt="">
+                                    @*<div class="btn-group">
+                                        <a href="javascript:;" style="background-image: none;padding-left:0;">
+                                            共有记录<b>@ViewData["item8"]</b>条
+                                        </a>
+                                    </div>*@
+                                </a>
+                            </div>
+                            <div class="pull-left item" style="margin:25px">
+                                <a href="@Url.Action("List", "ERCHTMS" , new { area="Works", page = 1, pagesize = 12 })">
+                                    <img src="@Url.Content("~/Content/styles/static/images/item12.png")" alt="">
+                                    @*<div class="btn-group">
+                                        <a href="javascript:;" style="background-image: none;padding-left:0;">
+                                            共有记录<b>@ViewData["item9"]</b>条
+                                        </a>
+                                    </div>*@
+                                </a>
+                            </div>
+                            @*<div class="pull-left item" style="margin:25px">
+                                <img src="@Url.Content("~/Content/styles/static/images/book-more.png")" alt="">
+                                <div class="btn-group">
+                                    <span class="c-fff">敬请期待</span>
+                                </div>
+                            </div>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="main-footer">
+                武汉博晟安全技术股份有限公司   版权所有
+            </footer>
+        </div>
+
+    </div>
+    <!-- /.content-wrapper -->
+}

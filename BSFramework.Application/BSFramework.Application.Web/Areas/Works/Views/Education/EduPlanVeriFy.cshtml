@@ -1,0 +1,66 @@
+﻿
+@{
+    ViewBag.Title = "EduPlanVeriFy";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<link href="~/content/scripts/plugins/webuploader/webuploader.css" rel="stylesheet" />
+<link href="~/content/scripts/plugins/webuploader/webuploader-demo.css" rel="stylesheet" />
+<script type="text/javascript" src="~/content/scripts/business/common.js"></script>
+<script type="text/javascript" src="~/content/scripts/plugins/webuploader/webuploader.min.js"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script>
+    $(function () {
+        GetGrid();
+    });
+    //加载表格
+    function GetGrid() {
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            url: "../../Works/Education/GetEduPlanVerifyList",
+            datatype: "json",
+            height: $(window).height() - 170,
+            width: $(window).width() - 50,
+            autowidth: true,
+            colModel: [
+
+                {
+                    label: '审核时间', name: 'VerifyDate', index: 'VerifyDate', width: 150, align: 'center', formatter: 'date', sortable: false, formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                },
+                {
+                    label: '审核人员', name: 'VerifyPerson', index: 'VerifyPerson', width: 300, align: 'center'
+                },
+                {
+                    label: '审核结论', name: 'VerifyResult', index: 'VerifyResult', width: 300, align: 'center'
+                },
+                 {
+                     label: '原因', name: 'VerifyContent', index: 'VerifyContent', width: 350, align: 'center'
+                 }
+
+            ],
+            viewrecords: true,
+            rowNum: 30,
+            // rowList: [30, 50, 100],
+            pager: "#gridPager",
+            sortname: 'CreateDate',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            shrinkToFit: true,
+            forceFit: true,
+            onSelectRow: function () {
+                selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            },
+            loadError: function (xhr, status, error) {
+                //top.location.href = "../../Login/Index?Login_Error=1";
+            }
+
+        });
+    }
+
+</script>
+<br />
+<div class="gridPanel">
+    <table id="gridTable"></table>
+    <div id="gridPager"></div>
+</div>

@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{235A2DBD-966A-4676-AF37-F8EC3876A361}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Bst.Fx.Warning</RootNamespace>
+    <AssemblyName>Bst.Fx.Warning</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EvaluateService.cs" />
+    <Compile Include="EducationWarningService4.cs" />
+    <Compile Include="EducationWarningService3.cs" />
+    <Compile Include="EducationWarningService2.cs" />
+    <Compile Include="EducationWarningService1.cs" />
+    <Compile Include="ActivityWarningService8.cs" />
+    <Compile Include="ActivityWarningService7.cs" />
+    <Compile Include="ActivityWarningService6.cs" />
+    <Compile Include="ActivityWarningService5.cs" />
+    <Compile Include="ActivityWarningService4.cs" />
+    <Compile Include="ActivityWarningService3.cs" />
+    <Compile Include="ActivityWarningService2.cs" />
+    <Compile Include="InstrumentCheckWarning.cs" />
+    <Compile Include="DrugCurNumberWarning.cs" />
+    <Compile Include="EducationWarning.cs" />
+    <Compile Include="GlassCurNumberWarning.cs" />
+    <Compile Include="InstrumentWarning.cs" />
+    <Compile Include="KwjjWarning.cs" />
+    <Compile Include="ToolCheckWarning.cs" />
+    <Compile Include="SevenSPictureWarning.cs" />
+    <Compile Include="ToolsWarning.cs" />
+    <Compile Include="WarningBase.cs" />
+    <Compile Include="ActivityWarningService1.cs" />
+    <Compile Include="WarningService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\BSFramework.Application\BSFramework.Application.Entity\BSFramework.Application.Entity.csproj">
+      <Project>{c10920fe-8c74-4993-a7f4-1da189da842c}</Project>
+      <Name>BSFramework.Application.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Application\BSFramework.Application.Mapping\BSFramework.Application.Mapping.csproj">
+      <Project>{42234e7a-b484-479d-b1c1-08a08a59c935}</Project>
+      <Name>BSFramework.Application.Mapping</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Util\BSFramework.Data.Repository\BSFramework.Data.Repository.csproj">
+      <Project>{1751A2DD-0F00-4C76-B180-97E8F72FE078}</Project>
+      <Name>BSFramework.Data.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Bst.Bzzd.DataSource\Bst.Bzzd.DataSource.csproj">
+      <Project>{0404B662-9130-473B-B472-2BCCB4D9A93A}</Project>
+      <Name>Bst.Bzzd.DataSource</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Bst.ServiceContract.MessageQueue\Bst.ServiceContract.MessageQueue.csproj">
+      <Project>{CB80A5FD-CEFC-43F6-8246-A51A2EE2C64B}</Project>
+      <Name>Bst.ServiceContract.MessageQueue</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bst.Fx.IMessage\Bst.Fx.IMessage.csproj">
+      <Project>{E3C4CB8A-DFD1-4951-86D6-E001A7B72186}</Project>
+      <Name>Bst.Fx.IMessage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bst.Fx.IWarning\Bst.Fx.IWarning.csproj">
+      <Project>{4CC0A37F-26EB-417C-9341-D26FE595E791}</Project>
+      <Name>Bst.Fx.IWarning</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bst.Fx.Message\Bst.Fx.Message.csproj">
+      <Project>{BB63A472-FA78-42A0-BDD3-64BCBB52EE30}</Project>
+      <Name>Bst.Fx.Message</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bst.Fx.WarningData\Bst.Fx.WarningData.csproj">
+      <Project>{a29d7012-6c11-4656-842a-60f5d4b97876}</Project>
+      <Name>Bst.Fx.WarningData</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!--<Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />-->
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,84 @@
+@charset "urf-8";
+.list .list-item{
+	position: relative;
+	margin:0 8px;
+	height:194px;
+	overflow: hidden;
+}
+.list .list-item > div{
+	width:100%;height:100%;
+	position: absolute;
+	top:0;
+}
+.list .list-item > div .bg{
+	position: absolute;
+	left:0;top:0;
+	width:100%;height:100%;
+	background: rgba(0,0,0,.5);
+}
+.list .list-item > div .content{
+	position: relative;
+	z-index:10;
+	font-size:24px;
+	color:#fff;
+	line-height: 194px;
+}
+.current.list .list-item > div .content{
+	line-height: 30px;
+	padding:38px 28px 0;
+}
+.current.list a{
+	display: block;
+	width:100%;
+	height:100%;
+	color:#fff;
+	text-decoration: none;
+}
+.current.list .list-item > div .content p{
+	text-align:left;
+}
+.current.list .list-item > div .content p:first-child{
+	font-size:24px;
+}
+.current.list .list-item > div .content small{
+	color:#cfcfcf;
+	font-size:18px;
+}
+.activity-list > div{
+	margin-left:-30px;
+	padding-top:30px;
+}
+.activity-list .item{
+	margin:0 0 60px 60px;
+	position: relative;
+}
+.activity-list .btn-group{
+	position: absolute;
+	width:100%;
+	bottom:24px;
+	text-align:center;
+	font-size:18px;
+}
+.activity-list .btn-group a{
+	display: inline-block;
+	padding-left:40px;
+	background: url("../images/activity-icon.png") left top no-repeat;
+	color:#ffffff;
+	text-decoration: none;
+	line-height: 35px;
+	position: relative;
+}
+.my-mark{
+	background: red;
+	position: absolute;
+	right:-15px;top:0;
+	height:20px;
+	line-height: 20px;
+	width:20px;
+	text-align:center;
+	border-radius: 50%;
+}
+.activity-list .btn-group a.record{
+	background-position: left bottom;
+	margin-left:30px;
+}

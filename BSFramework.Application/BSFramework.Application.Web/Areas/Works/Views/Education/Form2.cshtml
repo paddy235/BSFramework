@@ -1,0 +1,2257 @@
+﻿@model BSFramework.Application.Entity.EducationManage.EduBaseInfoEntity
+@using BSFramework.Application.Entity.EducationManage
+@{
+    ViewBag.Title = "Form2";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<link rel="stylesheet" href="~/Content/styles/static/css/index.css">
+<link rel="stylesheet" href="~/Content/styles/static/css/extend.css">
+<link rel="stylesheet" href="~/Content/styles/static/css/launch-activity.css" />
+<link rel="stylesheet" href="~/Content/styles/static/css/before.css" />
+<script src="~/Content/scripts/validator/Validform.min.js"></script>
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+<script src="~/Content/scripts/nicescroll/nicescroll.min.js"></script>
+<script src="~/Content/scripts/base.js"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/audiojs/audio.min.js")"></script>
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<script src="@Url.Content("~/Content/scripts/jquery.cxscroll.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>
+<!--播放器-->
+<link href="~/Content/scripts/plugins/video/css/video.min.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/video/js/video.min.js"></script>
+<script src="~/Content/scripts/plugins/video/js/videojs-contrib-hls.min.js"></script>
+<link href="~/Content/styles/layout.css" rel="stylesheet" />
+<style>
+
+    ul li {
+        vertical-align: middle;
+        padding-top: 15px;
+    }
+
+    .images-container {
+        min-height: 120px;
+    }
+
+    .safeImg {
+        display: block;
+        width: 210px;
+        height: 140px;
+        position: relative;
+        padding-left: 5px;
+    }
+
+    .images-container li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+
+    .safeImg_short {
+        display: block;
+        width: 150px;
+        height: 150px;
+        position: relative;
+        padding-left: 5px;
+    }
+</style>
+<script>
+    jQuery(function () {
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#grid').setGridWidth(($('.gridPanel').width()));
+                $("#grid").setGridHeight($(window).height() - 140);
+            }, 200);
+            e.stopPropagation();
+        });
+        var id = jQuery('#ID').val();
+        jQuery('#grid').jqGrid({
+            colModel: [
+                { label: '评价人', name: 'EvaluateUser', width: 100, align: 'center', sortable: false },
+                { label: '评价部门', name: 'DeptName', width: 100, align: 'center', sortable: false },
+                { label: '评价时间', name: 'EvaluateDate', width: 100, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d H:i', newformat: 'Y-m-d H:i' } },
+                { label: '评分', name: 'Score', width: 100, align: 'center', sortable: false },
+                { label: '评价内容', name: 'EvaluateContent', align: 'center', sortable: false }
+            ],
+            height:160,
+            autowidth: true,
+            url: '@Url.Action("GetDataEvaluate")?keyValue=' + id,
+            datatype: "json",
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 20,
+            rownumbers: true,
+            pager: false,
+            gridComplete: function () {
+            }
+        });
+
+        @for (int i = 0; i < Model.Answers.Count; i++) {
+            @Html.Raw(string.Format("layer.photos({{photos: '{0}',shift: 5}});", "#" + i + "images-container"));
+        }
+        @for (int i = 0; i < Model.Answers.Count; i++) {
+            @Html.Raw(string.Format("layer.photos({{photos: '{0}',shift: 5}});", "#" + i + "images-containercs"));
+        }
+        @for (int i = 0; i < Model.Answers.Count; i++) {
+            @Html.Raw(string.Format("layer.photos({{photos: '{0}',shift: 5}});", "#" + i + "images-containercs1"));
+        }
+        @Html.Raw(string.Format("layer.photos({{photos: '{0}',shift: 5}});", "#jkimages-container"));
+        @Html.Raw(string.Format("layer.photos({{photos: '{0}',shift: 5}});", "#jlimages-container"));
+        @Html.Raw(string.Format("layer.photos({{photos: '{0}',shift: 5}});", "#jsjktp"));
+        @Html.Raw(string.Format("layer.photos({{photos: '{0}',shift: 5}});", "#jsjkzp"));
+        $('.play-audio-container1').delegate('.play-audio', 'click', function () {
+            var Id = $(this).data('id');
+            document.getElementById(Id).play();
+            //var url = $(this).data('url');
+            //var html = '<audio id="audio" src="' + url + '" controls autoplay style="width:483px;display:block;"></audio>';
+            //$('#audio-warp').append(html);
+            //$('#audio')[0].addEventListener('canplaythrough', function () {
+            //    this.play();
+            //});
+            //layer.open({
+            //    type: 1,
+            //    area: ['460px', '36px'],
+            //    content: $('#audio-warp '),
+            //    title: false,
+            //    end: function () {
+            //        $('#audio-warp').empty();
+            //        $('#audio-warp').hide();
+            //    }
+            //})
+        });
+        $('.play-audio-container2').delegate('.play-audio', 'click', function () {
+            var Id = $(this).data('id');
+            document.getElementById(Id).play();
+            //var url = $(this).data('url');
+            //var html = '<audio id="audio" src="' + url + '" controls autoplay style="width:483px;display:block;"></audio>';
+            //$('#audio-warp').append(html);
+            //$('#audio')[0].addEventListener('canplaythrough', function () {
+            //    this.play();
+            //});
+            //layer.open({
+            //    type: 1,
+            //    area: ['460px', '36px'],
+            //    content: $('#audio-warp '),
+            //    title: false,
+            //    end: function () {
+            //        $('#audio-warp').empty();
+            //        $('#audio-warp').hide();
+            //    }
+            //})
+        });
+
+
+
+        $('.box').delegate('li', 'click', function () {
+            var json = {
+                data: [{ src: $(this).find('img').attr("src") }]
+            };
+            layer.photos({
+                photos: json,
+                anim: 5
+            })
+        });
+
+        $('#uploadFile2').change(cp2); //活动材料
+        $('#uploadFilejsjkyp').change(cpjsjkyp);
+        $('#uploadFilejsjktp').change(cpjsjktp);
+        $('#uploadFilejsjksp').change(cpjsjksp); //现场视频
+        $('#uploadFilejsjkzp').change(cpjsjkzp); //现场照片
+
+    });
+    //上传活动材料
+    function cp2() {
+        $.ajaxFileUpload({
+            url: "@Url.Action("EditUpload")?uptype=1&id=@Model.ID",
+            secureuri: false,
+            fileElementId: 'uploadFile2',
+            dataType: 'json',
+            success: function (data) {
+                debugger;
+                if (data.message == "1") {
+                    var obj = document.getElementById('uploadFile2');
+                    obj.outerHTML = obj.outerHTML;
+                    //alert("请上传GIF,PNG,JPG格式的图片！");
+                    $('#uploadFile2').change(cp2);
+                } else {
+                    var html = '';
+                    var dv = document.getElementById("cl");
+                    dv.innerHTML = "";
+                    for (var i = 0; i < data.resultdata.files.length; i++) {
+                        html += '<a href="' + data.resultdata.files[i].FilePath + '" target="_blank">' + data.resultdata.files[i].FileName + '</a><a id="' + data.resultdata.files[i].FileId + '"  style="color:red;font-size:10px;vertical-align:bottom;" onclick="delfile(\'1\',this.id)">删除</a><br />';
+                    }
+                    html += '<input type="file" name="uploadFile2" id="uploadFile2" style="display:none;"><label for="uploadFile2" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                    dv.innerHTML = html;
+                    $('#uploadFile2').change(cp2);
+                }
+            }
+        });
+    }
+    //上传技术讲课音频
+    function cpjsjkyp() {
+        $.ajaxFileUpload({
+            url: "@Url.Action("EditUpload")?uptype=技术讲课音频&id=@Model.ID",
+            secureuri: false,
+            fileElementId: 'uploadFilejsjkyp',
+            dataType: 'json',
+            success: function (data) {
+                if (data.message == "1") {
+                    var obj = document.getElementById('uploadFilejsjkyp');
+                    obj.outerHTML = obj.outerHTML;
+                    alert("请上传mp3,m4a格式的音频文件！");
+                    $('#uploadFilejsjkyp').change(cpjsjkyp);
+                } else {
+                    var html = '<ul style="" class="play-audio-container1">';
+                    var dv = document.getElementById("jsjkyp");
+                    dv.innerHTML = "";
+                    for (var i = 0; i < data.resultdata.files.length; i++) {
+                        html += '<li class=""><div class="play-audio" style="" data-id="' + data.resultdata.files[i].FileId + '" data-url="' + data.resultdata.files[i].FilePath + '"><img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">' + data.resultdata.files[i].FileName + '<a id="' + data.resultdata.files[i].FileId + '" onclick="delfile(\'技术讲课音频\',this.id)" style="color:red;font-size:10px;vertical-align:bottom;">删除</a></div><div style=""><audio id="' + data.resultdata.files[i].FileId + '" preload="metadata" src="' + data.resultdata.files[i].FilePath + '" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio></div></li>';
+                    }
+                    html += '</ul><br /><input type="file" name="uploadFilejsjkyp" id="uploadFilejsjkyp" style="display:none;"><label for="uploadFilejsjkyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                    dv.innerHTML = html;
+                    $('#uploadFilejsjkyp').change(cpjsjkyp);
+                }
+            }
+        });
+    }
+    //上传技术讲课图片
+    function cpjsjktp() {
+        $.ajaxFileUpload({
+            url: "@Url.Action("EditUpload")?uptype=技术讲课图片&id=@Model.ID",
+            secureuri: false,
+            fileElementId: 'uploadFilejsjktp',
+            dataType: 'json',
+            success: function (data) {
+                if (data.message == "1") {
+                    var obj = document.getElementById('uploadFilejsjktp');
+                    obj.outerHTML = obj.outerHTML;
+                    alert("请上传GIF,PNG,JPG格式的图片！");
+                    $('#uploadFilejsjktp').change(cpjsjktp);
+                } else {
+                    var html = '';
+                    var dv = document.getElementById("jsjktp");
+                    dv.innerHTML = "";
+                    for (var i = 0; i < data.resultdata.files.length; i++) {
+                        html += '<img src="' + data.resultdata.files[i].FilePath + '" alt="" style="width:150px;height:120px;"><a id="' + data.resultdata.files[i].FileId + '" onclick="delfile(\'技术讲课图片\',this.id)" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>';
+                    }
+                    html += '<input type="file" name="uploadFilejsjktp" id="uploadFilejsjktp" style="display:none;"><label for="uploadFilejsjktp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                    dv.innerHTML = html;
+                    $('#uploadFilejsjktp').change(cpjsjktp);
+                }
+            }
+        });
+    }
+    //上传技术讲课视频
+    function cpjsjksp() {
+        $.ajaxFileUpload({
+            url: "@Url.Action("EditUpload")?uptype=视频&id=@Model.ID",
+            secureuri: false,
+            fileElementId: 'uploadFilejsjksp',
+            dataType: 'json',
+            success: function (data) {
+                if (data.message == "1") {
+                    var obj = document.getElementById('uploadFilejsjksp');
+                    obj.outerHTML = obj.outerHTML;
+                     alert("请上传MP4,WMV,AVI,RMVB,FLV等格式的视频文件！");
+                    $('#uploadFilejsjksp').change(cpjsjksp);
+                } else {
+                    var html = '';
+                    var dv = document.getElementById("jsjksp");
+                    dv.innerHTML = "";
+                    for (var i = 0; i < data.resultdata.files.length; i++) {
+                        html += '<img src="@Url.Content("~/Content/images/album.png")" alt=""style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="' + data.resultdata.files[i].FilePath + '"><a id="' + data.resultdata.files[i].FileId + '" onclick="delfile(\'视频\',this.id)" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>';
+                    }
+                    html += '<input type="file" name="uploadFilejsjksp" id="uploadFilejsjksp" style="display:none;"><label for="uploadFilejsjksp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                    dv.innerHTML = html;
+                    $('#uploadFilejsjksp').change(cpjsjksp);
+                }
+            }
+        });
+    }
+    //上传技术讲课照片
+    function cpjsjkzp() {
+        $.ajaxFileUpload({
+            url: "@Url.Action("EditUpload")?uptype=照片&id=@Model.ID",
+            secureuri: false,
+            fileElementId: 'uploadFilejsjkzp',
+            dataType: 'json',
+            success: function (data) {
+                if (data.message == "1") {
+                    var obj = document.getElementById('uploadFilejsjkzp');
+                    obj.outerHTML = obj.outerHTML;
+                     alert("请上传GIF,PNG,JPG格式的图片！");
+                    $('#uploadFilejsjkzp').change(cpjsjkzp);
+                } else {
+                    var html = '';
+                    var dv = document.getElementById("jsjkzp");
+                    dv.innerHTML = "";
+                    for (var i = 0; i < data.resultdata.files.length; i++) {
+                        html += '<img src="' + data.resultdata.files[i].FilePath + '" alt="" style="width:180px;height:120px;"><a id="' + data.resultdata.files[i].FileId + '" onclick="delfile(\'照片\',this.id)" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>';
+                    }
+                    html += '<input type="file" name="uploadFilejsjkzp" id="uploadFilejsjkzp" style="display:none;"><label for="uploadFilejsjkzp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                    dv.innerHTML = html;
+                    $('#uploadFilejsjkzp').change(cpjsjkzp);
+                }
+            }
+        });
+    }
+    //删除附件，重新加载div 刷新附件列表 （教育培训基本信息附件）
+    function delfile(uptype, id) {
+        var msg = "注：您确定要删除吗？该操作将无法恢复";
+        if (confirm(msg) == true) {
+            $.ajax({
+                url: '@Url.Action("delfile")',
+                type: 'post',
+                data: { uptype: uptype, id: id, drugid: '@Model.ID' },
+                loading: "数据提交中...",
+                success: function (data) {
+                    var data = JSON.parse(data);
+                    if (uptype == "1") {
+                        var html = '';
+                        var dv = document.getElementById("cl");
+                        dv.innerHTML = "";
+                        for (var i = 0; i < data.resultdata.files.length; i++) {
+                            html += '<a href="' + data.resultdata.files[i].FilePath + '" target="_blank">' + data.resultdata.files[i].FileName + '</a><a id="' + data.resultdata.files[i].FileId + '"  style="color:red;font-size:10px;vertical-align:bottom;" onclick="delfile(\'' + uptype + '\',this.id)">删除</a><br />';
+                        }
+                        html += '<input type="file" name="uploadFile2" id="uploadFile2" style="display:none;"><label for="uploadFile2" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                        dv.innerHTML = html;
+                        $('#uploadFile2').change(cp2);
+                    }
+                    if (uptype == "技术讲课音频") {
+                        var html = '<ul style="" class="play-audio-container1">';
+                        var dv = document.getElementById("jsjkyp");
+                        dv.innerHTML = "";
+                        for (var i = 0; i < data.resultdata.files.length; i++) {
+                            html += '<li class=""><div class="play-audio" style="" data-id="' + data.resultdata.files[i].FileId + '" data-url="' + data.resultdata.files[i].FilePath + '"><img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">' + data.resultdata.files[i].FileName + '<a id="' + data.resultdata.files[i].FileId + '" onclick="delfile(\'' + uptype + '\',this.id)" style="color:red;font-size:10px;vertical-align:bottom;">删除</a></div><div style=""><audio id="' + data.resultdata.files[i].FileId + '" preload="metadata" src="' + data.resultdata.files[i].FilePath + '" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio></div></li>';
+                        }
+                        html += ' </ul><br /><input type="file" name="uploadFilejsjkyp" id="uploadFilejsjkyp" style="display:none;"><label for="uploadFilejsjkyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                        dv.innerHTML = html;
+                        $('#uploadFilejsjkyp').change(cpjsjkyp);
+                    }
+                    if (uptype == "技术讲课图片")
+                    {
+                        var html = '';
+                        var dv = document.getElementById("jsjktp");
+                        dv.innerHTML = "";
+                        for (var i = 0; i < data.resultdata.files.length; i++) {
+                            html += '<img src="' + data.resultdata.files[i].FilePath + '" alt="" style="width:150px;height:120px;"><a id="' + data.resultdata.files[i].FileId + '" onclick="delfile(\'' + uptype + '\',this.id)" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>';
+                        }
+                        html += '<input type="file" name="uploadFilejsjktp" id="uploadFilejsjktp" style="display:none;"><label for="uploadFilejsjktp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                        dv.innerHTML = html;
+                        $('#uploadFilejsjktp').change(cpjsjktp);
+                    }
+                    if (uptype == "视频")
+                    {
+                        var html = '';
+                        var dv = document.getElementById("jsjksp");
+                        dv.innerHTML = "";
+                        for (var i = 0; i < data.resultdata.files.length; i++) {
+                            html += '<img src="@Url.Content("~/Content/images/album.png")" alt=""style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="' + data.resultdata.files[i].FilePath + '"><a id="' + data.resultdata.files[i].FileId + '" onclick="delfile(\'' + uptype + '\',this.id)" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>';
+                        }
+                        html += '<input type="file" name="uploadFilejsjksp" id="uploadFilejsjksp" style="display:none;"><label for="uploadFilejsjksp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                        dv.innerHTML = html;
+                        $('#uploadFilejsjksp').change(cpjsjksp);
+                    }
+                    if (uptype == "照片")
+                    {
+                        var html = '';
+                        var dv = document.getElementById("jsjkzp");
+                        dv.innerHTML = "";
+                        for (var i = 0; i < data.resultdata.files.length; i++) {
+                            html += '<img src="' + data.resultdata.files[i].FilePath + '" alt="" style="width:180px;height:120px;"><a id="' + data.resultdata.files[i].FileId + '" onclick="delfile(\'' + uptype + '\',this.id)" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>';
+                        }
+                        html += '<input type="file" name="uploadFilejsjkzp" id="uploadFilejsjkzp" style="display:none;"><label for="uploadFilejsjkzp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                        dv.innerHTML = html;
+                        $('#uploadFilejsjkzp').change(cpjsjkzp);
+                    }
+                }
+            });
+        } else
+        {
+            return false;
+        }
+    }
+    //删除答题信息附件
+    function delfilenew(uptype, id, oid) {
+        var msg = "注：您确定要删除吗？该操作将无法恢复";
+        if (confirm(msg) == true) {
+            $.ajax({
+                url: '@Url.Action("delfile")',
+                type: 'post',
+                data: { uptype: uptype, id: id, drugid: oid },
+                loading: "数据提交中...",
+                success: function (data) {
+                    var data = JSON.parse(data);
+
+                    if (uptype == "技术问答音频") {
+                        var html = '<ul style="" class="play-audio-container1">';
+                        var dv = document.getElementById("jswdyp");
+                        dv.innerHTML = "";
+                        for (var i = 0; i < data.resultdata.files.length; i++) {
+                            html += '<li class=""><div class="play-audio" style="" data-id="' + data.resultdata.files[i].FileId + '" data-url="' + data.resultdata.files[i].FilePath + '"><img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">' + data.resultdata.files[i].FileName + '<a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'' + uptype + '\',this.id,\''+oid+'\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a></div><div style=""><audio id="' + data.resultdata.files[i].FileId + '" preload="metadata" src="' + data.resultdata.files[i].FilePath + '" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio></div></li>';
+                        }
+                        html += ' </ul><br /><input type="file" name="uploadFilejswdyp" id="uploadFilejswdyp" style="display:none;"><label for="uploadFilejswdyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                        dv.innerHTML = html;
+                        $('#uploadFilejswdyp').change(cpjswdyp);
+                    }
+                    if (uptype == "技术问答图片") {
+                        var html = '';
+                        var dv = document.getElementById("jswdtp");
+                        dv.innerHTML = "";
+                        for (var i = 0; i < data.resultdata.files.length; i++) {
+                            html += '<img src="' + data.resultdata.files[i].FilePath + '" alt="" style="width:150px;height:120px;"><a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'' + uptype + '\',this.id,\'' + oid + '\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>';
+                        }
+                        html += '<input type="file" name="uploadFilejswdtp" id="uploadFilejswdtp" style="display:none;"><label for="uploadFilejswdtp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                        dv.innerHTML = html;
+                        $('#uploadFilejswdtp').change(cpjswdtp);
+                    }
+                    if (uptype == "事故现象音频") {
+                        var html = '<ul style="" class="play-audio-container1">';
+                        var dv = document.getElementById("sgxxyp");
+                        dv.innerHTML = "";
+                        for (var i = 0; i < data.resultdata.files.length; i++) {
+                            html += '<li class=""><div class="play-audio" style="" data-id="' + data.resultdata.files[i].FileId + '" data-url="' + data.resultdata.files[i].FilePath + '"><img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">' + data.resultdata.files[i].FileName + '<a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'' + uptype + '\',this.id,\'' + oid + '\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a></div><div style=""><audio id="' + data.resultdata.files[i].FileId + '" preload="metadata" src="' + data.resultdata.files[i].FilePath + '" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio></div></li>';
+                        }
+                        html += ' </ul><br /><input type="file" name="uploadFilesgxxyp" id="uploadFilesgxxyp" style="display:none;"><label for="uploadFilesgxxyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                        dv.innerHTML = html;
+                        $('#uploadFilesgxxyp').change(cpsgxxyp);
+                    }
+                    if (uptype == "事故现象图片") {
+                        var html = '';
+                        var dv = document.getElementById("sgxxtp");
+                        dv.innerHTML = "";
+                        for (var i = 0; i < data.resultdata.files.length; i++) {
+                            html += '<img src="' + data.resultdata.files[i].FilePath + '" alt="" style="width:150px;height:120px;"><a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'' + uptype + '\',this.id,\'' + oid + '\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>';
+                        }
+                        html += '<input type="file" name="uploadFilesgxxtp" id="uploadFilesgxxtp" style="display:none;"><label for="uploadFilesgxxtp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                        dv.innerHTML = html;
+                        $('#uploadFilesgxxtp').change(cpsgxxtp);
+                    }
+                    if (uptype == "采取措施音频") {
+                        var html = '<ul style="" class="play-audio-container1">';
+                        var dv = document.getElementById("cqcsyp");
+                        dv.innerHTML = "";
+                        for (var i = 0; i < data.resultdata.files.length; i++) {
+                            html += '<li class=""><div class="play-audio" style="" data-id="' + data.resultdata.files[i].FileId + '" data-url="' + data.resultdata.files[i].FilePath + '"><img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">' + data.resultdata.files[i].FileName + '<a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'' + uptype + '\',this.id,\'' + oid + '\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a></div><div style=""><audio id="' + data.resultdata.files[i].FileId + '" preload="metadata" src="' + data.resultdata.files[i].FilePath + '" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio></div></li>';
+                        }
+                        html += ' </ul><br /><input type="file" name="uploadFilecqcsyp" id="uploadFilecqcsyp" style="display:none;"><label for="uploadFilecqcsyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                        dv.innerHTML = html;
+                        $('#uploadFilecqcsyp').change(cpcqcsyp);
+                    }
+                    if (uptype == "采取措施图片") {
+                        var html = '';
+                        var dv = document.getElementById("cqcstp");
+                        dv.innerHTML = "";
+                        for (var i = 0; i < data.resultdata.files.length; i++) {
+                            html += '<img src="' + data.resultdata.files[i].FilePath + '" alt="" style="width:150px;height:120px;"><a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'' + uptype + '\',this.id,\'' + oid + '\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>';
+                        }
+                        html += '<input type="file" name="uploadFilecqcstp" id="uploadFilecqcstp" style="display:none;"><label for="uploadFilecqcstp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                        dv.innerHTML = html;
+                        $('#uploadFilecqcstp').change(cpcqcstp);
+                    }
+                    if (uptype == "原因分析音频") {
+                        var html = '<ul style="" class="play-audio-container1">';
+                        var dv = document.getElementById("yyfxyp");
+                        dv.innerHTML = "";
+                        for (var i = 0; i < data.resultdata.files.length; i++) {
+                            html += '<li class=""><div class="play-audio" style="" data-id="' + data.resultdata.files[i].FileId + '" data-url="' + data.resultdata.files[i].FilePath + '"><img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">' + data.resultdata.files[i].FileName + '<a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'' + uptype + '\',this.id,\'' + oid + '\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a></div><div style=""><audio id="' + data.resultdata.files[i].FileId + '" preload="metadata" src="' + data.resultdata.files[i].FilePath + '" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio></div></li>';
+                        }
+                        html += ' </ul><br /><input type="file" name="uploadFileyyfxyp" id="uploadFileyyfxyp" style="display:none;"><label for="uploadFileyyfxyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                        dv.innerHTML = html;
+                        $('#uploadFileyyfxyp').change(cpyyfxyp);
+                    }
+                    if (uptype == "原因分析图片") {
+                        var html = '';
+                        var dv = document.getElementById("yyfxtp");
+                        dv.innerHTML = "";
+                        for (var i = 0; i < data.resultdata.files.length; i++) {
+                            html += '<img src="' + data.resultdata.files[i].FilePath + '" alt="" style="width:150px;height:120px;"><a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'' + uptype + '\',this.id,\'' + oid + '\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>';
+                        }
+                        html += '<input type="file" name="uploadFileyyfxtp" id="uploadFileyyfxtp" style="display:none;"><label for="uploadFileyyfxtp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                        dv.innerHTML = html;
+                        $('#uploadFileyyfxtp').change(cpyyfxtp);
+                    }
+                }
+            });
+        } else {
+            return false;
+        }
+    }
+    function btn_evaluate() {
+        var isEvaluate = 0;
+        var id = $('#ID').val();
+        $.SetForm({
+            url: "../../Education/GetIsEvaluate",
+            param: { keyValue: id, category: "" },
+            success: function (data) {
+                isEvaluate = data;
+            }
+        });
+        //currentNode = jQuery('#tree').getCurrentNode();
+        if (isEvaluate == 0) {
+            //id = jQuery('#ActivityId').val();
+            dialogOpen({
+                id: "form1",
+                title: '评价',
+                url: '/../@Url.Action("Evaluate")?id=' + id + "&iframeId=" + jQuery(self.frameElement).attr('id'),
+                width: "500px",
+                height: "330px",
+                callBack: function (iframeId) {
+
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+
+                }
+            });
+        } else {
+            layer.msg("无权限评价此活动");
+        }
+    }
+    function AcceptClick() {
+        var json = jQuery('#form1').serializeJSON();
+        if (json.ActivityDate > json.ActivityEndDate)
+        {
+            dialogMsg('开始时间不能大于结束时间！', 0);
+            return false;
+        }
+        $.SaveForm({
+            url: '@Url.Action("SaveFormNew")',
+            param: json,
+            loading: "数据提交中...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        });
+
+    }
+    function opendoc(folderid) {
+        $.ajax({
+            url: "@Url.Action("GetJavaVideoJson", "ResourceFile", new { area= "PublicInfoManage" })",
+            data: { file_id: folderid },
+            type: "post",
+            async: true,
+            success: function (result) {
+                var resultJosn = JSON.parse(result);
+                window.open(resultJosn.data.url);
+            }
+            });
+
+
+    }
+  var i = 0;
+    function fn$play(e) {
+        var url = jQuery(e).data('url');
+        var otherurl = jQuery(e).data("otherurl");
+        var folderid = jQuery(e).data("folderid");
+        //debugger;
+        layer.open({
+            type: 1,
+            title: false,
+            area: ['660px', '490px'],
+            content: jQuery('#videodiv'),
+            end: function () {
+                jQuery('#videodiv').empty();
+                jQuery('#videodiv').attr('display', 'none');
+            }
+        });
+        jQuery('#videodiv').attr('display', 'normal');
+
+        if (folderid) {
+                   $.ajax({
+                     url: "@Url.Action("GetJavaVideoJson", "ResourceFile", new { area= "PublicInfoManage" })",
+                      data: { file_id: folderid },
+                      type: "post",
+                      async: true,
+                success: function (result) {
+                    var resultJosn = JSON.parse(result);
+                    jQuery('#videodiv').append('<video id="preview' + i +'" autoplay="autoplay"  preload="paused" width="640" height="480" style="padding-top:8px;" class="video-js vjs-default-skin vjs-big-play-centered" controls="true"></video>');
+                        var options = {
+                            'techOrder': ['html5']
+                        };
+                        var oVideo = videojs("preview"+i, options, function () {
+                            videojs.log('your player is ready !!!');
+                            this.on("loadstart", function () {
+                                videojs.log('your player is loadstart !!!');
+                            });
+
+                        });
+                        console.log('test');
+                        oVideo.src({
+                            src: resultJosn.data.url,
+                            type: 'application/X-mpegURL'
+                        });
+                    oVideo.play();
+                    i++;
+                     }
+                });
+        } else {
+            //CDN加速
+            if (otherurl) {
+                jQuery('#videodiv').append('<video id="preview' + i + '" autoplay="autoplay"  preload="paused" width="640" height="480" style="padding-top:8px;" class="video-js vjs-default-skin vjs-big-play-centered" controls="true"></video>');
+                var options = {
+                    'techOrder': ['html5']
+                };
+                var oVideo = videojs("preview" + i, options, function () {
+                    videojs.log('your player is ready !!!');
+                    this.on("loadstart", function () {
+                        videojs.log('your player is loadstart !!!');
+                    });
+
+                });
+                console.log('test');
+                oVideo.src({
+                    src: otherurl,
+                    type: 'application/X-mpegURL'
+                });
+                oVideo.play();
+                i++;
+            } else {
+                jQuery('#videodiv').append('<video src="' + url + '" autoplay="autoplay" width="640" height="480" style="padding-top:8px;" controls="controls"><source src="http://rm03.wscdn.hls.xiaoka.tv/live/fczjp0Dc_J60VGMN/playlist.m3u8" type="application/x-mpegURL" id="target"></video>');
+            }
+        }
+
+
+        //jQuery('#videodiv').attr('display', 'normal');
+        //jQuery('#videodiv').append('<video src="' + url + '" autoplay="autoplay" width="1200" height="770" style:"margin:0px auto;" controls="controls"></video>');
+    }
+    function valid() {
+        var d = $("#AppraiseContent").val();
+
+
+        if (d == "") {
+            dialogMsg('效果评价不能为空！', 0);
+            return false;
+        }
+        return true;
+    }
+</script>
+<div id="audio-warp" style="height:32px;width:460px;display: none;overflow:hidden;">
+</div>
+<div style="margin-left: 10px; margin-right: 10px;overflow-y:hidden;">
+    @Html.HiddenFor(x => x.ID)
+    @Html.HiddenFor(x => x.TeacherId)
+    @Html.HiddenFor(x => x.AppraisePeopleId)
+    @Html.HiddenFor(x => x.AppraisePeopleId)
+    @Html.HiddenFor(x => x.CreateDate)
+    @Html.HiddenFor(x => x.StartDate)
+    @Html.HiddenFor(x => x.AttendNumber)
+    @Html.HiddenFor(x => x.SignNumber)
+    @Html.HiddenFor(x => x.DefaultNumber)
+    <div class="tab-content" style="padding-top: 15px; ">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right:20px;">
+            <table class="form">
+                @if (Model.EduType != "5" && Model.EduType != "6")
+                {
+                    string tea = "主持人";
+                    if (Model.EduType == "1") { tea = "主讲人"; }
+                    if (Model.EduType != "2") //技术问答基本信息无题目
+                    {
+                        <tr>
+                            <td class="formTitle">题目</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextBoxFor(x => x.Theme, new { @class = "form-control" })
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td class="formTitle">@tea</td>
+                        <td class="formValue">
+                            @Html.TextBoxFor(x => x.Teacher, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+                        <td class="formTitle">记录人</td>
+                        <td class="formValue">
+                            @Html.TextBoxFor(x => x.RegisterPeople, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="formTitle">培训时间</td>
+                        <td class="formValue" colspan="3">
+                            @Html.TextBoxFor(x => x.ActivityDate, new { @class = "form-control", @onfocus = "WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',maxDate:'%y-%M-%d'});", @style = "width:180px;float:left;", Value = Model.ActivityDate.Value.ToString("yyyy-MM-dd HH:mm") })
+                            @Html.TextBoxFor(x => x.ActivityEndDate, new { @class = "form-control", @onfocus = "WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',maxDate:'%y-%M-%d'});", @style = "width:180px;float:left;margin-left:30px;", Value = Model.ActivityEndDate.Value.ToString("yyyy-MM-dd HH:mm") })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="formTitle">参加人员</td>
+                        <td class="formValue" colspan="3">
+                            @Html.TextAreaFor(x => x.AttendPeople, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+                    </tr>
+                    if (Model.EduType == "4")
+                    {
+                        <tr>
+                            <td class="formTitle">运行方式</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextBoxFor(x => x.RunWay, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="4"><hr /></td>
+                    </tr>
+
+                    if (Model.EduType == "1")
+                    {
+                        <tr>
+                            <td class="formTitle">讲课材料</td>
+                            <td class="formValue" colspan="3">
+                                <div id="cl">
+                                    @{
+                                        foreach (var f in Model.Files2)
+                                        {
+                                            if ((f.Description == "课件" && !f.FilePath.Contains("play")) || f.Description == "1")
+                                            {
+                                                if (!string.IsNullOrEmpty(f.FileType))
+                                                {
+                                                    if (!f.FileType.Contains("video"))
+                                                    {
+                                                        if (f.FileType.Contains("doc") && !string.IsNullOrEmpty(f.FolderId))
+                                                        {
+                                                            <a href="javascript:opendoc('@Url.Content(f.FolderId)')">@f.FileName</a><br />
+
+                                                        }
+                                                        else
+                                                        {
+                                                            <a href="@Url.Content(f.FilePath)" target="_blank">@f.FileName</a><br />
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <a href="@Url.Content(f.FilePath)" target="_blank">@f.FileName</a><br />
+                                                }
+
+                                            }
+                                            else
+                                            {
+                                                if (!string.IsNullOrEmpty(f.FileType))
+                                                {
+                                                    if (f.FileType == "java_doc")
+                                                    {
+                                                        <a href="javascript:opendoc('@Url.Content(f.FolderId)')">@f.FileName</a><br />
+                                                    }
+                                                }
+                                            }
+
+
+                                        }
+                                    }
+                                    <input type="file" name="uploadFile2" id="uploadFile2" style="display:none;"><label for="uploadFile2" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td class="formTitle">题目</td>
+                        <td class="formValue" colspan="3">
+                            @Html.TextBoxFor(x => x.Theme, new { @class = "form-control" })
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <td class="formTitle">出题人</td>
+                        <td class="formValue">
+                            @Html.TextBoxFor(x => x.Teacher, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+                        <td class="formTitle">答题人</td>
+                        <td class="formValue">
+                            @Html.TextBoxFor(x => x.RegisterPeople, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <td class="formTitle">培训时间</td>
+                        <td class="formValue" colspan="3">
+                            @Html.TextBoxFor(x => x.ActivityDate, new { @class = "form-control", @onfocus = "WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',maxDate:'%y-%M-%d'});", @style = "width:180px;float:left;", Value = Model.ActivityDate.Value.ToString("yyyy-MM-dd HH:mm") })
+                            @Html.TextBoxFor(x => x.ActivityEndDate, new { @class = "form-control", @onfocus = "WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',maxDate:'%y-%M-%d'});", @style = "width:180px;float:left;margin-left:30px;", Value = Model.ActivityEndDate.Value.ToString("yyyy-MM-dd HH:mm") })
+                        </td>
+                    </tr>
+
+                }
+
+
+                @if (Model.EduType == "1")
+                {
+                    <tr>
+                        <td colspan="2"><h3>讲课记录</h3></td>
+                    </tr>
+
+                    <tr>
+                        <td class="formTitle">音频</td>
+
+                        <td class="formValue" colspan="3">
+                            <div id="jsjkyp">
+                                <ul style="" class="play-audio-container1">
+
+
+                                    @for (int i = 0; i < Model.Files2.Count; i++)
+                                    {
+                                        if (Model.Files2[i].Description == "技术讲课音频")
+                                        {
+                                            <li class="">
+                                                <div class="play-audio" style="" data-id="@Model.Files2[i].FileId" data-url="@Url.Content(Model.Files2[i].FilePath)">
+                                                    <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@Model.Files2[i].FileName
+                                                    <a id="@Model.Files2[i].FileId" onclick="delfile('@Model.Files2[i].Description',this.id)" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+                                                </div>
+                                                <div>
+                                                    <audio id="@Model.Files2[i].FileId" preload="metadata" src="@Url.Content(Model.Files2[i].FilePath)" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio>
+
+                                                </div>
+
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+
+                                <input type="file" name="uploadFilejsjkyp" id="uploadFilejsjkyp" style="display:none;"><label for="uploadFilejsjkyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr style="height:15px;"></tr>
+                    <tr>
+                        <td class="formTitle">图片</td>
+
+                        <td class="formValue" colspan="3">
+
+                            <div class="safeImg_div" style="width:850px;">
+                                <div id="pic_list_1" style="width:850px;">
+                                    <div class="box" style="width:790px;float:left;" id="jsjktp">
+                                        @for (int i = 0; i < Model.Files2.Count; i++)
+                                        {
+                                            if (Model.Files2[i].Description == "技术讲课图片")
+                                            {
+                                                <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = Model.Files2[i].FileId, area = "PublicInfoManage" })" alt="" style="width:150px;height:110px;"><a id="@Model.Files2[i].FileId" onclick="delfile('@Model.Files2[i].Description',this.id)" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+                                            }
+                                        }
+                                        <input type="file" name="uploadFilejsjktp" id="uploadFilejsjktp" style="display:none;"><label for="uploadFilejsjktp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td class="formTitle">文字</td>
+
+                        <td class="formValue" colspan="3">
+                            @Html.TextAreaFor(x => x.Describe, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td class="formTitle">效果评价</td>
+                        <td class="formValue" colspan="3">
+                            @Html.TextAreaFor(x => x.NewAppraiseContent, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="formTitle">评价人</td>
+
+                        <td class="formValue" colspan="3">
+                            @Html.TextBox("pjr", Model.RegisterPeople, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+
+                    </tr>
+
+                }
+                @if (Model.EduType == "2")
+                {
+                    for (int j = 0; j < Model.Answers.Count(); j++)
+                    {
+                        EduAnswerEntity obj = Model.Answers[j];
+
+                        <tr>
+                            <td class="formTitle">题目</td>
+                            <td class="formValue">
+                                @Html.TextBoxFor(x => obj.Question, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                            <td class="formTitle">答题人</td>
+                            <td class="formValue">
+                                @Html.TextBoxFor(x => obj.AnswerPeople, new { @class = "form-control" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">音频</td>
+                            <td class="formValue" colspan="3">
+                                <div id="jswdyp">
+                                    <ul style="" class="play-audio-container1">
+
+                                        @for (int i = 0; i < obj.Files.Count; i++)
+                                        {
+                                            if (obj.Files[i].Description == "技术问答音频")
+                                            {
+
+                                                <li class="">
+                                                    <div class="play-audio" style="" data-id="@obj.Files[i].FileId" data-url="@Url.Content(obj.Files[i].FilePath)">
+                                                        <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@obj.Files[i].FileName
+                                                        <a id="@obj.Files[i].FileId" onclick="delfilenew('@obj.Files[i].Description',this.id,'@obj.ID')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+                                                    </div>
+                                                    <div>
+                                                        <audio id="@obj.Files[i].FileId" preload="metadata" src="@Url.Content(obj.Files[i].FilePath)" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio>
+                                                    </div>
+                                                </li>
+
+                                            }
+                                        }
+
+                                    </ul>
+
+                                    <input type="file" name="uploadFilejswdyp" id="uploadFilejswdyp" style="display:none;"><label for="uploadFilejswdyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                                </div>
+                                <script>
+                                        $('#uploadFilejswdyp').change(cpjswdyp);
+
+                                        function cpjswdyp() {
+                                            $.ajaxFileUpload({
+                                                url: "@Url.Action("EditUpload")?uptype=技术问答音频&id=@obj.ID",
+                                                secureuri: false,
+                                            fileElementId: 'uploadFilejswdyp',
+                                            dataType: 'json',
+                                            success: function (data) {
+                                                if (data.message == "1") {
+                                                    var obj = document.getElementById('uploadFilejswdyp');
+                                                    obj.outerHTML = obj.outerHTML;
+                                                    alert("请上传mp3,m4a格式的音频文件！");
+                                                    $('#uploadFilejswdyp').change(cpjswdyp);
+                                                } else {
+                                                    var html = '<ul style="" class="play-audio-container1">';
+                                                    var dv = document.getElementById("jswdyp");
+                                                    dv.innerHTML = "";
+                                                    for (var i = 0; i < data.resultdata.files.length; i++) {
+                                                        html += '<li class=""><div class="play-audio" style="" data-id="' + data.resultdata.files[i].FileId + '" data-url="' + data.resultdata.files[i].FilePath + '"><img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">' + data.resultdata.files[i].FileName + '<a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'技术问答音频\',this.id,\'@obj.ID\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a></div><div style=""><audio id="' + data.resultdata.files[i].FileId + '" preload="metadata" src="' + data.resultdata.files[i].FilePath + '" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio></div></li>';
+                                                    }
+                                                    html += '</ul><br /><input type="file" name="uploadFilejswdyp" id="uploadFilejswdyp" style="display:none;"><label for="uploadFilejswdyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                                                    dv.innerHTML = html;
+                                                    $('#uploadFilejswdyp').change(cpjswdyp);
+                                                }
+                                            }
+                                        });
+                                        }
+                                </script>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="formTitle">图片</td>
+                            <td class="formValue" colspan="3">
+                                <div class="safeImg_div" style="width:850px;">
+                                    <div id="pic_list_8" style="width:850px;">
+                                        <div class="box" style="width: 790px; float: left;" id="jswdtp">
+                                            @for (int i = 0; i < obj.Files.Count; i++)
+                                            {
+                                                if (obj.Files[i].Description == "技术问答图片")
+                                                {
+                                                    <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = obj.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;"><a id="@obj.Files[i].FileId" onclick="delfilenew('@obj.Files[i].Description',this.id,'@obj.ID')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+
+                                                }
+                                            }
+                                            <input type="file" name="uploadFilejswdtp" id="uploadFilejswdtp" style="display:none;"><label for="uploadFilejswdtp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <script>
+                                    $('#uploadFilejswdtp').change(cpjswdtp);
+                                    function cpjswdtp() {
+                                        $.ajaxFileUpload({
+                                            url: "@Url.Action("EditUpload")?uptype=技术问答图片&id=@obj.ID",
+                                            secureuri: false,
+                                        fileElementId: 'uploadFilejswdtp',
+                                        dataType: 'json',
+                                        success: function (data) {
+                                            if (data.message == "1") {
+                                                var obj = document.getElementById('uploadFilejswdtp');
+                                                obj.outerHTML = obj.outerHTML;
+                                                alert("请上传GIF,PNG,JPG格式的图片！");
+                                                $('#uploadFilejswdtp').change(cpjswdtp);
+                                            } else {
+                                                var html = '';
+                                                var dv = document.getElementById("jswdtp");
+                                                dv.innerHTML = "";
+                                                for (var i = 0; i < data.resultdata.files.length; i++) {
+                                                    html += '<img src="' + data.resultdata.files[i].FilePath + '" alt="" style="width:180px;height:120px;"><a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'技术问答图片\',this.id,\'@obj.ID\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>';
+                                                }
+                                                html += '<input type="file" name="uploadFilejswdtp" id="uploadFilejswdtp" style="display:none;"><label for="uploadFilejswdtp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                                                dv.innerHTML = html;
+                                                $('#uploadFilejswdtp').change(cpjswdtp);
+                                            }
+                                        }
+                                    });
+                                    }
+                                </script>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="formTitle">文字</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextAreaFor(x => obj.AnswerContent, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">点评</td>
+                            <td class="formValue">
+                                @Html.TextAreaFor(x => obj.AppraiseContent, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                            <td class="formTitle">评分</td>
+                            <td class="formValue">
+                                @Html.TextBoxFor(x => obj.Grade, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4"><hr /></td>
+                        </tr>
+                    }
+                }
+                @if (Model.EduType == "3")
+                {
+                    for (int j = 0; j < Model.Answers.Count(); j++)
+                    {
+                        EduAnswerEntity obj = Model.Answers[j];
+                        <tr>
+                            <td class="formTitle">答题人</td>
+                            <td class="formValue">
+                                @Html.TextBoxFor(x => obj.AnswerPeople, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr style="height:40px;">
+                            <td class="formTitle"><h5>事故现象</h5></td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">音频</td>
+                            <td class="formValue" colspan="3">
+                                <div id="sgxxyp">
+                                    <ul style="" class="play-audio-container1">
+
+
+                                        @for (int i = 0; i < obj.Files.Count; i++)
+                                        {
+                                            if (obj.Files[i].Description == "事故现象音频")
+                                            {
+                                                <li class="">
+                                                    <div class="play-audio" style="" data-id="@obj.Files[i].FileId" data-url="@Url.Content(obj.Files[i].FilePath)">
+                                                        <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@obj.Files[i].FileName
+                                                        <a id="@obj.Files[i].FileId" onclick="delfilenew('@obj.Files[i].Description',this.id,'@obj.ID')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+                                                    </div>
+                                                    <div style="">
+                                                        <audio id="@obj.Files[i].FileId" preload="metadata" src="@Url.Content(obj.Files[i].FilePath)" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio>
+                                                    </div>
+                                                </li>
+                                            }
+                                        }
+
+                                    </ul>
+
+                                    <input type="file" name="uploadFilesgxxyp" id="uploadFilesgxxyp" style="display:none;"><label for="uploadFilesgxxyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                                </div>
+                                <script>
+                                        $('#uploadFilesgxxyp').change(cpsgxxyp);
+                                        function cpsgxxyp() {
+                                            $.ajaxFileUpload({
+                                                url: "@Url.Action("EditUpload")?uptype=事故现象音频&id=@obj.ID",
+                                                secureuri: false,
+                                            fileElementId: 'uploadFilesgxxyp',
+                                            dataType: 'json',
+                                            success: function (data) {
+                                                if (data.message == "1") {
+                                                    var obj = document.getElementById('uploadFilesgxxyp');
+                                                    obj.outerHTML = obj.outerHTML;
+                                                    alert("请上传mp3,m4a格式的音频文件！");
+                                                    $('#uploadFilesgxxyp').change(cpsgxxyp);
+                                                } else {
+                                                    var html = '<ul style="" class="play-audio-container1">';
+                                                    var dv = document.getElementById("sgxxyp");
+                                                    dv.innerHTML = "";
+                                                    for (var i = 0; i < data.resultdata.files.length; i++) {
+                                                        html += '<li class=""><div class="play-audio" style="" data-id="' + data.resultdata.files[i].FileId + '" data-url="' + data.resultdata.files[i].FilePath + '"><img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">' + data.resultdata.files[i].FileName + '<a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'事故现象音频\',this.id,\'@obj.ID\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a></div><div style=""><audio id="' + data.resultdata.files[i].FileId + '" preload="metadata" src="' + data.resultdata.files[i].FilePath + '" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio></div></li>';
+                                                    }
+                                                    html += '</ul><br /><input type="file" name="uploadFilesgxxyp" id="uploadFilesgxxyp" style="display:none;"><label for="uploadFilesgxxyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                                                    dv.innerHTML = html;
+                                                    $('#uploadFilesgxxyp').change(cpsgxxyp);
+                                                }
+                                            }
+                                        });
+                                        }
+                                </script>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">图片</td>
+                            <td class="formValue" colspan="3">
+                                <div class="safeImg_div" style="width:850px;">
+                                    <div id="pic_list_3" class="" style="width:850px;">
+
+                                        <div class="box" style="width: 790px; float: left;" id="sgxxtp">
+
+                                            @for (int i = 0; i < obj.Files.Count; i++)
+                                            {
+                                                if (obj.Files[i].Description == "事故现象图片")
+                                                {
+                                                    <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue =obj.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;"><a id="@obj.Files[i].FileId" onclick="delfilenew('@obj.Files[i].Description',this.id,'@obj.ID')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+
+                                                }
+                                            }
+                                            <input type="file" name="uploadFilesgxxtp" id="uploadFilesgxxtp" style="display:none;"><label for="uploadFilesgxxtp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <script>
+                                    $('#uploadFilesgxxtp').change(cpsgxxtp);
+                                    function cpsgxxtp() {
+                                        $.ajaxFileUpload({
+                                            url: "@Url.Action("EditUpload")?uptype=事故现象图片&id=@obj.ID",
+                                            secureuri: false,
+                                        fileElementId: 'uploadFilesgxxtp',
+                                        dataType: 'json',
+                                        success: function (data) {
+                                            if (data.message == "1") {
+                                                var obj = document.getElementById('uploadFilesgxxtp');
+                                                obj.outerHTML = obj.outerHTML;
+                                                alert("请上传GIF,PNG,JPG格式的图片！");
+                                                $('#uploadFilesgxxtp').change(cpsgxxtp);
+                                            } else {
+                                                var html = '';
+                                                var dv = document.getElementById("sgxxtp");
+                                                dv.innerHTML = "";
+                                                for (var i = 0; i < data.resultdata.files.length; i++) {
+                                                    html += '<img src="' + data.resultdata.files[i].FilePath + '" alt="" style="width:180px;height:120px;"><a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'事故现象图片\',this.id,\'@obj.ID\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>';
+                                                }
+                                                html += '<input type="file" name="uploadFilesgxxtp" id="uploadFilesgxxtp" style="display:none;"><label for="uploadFilesgxxtp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                                                dv.innerHTML = html;
+                                                $('#uploadFilesgxxtp').change(cpsgxxtp);
+                                            }
+                                        }
+                                    });
+                                    }
+                                </script>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="formTitle">文字</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextAreaFor(x => obj.Description, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr style="height:40px;">
+                            <td class="formTitle"><h5>采取措施</h5></td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">音频</td>
+                            <td class="formValue" colspan="3">
+                                <div id="cqcsyp">
+                                    <ul style="" class="play-audio-container2">
+                                        @for (int i = 0; i < obj.Files.Count; i++)
+                                        {
+                                            if (obj.Files[i].Description == "采取措施音频")
+                                            {
+
+                                                <li class="">
+                                                    <div class="play-audio" style="" data-id="@obj.Files[i].FileId" data-url="@Url.Content(obj.Files[i].FilePath)">
+                                                        <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@obj.Files[i].FileName
+                                                        <a id="@obj.Files[i].FileId" onclick="delfilenew('@obj.Files[i].Description',this.id,'@obj.ID')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+                                                    </div>
+                                                    <div style="">
+                                                        <audio id="@obj.Files[i].FileId" preload="metadata" src="@Url.Content(obj.Files[i].FilePath)" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio>
+                                                    </div>
+                                                </li>
+
+                                            }
+                                        }
+                                    </ul>
+
+                                    <input type="file" name="uploadFilecqcsyp" id="uploadFilecqcsyp" style="display:none;"><label for="uploadFilecqcsyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                                </div>
+                                <script>
+                                        $('#uploadFilecqcsyp').change(cpcqcsyp);
+                                        function cpcqcsyp() {
+                                            $.ajaxFileUpload({
+                                                url: "@Url.Action("EditUpload")?uptype=采取措施音频&id=@obj.ID",
+                                                secureuri: false,
+                                                fileElementId: 'uploadFilecqcsyp',
+                                            dataType: 'json',
+                                            success: function (data) {
+                                                if (data.message == "1") {
+                                                    var obj = document.getElementById('uploadFilecqcsyp');
+                                                    obj.outerHTML = obj.outerHTML;
+                                                    alert("请上传mp3,m4a格式的音频文件！");
+                                                    $('#uploadFilecqcsyp').change(cpcqcsyp);
+                                                } else {
+                                                    var html = '<ul style="" class="play-audio-container1">';
+                                                    var dv = document.getElementById("cqcsyp");
+                                                    dv.innerHTML = "";
+                                                    for (var i = 0; i < data.resultdata.files.length; i++) {
+                                                        html += '<li class=""><div class="play-audio" style="" data-id="' + data.resultdata.files[i].FileId + '" data-url="' + data.resultdata.files[i].FilePath + '"><img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">' + data.resultdata.files[i].FileName + '<a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'采取措施音频\',this.id,\'@obj.ID\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a></div><div style=""><audio id="' + data.resultdata.files[i].FileId + '" preload="metadata" src="' + data.resultdata.files[i].FilePath + '" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio></div></li>';
+                                                    }
+                                                    html += '</ul><br /><input type="file" name="uploadFilecqcsyp" id="uploadFilecqcsyp" style="display:none;"><label for="uploadFilecqcsyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                                                    dv.innerHTML = html;
+                                                    $('#uploadFilecqcsyp').change(cpcqcsyp);
+                                                }
+                                            }
+                                        });
+                                        }
+                                </script>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="formTitle">图片</td>
+                            <td class="formValue" colspan="3">
+                                <div class="safeImg_div" style="width:850px;">
+                                    <div id="pic_list_3" class="" style="width:850px;">
+
+                                        <div class="box" style="width: 790px; float: left;" id="cqcstp">
+                                            @for (int i = 0; i < obj.Files.Count; i++)
+                                            {
+                                                if (obj.Files[i].Description == "采取措施图片")
+                                                {
+                                                    <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue =obj.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;"><a id="@obj.Files[i].FileId" onclick="delfilenew('@obj.Files[i].Description',this.id,'@obj.ID')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+
+                                                }
+                                            }
+                                            <input type="file" name="uploadFilecqcstp" id="uploadFilecqcstp" style="display:none;"><label for="uploadFilecqcstp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <script>
+                                    $('#uploadFilecqcstp').change(cpcqcstp);
+                                    function cpcqcstp() {
+                                        $.ajaxFileUpload({
+                                            url: "@Url.Action("EditUpload")?uptype=采取措施图片&id=@obj.ID",
+                                            secureuri: false,
+                                            fileElementId: 'uploadFilecqcstp',
+                                        dataType: 'json',
+                                        success: function (data) {
+                                            if (data.message == "1") {
+                                                var obj = document.getElementById('uploadFilecqcstp');
+                                                obj.outerHTML = obj.outerHTML;
+                                                alert("请上传GIF,PNG,JPG格式的图片！");
+                                                $('#uploadFilecqcstp').change(cpcqcstp);
+                                            } else {
+                                                var html = '';
+                                                var dv = document.getElementById("cqcstp");
+                                                dv.innerHTML = "";
+                                                for (var i = 0; i < data.resultdata.files.length; i++) {
+                                                    html += '<img src="' + data.resultdata.files[i].FilePath + '" alt="" style="width:180px;height:120px;"><a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'采取措施图片\',this.id,\'@obj.ID\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>';
+                                                }
+                                                html += '<input type="file" name="uploadFilecqcstp" id="uploadFilecqcstp" style="display:none;"><label for="uploadFilecqcstp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                                                dv.innerHTML = html;
+                                                $('#uploadFilecqcstp').change(cpcqcstp);
+                                            }
+                                        }
+                                    });
+                                    }
+                                </script>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">文字</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextAreaFor(x => obj.AnswerContent, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">点评</td>
+                            <td class="formValue">
+                                @Html.TextAreaFor(x => obj.AppraiseContent, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                            <td class="formTitle">评分</td>
+                            <td class="formValue">
+                                @Html.TextBoxFor(x => obj.Grade, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4"><hr /></td>
+                        </tr>
+                    }
+                }
+                @if (Model.EduType == "4")
+                {
+                    for (int j = 0; j < Model.Answers.Count(); j++)
+                    {
+                        EduAnswerEntity obj = Model.Answers[j];
+                        <tr>
+                            <td class="formTitle">演习人</td>
+                            <td class="formValue">
+                                @Html.TextBoxFor(x => obj.AnswerPeople, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr style="height:40px;">
+                            <td class="formTitle"><h5>现象描述</h5></td>
+                        </tr>
+
+                        <tr>
+                            <td class="formTitle">音频</td>
+                            <td class="formValue" colspan="3">
+                                <div id="sgxxyp">
+                                    <ul style="" class="play-audio-container1">
+
+
+                                        @for (int i = 0; i < obj.Files.Count; i++)
+                                        {
+                                            if (obj.Files[i].Description == "事故现象音频")
+                                            {
+                                                <li class="">
+                                                    <div class="play-audio" style="" data-id="@obj.Files[i].FileId" data-url="@Url.Content(obj.Files[i].FilePath)">
+                                                        <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@obj.Files[i].FileName
+                                                        <a id="@obj.Files[i].FileId" onclick="delfilenew('@obj.Files[i].Description',this.id,'@obj.ID')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+                                                    </div>
+                                                    <div style="">
+                                                        <audio id="@obj.Files[i].FileId" preload="metadata" src="@Url.Content(obj.Files[i].FilePath)" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio>
+                                                    </div>
+                                                </li>
+                                            }
+                                        }
+
+                                    </ul>
+
+                                    <input type="file" name="uploadFilesgxxyp" id="uploadFilesgxxyp" style="display:none;"><label for="uploadFilesgxxyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                                </div>
+                                <script>
+                                        $('#uploadFilesgxxyp').change(cpsgxxyp);
+                                        function cpsgxxyp() {
+                                            $.ajaxFileUpload({
+                                                url: "@Url.Action("EditUpload")?uptype=事故现象音频&id=@obj.ID",
+                                                secureuri: false,
+                                                fileElementId: 'uploadFilesgxxyp',
+                                                dataType: 'json',
+                                                success: function (data) {
+                                                    if (data.message == "1") {
+                                                        var obj = document.getElementById('uploadFilesgxxyp');
+                                                        obj.outerHTML = obj.outerHTML;
+                                                        alert("请上传mp3,m4a格式的音频文件！");
+                                                        $('#uploadFilesgxxyp').change(cpsgxxyp);
+                                                    } else {
+                                                        var html = '<ul style="" class="play-audio-container1">';
+                                                        var dv = document.getElementById("sgxxyp");
+                                                        dv.innerHTML = "";
+                                                        for (var i = 0; i < data.resultdata.files.length; i++) {
+                                                            html += '<li class=""><div class="play-audio" style="" data-id="' + data.resultdata.files[i].FileId + '" data-url="' + data.resultdata.files[i].FilePath + '"><img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">' + data.resultdata.files[i].FileName + '<a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'事故现象音频\',this.id,\'@obj.ID\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a></div><div style=""><audio id="' + data.resultdata.files[i].FileId + '" preload="metadata" src="' + data.resultdata.files[i].FilePath + '" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio></div></li>';
+                                                        }
+                                                        html += '</ul><br /><input type="file" name="uploadFilesgxxyp" id="uploadFilesgxxyp" style="display:none;"><label for="uploadFilesgxxyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                                                        dv.innerHTML = html;
+                                                        $('#uploadFilesgxxyp').change(cpsgxxyp);
+                                                    }
+                                                }
+                                            });
+                                        }
+                                </script>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">图片</td>
+                            <td class="formValue" colspan="3">
+                                <div class="safeImg_div" style="width:850px;">
+                                    <div id="pic_list_3" class="" style="width:850px;">
+
+                                        <div class="box" style="width: 790px; float: left;" id="sgxxtp">
+
+                                            @for (int i = 0; i < obj.Files.Count; i++)
+                                            {
+                                                if (obj.Files[i].Description == "事故现象图片")
+                                                {
+                                                    <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue =obj.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;"><a id="@obj.Files[i].FileId" onclick="delfilenew('@obj.Files[i].Description',this.id,'@obj.ID')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+
+                                                }
+                                            }
+                                            <input type="file" name="uploadFilesgxxtp" id="uploadFilesgxxtp" style="display:none;"><label for="uploadFilesgxxtp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <script>
+                                    $('#uploadFilesgxxtp').change(cpsgxxtp);
+                                    function cpsgxxtp() {
+                                        $.ajaxFileUpload({
+                                            url: "@Url.Action("EditUpload")?uptype=事故现象图片&id=@obj.ID",
+                                            secureuri: false,
+                                            fileElementId: 'uploadFilesgxxtp',
+                                            dataType: 'json',
+                                            success: function (data) {
+                                                if (data.message == "1") {
+                                                    var obj = document.getElementById('uploadFilesgxxtp');
+                                                    obj.outerHTML = obj.outerHTML;
+                                                    alert("请上传GIF,PNG,JPG格式的图片！");
+                                                    $('#uploadFilesgxxtp').change(cpsgxxtp);
+                                                } else {
+                                                    var html = '';
+                                                    var dv = document.getElementById("sgxxtp");
+                                                    dv.innerHTML = "";
+                                                    for (var i = 0; i < data.resultdata.files.length; i++) {
+                                                        html += '<img src="' + data.resultdata.files[i].FilePath + '" alt="" style="width:180px;height:120px;"><a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'事故现象图片\',this.id,\'@obj.ID\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>';
+                                                    }
+                                                    html += '<input type="file" name="uploadFilesgxxtp" id="uploadFilesgxxtp" style="display:none;"><label for="uploadFilesgxxtp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                                                    dv.innerHTML = html;
+                                                    $('#uploadFilesgxxtp').change(cpsgxxtp);
+                                                }
+                                            }
+                                        });
+                                    }
+                                </script>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="formTitle">描述</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextAreaFor(x => obj.Description, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+
+                        <tr style="height:40px;">
+                            <td class="formTitle"><h5>原因分析</h5></td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">音频</td>
+                            <td class="formValue" colspan="3">
+                                <div id="yyfxyp">
+                                    <ul style="" class="play-audio-container1">
+
+
+                                        @for (int i = 0; i < obj.Files.Count; i++)
+                                        {
+                                            if (obj.Files[i].Description == "原因分析音频")
+                                            {
+                                                <li class="">
+                                                    <div class="play-audio" style="" data-id="@obj.Files[i].FileId" data-url="@Url.Content(obj.Files[i].FilePath)">
+                                                        <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@obj.Files[i].FileName
+                                                        <a id="@obj.Files[i].FileId" onclick="delfilenew('@obj.Files[i].Description',this.id,'@obj.ID')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+                                                    </div>
+                                                    <div style="">
+                                                        <audio id="@obj.Files[i].FileId" preload="metadata" src="@Url.Content(obj.Files[i].FilePath)" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio>
+                                                    </div>
+                                                </li>
+                                            }
+                                        }
+
+                                    </ul>
+
+                                    <input type="file" name="uploadFileyyfxyp" id="uploadFileyyfxyp" style="display:none;"><label for="uploadFileyyfxyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                                </div>
+                                <script>
+                                        $('#uploadFileyyfxyp').change(cpyyfxyp);
+                                        function cpyyfxyp() {
+                                            $.ajaxFileUpload({
+                                                url: "@Url.Action("EditUpload")?uptype=原因分析音频&id=@obj.ID",
+                                                secureuri: false,
+                                                fileElementId: 'uploadFileyyfxyp',
+                                                dataType: 'json',
+                                                success: function (data) {
+                                                    if (data.message == "1") {
+                                                        var obj = document.getElementById('uploadFileyyfxyp');
+                                                        obj.outerHTML = obj.outerHTML;
+                                                        alert("请上传mp3,m4a格式的音频文件！");
+                                                        $('#uploadFileyyfxyp').change(cpyyfxyp);
+                                                    } else {
+                                                        var html = '<ul style="" class="play-audio-container1">';
+                                                        var dv = document.getElementById("yyfxyp");
+                                                        dv.innerHTML = "";
+                                                        for (var i = 0; i < data.resultdata.files.length; i++) {
+                                                            html += '<li class=""><div class="play-audio" style="" data-id="' + data.resultdata.files[i].FileId + '" data-url="' + data.resultdata.files[i].FilePath + '"><img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">' + data.resultdata.files[i].FileName + '<a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'原因分析音频\',this.id,\'@obj.ID\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a></div><div style=""><audio id="' + data.resultdata.files[i].FileId + '" preload="metadata" src="' + data.resultdata.files[i].FilePath + '" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio></div></li>';
+                                                        }
+                                                        html += '</ul><br /><input type="file" name="uploadFileyyfxyp" id="uploadFileyyfxyp" style="display:none;"><label for="uploadFileyyfxyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                                                        dv.innerHTML = html;
+                                                        $('#uploadFileyyfxyp').change(cpyyfxyp);
+                                                    }
+                                                }
+                                            });
+                                        }
+                                </script>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">图片</td>
+                            <td class="formValue" colspan="3">
+                                <div class="safeImg_div" style="width:850px;">
+                                    <div id="pic_list_3" class="" style="width:850px;">
+
+                                        <div class="box" style="width: 790px; float: left;" id="yyfxtp">
+
+                                            @for (int i = 0; i < obj.Files.Count; i++)
+                                            {
+                                                if (obj.Files[i].Description == "原因分析图片")
+                                                {
+                                                    <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue =obj.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;"><a id="@obj.Files[i].FileId" onclick="delfilenew('@obj.Files[i].Description',this.id,'@obj.ID')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+
+                                                }
+                                            }
+                                            <input type="file" name="uploadFileyyfxtp" id="uploadFileyyfxtp" style="display:none;"><label for="uploadFileyyfxtp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <script>
+                                    $('#uploadFileyyfxtp').change(cpyyfxtp);
+                                    function cpyyfxtp() {
+                                        $.ajaxFileUpload({
+                                            url: "@Url.Action("EditUpload")?uptype=原因分析图片&id=@obj.ID",
+                                            secureuri: false,
+                                            fileElementId: 'uploadFileyyfxtp',
+                                            dataType: 'json',
+                                            success: function (data) {
+                                                if (data.message == "1") {
+                                                    var obj = document.getElementById('uploadFileyyfxtp');
+                                                    obj.outerHTML = obj.outerHTML;
+                                                    alert("请上传GIF,PNG,JPG格式的图片！");
+                                                    $('#uploadFileyyfxtp').change(cpyyfxtp);
+                                                } else {
+                                                    var html = '';
+                                                    var dv = document.getElementById("yyfxtp");
+                                                    dv.innerHTML = "";
+                                                    for (var i = 0; i < data.resultdata.files.length; i++) {
+                                                        html += '<img src="' + data.resultdata.files[i].FilePath + '" alt="" style="width:180px;height:120px;"><a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'原因分析图片\',this.id,\'@obj.ID\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>';
+                                                    }
+                                                    html += '<input type="file" name="uploadFileyyfxtp" id="uploadFileyyfxtp" style="display:none;"><label for="uploadFileyyfxtp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                                                    dv.innerHTML = html;
+                                                    $('#uploadFileyyfxtp').change(cpyyfxtp);
+                                                }
+                                            }
+                                        });
+                                    }
+                                </script>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">描述</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextAreaFor(x => obj.Reason, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+
+                        <tr style="height:40px;">
+                            <td class="formTitle"><h5>采取措施</h5></td>
+                        </tr>
+
+                        <tr>
+                            <td class="formTitle">音频</td>
+                            <td class="formValue" colspan="3">
+                                <div id="cqcsyp">
+                                    <ul style="" class="play-audio-container2">
+                                        @for (int i = 0; i < obj.Files.Count; i++)
+                                        {
+                                            if (obj.Files[i].Description == "采取措施音频")
+                                            {
+
+                                                <li class="">
+                                                    <div class="play-audio" style="" data-id="@obj.Files[i].FileId" data-url="@Url.Content(obj.Files[i].FilePath)">
+                                                        <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@obj.Files[i].FileName
+                                                        <a id="@obj.Files[i].FileId" onclick="delfilenew('@obj.Files[i].Description',this.id,'@obj.ID')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+                                                    </div>
+                                                    <div style="">
+                                                        <audio id="@obj.Files[i].FileId" preload="metadata" src="@Url.Content(obj.Files[i].FilePath)" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio>
+                                                    </div>
+                                                </li>
+
+                                            }
+                                        }
+                                    </ul>
+                                    <input type="file" name="uploadFilecqcsyp" id="uploadFilecqcsyp" style="display:none;"><label for="uploadFilecqcsyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                                </div>
+                                <script>
+                                        $('#uploadFilecqcsyp').change(cpcqcsyp);
+                                        function cpcqcsyp() {
+                                            $.ajaxFileUpload({
+                                                url: "@Url.Action("EditUpload")?uptype=采取措施音频&id=@obj.ID",
+                                                secureuri: false,
+                                                fileElementId: 'uploadFilecqcsyp',
+                                            dataType: 'json',
+                                            success: function (data) {
+                                                if (data.message == "1") {
+                                                    var obj = document.getElementById('uploadFilecqcsyp');
+                                                    obj.outerHTML = obj.outerHTML;
+                                                    alert("请上传mp3,m4a格式的音频文件！");
+                                                    $('#uploadFilecqcsyp').change(cpcqcsyp);
+                                                } else {
+                                                    var html = '<ul style="" class="play-audio-container1">';
+                                                    var dv = document.getElementById("cqcsyp");
+                                                    dv.innerHTML = "";
+                                                    for (var i = 0; i < data.resultdata.files.length; i++) {
+                                                        html += '<li class=""><div class="play-audio" style="" data-id="' + data.resultdata.files[i].FileId + '" data-url="' + data.resultdata.files[i].FilePath + '"><img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">' + data.resultdata.files[i].FileName + '<a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'采取措施音频\',this.id,\'@obj.ID\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a></div><div style=""><audio id="' + data.resultdata.files[i].FileId + '" preload="metadata" src="' + data.resultdata.files[i].FilePath + '" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio></div></li>';
+                                                    }
+                                                    html += '</ul><br /><input type="file" name="uploadFilecqcsyp" id="uploadFilecqcsyp" style="display:none;"><label for="uploadFilecqcsyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                                                    dv.innerHTML = html;
+                                                    $('#uploadFilecqcsyp').change(cpcqcsyp);
+                                                }
+                                            }
+                                        });
+                                        }
+                                </script>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="formTitle">图片</td>
+                            <td class="formValue" colspan="3">
+                                <div class="safeImg_div" style="width:850px;">
+                                    <div id="pic_list_3" class="" style="width:850px;">
+
+                                        <div class="box" style="width: 790px; float: left;" id="cqcstp">
+                                            @for (int i = 0; i < obj.Files.Count; i++)
+                                            {
+                                                if (obj.Files[i].Description == "采取措施图片")
+                                                {
+                                                    <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue =obj.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;"><a id="@obj.Files[i].FileId" onclick="delfilenew('@obj.Files[i].Description',this.id,'@obj.ID')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+
+                                                }
+                                            }
+                                            <input type="file" name="uploadFilecqcstp" id="uploadFilecqcstp" style="display:none;"><label for="uploadFilecqcstp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <script>
+                                    $('#uploadFilecqcstp').change(cpcqcstp);
+                                    function cpcqcstp() {
+                                        $.ajaxFileUpload({
+                                            url: "@Url.Action("EditUpload")?uptype=采取措施图片&id=@obj.ID",
+                                            secureuri: false,
+                                            fileElementId: 'uploadFilecqcstp',
+                                        dataType: 'json',
+                                        success: function (data) {
+                                            if (data.message == "1") {
+                                                var obj = document.getElementById('uploadFilecqcstp');
+                                                obj.outerHTML = obj.outerHTML;
+                                                alert("请上传GIF,PNG,JPG格式的图片！");
+                                                $('#uploadFilecqcstp').change(cpcqcstp);
+                                            } else {
+                                                var html = '';
+                                                var dv = document.getElementById("cqcstp");
+                                                dv.innerHTML = "";
+                                                for (var i = 0; i < data.resultdata.files.length; i++) {
+                                                    html += '<img src="' + data.resultdata.files[i].FilePath + '" alt="" style="width:180px;height:120px;"><a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'采取措施图片\',this.id,\'@obj.ID\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>';
+                                                }
+                                                html += '<input type="file" name="uploadFilecqcstp" id="uploadFilecqcstp" style="display:none;"><label for="uploadFilecqcstp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                                                dv.innerHTML = html;
+                                                $('#uploadFilecqcstp').change(cpcqcstp);
+                                            }
+                                        }
+                                    });
+                                    }
+                                </script>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">描述</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextAreaFor(x => obj.AnswerContent, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">点评</td>
+                            <td class="formValue">
+                                @Html.TextAreaFor(x => obj.AppraiseContent, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                            <td class="formTitle">评分</td>
+                            <td class="formValue">
+                                @Html.TextBoxFor(x => obj.Grade, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4"><hr /></td>
+                        </tr>
+                    }
+                }
+
+                @if (Model.EduType == "5" || Model.EduType == "7")
+                {
+                    for (int j = 0; j < Model.Answers.Count(); j++)
+                    {
+                        EduAnswerEntity obj = Model.Answers[j];
+                        <tr>
+                            <td class="formTitle">音频</td>
+                            <td class="formValue" colspan="3">
+                                <div id="jswdyp">
+                                    <ul style="" class="play-audio-container1">
+
+                                        @for (int i = 0; i < obj.Files.Count; i++)
+                                        {
+                                            if (obj.Files[i].Description == "技术问答音频")
+                                            {
+
+                                                <li class="">
+                                                    <div class="play-audio" style="" data-id="@obj.Files[i].FileId" data-url="@Url.Content(obj.Files[i].FilePath)">
+                                                        <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@obj.Files[i].FileName
+                                                        <a id="@obj.Files[i].FileId" onclick="delfilenew('@obj.Files[i].Description',this.id,'@obj.ID')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+                                                    </div>
+                                                    <div>
+                                                        <audio id="@obj.Files[i].FileId" preload="metadata" src="@Url.Content(obj.Files[i].FilePath)" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio>
+                                                    </div>
+                                                </li>
+
+                                            }
+                                        }
+
+                                    </ul>
+                                    <input type="file" name="uploadFilejswdyp" id="uploadFilejswdyp" style="display:none;"><label for="uploadFilejswdyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                                </div>
+                                <script>
+                                        $('#uploadFilejswdyp').change(cpjswdyp);
+
+                                        function cpjswdyp() {
+                                            $.ajaxFileUpload({
+                                                url: "@Url.Action("EditUpload")?uptype=技术问答音频&id=@obj.ID",
+                                                secureuri: false,
+                                            fileElementId: 'uploadFilejswdyp',
+                                            dataType: 'json',
+                                            success: function (data) {
+                                                if (data.message == "1") {
+                                                    var obj = document.getElementById('uploadFilejswdyp');
+                                                    obj.outerHTML = obj.outerHTML;
+                                                    alert("请上传mp3,m4a格式的音频文件！");
+                                                    $('#uploadFilejswdyp').change(cpjswdyp);
+                                                } else {
+                                                    var html = '<ul style="" class="play-audio-container1">';
+                                                    var dv = document.getElementById("jswdyp");
+                                                    dv.innerHTML = "";
+                                                    for (var i = 0; i < data.resultdata.files.length; i++) {
+                                                        html += '<li class=""><div class="play-audio" style="" data-id="' + data.resultdata.files[i].FileId + '" data-url="' + data.resultdata.files[i].FilePath + '"><img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">' + data.resultdata.files[i].FileName + '<a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'技术问答音频\',this.id,\'@obj.ID\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a></div><div style=""><audio id="' + data.resultdata.files[i].FileId + '" preload="metadata" src="' + data.resultdata.files[i].FilePath + '" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio></div></li>';
+                                                    }
+                                                    html += '</ul><br /><input type="file" name="uploadFilejswdyp" id="uploadFilejswdyp" style="display:none;"><label for="uploadFilejswdyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                                                    dv.innerHTML = html;
+                                                    $('#uploadFilejswdyp').change(cpjswdyp);
+                                                }
+                                            }
+                                        });
+                                        }
+                                </script>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="formTitle">图片</td>
+                            <td class="formValue" colspan="3">
+                                <div class="safeImg_div" style="width:850px;">
+                                    <div id="pic_list_8" style="width:850px;">
+                                        <div class="box" style="width: 790px; float: left;" id="jswdtp">
+                                            @for (int i = 0; i < obj.Files.Count; i++)
+                                            {
+                                                if (obj.Files[i].Description == "技术问答图片")
+                                                {
+                                                    <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = obj.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;"><a id="@obj.Files[i].FileId" onclick="delfilenew('@obj.Files[i].Description',this.id,'@obj.ID')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+
+                                                }
+                                            }
+                                            <input type="file" name="uploadFilejswdtp" id="uploadFilejswdtp" style="display:none;"><label for="uploadFilejswdtp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <script>
+                                    $('#uploadFilejswdtp').change(cpjswdtp);
+                                    function cpjswdtp() {
+                                        $.ajaxFileUpload({
+                                            url: "@Url.Action("EditUpload")?uptype=技术问答图片&id=@obj.ID",
+                                            secureuri: false,
+                                        fileElementId: 'uploadFilejswdtp',
+                                        dataType: 'json',
+                                        success: function (data) {
+                                            if (data.message == "1") {
+                                                var obj = document.getElementById('uploadFilejswdtp');
+                                                obj.outerHTML = obj.outerHTML;
+                                                alert("请上传GIF,PNG,JPG格式的图片！");
+                                                $('#uploadFilejswdtp').change(cpjswdtp);
+                                            } else {
+                                                var html = '';
+                                                var dv = document.getElementById("jswdtp");
+                                                dv.innerHTML = "";
+                                                for (var i = 0; i < data.resultdata.files.length; i++) {
+                                                    html += '<img src="' + data.resultdata.files[i].FilePath + '" alt="" style="width:180px;height:120px;"><a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'技术问答图片\',this.id,\'@obj.ID\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>';
+                                                }
+                                                html += '<input type="file" name="uploadFilejswdtp" id="uploadFilejswdtp" style="display:none;"><label for="uploadFilejswdtp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                                                dv.innerHTML = html;
+                                                $('#uploadFilejswdtp').change(cpjswdtp);
+                                            }
+                                        }
+                                    });
+                                    }
+                                </script>
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td class="formTitle">文字</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextAreaFor(x => obj.AnswerContent, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">点评</td>
+                            <td class="formValue">
+                                @Html.TextAreaFor(x => obj.AppraiseContent, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                            <td class="formTitle">评分</td>
+                            <td class="formValue">
+                                @Html.TextBoxFor(x => obj.Grade, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4"><hr /></td>
+                        </tr>
+                    }
+                }
+                @if (Model.EduType == "6")
+                {
+                    for (int j = 0; j < Model.Answers.Count(); j++)
+                    {
+                        EduAnswerEntity obj = Model.Answers[j];
+
+                        <tr style="height:40px;">
+                            <td class="formTitle"><h5>事故现象</h5></td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">音频</td>
+                            <td class="formValue" colspan="3">
+                                <div id="sgxxyp">
+                                    <ul style="" class="play-audio-container1">
+
+
+                                        @for (int i = 0; i < obj.Files.Count; i++)
+                                        {
+                                            if (obj.Files[i].Description == "事故现象音频")
+                                            {
+                                                <li class="">
+                                                    <div class="play-audio" style="" data-id="@obj.Files[i].FileId" data-url="@Url.Content(obj.Files[i].FilePath)">
+                                                        <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@obj.Files[i].FileName
+                                                        <a id="@obj.Files[i].FileId" onclick="delfilenew('@obj.Files[i].Description',this.id,'@obj.ID')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+                                                    </div>
+                                                    <div style="">
+                                                        <audio id="@obj.Files[i].FileId" preload="metadata" src="@Url.Content(obj.Files[i].FilePath)" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio>
+                                                    </div>
+                                                </li>
+                                            }
+                                        }
+
+                                    </ul>
+                                    <br />
+                                    <input type="file" name="uploadFilesgxxyp" id="uploadFilesgxxyp" style="display:none;"><label for="uploadFilesgxxyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                                </div>
+                                <script>
+                                        $('#uploadFilesgxxyp').change(cpsgxxyp);
+                                        function cpsgxxyp() {
+                                            $.ajaxFileUpload({
+                                                url: "@Url.Action("EditUpload")?uptype=事故现象音频&id=@obj.ID",
+                                                secureuri: false,
+                                                fileElementId: 'uploadFilesgxxyp',
+                                                dataType: 'json',
+                                                success: function (data) {
+                                                    if (data.message == "1") {
+                                                        var obj = document.getElementById('uploadFilesgxxyp');
+                                                        obj.outerHTML = obj.outerHTML;
+                                                        alert("请上传mp3,m4a格式的音频文件！");
+                                                        $('#uploadFilesgxxyp').change(cpsgxxyp);
+                                                    } else {
+                                                        var html = '<ul style="" class="play-audio-container1">';
+                                                        var dv = document.getElementById("sgxxyp");
+                                                        dv.innerHTML = "";
+                                                        for (var i = 0; i < data.resultdata.files.length; i++) {
+                                                            html += '<li class=""><div class="play-audio" style="" data-id="' + data.resultdata.files[i].FileId + '" data-url="' + data.resultdata.files[i].FilePath + '"><img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">' + data.resultdata.files[i].FileName + '<a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'事故现象音频\',this.id,\'@obj.ID\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a></div><div style=""><audio id="' + data.resultdata.files[i].FileId + '" preload="metadata" src="' + data.resultdata.files[i].FilePath + '" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio></div></li>';
+                                                        }
+                                                        html += '</ul><br /><input type="file" name="uploadFilesgxxyp" id="uploadFilesgxxyp" style="display:none;"><label for="uploadFilesgxxyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                                                        dv.innerHTML = html;
+                                                        $('#uploadFilesgxxyp').change(cpsgxxyp);
+                                                    }
+                                                }
+                                            });
+                                        }
+                                </script>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">图片</td>
+                            <td class="formValue" colspan="3">
+                                <div class="safeImg_div" style="width:850px;">
+                                    <div id="pic_list_3" class="" style="width:850px;">
+
+                                        <div class="box" style="width: 790px; float: left;" id="sgxxtp">
+
+                                            @for (int i = 0; i < obj.Files.Count; i++)
+                                            {
+                                                if (obj.Files[i].Description == "事故现象图片")
+                                                {
+                                                    <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue =obj.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;"><a id="@obj.Files[i].FileId" onclick="delfilenew('@obj.Files[i].Description',this.id,'@obj.ID')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+
+                                                }
+                                            }
+                                            <input type="file" name="uploadFilesgxxtp" id="uploadFilesgxxtp" style="display:none;"><label for="uploadFilesgxxtp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <script>
+                                    $('#uploadFilesgxxtp').change(cpsgxxtp);
+                                    function cpsgxxtp() {
+                                        $.ajaxFileUpload({
+                                            url: "@Url.Action("EditUpload")?uptype=事故现象图片&id=@obj.ID",
+                                            secureuri: false,
+                                            fileElementId: 'uploadFilesgxxtp',
+                                            dataType: 'json',
+                                            success: function (data) {
+                                                if (data.message == "1") {
+                                                    var obj = document.getElementById('uploadFilesgxxtp');
+                                                    obj.outerHTML = obj.outerHTML;
+                                                    alert("请上传GIF,PNG,JPG格式的图片！");
+                                                    $('#uploadFilesgxxtp').change(cpsgxxtp);
+                                                } else {
+                                                    var html = '';
+                                                    var dv = document.getElementById("sgxxtp");
+                                                    dv.innerHTML = "";
+                                                    for (var i = 0; i < data.resultdata.files.length; i++) {
+                                                        html += '<img src="' + data.resultdata.files[i].FilePath + '" alt="" style="width:180px;height:120px;"><a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'事故现象图片\',this.id,\'@obj.ID\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>';
+                                                    }
+                                                    html += '<input type="file" name="uploadFilesgxxtp" id="uploadFilesgxxtp" style="display:none;"><label for="uploadFilesgxxtp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                                                    dv.innerHTML = html;
+                                                    $('#uploadFilesgxxtp').change(cpsgxxtp);
+                                                }
+                                            }
+                                        });
+                                    }
+                                </script>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="formTitle">文字</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextAreaFor(x => obj.Description, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr style="height:40px;">
+                            <td class="formTitle"><h5>采取措施</h5></td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">音频</td>
+                            <td class="formValue" colspan="3">
+                                <div id="cqcsyp">
+                                    <ul style="" class="play-audio-container2">
+                                        @for (int i = 0; i < obj.Files.Count; i++)
+                                        {
+                                            if (obj.Files[i].Description == "采取措施音频")
+                                            {
+
+                                                <li class="">
+                                                    <div class="play-audio" style="" data-id="@obj.Files[i].FileId" data-url="@Url.Content(obj.Files[i].FilePath)">
+                                                        <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@obj.Files[i].FileName
+                                                        <a id="@obj.Files[i].FileId" onclick="delfilenew('@obj.Files[i].Description',this.id,'@obj.ID')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+                                                    </div>
+                                                    <div style="">
+                                                        <audio id="@obj.Files[i].FileId" preload="metadata" src="@Url.Content(obj.Files[i].FilePath)" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio>
+                                                    </div>
+                                                </li>
+
+                                            }
+                                        }
+                                    </ul>
+                                    <br />
+                                    <input type="file" name="uploadFilecqcsyp" id="uploadFilecqcsyp" style="display:none;"><label for="uploadFilecqcsyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                                </div>
+                                <script>
+                                        $('#uploadFilecqcsyp').change(cpcqcsyp);
+                                        function cpcqcsyp() {
+                                            $.ajaxFileUpload({
+                                                url: "@Url.Action("EditUpload")?uptype=采取措施音频&id=@obj.ID",
+                                                secureuri: false,
+                                                fileElementId: 'uploadFilecqcsyp',
+                                            dataType: 'json',
+                                            success: function (data) {
+                                                if (data.message == "1") {
+                                                    var obj = document.getElementById('uploadFilecqcsyp');
+                                                    obj.outerHTML = obj.outerHTML;
+                                                    alert("请上传mp3,m4a格式的音频文件！");
+                                                    $('#uploadFilecqcsyp').change(cpcqcsyp);
+                                                } else {
+                                                    var html = '<ul style="" class="play-audio-container1">';
+                                                    var dv = document.getElementById("cqcsyp");
+                                                    dv.innerHTML = "";
+                                                    for (var i = 0; i < data.resultdata.files.length; i++) {
+                                                        html += '<li class=""><div class="play-audio" style="" data-id="' + data.resultdata.files[i].FileId + '" data-url="' + data.resultdata.files[i].FilePath + '"><img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">' + data.resultdata.files[i].FileName + '<a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'采取措施音频\',this.id,\'@obj.ID\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a></div><div style=""><audio id="' + data.resultdata.files[i].FileId + '" preload="metadata" src="' + data.resultdata.files[i].FilePath + '" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio></div></li>';
+                                                    }
+                                                    html += '</ul><br /><input type="file" name="uploadFilecqcsyp" id="uploadFilecqcsyp" style="display:none;"><label for="uploadFilecqcsyp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                                                    dv.innerHTML = html;
+                                                    $('#uploadFilecqcsyp').change(cpcqcsyp);
+                                                }
+                                            }
+                                        });
+                                        }
+                                </script>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="formTitle">图片</td>
+                            <td class="formValue" colspan="3">
+                                <div class="safeImg_div" style="width:850px;">
+                                    <div id="pic_list_3" class="" style="width:850px;">
+
+                                        <div class="box" style="width: 790px; float: left;" id="cqcstp">
+                                            @for (int i = 0; i < obj.Files.Count; i++)
+                                            {
+                                                if (obj.Files[i].Description == "采取措施图片")
+                                                {
+                                                    <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue =obj.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;"><a id="@obj.Files[i].FileId" onclick="delfilenew('@obj.Files[i].Description',this.id,'@obj.ID')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+
+                                                }
+                                            }
+                                            <input type="file" name="uploadFilecqcstp" id="uploadFilecqcstp" style="display:none;"><label for="uploadFilecqcstp" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <script>
+                                    $('#uploadFilecqcstp').change(cpcqcstp);
+                                    function cpcqcstp() {
+                                        $.ajaxFileUpload({
+                                            url: "@Url.Action("EditUpload")?uptype=采取措施图片&id=@obj.ID",
+                                            secureuri: false,
+                                            fileElementId: 'uploadFilecqcstp',
+                                        dataType: 'json',
+                                        success: function (data) {
+                                            if (data.message == "1") {
+                                                var obj = document.getElementById('uploadFilecqcstp');
+                                                obj.outerHTML = obj.outerHTML;
+                                                alert("请上传GIF,PNG,JPG格式的图片！");
+                                                $('#uploadFilecqcstp').change(cpcqcstp);
+                                            } else {
+                                                var html = '';
+                                                var dv = document.getElementById("cqcstp");
+                                                dv.innerHTML = "";
+                                                for (var i = 0; i < data.resultdata.files.length; i++) {
+                                                    html += '<img src="' + data.resultdata.files[i].FilePath + '" alt="" style="width:180px;height:120px;"><a id="' + data.resultdata.files[i].FileId + '" onclick="delfilenew(\'采取措施图片\',this.id,\'@obj.ID\')" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>';
+                                                }
+                                                html += '<input type="file" name="uploadFilecqcstp" id="uploadFilecqcstp" style="display:none;"><label for="uploadFilecqcstp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                                                dv.innerHTML = html;
+                                                $('#uploadFilecqcstp').change(cpcqcstp);
+                                            }
+                                        }
+                                    });
+                                    }
+                                </script>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">文字</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextAreaFor(x => obj.AnswerContent, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">点评</td>
+                            <td class="formValue">
+                                @Html.TextAreaFor(x => obj.AppraiseContent, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                            <td class="formTitle">评分</td>
+                            <td class="formValue">
+                                @Html.TextBoxFor(x => obj.Grade, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4"><hr /></td>
+                        </tr>
+                    }
+                }
+                @*@if(Model.EduType!="5"&&Model.EduType!="6"){*@
+                <tr>
+                    <td class="formTitle">现场视频</td>
+                    <td class="formValue" colspan="3">
+                        <div id="jsjksp">
+                            @foreach (var f in Model.Files.Where(x => x.Description == "视频"))
+                            {
+
+                                <img src="@Url.Content("~/Content/images/album.png")" alt=""
+                                     style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(f.FilePath)" data-otherurl="@(f.FilePath)">
+                                <a id="@f.FileId" onclick="delfile('@f.Description',this.id)" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+                            }
+                            <input type="file" name="uploadFilejsjksp" id="uploadFilejsjksp" style="display:none;"><label for="uploadFilejsjksp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">课件材料</td>
+                    <td class="formValue" colspan="3">
+                        <table>
+                            @*<ul class="images-container">*@
+                            @for (int i = 0; i < Model.Files2.Count; i++)
+                            {
+                                if (Model.Files2[i].Description == "课件")
+                                {
+                                    if (!string.IsNullOrEmpty(Model.Files2[i].FileType))
+                                    {
+                                        if (Model.Files2[i].FileType.Contains("doc"))
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                    if (!string.IsNullOrEmpty(Model.Files2[i].FolderId) && !string.IsNullOrEmpty(Model.Files2[i].FileType))
+                                    {
+
+                                        switch (Model.Files2[i].FileType)
+                                        {
+                                            case "java_video":
+                                                <tr><td><img src="@Url.Content("~/Content/images/album.png")" alt="" style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(Model.Files2[i].FilePath)" data-folderid="@Url.Content(Model.Files2[i].FolderId)" data-otherurl=""></td></tr>
+                                                break;
+                                            case "net_video":
+                                                <tr><td><img src="@Url.Content("~/Content/images/album.png")" alt="" style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(Model.Files2[i].FilePath)" data-otherurl=""></td></tr>
+                                                break;
+                                            case "java_doc":
+                                                <tr>
+                                                    <td>
+                                                        <a class="" href="javascript:opendoc('@Url.Content(Model.Files2[i].FolderId)')">@Html.Raw(Model.Files2[i].FileName)</a><br />
+                                                    </td>
+                                                </tr>
+                                                break;
+                                            default:
+
+                                                break;
+                                        }
+                                    }
+                                    else
+                                    if (!string.IsNullOrEmpty(Model.Files2[i].OtherUrl))
+                                    {
+                                        <tr>
+                                            <td>
+                                                <img src="@Url.Content("~/Content/images/album.png")" alt="" style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(Model.Files2[i].FilePath)" data-folderid="" data-otherurl="@Url.Content(Model.Files2[i].OtherUrl)">
+                                            </td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        if (Model.Files2[i].FilePath.Contains("play"))
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <img src="@Url.Content("~/Content/images/album.png")" alt="" style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(Model.Files2[i].FilePath)" data-otherurl="@Url.Content(Model.Files2[i].FilePath)">
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            }
+                            @*</ul>*@
+                        </table>
+                        @*<ul class="images-container" id="images-container1">
+                                @foreach (var f in Model.Files2.Where(x => x.Description == "课件"))
+                                {
+                                    if (!string.IsNullOrEmpty(f.FileType))
+                                    {
+                                        if (f.FileType != "java_doc")
+                                        {
+                                            switch (f.FileType)
+                                            {
+                                                case "java_video":
+                                                    <li><img src="@Url.Content("~/Content/images/album.png")" alt="" style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(f.FilePath)" data-folderid="@Url.Content(f.FolderId)" data-otherurl=""></li>
+                                                    break;
+                                                case "net_video":
+                                                    <li><img src="@Url.Content("~/Content/images/album.png")" alt="" style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(f.FilePath)" data-otherurl=""></li>
+                                                    break;
+                                                case "java_doc":
+                                                    <li>
+                                                        <div class="left">@Html.Raw(f.FileName)</div>
+                                                        <div class="pull-left right">
+                                                            <a class="my-btn w-100 bg-3669e1 c-fff mg-l-20" href="javascript:opendoc('@Url.Content(f.FolderId)')">查看</a>
+                                                        </div>
+                                                    </li>
+                                                    break;
+                                                default:
+                                                    <li><img src="@Url.Content("~/Content/images/album.png")" alt="" style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(f.FilePath)" data-otherurl=""></li>
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <li>
+                                            <img src="@Url.Content("~/Content/images/album.png")" alt=""
+                                                 style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-otherurl="@(f.OtherUrl)" data-url="@Url.Content(f.FilePath)">
+                                        </li>
+                                    }
+
+                                }
+
+
+                            </ul>*@
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">现场照片</td>
+                    <td class="formValue" colspan="3">
+                        <div class="safeImg_div" style="width:800px;">
+                            <div id="jsjkzp">
+                                @for (int i = 0; i < Model.Files1.Count; i++)
+                                {
+                                    <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = Model.Files1[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;">
+                                    <a id="@Model.Files1[i].FileId" onclick="delfile('@Model.Files1[i].Description',this.id)" style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+                                }
+                                <input type="file" name="uploadFilejsjkzp" id="uploadFilejsjkzp" style="display:none;"><label for="uploadFilejsjkzp" style="margin-left:20px;line-height:140px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                @*}*@
+                <tr>
+                    <td colspan="4">
+                        <div class="pd-20 bg-fff bd-t-e3ebfd">
+                            <div class="f-18 f-w c-0d0d0d"><a id="lr-edit" class="btn btn-default" onclick="btn_evaluate()"><i class="fa fa-pencil-square-o"></i>&nbsp;评价</a></div>
+                            <div class="f-16 c-4a4e50 lh-36 pd-b-20" style="word-break:break-all;height:auto;min-height:110px;padding-top:10px;padding-left:10px;">
+                                <div class="gridPanel">
+                                    <table id="grid"></table>
+                                    <div id="gridPager"></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+
+</div>
+<div id="videodiv" style="display:none; text-align:center;background-color:black;">
+    @*<video src="/bzzd/Resource/DocumentFile/84452e16-1e7a-11e9-bcff-00155dfdcb09.mp4" autoplay="autoplay" width="800" height="600"></video>*@
+</div>
+@*<script>
+     @if (Model.Files2.Count(p => p.Description == "技术讲课图片") > 4)
+         {
+                 @Html.Raw("$('#pic_list_1').cxScroll({  speed: 1000,  time: 2000  });");
+         }
+         @if (Model.Files1.Count >4)
+         {
+                 @Html.Raw("$('#pic_list_2').cxScroll({  speed: 1000,  time: 2000  });");
+         }
+         @if (Model.Files2.Count(p => p.Description == "事故现象图片") > 4)
+         {
+                 @Html.Raw("$('#pic_list_3').cxScroll({  speed: 1000,  time: 2000  });");
+         }
+            @if (Model.Files2.Count(p => p.Description == "采取措施图片") > 4)
+         {
+                 @Html.Raw("$('#pic_list_4').cxScroll({  speed: 1000,  time: 2000  });");
+         }
+                @if (Model.Files2.Count(p => p.Description == "事故现象图片") > 4)
+         {
+            @Html.Raw("$('#pic_list_5').cxScroll({  speed: 1000,  time: 2000  });");
+         }
+        @if (Model.Files2.Count(p => p.Description == "原因分析图片") > 4)
+         {
+                 @Html.Raw("$('#pic_list_6').cxScroll({  speed: 1000,  time: 2000  });");
+         }
+         @if (Model.Files2.Count(p => p.Description == "采取措施图片") > 4)
+         {
+                 @Html.Raw("$('#pic_list_7').cxScroll({  speed: 1000,  time: 2000  });");
+         }
+    @if (Model.Files2.Count(p => p.Description == "技术问答图片") > 4)
+         {
+                 @Html.Raw("$('#pic_list_8').cxScroll({  speed: 1000,  time: 2000  });");
+         }
+    @if (Model.Files2.Count(p => p.Description == "技术问答图片") > 4)
+         {
+                 @Html.Raw("$('#pic_list_9').cxScroll({  speed: 1000,  time: 2000  });");
+         }
+    ;</script>*@
+

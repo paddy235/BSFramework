@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "选择部门";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.url.js")"></script>
+<script>
+    jQuery(function () {
+        jQuery('#tree').treeview({
+            cascadecheck: false,
+            showcheck: true,
+            url: '@Url.Action("GetData", new { id = string.Empty })' + window.location.search
+        });
+    });
+
+
+    function fn$ok(callback) {
+        var select = jQuery.getUrlArgs('select'), nodes;
+        if (select == 'single') {
+            nodes = jQuery('#tree').getCurrentNode();
+        } else if (select == 'multi') {
+            nodes = jQuery('#tree').getTSNs();
+        }
+
+        if (callback) {
+            callback(nodes);
+        }
+
+        dialogClose();
+    }
+</script>
+<div id="tree">
+
+</div>

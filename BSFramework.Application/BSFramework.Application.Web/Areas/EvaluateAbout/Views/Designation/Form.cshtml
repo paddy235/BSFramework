@@ -1,0 +1,97 @@
+﻿@{;
+ViewBag.Title = "表单页面";
+Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+<script type="text/javascript" src="~/content/scripts/business/common.js"></script>
+
+<script>
+    var keyValue = request('keyValue');
+
+
+
+
+    $(function () {
+        initControl();
+    });
+
+
+
+    //初始化控件
+    function initControl() {
+        //获取表单
+        if (!!keyValue) {
+            $.SetForm({
+                url: "../../EvaluateAbout/Designation/GetFormJson",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#form1").formDeserialize(data.formData);
+                    if (data.formData.IsFiring==0) {
+                        document.getElementById("IsFiringN").checked=true;
+                    }
+
+                }
+            })
+        }
+    }
+
+    //保存表单;
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var postData = $("#form1").formSerialize(keyValue);
+        postData["IsFiring"] = 1;
+        if (document.getElementById("IsFiringN").checked) {
+            postData["IsFiring"] = 0;
+        }
+
+        $.SaveForm({
+            url: "../../EvaluateAbout/Designation/SaveForm?keyValue=" + keyValue,
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        });
+    }
+
+
+
+
+
+</script>
+<div style="margin-top: 20px; margin-right: 30px;">
+    <table class="form">
+
+        <tr>
+            <td class="formTitle">称号<font face="宋体">*</font></td>
+            <td class="formValue">
+                <input id="ClassName" type="text" isvalid="yes" checkexpession="NotNull" maxlength="10" class="form-control" placeholder="请输入称号（长度请保持在1-10之间）" />
+            </td>
+        </tr>
+
+        <tr>
+            <td class="formTitle">排序<font face="宋体">*</font></td>
+            <td class="formValue">
+                <input id="SortCode" type="text" class="form-control" isvalid="yes" checkexpession="Num" />
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">是否启动</td>
+            <td class="formValue Gender">
+                <input type="radio" value="1" id="IsFiringY" name="Gender" checked="checked" />&nbsp;<label for="man">是</label>&nbsp;&nbsp;&nbsp;
+                <input type="radio" value="0" id="IsFiringN" name="Gender" />&nbsp;<label for="woman">否</label>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="formTitle">备注</td>
+            <td class="formValue">
+                <textarea id="Remark" maxlength="1024" class="form-control" rows="5"></textarea>
+            </td>
+        </tr>
+
+
+    </table>
+</div>

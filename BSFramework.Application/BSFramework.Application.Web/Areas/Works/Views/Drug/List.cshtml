@@ -1,0 +1,612 @@
+﻿@model IEnumerable<BSFramework.Application.Entity.DrugManage.DrugStockOutEntity>
+@using BSFramework.Application.Entity.BaseManage
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/before.css")" />
+
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/hammer.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+<style type="text/css">
+    .title li:first-child {
+    border-left: 1px solid #3668e1;
+}
+.title li {
+    list-style: none;
+    border: 1px solid #3668e1;
+    font-size: 17px;
+    padding: 5px 20px;
+    font-weight: 800;
+    color: #3668e1;
+    float: left;
+    border-left: 0;
+}
+.title .select {
+    background: #3668e1;
+    color: #fff;
+}
+.title {
+    padding-left: 0;
+}
+</style>
+
+<script>
+    $(function () {
+        //获取菜单(菜单控制)
+        InitMenu($("ul"), undefined);
+    })
+    function fn$refresh() {
+        window.location.reload();
+    }
+    
+    $(function () {
+        var l;
+        jQuery('#GuarDianName').click(function () {
+
+            var size = jQuery('#techerPeople li').size();
+            var h = 56 * (size + 1) + 10;
+            var winH = $(window).height();
+            if (h > winH - 100) {
+                h = winH - 100
+            }
+
+            l=layer.open({
+                area: ['300px', h + 'px'],
+                title: '选择主持人',
+                type: 1,
+                content: $('#techerPeople')
+            });
+        });
+
+        jQuery('#techerPeople li').click(function () {
+            jQuery('#techerPeople li').removeClass('on');
+            jQuery(this).addClass('on');
+            jQuery('#GuarDianId').val(jQuery(this).data('id'));
+            jQuery('#GuarDianName').val(jQuery(this).text());
+            layer.close(l);
+        });
+
+        $('.tools-list').delegate('.item-wrap', 'click', function (e) {
+            e.stopPropagation();
+        })
+        $('.tools-list').delegate('.remove-bg button', 'click', function () {
+            var drugId = this.getAttribute("drugid");
+            DelDrug(drugId);
+            var $p = $(this).parents('.item-wrap');
+            $p.remove();
+        })
+        $('.tools-list > div').each(function () {
+            
+            var mc = new Hammer(this);
+           // if (this.getAttribute('surp') == 0) {
+                mc.on('press', function (e) {
+                    $('.tools-list').addClass('remove');
+                    $('body').bind('click', clickHand);
+                    return false;
+                })
+           // }
+        })
+        $('.out').click(function () {
+            var $p = $(this).parents('.item-wrap');
+            var title = $p.find('label').eq(0).text();
+            $("#out_drugId").val(this.getAttribute("drugid"));
+            $("#out_Surplus").val(this.getAttribute("drugsup"))
+            $(".put-out #CreateUserId2").val("@ViewData["CurrUser"]");
+            $(".put-out #CreateUserName2").val("@ViewData["CurrUserName"]");
+
+            $("#GuarDianName").val("@ViewData["CurrUserName"]");
+            $("#GuarDianId").val("@ViewData["CurrUser"]");
+            layer.open({
+                type: 1,
+                title: title,
+                content: $('.put-out'),
+                area: ['500px', '300px']
+            })
+        })
+    })
+    function clickHand() {
+
+        $('.tools-list').removeClass('remove');
+    }
+    function Cancel() {
+
+        layer.close(this.layer.index);
+
+    }
+    function checknum(obj) {
+        var val = obj.value;
+        var reg = /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/;
+        if (!reg.test(val))
+        {
+            v = layer.open({
+                        type: 1,
+                        title: '验证',
+                        content: $('.validnum'),
+                        area: ['300px', '180px']
+                    })
+                    obj.value = "";
+                    return;
+        }
+        //if (!parseInt(obj.value)) {
+        //    v = layer.open({
+        //        type: 1,
+        //        title: '出库',
+        //        content: $('.validnum'),
+        //        area: ['300px', '180px']
+        //    })
+        //    obj.value = "";
+        //    return;
+        //}
+        //else if (parseInt(obj.value) < 0) {
+        //    v = layer.open({
+        //        type: 1,
+        //        title: '出库',
+        //        content: $('.validnum'),
+        //        area: ['300px', '180px']
+        //    })
+        //    obj.value = "";
+        //    return;
+        //}
+    }
+    function AddDrug() {
+        var DrugName = $("#DrugName").val();
+        if (!DrugName) {
+            v = layer.open({
+                type: 1,
+                title: '数据验证',
+                content: $('.valid'),
+                area: ['300px', '180px']
+            })
+            return false;
+        }
+        var json = jQuery('#form1').serializeJSON();
+        $.ajax({
+            url: '@Url.Action("SaveDrug")',
+            type: 'post',
+            data: json,
+            loading: "数据提交中...",
+            success: function (data) {
+                if (!data.success) {
+                    $("#info").text(data.message);
+                    v = layer.open({
+                        type: 1,
+                        title: '提示消息',
+                        content: $('.messInfo'),
+                        area: ['300px', '180px']
+                    })
+
+                } else {
+                    window.location.reload();
+                }
+            }
+        });
+        return false;
+    }
+
+    function AddDrugOut() {
+        var OutNum = $("#OutNum").val();
+        var Surplus = $("#out_Surplus").val();
+        if (!OutNum) {
+            v = layer.open({
+                type: 1,
+                title: '数据验证',
+                content: $('.Outvalid'),
+                area: ['300px', '180px']
+            })
+            return false;
+        }
+        if (parseInt(OutNum) > parseInt(Surplus)) {
+            v = layer.open({
+                type: 1,
+                title: '数据验证',
+                content: $('.Outvalid1'),
+                area: ['300px', '180px']
+            })
+            return false;
+        }
+        var json = jQuery('#form3').serializeJSON();
+        $.ajax({
+            url: '@Url.Action("SaveDrugOutNew1")',
+            type: 'post',
+            data: json,
+            loading: "数据提交中...",
+            success: function (data) {
+                if (!data.success) {
+                    $("#info").text(data.message);
+                    v = layer.open({
+                        type: 1,
+                        title: '提示消息',
+                        content: $('.messInfo'),
+                        area: ['300px', '180px']
+                    })
+                } else {
+                    window.location.reload();
+                }
+            }
+        });
+        return false;
+    }
+    function DelDrug(drugId) {
+        $.ajax({
+            url: '@Url.Action("DelDrug")',
+            type: 'post',
+            data: { drugId: drugId },
+            loading: "数据提交中...",
+            success: function (data) {
+                if (!data.success) {
+                    $("#info").text(data.message);
+                    v = layer.open({
+                        type: 1,
+                        title: '提示消息',
+                        content: $('.messInfo'),
+                        area: ['300px', '180px']
+                    })
+                } else {
+                    //window.location.reload();
+                }
+            }
+        });
+    }
+    function LevelChanged(r) {
+        $(".add-container #DrugLevelName").val(r.options[r.options.selectedIndex].text);
+    }
+</script>
+
+<div class="main-content" >
+    <div class="container-fluid" >
+        @using (Html.BeginForm("List", "Drug"))
+        {
+
+
+            <div class="mg-b-10" >
+                <div class="" style="overflow: hidden;margin-top:-7px;">
+                    <ul class="pull-left title" style="height:40px; line-height:35px;font-size:20px;" >
+                        <li code="drug_use" class="select" onclick="fn$refresh();"><div code="drug_use">药品取用管理</div></li>
+                        <li code="drug_stock"><div code="drug_stock"><a href="@Url.Action("StockManage", new { page=1,pagesize=10})" style="text-decoration:none">药品库存管理</a></div></li>
+                        <li code="drug_glassware"><div code="drug_glassware"><a href="@Url.Action("GlassList")" style="text-decoration:none">玻璃器皿管理</a></div></li>
+                    </ul>
+                    <div style="float:right!important;line-height:40px!important;">
+                        <a href="@Url.Action("OutList", new { page = 1, pagesize = 10 })">
+                            <img src="~/Content/styles/static/images/index_29.png" style="margin-top:-2px;" alt="">
+                            取用记录
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+    @*<div class="mg-b-10">
+    <div class="" style="overflow: hidden;">
+        <div class="pull-left title">
+            <a href="javascript:;">
+                药品管理
+            </a>
+        </div>
+        <div class="pull-right lh-40">
+            <a href="javascript:;" style="margin-right:30px;" id="put-in">
+                <img src="@Url.Content("~/Content/styles/static/images/index_31.png")" style="margin-top:-2px;" alt="">
+                入库
+            </a>
+            <a href="@Url.Action("StockList", new { page = 1, pagesize = 10 })" style="margin-right:30px;">
+                <img src="@Url.Content("~/Content/styles/static/images/index_30.png")" alt="">
+                入库记录
+            </a>
+            <a href="@Url.Action("OutList", new { page = 1, pagesize = 10 })">
+                <img src="@Url.Content("~/Content/styles/static/images/index_29.png")" style="margin-top:-2px;" alt="">
+                取用记录
+            </a>
+        </div>
+    </div>
+    </div>*@
+        <div class="bg-e3ebfd pd-10 my-body" style="margin-top:-3px;">
+            <div class="tools-list tools-list-two">
+                @foreach (var item in Model)
+                    {
+                        var seed = Guid.NewGuid().GetHashCode();
+                        Random r = new Random(seed);
+                        string type = string.Empty;
+                        string s = string.Empty;
+                        int num = 0;
+                    //出库总量
+                        var outtotal =item.OutTotal;
+                    
+                        if (item.DrugUnit == "g")
+                        {
+                            //num = r.Next(5, 7);
+                            num = 7;
+                        }
+                        else
+                        {
+                            //Random r = new Random();
+                            //num = r.Next(1, 4);
+                            num = 3;
+                        }
+                        if (item.OutTotal != 0)
+                        {
+                            if (item.Total / outtotal >= Convert.ToDecimal(0.75)) { s = "4"; }
+                            if (item.Total / outtotal > 0 && item.Total / outtotal < Convert.ToDecimal(0.25)) { s = "1"; }
+                            if (item.Total / outtotal >= Convert.ToDecimal(0.25) && item.Total / outtotal < Convert.ToDecimal(0.5)) { s = "2"; }
+                            if (item.Total / outtotal >= Convert.ToDecimal(0.5) && item.Total / outtotal < Convert.ToDecimal(0.75)) { s = "3"; }
+                            type = "cup cup-" + num + "-" + s;
+                        }
+                        if ( item.OutTotal == 0)
+                        {
+                            s = string.Empty;
+                            if (item.DrugUnit == "g")
+                            {
+                                num = 2;
+                                type = "cup cup-" + num;
+                            }
+                            else
+                            {
+                                type = "cup cup-1";
+                            }
+                        }
+                        if (item.Total <= Convert.ToDecimal(item.Warn)&&item.OutTotal>0)
+                        {
+                            type = "cup cup-9-" + item.DrugUnit;
+                        }
+                    <div class="item-wrap" surp="@item.Total" warn="@item.Warn">
+                        <div>
+                           @if (item.Total > 0) { 
+                            <a href="@Url.Action("Show", new { id=item.Id,type="0"})">
+                                <label style="overflow-x:hidden; text-overflow:ellipsis;padding:10px 5px 10px;">@Html.Raw(item.DrugName + "(" + item.DrugLevel + ")")</label>
+                                <div class="@type">
+                                    <label>@Html.Raw(item.Total + item.DrugUnit)</label>
+                                    
+                                </div>
+                            </a>
+                           }
+                           else
+                           {
+                            <a href="@Url.Action("Show", new { id=item.Id,type="0"})">
+                                <label style="color:red;overflow-x:hidden; text-overflow:ellipsis;padding:10px 5px 10px;">@Html.Raw(item.DrugName + "(" + item.DrugLevel + ")")</label>
+
+                                <div class="@type">
+                                    <label style="color:red">@Html.Raw(item.Total + item.DrugUnit)</label>
+                                </div>
+                            </a>
+
+                           }
+                            <div class="remove-bg">
+                                <button drugid="@Html.Raw(item.Id)"></button>
+                            </div>
+                        </div>
+                        <p>
+                            <button type="button" drugid="@Html.Raw(item.Id)" drugsup="@Html.Raw(item.Total)" class="btn-bg out">取用</button>
+                        </p>
+                    </div>
+                    }
+                @*<div class="item-wrap add-current">
+                    <div>
+                        <a href="javascript:;" style="display: block;height:100%;">
+                            <img src="@Url.Content("~/Content/styles/static/images/tools/photo-add.png")" width="150" style="margin-top:50px;" alt="">
+                        </a>
+                    </div>
+                    <p style="line-height: 44px;">
+                        添加
+                    </p>
+                </div>*@
+            </div>
+
+        </div>
+
+        <footer class="main-footer" style="height:30px;">
+            武汉博晟安全技术股份有限公司   版权所有
+        </footer>
+
+        }
+    </div>
+</div>
+<div class="add-container">
+    <form id="form1">
+        <table>
+            <tr>
+                <td>药品名称</td>
+                <td>
+                    <input type="text" id="DrugName" name="DrugName" class="my-input" placeholder="请输入">
+                </td>
+            </tr>
+            <tr>
+                <td>等级</td>
+                <td>
+                    <select class="select" id="DrugLevel" name="DrugLevel" onchange="LevelChanged(this)">
+                        @foreach (BSFramework.Application.Entity.SystemManage.DataItemDetailEntity item in (ViewData["DrugLevellist"] as List<BSFramework.Application.Entity.SystemManage.DataItemDetailEntity>))
+                        {
+                            <option value="@item.ItemValue">@item.ItemName</option>
+                        }
+                    </select>
+                    <input type="hidden" id="DrugLevelName" name="DrugLevelName" class="my-input" placeholder="请输入">
+                </td>
+            </tr>
+            <tr>
+                <td>单位</td>
+                <td>
+
+                    <select class="select" id="Unit" name="Unit">
+                        @foreach (BSFramework.Application.Entity.SystemManage.DataItemDetailEntity item in (ViewData["DrugUnitlist"] as List<BSFramework.Application.Entity.SystemManage.DataItemDetailEntity>))
+                        {
+                            <option value="@item.ItemValue">@item.ItemName</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>预警值</td>
+                <td>
+                    <select class="select" id="Warn" name="Warn">
+                        @for (int i = 1; i <= 10; i++)
+                        {
+                            <option value="@Html.Raw(i*10)">@Html.Raw(i * 10)</option>
+                        }
+                        <option value="150">150</option><option value="200">200</option>
+                        <option value="250">250</option>
+                        <option value="300">300</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>登记人</td>
+                <td>
+                    <input type="text" id="CreateUserName" name="CreateUserName" readonly="readonly" class="my-input" placeholder="请输入">
+                    <input type="hidden" id="CreateUserId" name="CreateUserId" class="my-input" placeholder="请输入">
+                </td>
+            </tr>
+            <tr>
+                <td>登记时间</td>
+                <td>
+                    <input type="text" id="CreateDate" name="CreateDate" readonly="readonly" class="my-input" placeholder="请输入">
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="padding-top:20px;">
+                    <button class="btn-bg" onclick="if (!AddDrug()) return false;" style="background-color: #3669e1;">确认</button>
+                    <button class="btn-bd" type="button" style="border-radius: 0;margin-left:10px;" onclick="layer.closeAll();">取消</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<div class="valid">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">请输入药品名称！</h4>
+        <button class="btn bg-3669e1 c-fff" style="margin-top:10px;width:70px;" onclick="layer.close(v);">确认</button>
+    </div>
+</div>
+<div class="Outvalid">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">取用量不能为空！</h4>
+        <button class="btn bg-3669e1 c-fff" style="margin-top:10px;width:70px;" onclick="layer.close(v);">确认</button>
+    </div>
+</div>
+<div class="Outvalid1">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">取用量不能大于剩余量！</h4>
+        <button class="btn bg-3669e1 c-fff" style="margin-top:10px;width:70px;" onclick="layer.close(v);">确认</button>
+    </div>
+</div>
+<div class="messInfo">
+    <div style="text-align:center;">
+        <h4 id="info" style="margin-top:35px;"></h4>
+        <button class="btn bg-3669e1 c-fff" style="margin-top:10px;width:70px;" onclick="layer.close(v);">确认</button>
+    </div>
+</div>
+<div class="validnum">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">请输入大于0的数！</h4>
+        <button class="btn bg-3669e1 c-fff" style="margin-top:10px;width:70px;" onclick="layer.close(v);">确认</button>
+    </div>
+</div>
+<div class="put-in">
+    <form id="form2">
+        <table>
+            <tr>
+                <td>药品名称</td>
+                <td>
+                    <select class="select" id="DrugId" name="DrugId">
+                        @foreach (BSFramework.Application.Entity.DrugManage.DrugStockOutEntity item in (ViewData["DrugList"] as List<BSFramework.Application.Entity.DrugManage.DrugStockOutEntity>))
+                        {
+                            string opValue = item.DrugName + "(" + item.DrugLevel + ")";
+                            <option value="@item.Id">@opValue</option>
+                        }
+                    </select>
+
+                    @*<input type="text" id="DrugName" class="my-input" placeholder="请输入">*@
+                </td>
+            </tr>
+            <tr>
+                <td>规格</td>
+                <td>
+                    <select class="select" id="drugUSL" name="DrugUSL">
+                        @foreach (BSFramework.Application.Entity.SystemManage.DataItemDetailEntity item in (ViewData["DrugUSLlist"] as List<BSFramework.Application.Entity.SystemManage.DataItemDetailEntity>))
+                        {
+                            <option value="@item.ItemValue">@item.ItemName</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>数量</td>
+                <td>
+                    <select class="select" id="DrugNum" name="DrugNum" style="width:240px;">
+                        @foreach (BSFramework.Application.Entity.SystemManage.DataItemDetailEntity item in (ViewData["DrugNumlist"] as List<BSFramework.Application.Entity.SystemManage.DataItemDetailEntity>))
+                        {
+                            <option value="@item.ItemValue">@item.ItemName</option>
+                        }
+                    </select>
+                    &nbsp;&nbsp;&nbsp;瓶
+                </td>
+            </tr>
+            <tr>
+                <td>登记人</td>
+                <td>
+                    <input type="text" id="CreateUserName1" name="CreateUserName" readonly="readonly" class="my-input" placeholder="请输入">
+                    <input type="hidden" id="CreateUserId1" name="CreateUserId" class="my-input" placeholder="请输入">
+                </td>
+            </tr>
+            <tr>
+                <td>登记时间</td>
+                <td>
+                    <input type="text" id="CreateDate1" name="CreateDate" readonly="readonly" class="my-input" placeholder="请输入">
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="padding-top:20px;">
+                    <button class="btn-bg" style="background-color: #3669e1;" onclick="if (!AddDrugStock()) return false;">确认</button>
+                    <button class="btn-bd" style="border-radius: 0;margin-left:10px;" type="button" onclick="layer.closeAll();">取消</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div class="put-out">
+    <form id="form3">
+        <table>
+
+            <tr>
+                <td>取用量</td>
+                <td>
+                    <input type="hidden" id="out_drugId" name="DrugId" />
+                    <input type="hidden" id="out_Surplus" name="Surplus" />
+
+                    <input style="width:240px;" type="text" class="my-input" id="OutNum" name="OutNum" onchange="checknum(this);" placeholder="请输入">
+                    &nbsp;&nbsp;&nbsp;ml/g
+                </td>
+            </tr>
+            <tr>
+                <td>监护人</td>
+                <td>
+                    <input type="text" id="GuarDianName" name="GuarDianName" class="my-input" placeholder="请输入">
+                    <input type="hidden" id="GuarDianId" name="GuarDianId" readonly="readonly" class="my-input" placeholder="请选择">
+                    <input type="hidden" id="CreateUserName2" name="CreateUserName" readonly="readonly" class="my-input" placeholder="请输入">
+                    <input type="hidden" id="CreateUserId2" name="CreateUserId" class="my-input" placeholder="请输入">
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="padding-top:20px;">
+                    <button class="btn-bg" style="background-color: #3669e1;" onclick="if(!AddDrugOut()) return false;">确认</button>
+                    <button class="btn-bd" style="border-radius: 0;margin-left:10px;" type="button" onclick="layer.closeAll();">返回</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div class="sign" style="display:none;" id="techerPeople">
+    <ul class="nav my-nav">
+        @{
+            var users1 = (IList<BSFramework.Application.Entity.BaseManage.UserEntity>)ViewData["users"];
+        }
+        @for (int i = 0; i < users1.Count; i++)
+        {
+            <li data-id="@Html.Raw(users1[i].UserId)">@Html.Raw(users1[i].RealName)</li>
+
+        }
+    </ul>
+</div>

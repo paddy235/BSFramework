@@ -1,0 +1,13 @@
+﻿
+@{
+    ViewBag.Title = "ViewFace";
+}
+
+@if (ViewBag.src == null)
+{
+    <h3>没有注册人脸</h3>
+}
+else
+{
+    <img src="@ViewBag.src" />
+}

@@ -1,0 +1,103 @@
+﻿@model BSFramework.Application.Entity.SetManage.RiskFactorSetEntity
+@{ Layout = "~/Views/Shared/_LayoutEdit.cshtml"; }
+<style>
+    .form-title {
+        font-size: 1.3em;
+    }
+
+    .form-group .row div {
+        margin: 5px 0px;
+    }
+
+        .form-group .row div.action {
+            padding-top: 16px;
+            padding-left: 26px;
+        }
+</style>
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        jQuery('body').niceScroll();
+
+        function fn$save() {
+            jQuery('#submit').click();
+        }
+
+        function saveCallback() {
+            top.document.getElementById('DangerReview').childNodes[0].contentWindow.editCallback('@ViewBag.id');
+            top.layer.close(top.layer.index);
+        }
+
+        function fn$new() {
+            if (jQuery('form div.measures > div.row').length == 0 ){
+                jQuery('#isCreate').val('true');
+                jQuery('#submit').click();
+                return;
+            }
+
+            var el = jQuery('form div.measures > div:last').clone();
+            el.find('input:hidden').val('');
+            el.find('textarea').val('');
+            el.appendTo('form div.form-group:last');
+
+            reRender();
+        }
+
+    function reRender(){
+        jQuery('form div.form-group:last > div.row').each(function (i) {
+            jQuery(this).find('input:hidden').attr('id', 'measures_' + i + '__ID').attr('name', 'measures[' + i + '].ID');
+            jQuery(this).find('textarea').attr('id', 'measures_' + i + '__Content').attr('name', 'measures[' + i + '].Content');
+            jQuery(this).find('span').data('valmsg-for', 'measures[' + i + '].Content');
+        });
+    }
+
+        function fn$remove(el) {
+            jQuery(el).parent().parent().remove();
+            reRender();
+        }
+
+
+            @ViewBag.callback
+    </script>
+}
+@using (Html.BeginForm("Edit", "RiskFactorSet", FormMethod.Post, new { @class = "panel" }))
+{
+@Html.AntiForgeryToken();
+
+<div class="panel-body">
+    <input type="hidden" name="isCreate" id="isCreate" value="false" />
+    @Html.HiddenFor(x => x.ID)
+    @Html.ValidationSummary(true)
+    <div class="form-group">
+        <div class="row">
+            <div class="col-xs-10">
+                @Html.LabelFor(model => model.Content, new { @class = "form-title" })
+                @Html.TextAreaFor(model => model.Content, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.Content, string.Empty, new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="form-group measures">
+        <div>
+            @Html.LabelFor(x => x.measures, new { @class = "form-title" })
+            <buton class="btn btn-primary btn-sm" style="float:right;" onclick="fn$new()">新增</buton>
+        </div>
+        @{ var index = 0;
+            var measures = Model.measures; }
+        @foreach (var item in measures)
+        {
+<div class="row">
+    <div class="col-xs-10">
+        @Html.HiddenFor(model => measures[index].ID)
+        @Html.TextAreaFor(model => measures[index].Content, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => measures[index].Content, string.Empty, new { @class = "text-danger" })
+    </div>
+    <div class="col-xs-2 action">
+        <a href="#" onclick="fn$remove(this)">删除</a>
+    </div>
+</div>++index;
+}
+    </div>
+</div>
+                <input id="submit" type="submit" value="submit" style="display:none;" />
+}

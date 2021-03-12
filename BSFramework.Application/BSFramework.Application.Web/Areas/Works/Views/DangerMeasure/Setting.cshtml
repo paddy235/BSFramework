@@ -1,0 +1,152 @@
+﻿@{
+    ViewBag.Title = "Detail2";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+
+<script>
+    jQuery(function () {
+        var data = jQuery.parseJSON('@Html.Raw(HttpUtility.JavaScriptStringEncode(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.settings)))');
+
+        jQuery('#length').parent().prev().keyup(fn$length);
+
+        jQuery('.data-item').each(function (i, o) {
+            var setting = jQuery.grep(data, function (p) { return p.ItemName == jQuery(o).data('name'); });
+            if (setting) {
+                jQuery(o).val(setting[0].ItemValue);
+                jQuery(o).find('input:radio[value="' + setting[0].ItemValue + '"]').attr('checked', true);
+            }
+        });
+
+        jQuery('[name="inlineRadioOptions3"]').change(function () {
+            if (jQuery(this).val() == '是') {
+                jQuery('#input1').removeAttr('disabled');
+                jQuery('#input2').removeAttr('disabled');
+            } else {
+                jQuery('#input1').attr('disabled', 'disabled');
+                jQuery('#input2').attr('disabled', 'disabled');
+          }
+        });
+
+        fn$length();
+    });
+
+    function fn$length() {
+        jQuery('#length').text(jQuery('#length').parent().prev().val().length);
+    }
+
+    function fn$clear() {
+        jQuery('#length').parent().prev().val('');
+    }
+
+    function AcceptClick() {
+        if (jQuery('#input1').val() > 100) {
+            dialogMsg('推送分析人比例不能大于100%', -1);
+            return;
+        } else if (jQuery('#input1').val() < 0) {
+            dialogMsg('推送分析人比例不能大于0%', -1);
+            return;
+        }
+
+        if (jQuery('#input2').val() > 100) {
+            dialogMsg('推送分析人比例不能大于100%', -1);
+            return;
+        } else if (jQuery('#input2').val() < 0) {
+            dialogMsg('推送分析人比例不能大于0%', -1);
+            return;
+        }
+
+        var ary = [];
+        jQuery('.data-item').each(function (i, o) {
+            var obj = { ItemName: jQuery(o).data('name') };
+            obj.ItemValue = jQuery(o).find('input:radio:checked').val();
+            if (!obj.ItemValue) obj.ItemValue = jQuery(o).val();
+            console.log(obj.ItemValue);
+            ary.push(obj);
+        });
+
+        Loading(true, '正在处理数据...');
+        jQuery.ajax({
+            url: '/..@Url.Action("EditSetting")',
+            contentType: 'application/json',
+            type: 'POST',
+            data: JSON.stringify(ary),
+            success: function (data) {
+                if (data.type == "3") {
+                    dialogAlert(data.message, -1);
+                } else {
+                    Loading(false);
+                    dialogMsg(data.message, 1);
+                    //$.currentIframe().fn$refresh();
+                    dialogClose();
+                }
+            },
+            complete: function () {
+                Loading(false);
+            }
+        });
+    }
+</script>
+<div class="container-fluid">
+    <div class="panel panel-default" id="item1">
+        <div class="panel-heading itemname">人身风险预控规则说明</div>
+        <div class="panel-body">
+            <label>规则说明</label>
+            <br />
+            <textarea class="form-control data-item" data-name="人身风险预控规则说明" rows="5" id="value1" maxlength="500"></textarea>
+            <div style="text-align:right;">
+                <input type="button" value="清除" class="btn btn-default" onclick="fn$clear()" /> <span id="length">0</span>/500
+            </div>
+            <p>说明：设置后，分析人可在终端、APP人身风险预控列表中查看该规则</p>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">关联任务状态</div>
+        <div class="panel-body data-item" data-name="人身风险预控关联工作任务状态">
+            <label>人身风险预控关联工作任务状态</label>
+            <label class="radio-inline">
+                <input type="radio" name="inlineRadioOptions1" id="yes1" value="是"> 是
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="inlineRadioOptions1" id="no2" value="否"> 否
+            </label>
+            <p>说明：关联后，只有人身风险预控完成后，工作任务才可勾选完成</p>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">关联工作票/操作票</div>
+        <div class="panel-body data-item" data-name="工作票/操作票关联人身风险预控任务">
+            <label>工作票/操作票关联人身风险预控任务</label>
+            <label class="radio-inline">
+                <input type="radio" name="inlineRadioOptions2" id="yes3" value="是"> 是
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="inlineRadioOptions2" id="no4" value="否"> 否
+            </label>
+            <p>说明：关联后，只要工作任务中填写了工作/操作票编号，则必须开展风险预控；自动给班组下发班前会未安排的工作/操作票编号的风险预控任务</p>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">预控效果及补充措施填写设置</div>
+        <div class="panel-body">
+            <span>时间间隔</span> <input type="number" style="width:60px;display:inline;" class="form-control data-item" data-name="预控效果及补充措施填写设置时间间隔" /> <span>分钟</span>
+            <p>说明：设置后，分析人只有在风险分析阶段结束并达到时间间隔以后，才可提交预控效果及补充措施</p>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">台账评价任务定期推送</div>
+        <div class="panel-body data-item" data-name="定期推送人身风险预控台账评价任务">
+            <label>定期推送人身风险预控台账评价任务</label>
+            <label class="radio-inline">
+                <input type="radio" name="inlineRadioOptions3" id="yes5" value="是"> 是
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="inlineRadioOptions3" id="no6" value="否"> 否
+            </label>
+            <br />
+            <span>班组推送周期：</span><span>按周</span><span>推送分析人比例</span> <input id="input1" type="number" max="100" min="0" style="width:60px;display:inline;" class="form-control data-item" data-name="定期推送人身风险预控台账评价任务按周" /> %
+            <br />
+            <span>部门推送周期：</span><span>按月</span><span>推送分析人比例</span> <input id="input2" type="number" max="100" min="0" style="width:60px;display:inline;" class="form-control data-item" data-name="定期推送人身风险预控台账评价任务按月" /> %
+            <p>说明：设置后，班组/部门责任人会定期收到评价待办任务</p>
+        </div>
+    </div>
+</div>

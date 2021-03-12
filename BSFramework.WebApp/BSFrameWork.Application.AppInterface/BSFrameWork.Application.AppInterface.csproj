@@ -1,0 +1,542 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B1565111-EBB0-4CD6-B30B-3F5C935B28B1}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BSFrameWork.Application.AppInterface</RootNamespace>
+    <AssemblyName>BSFrameWork.Application.AppInterface</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <Use64BitIISExpress />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\BSFrameWork.Application.AppInterface.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Aspose.Cells">
+      <HintPath>..\..\libs\Aspose.Cells.dll</HintPath>
+    </Reference>
+    <Reference Include="Aspose.Words">
+      <HintPath>..\..\libs\Aspose.Words.dll</HintPath>
+    </Reference>
+    <Reference Include="DmProvider">
+      <HintPath>..\..\packages\DmProvider\DmProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="EFDmProvider.EF6">
+      <HintPath>..\..\packages\DmProvider\EFDmProvider.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Practices.ServiceLocation">
+      <HintPath>..\..\..\..\班组智能终端\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity">
+      <HintPath>..\..\..\..\班组智能终端\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Configuration">
+      <HintPath>..\..\..\..\班组智能终端\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.10.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MySql.Data.6.10.9\lib\net452\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data.Entity.EF6, Version=6.10.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MySql.Data.Entity.6.10.9\lib\net452\MySql.Data.Entity.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Swashbuckle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cd1bb07a5ac7c7bc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Swashbuckle.Core.5.6.0\lib\net40\Swashbuckle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data.SQLite, Version=1.0.99.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Data.SQLite.Core.1.0.99.0\lib\net45\System.Data.SQLite.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Extensions, Version=2.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Primitives, Version=4.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Core.5.2.7\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.Tracing, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Tracing.5.2.7\lib\net45\System.Web.Http.Tracing.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.7\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="ThoughtWorks.QRCode">
+      <HintPath>..\..\libs\BSFramework.1.0.0\ThoughtWorks.QRCode.dll</HintPath>
+    </Reference>
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WebActivatorEx.2.0.6\lib\net40\WebActivatorEx.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\AjaxOnlyAttribute.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\HandlerAuthorizeAttribute.cs" />
+    <Compile Include="App_Start\HandlerErrorAttribute.cs" />
+    <Compile Include="App_Start\HandlerLoginAttribute.cs" />
+    <Compile Include="App_Start\HandlerMonitorAttribute.cs" />
+    <Compile Include="App_Start\SwaggerConfig.cs" />
+    <Compile Include="App_Start\UnhandleExceptionFilterAttribute.cs" />
+    <Compile Include="Controllers\AccidentAnswerController.cs" />
+    <Compile Include="Controllers\AccidentAnswerEvaluateController.cs" />
+    <Compile Include="Controllers\ActivityStatisticsController.cs" />
+    <Compile Include="Controllers\MeetingController.cs" />
+    <Compile Include="Controllers\AccidentPreviewController.cs" />
+    <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\CheckTemplateController.cs" />
+    <Compile Include="Controllers\DailyTaskController.cs" />
+    <Compile Include="Controllers\ActivityController.cs" />
+    <Compile Include="Controllers\AttachmentController.cs" />
+    <Compile Include="Controllers\DistrictController.cs" />
+    <Compile Include="Controllers\BusinessConfigController.cs" />
+    <Compile Include="Controllers\CarcOrCardController.cs" />
+    <Compile Include="Controllers\CustomParameterController.cs" />
+    <Compile Include="Controllers\DangerAnalysisController.cs" />
+    <Compile Include="Controllers\DepartmentTaskController.cs" />
+    <Compile Include="Controllers\DeptCycleTaskController.cs" />
+    <Compile Include="Controllers\DeviceInspectionController.cs" />
+    <Compile Include="Controllers\JobEvaluateController.cs" />
+    <Compile Include="Controllers\KeyBoxController.cs" />
+    <Compile Include="Controllers\MeetSubjectController.cs" />
+    <Compile Include="Controllers\PerformanceSecondController.cs" />
+    <Compile Include="Controllers\QuestionBankController.cs" />
+    <Compile Include="Controllers\SafeProduceController.cs" />
+    <Compile Include="Controllers\SafetyScoreController.cs" />
+    <Compile Include="Controllers\SweepController.cs" />
+    <Compile Include="Controllers\SystemSettingsController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\DepartmentPublishController.cs" />
+    <Compile Include="Controllers\DepartmentController.cs" />
+    <Compile Include="Controllers\EdActiviesController.cs" />
+    <Compile Include="Controllers\BaseApiController.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\EvaluateController.cs" />
+    <Compile Include="Controllers\LogController.cs" />
+    <Compile Include="Controllers\OndutyController.cs" />
+    <Compile Include="Controllers\OndutyMeetController.cs" />
+    <Compile Include="Controllers\SafetydayController.cs" />
+    <Compile Include="Controllers\TicketController.cs" />
+    <Compile Include="Controllers\MisController.cs" />
+    <Compile Include="Controllers\HumanDangerController.cs" />
+    <Compile Include="Controllers\AdviceController.cs" />
+    <Compile Include="Controllers\IndexManageController.cs" />
+    <Compile Include="Controllers\MessageController.cs" />
+    <Compile Include="Controllers\BudgetController.cs" />
+    <Compile Include="Controllers\PerformanceController.cs" />
+    <Compile Include="Controllers\QcActivityController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
+    <Compile Include="Controllers\ActiviesController.cs" />
+    <Compile Include="Controllers\AndroidMenuController.cs" />
+    <Compile Include="Controllers\AttendController.cs" />
+    <Compile Include="Controllers\BaseDataController.cs" />
+    <Compile Include="Controllers\CertificateController.cs" />
+    <Compile Include="Controllers\DangerController.cs" />
+    <Compile Include="Controllers\DefaultController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controllers\DrugController.cs" />
+    <Compile Include="Controllers\EducationController.cs" />
+    <Compile Include="Controllers\LllegalRefromController.cs" />
+    <Compile Include="Controllers\MainController.cs" />
+    <Compile Include="Controllers\MedicalController.cs" />
+    <Compile Include="Controllers\PeopleController.cs" />
+    <Compile Include="Controllers\EvaluatePhoneController.cs" />
+    <Compile Include="Controllers\SevenSController.cs" />
+    <Compile Include="Controllers\SyncDataController.cs" />
+    <Compile Include="Controllers\ToolController.cs" />
+    <Compile Include="Controllers\EmergencyController.cs" />
+    <Compile Include="Controllers\ExperienceController.cs" />
+    <Compile Include="Controllers\FileController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LllegalController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\MeetController.cs" />
+    <Compile Include="Controllers\AttendanceController.cs" />
+    <Compile Include="Controllers\CultureController.cs" />
+    <Compile Include="Controllers\TrainingController.cs" />
+    <Compile Include="Controllers\UserEduncationFileController.cs" />
+    <Compile Include="Controllers\UserWorkAllocationController.cs" />
+    <Compile Include="Controllers\UserWorkStateController.cs" />
+    <Compile Include="Controllers\TaskController.cs" />
+    <Compile Include="Controllers\WorkPlanController.cs" />
+    <Compile Include="Controllers\WorkInnovationController.cs" />
+    <Compile Include="FaceImportDLL.cs" />
+    <Compile Include="FaceUtil.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="LoginUtility.cs" />
+    <Compile Include="Models\AccidentAnswerEvaluateModel.cs" />
+    <Compile Include="Models\AccidentAnswerModel.cs" />
+    <Compile Include="Models\AccidentPreviewModel.cs" />
+    <Compile Include="Models\ActiviesIEntity.cs" />
+    <Compile Include="Models\ActivityStatiticsModel.cs" />
+    <Compile Include="Models\AdviceModel.cs" />
+    <Compile Include="Models\CarcOrCardEntity.cs" />
+    <Compile Include="Models\CostSummaryModel.cs" />
+    <Compile Include="Models\CustomParameterModel.cs" />
+    <Compile Include="Models\DailyTaskModel.cs" />
+    <Compile Include="Models\DataBucket.cs" />
+    <Compile Include="Models\DeaprtmentTaskModel.cs" />
+    <Compile Include="Models\DeptCycleTaskModel.cs" />
+    <Compile Include="Models\EduPlan.cs" />
+    <Compile Include="Models\EmergencyCardModel.cs" />
+    <Compile Include="Models\DistrictModel.cs" />
+    <Compile Include="Models\JobEvaluate.cs" />
+    <Compile Include="Models\KeyBoxModel.cs" />
+    <Compile Include="Models\Meeting\MeetingModel.cs" />
+    <Compile Include="Models\Meeting\DailyTaskSummaryModel.cs" />
+    <Compile Include="Models\MeetSubjectModel.cs" />
+    <Compile Include="Models\Mis_JJRZModel.cs" />
+    <Compile Include="Models\OndutyMeetModel.cs" />
+    <Compile Include="Models\ProducingCheck\CheckTemplateQueryModel.cs" />
+    <Compile Include="Models\QueryModels\ActivityQuery.cs" />
+    <Compile Include="Models\QueryModels\MeetingQuery.cs" />
+    <Compile Include="Models\QueryModels\UnSigninQuery.cs" />
+    <Compile Include="Models\QueryModels\TaskQuery.cs" />
+    <Compile Include="Models\QuestionBankModel.cs" />
+    <Compile Include="Models\Sync\RoleSyncModel.cs" />
+    <Compile Include="Models\TicketModel.cs" />
+    <Compile Include="Models\FaultModel.cs" />
+    <Compile Include="Models\HumanDangerModel.cs" />
+    <Compile Include="Models\IndexManageModel.cs" />
+    <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\MeetingJobModel.cs" />
+    <Compile Include="Models\PerformanceModel.cs" />
+    <Compile Include="Models\QcActivityModel.cs" />
+    <Compile Include="Models\RegisterModel.cs" />
+    <Compile Include="Models\SevenSModel.cs" />
+    <Compile Include="Models\UserModel.cs" />
+    <Compile Include="Models\VideoModel.cs" />
+    <Compile Include="Models\HumanModel.cs" />
+    <Compile Include="Models\WorkPlanModel.cs" />
+    <Compile Include="Models\WorkInnovationModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Controllers\UserExperiencController.cs" />
+    <Compile Include="Controllers\YearWorkPlanController.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Global.asax" />
+    <Content Include="index.html" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\BSFramework.Application\BSFramework.Application.Busines\BSFramework.Application.Busines.csproj">
+      <Project>{21566527-8f54-4a8d-aa68-7662c2c31fb9}</Project>
+      <Name>BSFramework.Application.Busines</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Application\BSFramework.Application.Code\BSFramework.Application.Code.csproj">
+      <Project>{9b10db87-130c-41d3-8687-1fac877db74a}</Project>
+      <Name>BSFramework.Application.Code</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Application\BSFramework.Application.Entity\BSFramework.Application.Entity.csproj">
+      <Project>{c10920fe-8c74-4993-a7f4-1da189da842c}</Project>
+      <Name>BSFramework.Application.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Application\BSFramework.Application.IService\BSFramework.Application.IService.csproj">
+      <Project>{6ce11ff9-1cb7-494e-89c7-5f06bea94211}</Project>
+      <Name>BSFramework.Application.IService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Application\BSFramework.Application.Mapping\BSFramework.Application.Mapping.csproj">
+      <Project>{42234e7a-b484-479d-b1c1-08a08a59c935}</Project>
+      <Name>BSFramework.Application.Mapping</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Application\BSFramework.Application.Service\BSFramework.Application.Service.csproj">
+      <Project>{d6b8abea-c923-4605-99a9-b7aca5de4d8a}</Project>
+      <Name>BSFramework.Application.Service</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Cache\BSFramework.Cache.Factory\BSFramework.Cache.Factory.csproj">
+      <Project>{a68cdd21-2e12-4b11-95db-d0a0fced48b1}</Project>
+      <Name>BSFramework.Cache.Factory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Cache\BSFramework.Cache.Redis\BSFramework.Cache.Redis.csproj">
+      <Project>{51e69ae3-a885-4a84-b71c-801a413c5f1c}</Project>
+      <Name>BSFramework.Cache.Redis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Cache\BSFramework.Cache\BSFramework.Cache.csproj">
+      <Project>{5af4997c-4395-48af-990c-932259111dff}</Project>
+      <Name>BSFramework.Cache</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Util\BSFramework.Data.Dapper\BSFramework.Data.Dapper.csproj">
+      <Project>{f4e0fd13-ccd7-425e-af02-fa270c283447}</Project>
+      <Name>BSFramework.Data.Dapper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Util\BSFramework.Data.EF\BSFramework.Data.EF.csproj">
+      <Project>{7c84f157-09b6-42d8-85f2-04af1f31a046}</Project>
+      <Name>BSFramework.Data.EF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Util\BSFramework.Data.Repository\BSFramework.Data.Repository.csproj">
+      <Project>{1751a2dd-0f00-4c76-b180-97e8f72fe078}</Project>
+      <Name>BSFramework.Data.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Util\BSFramework.Data\BSFramework.Data.csproj">
+      <Project>{528f308b-d2cd-4bd1-a94f-bf94abef08d7}</Project>
+      <Name>BSFramework.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Util\BSFramework.Util.Extension\BSFramework.Util.Extension.csproj">
+      <Project>{4b7dde80-dfa1-4938-93f8-3721e2c592b9}</Project>
+      <Name>BSFramework.Util.Extension</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Util\BSFramework.Util.FlowWork\BSFramework.Util.FlowWork.csproj">
+      <Project>{2db6492a-3cda-40cb-9bab-51f00510b0c2}</Project>
+      <Name>BSFramework.Util.FlowWork</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Util\BSFramework.Util.Ioc\BSFramework.Util.Ioc.csproj">
+      <Project>{2a2611d5-0a19-4ead-a57f-0d361dc92639}</Project>
+      <Name>BSFramework.Util.Ioc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Util\BSFramework.Util.Log\BSFramework.Util.Log.csproj">
+      <Project>{2ef55895-d7dd-42d6-8741-f8100e5c210f}</Project>
+      <Name>BSFramework.Util.Log</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Util\BSFramework.Util.Offices\BSFramework.Util.Offices.csproj">
+      <Project>{4F8B359E-B664-48C0-88D0-31C140602654}</Project>
+      <Name>BSFramework.Util.Offices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Util\BSFramework.Util.WebControl\BSFramework.Util.WebControl.csproj">
+      <Project>{93f81df7-5a0b-4a13-a90e-8cf7c41955c3}</Project>
+      <Name>BSFramework.Util.WebControl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BSFramework.Util\BSFramework.Util\BSFramework.Util.csproj">
+      <Project>{07aa2566-d0e5-47af-a17d-3b1c6aee598d}</Project>
+      <Name>BSFramework.Util</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Bst.Bzzd.DataSource\Bst.Bzzd.DataSource.csproj">
+      <Project>{0404b662-9130-473b-b472-2bccb4d9a93a}</Project>
+      <Name>Bst.Bzzd.DataSource</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Bst.Fx.Uploading\Bst.Fx.Uploading.csproj">
+      <Project>{256970d1-cb06-4a0e-b62a-404be86dcf7c}</Project>
+      <Name>Bst.Fx.Uploading</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Bst.ServiceContract.MessageQueue\Bst.ServiceContract.MessageQueue.csproj">
+      <Project>{cb80a5fd-cefc-43f6-8246-a51a2ee2c64b}</Project>
+      <Name>Bst.ServiceContract.MessageQueue</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Fx\Bst.Fx.IWarning\Bst.Fx.IWarning.csproj">
+      <Project>{4CC0A37F-26EB-417C-9341-D26FE595E791}</Project>
+      <Name>Bst.Fx.IWarning</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Fx\Bst.Fx.MessageData\Bst.Fx.MessageData.csproj">
+      <Project>{7F9F5247-5FB9-4A45-8B7E-C3830895365A}</Project>
+      <Name>Bst.Fx.MessageData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Fx\Bst.Fx.Warning\Bst.Fx.Warning.csproj">
+      <Project>{235A2DBD-966A-4676-AF37-F8EC3876A361}</Project>
+      <Name>Bst.Fx.Warning</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XmlConfig\database.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XmlConfig\ioc.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XmlConfig\log4net.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XmlConfig\redis.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XmlConfig\system.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Version\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Properties\PublishProfiles\bzapp.pubxml" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="TaskScheduler">
+      <Guid>{E34CB9F1-C7F7-424C-BE29-027DCC09363A}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <SaveServerSettingsInUserFile>True</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!--<Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />-->
+  <!--<Import Project="..\..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets')" />-->
+  <!--<Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>这台计算机上缺少此项目引用的 NuGet 程序包。使用“NuGet 程序包还原”可下载这些程序包。有关更多信息，请参见 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets'))" />
+  </Target>
+  <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
+    <Error Condition="!Exists('..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
+    <Error Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
+  </Target>-->
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

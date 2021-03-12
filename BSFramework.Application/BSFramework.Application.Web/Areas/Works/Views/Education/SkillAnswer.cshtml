@@ -1,0 +1,1154 @@
+﻿@{
+    ViewBag.Title = "SkillAnswer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model BSFramework.Application.Entity.EducationManage.EduBaseInfoEntity
+
+<style type="text/css">
+    .layui-layer-title {
+        background: #fff !important;
+        font-weight: 800;
+        font-size: 16px;
+        line-height: 50px;
+    }
+
+    #techerPeople li.on {
+        background-position: 10px top;
+        background-color: #3669e1;
+        color: #fff;
+    }
+
+    #registerPeople li.on {
+        background-position: 10px top;
+        background-color: #3669e1;
+        color: #fff;
+    }
+
+    .anserTheme {
+        border: 0;
+        border-bottom: 1px solid #ccc;
+        width: 86%;
+        line-height: 36px;
+    }
+    .anserTheme1 {
+        border: 0;
+        border-bottom: 1px solid #ccc;
+        width: 86%;
+        display:block;
+        margin:0 auto;
+        overflow:hidden;
+        height:40px;
+        line-height:36px;
+        padding:2px;
+        outline:0 none;
+        box-shadow:inset 0 1px 3px rgba(0,0,0,0.1) 0 0 8px rgba(83,168,236,0.6)
+        /*line-height: 36px;*/
+        /*text-decoration:underline;*/
+    }
+    .anserPeople {
+        border: 0;
+        border-bottom: 1px solid #ccc;
+        width: 86%;
+        line-height: 30px;
+    }
+</style>
+
+<link rel="stylesheet" href="@Url.Content("~/Content/scripts/layui/css/layui.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/before.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/skillAnswer.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/scripts/plugins/jquery-autocompleter/css/mains.css")" />
+
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/base.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jquery-autocompleter/js/jquery.autocompleters.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+
+<link rel="stylesheet" href="@Url.Content("~/content/styles/static/css/peccancy.css")">
+
+
+
+<script>
+
+    var el;
+    var hiApparise;
+    $(function () {
+        window.onbeforeunload = fn$SaveTime;  //页面url更改事件
+
+        var myfiles = jQuery.parseJSON(jQuery('#filedata').val() || '[]');
+        jQuery.each(myfiles, function () {
+            jQuery('#kj').append('<a class="" style="margin-right:60px;color:blue;line-height:40px;" href="@Url.Action("DownloadFile", "ResourceFile", new { area = "PublicInfoManage" })?keyValue=' + this.FileId + '" >' + this.FileName + '</a>');
+        });
+        //播放音频
+        $(".play-audio").click(function () {
+            var url = $(this).data('url');
+            var html = '<audio id="audio" src="' + url + '" controls autoplay style="width:483px;display:block;"></audio>';
+            $('#audio-warp').append(html);
+            $('#audio')[0].addEventListener('canplaythrough', function () {
+                this.play();
+            });
+            layer.open({
+                type: 1,
+                area: ['460px', '36px'],
+                content: $('#audio-warp '),
+                title: false,
+                end: function () {
+                    $('#audio-warp').empty();
+                    $('#audio-warp').hide();
+                }
+            })
+        });
+
+        //图片处理框
+        @for(int i = 0; i<Model.Answers.Count;i++){
+            @Html.Raw(string.Format("layer.photos({{photos: '{0}',shift: 5}});","#"+i+ "images-container"));
+        }
+        @for(int i = 0; i<Model.Answers.Count;i++){
+            @Html.Raw(string.Format("layer.photos({{photos: '{0}',shift: 5}});","#"+i+ "images-containercs"));
+        }
+        @for(int i = 0; i<Model.Answers.Count;i++){
+            @Html.Raw(string.Format("layer.photos({{photos: '{0}',shift: 5}});","#"+i+ "images-containercs1"));
+        }
+        @Html.Raw(string.Format("layer.photos({{photos: '{0}',shift: 5}});","#jkimages-container"));
+        //选择主持人
+        jQuery('#Teacher').click(function () {
+
+            var size = jQuery('#techerPeople li').size();
+            var h = 56 * (size + 1) + 10;
+            var winH = $(window).height();
+            if (h > winH - 100) {
+                h = winH - 100
+            }
+
+            layer.open({
+                area: ['300px', h + 'px'],
+                title: '选择主持人',
+                type: 1,
+                content: $('#techerPeople')
+            });
+        });
+
+        jQuery('#techerPeople li').click(function () {
+            jQuery('#techerPeople li').removeClass('on');
+            jQuery(this).addClass('on');
+            jQuery('#TeacherId').val(jQuery(this).data('id'));
+            jQuery('#Teacher').val(jQuery(this).text());
+            layer.closeAll();
+        });
+
+
+        jQuery('#RegisterPeople').click(function () {
+
+            var size = jQuery('#registerPeople li').size();
+            var h = 56 * (size + 1) + 10;
+            var winH = $(window).height();
+            if (h > winH - 100) {
+                h = winH - 100
+            }
+
+            layer.open({
+                area: ['300px', h + 'px'],
+                title: '选择记录人',
+                type: 1,
+                content: $('#registerPeople')
+            });
+        });
+
+        jQuery('#registerPeople li').click(function () {
+            jQuery('#registerPeople li').removeClass('on');
+            jQuery(this).addClass('on');
+            jQuery('#RegisterPeopleId').val(jQuery(this).data('id'));
+            jQuery('#RegisterPeople').val(jQuery(this).text());
+            layer.closeAll();
+        });
+
+        //获取点评数据
+        $.post('@Url.Action("GetEduCommentTag")', function (result) {
+            for (var i = 0; i < result.length; i++) {
+                $("#dangerous_nav").append("<li onclick=\"commentItemSelect(this)\">" + result[i].Tag + "</li>")
+            }
+        })
+
+        //点评窗口
+        $('.dianping').on('click', function () {
+
+            el = $(this).parent('p').find('span');
+
+            hiApparise = $(this).parent('p').find('input');
+            var dangrous = el.text();
+
+            jQuery('#dangerous_nav li').each(function (i, o) {
+                jQuery(this).removeClass('select');
+                var dd = jQuery(this).text();
+
+                if (dangrous.indexOf(dd || 'xxxxxxxxxxxxx') >= 0)
+                    jQuery(this).addClass('select');
+            });
+
+            jQuery('.dangerous_text input').val('');
+
+            $('#modal_dangerous').modal();
+        });
+
+        //点评确定按钮
+        jQuery('#modal_dangerous .measure_ok').click(function () {
+            var html = '';
+            jQuery('#dangerous_nav li.select').each(function (i, o) {
+                html += jQuery(this).text() + ',';
+            });
+
+            el.text(html.replace(/,$/, ''));
+            hiApparise.val(html.replace(/,$/, ''));
+        });
+
+        //添加点评标签
+        jQuery('#modal_dangerous .add_btn').click(function () {
+            var txt = jQuery('#dangerous_text input').val();
+            if (txt) {
+                jQuery.post('@Url.Action("PostEduCommentTag")', { EduAnswerCommentTag: txt }, function (data) {
+                    if (data.success) {
+                        jQuery('#dangerous_nav').append('<li onclick=\"commentItemSelect(this)\">' + txt + '</li>');
+                        jQuery('#dangerous_text input').val('');
+                        $('#dangerous_box li').each(function () {
+
+                        });
+                    } else {
+                        layer.msg(data.message);
+                    }
+                }, 'json');
+            }
+        });
+
+        //评分
+        $(".star").click(function () {
+            var spanScore = $(this).parent("p").find("span");
+            var hiScore = $(this).parent("p").find("input");
+            var scrore = ($(this).data("score"));
+
+            $(this).parent("p").find("img").each(function (e) {
+                if (e < scrore)
+                    $(this).attr("src", "@Url.Content("~/Content/images/start_full.png")");
+                else
+                    $(this).attr("src", "@Url.Content("~/Content/images/start_empty.png")");
+            });
+            spanScore.text(scrore + '分');
+
+            //隐藏框赋值
+            hiScore.val(scrore);
+        });
+
+
+        //点评标签关闭按钮
+        jQuery('#modal_danger .btn_close').click(function () {
+            var html = '';
+            jQuery('.danger_nav li.select').each(function (i, o) {
+                html += jQuery(o).text() + ',';
+            });
+
+            jQuery(el).text(html.replace(/,$/, ''));
+            jQuery(el).attr('title', html.replace(/,$/, ''));
+        });
+
+
+        $('.main-sidebar,.main-content').niceScroll({
+            autohidemode: false
+        });
+        $('.table-today tr').hover(function () {
+            $(this).addClass('hover');
+        }, function () {
+            $(this).removeClass('hover');
+        });
+        $('.table-today tr').click(function () {
+            $(this).toggleClass('actives');
+        })
+        $('.user>.dropdown-menu').css({
+            left: $('.user').innerWidth() - $('.user>.dropdown-menu').width() - 65
+        });
+        $('.list-item').hover(function () {
+            $(this).children('div').stop().animate({
+                top: 0
+            }, 500);
+        }, function () {
+            $(this).children('div').stop().animate({
+                top: '194px'
+            }, 500);
+        })
+        @*$('#Theme').autocompleter({
+            source: '@Url.Action("FindTrainings")',
+            customClass: ['find1'],
+            highlightMatches: true,
+            empty: false,
+            cache: false,
+            limit: 5,
+            customLabel: 'Theme',
+            customValue: 'Theme',
+            callback: function (value, index, selected) {
+                $("#Theme").val(value);
+                layer.closeAll();
+            }
+        });*@
+    });
+    function fn$SaveTime() {
+        var id = $("#ID").val();
+        var startdate = $("#ActivityDate").val();
+        $.post("@Url.Action("SaveTime")", { id: id, startdate: startdate }, function () {
+            // layer.msg("保存成功");
+        })
+    }
+    //长时间未操作
+    function hasOperate(callback, second) {
+        var status = true;
+        var timer;
+        document.body.onmousedown = function () {
+            status = true;
+        }
+        document.body.onmouseup = function () {
+            countTime();
+        }
+        function countTime() {
+            setInterval(function () {
+                if (!status) {
+                    callback();
+                    status = true;
+                }
+            }, 1);
+            if (timer) {
+                clearInterval(timer);
+            }
+            timer = setInterval(function () {
+                status = false;
+            }, second);
+        }
+        countTime();
+    }
+    function check() {
+        //超过时间未点击鼠标 ，直接结束培训
+
+        var id = $("#ID").val();
+        var startdate = $("#ActivityDate").val();
+        $.post("@Url.Action("SaveTime")", { id: id, startdate: startdate }, function () {
+            //alert("超过10分钟未操作，本次培训时长已自动记录，页面即将跳转！");
+            location.href = "@Url.Action("Index")";
+        })
+    }
+    hasOperate(check, 600000);
+    //保存按钮
+    function fn$Save() {
+        var id = $("#ID").val();
+        var aryData = new Array();
+        var b = true;
+        //保存基本信息
+        var eduJson = {
+            ID: id,
+            Theme: $("#Theme").val(),
+            Teacher: $("#Teacher").val(),
+            TeacherId: $("#TeacherId").val(),
+            RegisterPeopleId: $("#RegisterPeopleId").val(),
+            RegisterPeople: $("#RegisterPeople").val(),
+            Theme: $("#Theme").val(),
+            StartDate: $("#ActivityDate").val(),
+            RunWay:$("#RunWay").val()
+        }
+
+        if ($("#Theme").val() == "") {
+            layer.msg("请输入题目！");
+            return;
+        }
+        //遍历所有回答问题节点
+        $(".main").each(function () {
+            var json = {
+                ID: $(this).find("input:eq(0)").val(),
+                AppraiseContent: $(this).find("input:eq(1)").val(),
+                Grade: $(this).find("input:eq(2)").val()
+            };
+            var grade = $(this).find("input:eq(2)").val();
+            if (!grade) {
+                b = false;
+                return;
+            }
+            aryData.push(json);
+        });
+       // if (!b) { layer.msg("请选择评分！"); return; }
+        //Post提交评价数据
+        $.post("@Url.Action("SaveAnserComment")", { answerData: JSON.stringify(aryData), eduBaseData: JSON.stringify(eduJson) }, function () {
+            layer.msg("保存成功");
+        })
+    }
+
+    //结束技术问答
+    function fn$Finish() {
+        var aryData = new Array();
+        var id = $("#ID").val();
+        var Theme = $("#Theme").val();
+        var Teacher = $("#Teacher").val();
+        var TeacherId = $("#TeacherId").val();
+        var RegisterPeople = $("#RegisterPeople").val();
+        var RegisterPeopleId = $("#RegisterPeopleId").val();
+        var appraise = $("#NewAppraiseContent").val();
+        var startdate = $("#ActivityDate").val();
+        var RunWay = $("#RunWay").val();
+
+        //遍历所有回答问题节点
+        $(".main").each(function () {
+            var json = {
+                ID: $(this).find("input:eq(0)").val(),
+                AppraiseContent: $(this).find("input:eq(1)").val(),
+                Grade: $(this).find("input:eq(2)").val()
+            };
+            var grade = $(this).find("input:eq(2)").val();
+            if (!grade) {
+                b = false;
+                return;
+            }
+            aryData.push(json);
+        });
+        layer.confirm("培训结束后无法变更，请确认？", { title: "提示" }, function () {
+            $.post("@Url.Action("FinshEduBaseInfo")", { id: id, startdate: startdate, par1: Theme, par2: Teacher, par3: TeacherId, par4: RegisterPeople, par5: RegisterPeopleId, par6: appraise, par7: RunWay, answerData: JSON.stringify(aryData) }, function () {
+                location.href = "@Url.Action("Index")";
+            })
+        })
+
+    }
+
+
+    //随机选择用户，关闭窗口后刷新页面
+    function fn$randomSelectUser() {
+        var id = $("#ID").val();
+        $.post('@Url.Action("RandomSelectAnswerUser")', { eduId: id }, function (result, status) {
+            if (result) {
+                layer.open({
+                    area: ['620px', '400px'],
+                    title: '提示',
+                    type: 1,
+                    content: '<div style="margin-top:110px;text-align:center;font-size:65px;letter-spacing:50px;" >' + result + '</div>',
+                    closeBtn: 0,
+                    //cancel: function () {
+                    //    return false;
+                    //    ////刷新页面
+                    //    //document.location.reload();
+                    //},
+                    btn: ["答题完毕"],
+                    yes: function () {
+                        //刷新页面
+                        document.location.reload();
+                    }
+                });
+            }
+            else {
+                layer.msg("所有人都已完成问答");
+            }
+        })
+    }
+    function fn$Refresh()
+    {
+        window.location.reload();
+    }
+    //点评选择按钮
+    function commentItemSelect(e) {
+        if (jQuery(e).hasClass('select'))
+            jQuery(e).removeClass('select');
+        else
+            jQuery(e).addClass('select');
+    }
+</script>
+<div class="main-content details">
+    @Html.HiddenFor(x => x.ActivityDate)
+    <div class="container-fluid">
+        <div class="clearfix mg-b-10">
+            <div class="title">
+                <a class="pull-left" href="@Url.Action("Index")" style="color: #3669e1; text-decoration: none;">
+                    <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+                    @if (Model.EduType == "1")
+                    {
+            @Html.Raw("技术讲课");
+        }
+                    @if (Model.EduType == "2")
+                    {
+            @Html.Raw("技术问答");
+        }
+                    @if (Model.EduType == "3")
+                    {
+            @Html.Raw("事故预想");
+        }
+                    @if (Model.EduType == "4")
+                    {
+            @Html.Raw("反事故演习");
+        }
+                </a>
+                <div class="pull-right" style="margin-top:-3px;">
+                    <button class="my-btn bg-ffb319 lh-36 h-36 w-140" style="font-weight: normal;" id="btnOver" type="button" onclick="over()">
+                        <img src="@Url.Content("~/Content/styles/static/images/activity-icon-1.png")" alt="">
+                        结束活动
+                    </button>
+                </div>
+                @{
+                    if (Model.EduType == "1")
+                    {
+            <div class="pull-right" style="margin-top:-3px;margin-right:20px">
+                <button class="my-btn bg-ffb319 lh-36 h-36 w-140" style="font-weight: normal;" id="" type="button" onclick="fn$Refresh()">
+                    <img src="@Url.Content("~/Content/styles/static/images/activity-icon-1.png")" alt="">
+                    刷新记录
+                </button>
+            </div> }
+                        else
+                        {
+            <div class="pull-right" style="margin-top:-3px;margin-right:20px">
+                <button class="my-btn bg-ffb319 lh-36 h-36 w-140" style="font-weight: normal;" id="" type="button" onclick="fn$Save()">
+                    <img src="@Url.Content("~/Content/styles/static/images/activity-icon-1.png")" alt="">
+                    保存记录
+                </button>
+            </div> } }
+
+
+            </div>
+        </div>
+        <div class="bg-e3ebfd pd-10 warp">
+            <div>
+                <div class="body" style="position: relative;">
+                    <div class="aside pd-20 bd-e3ebfd">
+                        <div class="clearfix mg-b-20">
+                            <div class="pull-left">
+                                @if (Model.Files.Count(x => x.Description == "教育培训二维码") > 0)
+                                {
+                    <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = Model.Files.FirstOrDefault(x => x.Description == "教育培训二维码").FileId, area = "PublicInfoManage" })" style="width:120px;" alt="">}
+                            </div>
+
+                            <div class="pull-right mg-l-10">
+                                <p>用APP扫码</p>
+                                <p>可上传会议</p>
+                                <p class="c-3669e1">图片和音频</p>
+                            </div>
+                        </div>
+
+                        @*<button class="bg-3669e1" data-toggle="modal" data-target="#modal1" onclick="return false;">结束活动</button>*@
+                    </div>
+                    <!--<div class="rightBottom" style="position:fixed;right:60px;bottom:10px;">
+                        <div>
+                            @for (int i = 0; i < Model.Files.Count; i++)
+                            {
+                                if (Model.Files[i].Description == "教育培训二维码")
+                                {
+                <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = Model.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:120px; height:120px;">break;
+                                }
+                            }
+
+                            <p style="width:90px;">用手机APP扫码可上传会议<span style="color: #3669e1;">描述图片和音频</span></p>
+                        </div>
+                        <div>-->
+                            @*@{
+                    if (Model.EduType == "1")
+                    {
+                        <button class="layui-btn layui-btn-primary" onclick="fn$Refresh()" style="border: 2px solid #3669e1;">刷新</button>
+                    }
+                    else
+                    {
+                        <button class="layui-btn layui-btn-primary" onclick="fn$Save()" style="border: 2px solid #3669e1;">保存</button>
+                    }
+                }*@
+
+                            @*<button class="layui-btn" onclick="fn$Finish()" style="background: #3669e1;">培训结束</button>*@
+                        <!--</div>
+                    </div>-->
+                    <div class="pd-20 bg-fff answer" style="min-height:780px">
+                        @{ if (Model.EduType != "1")
+                                        {
+
+                            <ul class="rightSmall">
+                                <li><img src="~/Content/images/edu_random.png" /><a href="javascript:void(0)" onclick="fn$randomSelectUser()">随机点名</a> </li>
+                                @if (Model.EduType != "4")
+                                {
+                <li><img src="~/Content/images/edu_result.png" />标准答案</li>}
+                            </ul> } }
+                        <ul class="top" style="margin-bottom: 56px;">
+                            <li>
+                                <h1>题目</h1>
+                                @Html.HiddenFor(x => x.ID)
+                                @Html.TextBoxFor(x => x.Theme, new { @class = "anserTheme" })
+                            </li>
+                            @{ if (Model.EduType == "1")
+                                            {
+                                <li style="width:100%;">
+                                    <h1 style="width:100px;">课件</h1>
+                                    @Html.Hidden("filedata", ViewData["files"])
+                                    <div id="kj"></div>
+                                </li> } }
+
+                            <li>
+                                <h1>主持人</h1>
+                                @Html.HiddenFor(x => x.TeacherId, new { @class = "anserTheme" })
+                                @Html.TextBoxFor(x => x.Teacher, new { @class = "anserTheme", @readonly = "readonly", @style = "width:350px;" })
+                            </li>
+                            <li style="">
+                                <h1>培训时间</h1>
+                                <p style="width:350px;">@Html.Raw(Model.ActivityDate.Value.ToString("yyyy-MM-dd HH:mm"))</p>
+                            </li>
+                            <li>
+                                <h1>记录人</h1>
+                                @Html.HiddenFor(x => x.RegisterPeopleId, new { @class = "anserTheme" })
+                                @Html.TextBoxFor(x => x.RegisterPeople, new { @class = "anserTheme", @readonly = "readonly", @style = "width:300px;" })
+                            </li>
+                            @{ if (Model.EduType == "4")
+                                            {
+                                <li style="width:100%;">
+                                    <h1 style="width:80px;">运行方式</h1>
+                                    @Html.TextBoxFor(x => x.RunWay, new { @class = "anserTheme" })
+                                </li> } }
+
+                        </ul>
+                        @if (Model.EduType == "1")
+                        {
+                <ul class="main" style="min-height:400px">
+                    <li>
+                        <h1>讲课内容</h1>
+                        <dl>
+                            <dt>
+                                <p>音频</p>
+                                <label>
+                                    @for (int p = 0; p < Model.Files1.Count(); p++)
+                                    {
+                                        if (Model.Files1[p].Description == "技术讲课音频")
+                                        {
+                    <span style="overflow:hidden;height:35px;" class="play-audio" data-url="@Url.Content(Model.Files1[p].FilePath)">@Model.Files1[p].FileName</span>}
+                                    }
+                                </label>
+                            </dt>
+                            <dt style="margin-top:20px;">
+                                <p>图片</p>
+                                <div id="jkimages-container" style="width: 90%;height:100px;overflow:hidden;">
+
+                                    @for (int q = 0; q < Model.Files1.Count; q++)
+                                    {
+                                        if (Model.Files1[q].Description == "技术讲课图片")
+                                        {
+                    <img layer-pid="1" layer-src="@Url.Content(Model.Files1[q].FilePath)" src="@Url.Content(Model.Files1[q].FilePath)" />}
+                                    }
+                                </div>
+                            </dt>
+                            <dt style="margin-top:20px;">
+                                <p>描述</p>
+                                <p>
+                                    <span style="overflow:hidden;height:35px;">@Html.Raw(Model.Describe)</span>
+                                </p>
+                            </dt>
+                        </dl>
+                    </li>
+                    <li style="margin-top:60px;">
+                        <h1>效果评价</h1>
+
+                        @Html.TextAreaFor(x => x.NewAppraiseContent, new { @class = "anserTheme" })
+                    </li>
+                </ul> }
+                            else if (Model.Answers.Count == 0) //无答题数据，默认显示
+                            {
+                                var height = "400px";
+                                if (Model.EduType == "3")
+                                {
+                                    height = "550px";
+                                }
+                                if (Model.EduType == "4")
+                                {
+                                    height = "750px";
+                                }
+                <ul class="main" style="min-height:@height">
+                    <li>
+                        <h1>答题人</h1>
+                        <p style="margin-top:15px;"></p>
+                    </li>
+                    @if (Model.EduType == "2")
+                    {
+                <li style="margin-top:50px;margin-bottom:50px;">
+                    <h1 style="margin-top:15px;">答题内容</h1>
+                    <dl>
+                        <dt>
+                            <p>音频</p>
+                            <p id="play-audio-container">
+
+                            </p>
+                        </dt>
+                        <dt style="margin-top:30px;">
+                            <p>图片</p>
+                            <div></div>
+                        </dt>
+                        <dt style="margin-top:30px;">
+                            <p>描述</p>
+                            <p>
+
+                            </p>
+                        </dt>
+                    </dl>
+                </li>}
+                    @if (Model.EduType == "3")
+                    {
+                <li>
+                    <h1>事故现象</h1>
+                    <dl>
+                        <dt>
+                            <p>音频</p>
+                            <p id="play-audio-container">
+
+                            </p>
+                        </dt>
+                        <dt>
+                            <p>图片</p>
+                            <div></div>
+                        </dt>
+                        <dt>
+                            <p>描述</p>
+                            <p>
+
+                            </p>
+                        </dt>
+                    </dl>
+                </li>
+                                    <li style="align-items:center;margin-bottom:50px;">
+                                        <h1>采取措施</h1>
+                                        <dl>
+                                            <dt>
+                                                <p>音频</p>
+                                                <p id="play-audio-container">
+
+                                                </p>
+                                            </dt>
+                                            <dt>
+                                                <p>图片</p>
+                                                <div></div>
+                                            </dt>
+                                            <dt>
+                                                <p>描述</p>
+                                                <p>
+
+                                                </p>
+                                            </dt>
+                                        </dl>
+                                    </li>}
+                    @if (Model.EduType == "4")
+                    {
+                <li>
+                    <h1>现象描述</h1>
+                    <dl>
+                        <dt>
+                            <p>音频</p>
+                            <p id="play-audio-container">
+
+                            </p>
+                        </dt>
+                        <dt>
+                            <p>图片</p>
+                            <div></div>
+                        </dt>
+                        <dt>
+                            <p>描述</p>
+                            <p>
+
+                            </p>
+                        </dt>
+                    </dl>
+                </li>
+                                    <li>
+                                        <h1>原因分析</h1>
+                                        <dl>
+                                            <dt>
+                                                <p>音频</p>
+                                                <p id="play-audio-container">
+
+                                                </p>
+                                            </dt>
+                                            <dt>
+                                                <p>图片</p>
+                                                <div></div>
+                                            </dt>
+                                            <dt>
+                                                <p>描述</p>
+                                                <p>
+
+                                                </p>
+                                            </dt>
+                                        </dl>
+                                    </li>
+                                                        <li style="align-items:center;margin-bottom:50px;">
+                                                            <h1>采取措施</h1>
+                                                            <dl>
+                                                                <dt>
+                                                                    <p>音频</p>
+                                                                    <p id="play-audio-container">
+
+                                                                    </p>
+                                                                </dt>
+                                                                <dt>
+                                                                    <p>图片</p>
+                                                                    <div></div>
+                                                                </dt>
+                                                                <dt>
+                                                                    <p>描述</p>
+                                                                    <p>
+
+                                                                    </p>
+                                                                </dt>
+                                                            </dl>
+                                                        </li>}
+                    <li class="evaluate">
+                        <h1>点评</h1>
+                        <p class="left" style="margin-top:20px;">
+
+                        </p>
+                        <p class="right" style="border: 0;width:30%;margin-left: 5%;">
+                            <strong>评分</strong>
+                            <img data-score="1" src="~/Content/images/start_empty.png" />
+                            <img data-score="2" src="~/Content/images/start_empty.png" />
+                            <img data-score="3" src="~/Content/images/start_empty.png" />
+                            <img data-score="4" src="~/Content/images/start_empty.png" />
+                            <img data-score="5" src="~/Content/images/start_empty.png" />
+                            <span>0分</span>
+                        </p>
+                    </li>
+                </ul> }
+                            else
+                            {   //非技术讲课，且有答题数据
+                                for (var i = 0; i < Model.Answers.Count; i++)
+                                {
+                                    var height = "380px";
+                                    if (Model.EduType == "3")
+                                    {
+                                        height = "680px";
+                                    }
+                                    if (Model.EduType == "4")
+                                    {
+                                        height = "1100px";
+                                    }
+                <ul class="main" style="min-height:@height">
+                    <li>
+                        @if (Model.EduType == "4")
+                        {
+                <h1>演习人</h1> }
+                                    else
+                                    {
+                <h1>答题人</h1>}
+                        <input type="hidden" value="@Model.Answers[i].ID" />
+                        <p>@Html.DisplayFor(x => x.Answers[i].AnswerPeople)</p>
+                    </li>
+                    @if (Model.EduType == "2")
+                    {
+                <li>
+                    <h1>答题内容</h1>
+                    <dl>
+                        <dt>
+                            <p>音频</p>
+                            <p id="play-audio-container">
+                                @for (int j = 0; j < Model.Answers[i].Files.Count; j++)
+                                {
+                                    if (Model.Answers[i].Files[j].Description == "技术问答音频")
+                                    {
+                <span class="play-audio" data-url="@Url.Content(Model.Answers[i].Files[j].FilePath)">@Model.Answers[i].Files[j].FileName</span>}
+                                        }
+                            </p>
+                        </dt>
+                        <dt>
+                            <p>图片</p>
+                            <div id="@Html.Raw(i)images-container" style="width: 90%;height:120px;">
+
+                                @for (int k = 0; k < Model.Answers[i].Files.Count; k++)
+                                {
+                                    if (Model.Answers[i].Files[k].Description == "技术问答图片")
+                                    {
+                <img layer-pid="1" layer-src="@Url.Content(Model.Answers[i].Files[k].FilePath)" src="@Url.Content(Model.Answers[i].Files[k].FilePath)" />}
+                                        }
+                            </div>
+                        </dt>
+                        <dt>
+                            <p>描述</p>
+                            <p>
+                                <span>@Html.Raw(Model.Answers[i].AnswerContent)</span>
+                            </p>
+                        </dt>
+                    </dl>
+                </li>}
+                    @if (Model.EduType == "3")
+                    {
+                <li>
+                    <h1>事故现象</h1>
+                    <dl>
+                        <dt>
+                            <p>音频</p>
+                            <p id="play-audio-container">
+                                @for (int j = 0; j < Model.Answers[i].Files.Count; j++)
+                                {
+                                    if (Model.Answers[i].Files[j].Description == "事故现象音频")
+                                    {
+                <span class="play-audio" data-url="@Url.Content(Model.Answers[i].Files[j].FilePath)">@Model.Answers[i].Files[j].FileName</span>}
+                                        }
+                            </p>
+                        </dt>
+                        <dt>
+                            <p>图片</p>
+                            <div id="@Html.Raw(i)images-container" style="width: 90%; height:120px;">
+
+                                @for (int k = 0; k < Model.Answers[i].Files.Count; k++)
+                                {
+                                    if (Model.Answers[i].Files[k].Description == "事故现象图片")
+                                    {
+                <img layer-pid="1" layer-src="@Url.Content(Model.Answers[i].Files[k].FilePath)" src="@Url.Content(Model.Answers[i].Files[k].FilePath)" />}
+                                        }
+                            </div>
+                        </dt>
+                        <dt>
+                            <p>描述</p>
+                            <p>
+                                <span>@Html.Raw(Model.Answers[i].Description)</span>
+                            </p>
+                        </dt>
+                    </dl>
+                </li>
+                                        <li>
+                                            <h1 style=" margin-top:70px;">采取措施</h1>
+                                            <dl>
+                                                <dt>
+                                                    <p>音频</p>
+                                                    <p id="play-audio-container">
+                                                        @for (int j = 0; j < Model.Answers[i].Files.Count; j++)
+                                                        {
+                                                            if (Model.Answers[i].Files[j].Description == "采取措施音频")
+                                                            {
+                                <span class="play-audio" data-url="@Url.Content(Model.Answers[i].Files[j].FilePath)">@Model.Answers[i].Files[j].FileName</span>}
+                                                        }
+                                                    </p>
+                                                </dt>
+                                                <dt>
+                                                    <p>图片</p>
+                                                    <div id="@Html.Raw(i)images-containercs" style="width: 90%;height:120px;">
+
+                                                        @for (int k = 0; k < Model.Answers[i].Files.Count; k++)
+                                                        {
+                                                            if (Model.Answers[i].Files[k].Description == "采取措施图片")
+                                                            {
+                                <img layer-pid="1" layer-src="@Url.Content(Model.Answers[i].Files[k].FilePath)" src="@Url.Content(Model.Answers[i].Files[k].FilePath)" />}
+                                                        }
+                                                    </div>
+                                                </dt>
+                                                <dt>
+                                                    <p>描述</p>
+                                                    <p>
+                                                        <span>@Html.Raw(Model.Answers[i].AnswerContent)</span>
+                                                    </p>
+                                                </dt>
+                                            </dl>
+                                        </li>}
+                    @if (Model.EduType == "4")
+                    {
+                <li>
+                    <h1>现象描述</h1>
+                    <dl>
+                        <dt>
+                            <p>音频</p>
+                            <p id="play-audio-container">
+                                @for (int j = 0; j < Model.Answers[i].Files.Count; j++)
+                                {
+                                    if (Model.Answers[i].Files[j].Description == "事故现象音频")
+                                    {
+                <span class="play-audio" data-url="@Url.Content(Model.Answers[i].Files[j].FilePath)">@Model.Answers[i].Files[j].FileName</span>}
+                                        }
+                            </p>
+                        </dt>
+                        <dt>
+                            <p>图片</p>
+                            <div id="@Html.Raw(i)images-container" style="width: 90%; height:120px;">
+
+                                @for (int k = 0; k < Model.Answers[i].Files.Count; k++)
+                                {
+                                    if (Model.Answers[i].Files[k].Description == "事故现象图片")
+                                    {
+                <img layer-pid="1" layer-src="@Url.Content(Model.Answers[i].Files[k].FilePath)" src="@Url.Content(Model.Answers[i].Files[k].FilePath)" />}
+                                        }
+                            </div>
+                        </dt>
+                        <dt>
+                            <p>描述</p>
+
+                            <textarea style="border:0px;width:90%;height:80px;">@Html.Raw(Model.Answers[i].Description)</textarea>
+
+                        </dt>
+                    </dl>
+                </li>
+                                        <li>
+                                            <h1>原因分析</h1>
+                                            <dl>
+                                                <dt>
+                                                    <p>音频</p>
+                                                    <p id="play-audio-container">
+                                                        @for (int j = 0; j < Model.Answers[i].Files.Count; j++)
+                                                        {
+                                                            if (Model.Answers[i].Files[j].Description == "原因分析音频")
+                                                            {
+                                <span class="play-audio" data-url="@Url.Content(Model.Answers[i].Files[j].FilePath)">@Model.Answers[i].Files[j].FileName</span>}
+                                                        }
+                                                    </p>
+                                                </dt>
+                                                <dt>
+                                                    <p>图片</p>
+                                                    <div id="@Html.Raw(i)images-containercs1" style="width: 90%; height:120px;">
+
+                                                        @for (int k = 0; k < Model.Answers[i].Files.Count; k++)
+                                                        {
+                                                            if (Model.Answers[i].Files[k].Description == "原因分析图片")
+                                                            {
+                                <img layer-pid="1" layer-src="@Url.Content(Model.Answers[i].Files[k].FilePath)" src="@Url.Content(Model.Answers[i].Files[k].FilePath)" />}
+                                                        }
+                                                    </div>
+                                                </dt>
+                                                <dt>
+                                                    <p>描述</p>
+
+                                                    <textarea style="border:0px;width:90%;height:80px;">@Html.Raw(Model.Answers[i].Reason)</textarea>
+
+                                                </dt>
+                                            </dl>
+                                        </li>
+                                                                <li style="align-items: center; margin-bottom: 50px;">
+                                                                    <h1>采取措施</h1>
+                                                                    <dl>
+                                                                        <dt>
+                                                                            <p>音频</p>
+                                                                            <p id="play-audio-container">
+                                                                                @for (int j = 0; j < Model.Answers[i].Files.Count; j++)
+                                                                                {
+                                                                                    if (Model.Answers[i].Files[j].Description == "采取措施音频")
+                                                                                    {
+                                                        <span class="play-audio" data-url="@Url.Content(Model.Answers[i].Files[j].FilePath)">@Model.Answers[i].Files[j].FileName</span>}
+                                                                                }
+                                                                            </p>
+                                                                        </dt>
+                                                                        <dt>
+                                                                            <p>图片</p>
+                                                                            <div id="@Html.Raw(i)images-containercs" style="width: 90%;height:120px;">
+
+                                                                                @for (int k = 0; k < Model.Answers[i].Files.Count; k++)
+                                                                                {
+                                                                                    if (Model.Answers[i].Files[k].Description == "采取措施图片")
+                                                                                    {
+                                                        <img layer-pid="1" layer-src="@Url.Content(Model.Answers[i].Files[k].FilePath)" src="@Url.Content(Model.Answers[i].Files[k].FilePath)" />}
+                                                                                }
+                                                                            </div>
+                                                                        </dt>
+                                                                        <dt>
+                                                                            <p>描述</p>
+
+                                                                            <textarea style="border:0px;width:90%;height:80px;">@Html.Raw(Model.Answers[i].AnswerContent)</textarea>
+
+                                                                        </dt>
+                                                                    </dl>
+                                                                </li>}
+                    <li class="evaluate">
+                        <h1>点评</h1>
+                        <p class="left">
+                            <input type="hidden" value="@Model.Answers[i].AppraiseContent" />
+                            @if (string.IsNullOrEmpty(Model.Answers[i].AppraiseContent))
+                            {
+                <span style="color:gray;">点击加号可选点评标签</span> }
+                                    else
+                                    {
+                <span>@Model.Answers[i].AppraiseContent</span>}
+
+                            <img data-method="offset" data-type="auto" class="dianping" src="~/Content/images/add-icon.png" style="width: 30px;height: 30px;" />
+                        </p>
+                        <p class="right" style="border: 0;width:30%;margin-left: 5%;">
+                            <strong>评分</strong>
+                            @if (string.IsNullOrEmpty(Model.Answers[i].Grade) || Model.Answers[i].Grade == "0" || Model.Answers[i].Grade == "0.0")
+                            {
+                <img class="star" data-score="1" src="~/Content/images/start_empty.png" />
+                                        <img class="star" data-score="2" src="~/Content/images/start_empty.png" />
+                                                                <img class="star" data-score="3" src="~/Content/images/start_empty.png" />
+                                                                                        <img class="star" data-score="4" src="~/Content/images/start_empty.png" />
+                                                                                                                <img class="star" data-score="5" src="~/Content/images/start_empty.png" />
+                                                                                                                                        <span>0分</span> }
+                                                                                                                                                            else
+                                                                                                                                                            {
+                                                                                                                                                                for (int l = 0; l < 5; l++)
+                                                                                                                                                                {
+                                                                                                                                                                    if (l < Convert.ToDecimal(Model.Answers[i].Grade))
+                                                                                                                                                                    {
+                                                                                                                                        <img class="star" data-score="@Html.Raw(l+1)" src="~/Content/images/start_full.png" /> }
+                                                                                                                                                                    else
+                                                                                                                                                                    {
+                                                                                                                                        <img class="star" data-score="@Html.Raw(l+1)" src="~/Content/images/start_empty.png" /> }
+                                                                                                                                                                }
+
+                                                                                                                                        <span>@Html.Raw(Model.Answers[i].Grade)分</span>}
+                            <input type="hidden" value="@Model.Answers[i].Grade" />
+
+                        </p>
+                    </li>
+
+                </ul>}
+                            }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="main-footer">
+        武汉博晟安全技术股份有限公司   版权所有
+    </footer>
+</div>
+<div id="audio-warp" style="height:32px;width:460px;display: none;overflow:hidden;">
+</div>
+
+<div class="modal fade sign" id="modal_dangerous" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title">点评</h4>
+            </div>
+            <div class="modal-body" style="padding-top: 0;">
+                <div class="measure_box" id="dangerous_box">
+                    <div class="ul-container">
+                        <ul class="nav measure_nav" id="dangerous_nav"></ul>
+                    </div>
+                    <button class="add_btn"><img src="@Url.Content("~/Content/styles/static/images/measure_add.png")"></button>
+                    <div class="measure_text" id="dangerous_text">
+                        <input type="text" placeholder="请输入" maxlength="100" style="width:100%; height:50px;" />
+                    </div>
+                </div>
+                <div class="text-center mg-t-10">
+                    <button class="btn bg-3669e1 c-fff measure_ok" style="width:200px;" data-dismiss="modal">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="sign" style="display:none;" id="techerPeople">
+    <ul class="nav my-nav">
+        @{
+            var users1 = (IList<BSFramework.Application.Entity.PeopleManage.PeopleEntity>)ViewData["users"];
+        }
+        @for (int i = 0; i < users1.Count; i++)
+        {
+            if (Model.Teacher == users1[i].Name)
+            {
+                <li class="on" data-id="@Html.Raw(users1[i].ID)">@Html.Raw(users1[i].Name)</li>
+            }
+            else
+            {
+                <li data-id="@Html.Raw(users1[i].ID)">@Html.Raw(users1[i].Name)</li>
+            }
+
+        }
+    </ul>
+</div>
+<div class="sign" style="display:none;" id="registerPeople">
+    <ul class="nav my-nav">
+
+        @for (int i = 0; i < users1.Count; i++)
+{
+    if (Model.Teacher == users1[i].Name)
+    {
+        <li class="on" data-id="@Html.Raw(users1[i].ID)">@Html.Raw(users1[i].Name)</li>
+    }
+    else
+    {
+        <li data-id="@Html.Raw(users1[i].ID)">@Html.Raw(users1[i].Name)</li>
+    }
+
+}
+    </ul>
+</div>

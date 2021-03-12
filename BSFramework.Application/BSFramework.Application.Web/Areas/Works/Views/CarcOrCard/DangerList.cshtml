@@ -1,0 +1,139 @@
+﻿
+@{
+    ViewBag.Title = "DangerList";
+    Layout = "~/Views/Shared/_OrderForm.cshtml";
+}
+
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<script src="~/Content/scripts/business/common.js"></script>
+<script src="~/Content/scripts/jquery/jquery.serializeJSON.min.js"></script>
+<script src="~/Content/scripts/jquery/jquery.url.js"></script>
+<style>
+    .form .formTitle {
+        width: 140px;
+    }
+</style>
+<script>
+    var num = request('num');
+    jQuery(function () {
+        if (num) {
+            var arryList = top.jQuery('#addDanger').get(0).contentWindow.CDangerousList[num];
+            $("#DangerSource").val(arryList.DangerSource);
+            $("#DangerName").val(arryList.DangerName);
+            for (var i = 0; i < arryList.Measure.length; i++) {
+                if (i == 0) {
+                    $("input[name=Measure]").each(function () {
+                        $(this).val(arryList.Measure[i].Measure);
+                    });
+                } else {
+                    fn$add(arryList.Measure[i].Measure);
+                }
+
+            }
+        }
+    });
+    function AcceptClick() {
+
+
+        if (!$('#from1').Validform()) {
+            return false;
+        }
+        var DangerName = $("#DangerName").val();
+        if (!DangerName) {
+            dialogMsg('请填写危害名称！', -1);
+            return;
+        }
+        var DangerSource = $("#DangerSource").val();
+        if (!DangerSource) {
+            dialogMsg('请填写风险描述！', -1);
+
+        }
+        var Measure = new Array();
+
+        var MeasureStr = "";
+        $("input[name=Measure]").each(function () {
+            var value = $(this).val();
+            var MeasureEntity = {};
+            if (value) {
+                MeasureStr += value + "<br/>";
+                MeasureEntity["Measure"] = value;
+                Measure.push(MeasureEntity);
+            }
+        });
+        if (!MeasureStr) {
+            dialogMsg('请填写采取的控制措施！', -1);
+            return;
+        }
+        var json = jQuery('#from1').serializeJSON();
+        if (num) {
+            json = top.jQuery('#addDanger').get(0).contentWindow.CDangerousList[num];
+        }
+        json["DangerSource"] = DangerSource;
+        json["DangerName"] = DangerName;
+        json["MeasureStr"] = MeasureStr;
+        json["Measure"] = Measure;
+        //parent.window.MeasureList.push(json);
+        //top.frames.MeasureList.push(json);
+
+        top.jQuery('#addDanger').get(0).contentWindow.JsonBack(json, num);
+        dialogClose();
+
+    }
+    function fn$add(value) {
+        var html = "";
+        html += '<tr><th class="formTitle"></th >';
+        html += '<td class="formValue" colspan="2">';
+        if (value) {
+            html += '<input class="form-control" name="Measure" type="text" value="' + value + '" checkexpession="NotNull" />';
+
+        } else {
+            html += '<input class="form-control" name="Measure" type="text" value="" checkexpession="NotNull" />';
+
+        }
+        html += '</td><td><a class="c-orange" onclick="deleteTr(this);" style="color:orange;cursor:pointer;">删除</a></td>';
+        html += '</tr>';
+        $("#form1 tbody").append(html);
+    }
+    function deleteTr(o) {
+
+        jQuery(o).parent().parent().remove();
+
+
+    }
+</script>
+
+<div style="margin-left: 10px; margin-top: 20px; margin-right: 30px;">
+    <table id="from1" class="form">
+        <tr>
+            <th class="formTitle">危害名称<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <input class="form-control" id="DangerName" type="text" value="" checkexpession="NotNull" />
+            </td>
+
+        </tr>
+        <tr>
+            <th class="formTitle">风险描述<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <input class="form-control" id="DangerSource" type="text" value="" checkexpession="NotNull" />
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">采取的控制措施 <font face="宋体">*</font></th>
+            <td class="formValue" colspan="2">
+            </td>
+
+        </tr>
+        <tr>
+
+            <th class="formTitle"></th>
+            <td class="formValue" colspan="2">
+                <input class="form-control" name="Measure" type="text" value="" checkexpession="NotNull" />
+            </td>
+            <td><a class="c-orange" onclick="deleteTr(this);" style="color:orange;cursor:pointer;">删除</a></td>
+        </tr>
+    </table>
+</div>
+<div class="text-center table bg-fff" style="border-top:1px solid #e3ebfd;padding:10px 0; margin-bottom:6px;">
+    <a id="lr-add" class="btn btn-default" onclick="fn$add()"><i class="fa fa-plus"></i>&nbsp;</a>
+</div>

@@ -1,0 +1,121 @@
+﻿@charset "utf-8";
+.work_left{
+    width: 1230px;
+    height: 832px;
+    background: #fff;
+    padding: 40px 0;
+}
+.work_list1{
+    width: 1148px;
+    margin: 0 auto;
+}
+.work_list1 li{
+    float: left;
+    width: 272px;
+    height: 256px;
+    margin-right: 15px;
+    margin-bottom: 20px;
+    background: #c11920;
+    border-radius: 4px;
+    text-align: center;
+    padding-top: 55px;
+}
+.work_list1 li:nth-child(4n){
+    /*margin-right: 0;*/
+}
+.work_list1 li.noClick{
+    opacity: .5;
+}
+.work_list1 li p{
+    color: #fff;
+    font-size: 26px;
+    margin-top: 18px;
+}
+.work_list1 li.noClick p{
+    opacity: .6;
+}
+.work_right{
+    width: 580px;
+    height: 832px;
+    background: #fff;
+}
+.workSec_top{
+    padding: 14px 30px 10px;
+}
+.workSec_title{
+    font-size: 28px;
+    color: #000;
+}
+.work_list2{
+    border-top: 1px solid #f2f2f2;
+}
+.work_list2 li{
+    height: 81px;
+    border-bottom: 1px solid #f2f2f2;
+    padding: 6px 30px 0;
+    line-height: 34px;
+}
+.work_list2 li .time{
+    width: 60px;
+    color: #b2b2b2;
+    font-size: 22px;
+}
+.work_list2 li>div{
+    width: 440px;
+}
+.work_list2 li > div h4 {
+    color: #1a1a1a;
+    font-size: 22px;
+    font-weight: normal;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.work_list2 li>div p{
+    color: #b2b2b2;
+    font-size: 20px;
+}
+.workSec_top a{
+    color: #b2b2b2;
+    font-size: 20px;
+    margin-top: 10px;
+}
+.tableDiv{
+    padding: 0 30px;
+}
+.tableDiv table{
+    width: 100%;
+    font-size: 22px;
+    color: #1a1a1a;
+}
+.tableDiv table th,.tableDiv table td{
+    border: 1px solid #f3f3f3;
+}
+.tableDiv table th{
+    background: #f3f3f3;
+    text-align: center;
+    height: 45px;
+    font-weight: normal;
+}
+.tableDiv table tr th:nth-child(1){
+    border-right-color: #fff;
+}
+.tableDiv table td{
+    height: 58px;
+}
+.tableDiv table tr td:nth-child(1){
+    color: #b4b4b4;
+    padding-left: 15px;
+}
+.tableDiv table tr td:nth-child(2){
+    text-align: center;
+    white-space: normal;
+    overflow: hidden;
+    word-break: break-all;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    line-height: 58px;
+}

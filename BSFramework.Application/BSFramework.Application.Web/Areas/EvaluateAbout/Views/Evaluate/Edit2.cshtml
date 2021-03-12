@@ -1,0 +1,199 @@
+﻿@model BSFramework.Entity.EvaluateAbout.EvaluateEntity
+
+@{
+    ViewBag.Title = "考评标准";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<script src="~/Content/scripts/business/Common.js" type="text/javascript"></script>
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.url.js")"></script>
+<style>
+    .myradio {
+        cursor: pointer;
+    }
+</style>
+<script>
+    var evaluateid = '@ViewBag.evaluateid';
+    function fn$select() {
+        dialogOpen({
+            id: "Category",
+            title: "选择类别",
+            url: '/..@Url.Action("Select")',
+            width: "300px",
+            height: "500px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick(fn$selectover1);
+            }
+        });
+    }
+
+    function fn$selectover1(node) {
+        if (node) {
+            jQuery('#pcid').val(node.value);
+            jQuery('#pcategory').val(node.text);
+        }
+    }
+
+    function AcceptClick() {
+        if (!jQuery('input:radio:checked').val()) {
+            dialogMsg('请选择周期', 0);
+            return false;
+        }
+
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+
+        var json = jQuery('#form1').serializeJSON();
+        $.SaveForm({
+            url: '@Url.Action("Edit2")',
+            param: json,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().fn$refresh();
+            }
+        })
+    }
+
+    var selele
+    function fn$select2(e) {
+        selele = e
+        var select = 'single';
+        var id = jQuery(e).attr('id');
+        if (id == 'UseDept') select = 'multi';
+        showModa('/..@Url.Action("DeptSelect", "Department", new { area = "BaseManage" })', '选择部门', '300px', '600px', { select: select, category: '省级,厂级,部门' }, fn$selectover2);
+    }
+
+    function fn$selectover2(nodes) {
+        if (nodes) {
+            if (jQuery.type(nodes) == 'array') {
+                var str = '';
+                jQuery.each(nodes, function (i, o) {
+                    str += o.text + '|'
+                });
+                jQuery(selele).val(str.replace(/\|$/, ''));
+            } else
+                jQuery(selele).val(nodes.text);
+        }
+    }
+
+    function initseason(name) {
+        var category = jQuery('#reason input:checked').val();
+        var d = new Date();
+        jQuery('#EvaluateSeason').empty();
+        if (category == "按季度") {
+            for (var i = 0; i < 4; i++) {
+                jQuery('#EvaluateSeason').append('<option value="' + d.getFullYear() + '年第' + (i + 1) + '季度" ' + (i == d.getMonth() % 3 ? 'selected="selected"' : '') + '>' + d.getFullYear() + '年第' + (i + 1) + '季度</option>');
+            }
+        } else if (category == "按月度") {
+            for (var i = 1; i < 13; i++) {
+                jQuery('#EvaluateSeason').append('<option value="' + d.getFullYear() + '年' + i + '月" ' + (i == d.getMonth() ? 'selected="selected"' : '') + '>' + d.getFullYear() + '年' + i + '月</option>');
+            }
+        } else if (category == "按半年") {
+            var htmlStr = "<option value='" + d.getFullYear() + "年上半年'>" + d.getFullYear() + "年上半年</option>";
+            htmlStr += "<option value='" + d.getFullYear() + "年下半年'>" + d.getFullYear() + "年下半年</option>";
+            htmlStr += "<option value='" + (d.getFullYear() + 1) + "年上半年'>" +(d.getFullYear() + 1) + "年上半年</option>";
+            htmlStr += "<option value='" + (d.getFullYear() + 1) + "年下半年'>" + (d.getFullYear() + 1) + "年下半年</option>";
+            jQuery('#EvaluateSeason').append(htmlStr);
+        } else if (category == "按年") {
+            for (var i = 1; i < 5; i++) {
+                jQuery('#EvaluateSeason').append('<option value="' + (d.getFullYear() - 1 + i) + '年" selected="selected">' + (d.getFullYear() - 1 + i) + '年</option>');
+            }
+        }
+        jQuery('#EvaluateSeason').val(name);
+    }
+
+    jQuery(function () {
+        
+        var name = '@ViewBag.name';
+        //if (name)
+        //    jQuery('#EvaluateSeason').append('<option value="' + name + '">' + name + '</option>');
+
+        jQuery('.myradio').click(function () {
+            jQuery(this).prev().click();
+        });
+
+        jQuery('#reason input').change(initseason);
+
+        initseason(name);
+
+        if (!evaluateid) {
+            var d = new Date();
+            var month = d.getMonth() + 1;
+            jQuery('#LimitTime').val(d.getFullYear() + '-' + month + '-' + d.getDate());
+            jQuery('#PublishDate').val(d.getFullYear() + '-' + month + '-' + d.getDate());
+        }
+
+    });
+
+    function CheckScope() {
+        dialogOpen({
+            id: "CheckScope",
+            title: '新增考评',
+            url: '/../@Url.Action("CheckScope")',
+            width: "300px",
+            height: "300px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick($("#DeptScope"), $("#DeptScopeName"));
+            }
+        });
+    }
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right:30px;">
+            @Html.HiddenFor(x => x.EvaluateId)
+            @Html.HiddenFor(x => x.EvaluateUserId)
+            <table class="form">
+                <colgroup>
+                    <col style="width:90px" />
+                    <col />
+                    <col style="width:90px" />
+                    <col />
+                </colgroup>
+                <tr>
+                    <td class="formTitle"><font face="宋体">*</font>周期</td>
+                    <td class="formValue" colspan="3" id="reason">
+                        @Html.RadioButtonFor(x => x.EvaluateCycle, "按季度") <span class="myradio">按季度</span>
+                        @Html.RadioButtonFor(x => x.EvaluateCycle, "按月度") <span class="myradio">按月度</span>
+                        @Html.RadioButtonFor(x => x.EvaluateCycle, "按半年") <span class="myradio">按半年</span>
+                        @Html.RadioButtonFor(x => x.EvaluateCycle, "按年") <span class="myradio">按年</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle"><font face="宋体">*</font>考评时间</td>
+                    <td class="formValue">
+                        <select style="width:100%;" id="EvaluateSeason" name="EvaluateSeason"></select>
+                    </td>
+                    <td class="formTitle"><font face="宋体">*</font>考评截止日期</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.LimitTime, "{0:yyyy-MM-dd}", new { @class = "form-control", isvalid = "yes", checkexpession = "NotNull", onfocus = "WdatePicker();" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle"><font face="宋体">*</font>发布人</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.EvaluateUser, new { @class = "form-control", maxlength = 100, isvalid = "yes", checkexpession = "NotNull", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle"><font face="宋体">*</font>发布时间</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.PublishDate, "{0:yyyy-MM-dd}", new { @class = "form-control", isvalid = "yes", checkexpession = "NotNull", @readonly = "readonly" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle"><font face="宋体">*</font>考评范围</td>
+                    <td class="formValue" colspan="3">
+                        @Html.HiddenFor(x => x.DeptScope)
+                        @Html.TextAreaFor(x => x.DeptScopeName, new { @class = "form-control", isvalid = "yes", checkexpession = "NotNull", @readonly = "readonly", @rows = "5", @onclick =Html.Raw(Request["type"]=="add" ? "CheckScope()" : "") , @placeholder = "必填！未勾选的班组无法参与本次考评" })
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="ExpandInfo" class="tab-pane">
+            <div class="app_layout app_preview" style="border-top: 1px solid #ccc;" id="frmpreview"></div>
+        </div>
+    </div>
+</div>

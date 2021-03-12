@@ -1,0 +1,97 @@
+﻿@model Bst.Fx.MessageData.ConfigEntity
+
+@{
+    ViewBag.Title = "考评标准";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<script src="~/Content/scripts/business/Common.js" type="text/javascript"></script>
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.url.js")"></script>
+<script>
+    function fn$ok() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+
+        var json = jQuery('#form1').serializeJSON();
+        $.SaveForm({
+            url: '@Url.Action("Edit", new { id = ViewBag.id})',
+            contentType: 'application/json',
+            param: json,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().fn$refresh();
+            }
+        })
+    }
+
+    jQuery(function () {
+        if (jQuery('#RecieveType').val() == '接收人')
+            jQuery('#RecieveType').hide();
+        else {
+            jQuery('#recieve').val('职务');
+        }
+
+        jQuery('#recieve').change(function () {
+            if (jQuery(this).val() == '接收人') {
+                jQuery('#RecieveType').val(jQuery(this).val());
+                jQuery('#RecieveType').hide();
+            } else {
+                jQuery('#RecieveType').val('');
+                jQuery('#RecieveType').show();
+            }
+        });
+    });
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right:30px;">
+            @Html.HiddenFor(x => x.ConfigId)
+            <table class="form">
+                <tr>
+                    <td class="formTitle">类型</td>
+                    <td class="formValue">
+                        @Html.DropDownListFor(x => x.Category, ViewData["categories"] as List<SelectListItem>, new { @class = "form-control", style = "width:200px;" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">启用</td>
+                    <td class="formValue">
+                        @Html.RadioButton("Enabled", "True", Model.Enabled, new { id = "Enabled" })
+                        <label for="Enabled">是</label>
+                        @Html.RadioButton("Enabled", "False", !Model.Enabled, new { id = "Disabled" })
+                        <label for="Disabled">否</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">接收方式</td>
+                    <td class="formValue">
+                        <select id="recieve" class="form-control" style="width:80px;float:left;">
+                            <option>接收人</option>
+                            <option>职务</option>
+                        </select>
+                        @Html.TextBoxFor(x => x.RecieveType, new { @class = "form-control", maxlength = "200", style = "width:200px;float:left;" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">标题</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Title, new { @class = "form-control", maxlength = "200" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">模板</td>
+                    <td class="formValue">
+                        @Html.TextAreaFor(x => x.Template, new { @class = "form-control", style = "height:100px;", maxlength = "500" })
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="ExpandInfo" class="tab-pane">
+            <div class="app_layout app_preview" style="border-top: 1px solid #ccc;" id="frmpreview"></div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,243 @@
+﻿@{
+    ViewBag.Title = "班次编辑";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+
+<style type="text/css">
+    /*table tr {
+        line-height: 60px;
+    }*/
+</style>
+<script>
+    var WorkSettingId = request('WorkSettingId');
+    var TimeLength = request("TimeLength");
+    var WorkTimes = request("WorkTimes");
+    var WorkName = request("WorkName");
+    var StartTimeSpan = request("StartTimeSpan");
+    var EndTimeSpan = request("EndTimeSpan");
+    var AfterTime = request("AfterTime");
+    $(function () {
+        initControl();
+    })
+    function initControl() {
+
+        if (!!WorkSettingId) {
+            $("#WorkSettingId").val(WorkSettingId);
+
+        }
+        if (!!TimeLength) {
+            $("#TimeLength").val(TimeLength);
+        }
+        if (!!WorkTimes) {
+            var strTime = WorkTimes.split('-');
+            $("#StartTime").val(strTime[0]);
+            $("#EndTime").val(strTime[1]);
+            LabelWorkTime(strTime[0], strTime[1]);
+        }
+        if (!!WorkName) {
+            $("#name").val(WorkName);
+        }
+        if (!!StartTimeSpan) {
+            $("#StartTimeSpan").val(StartTimeSpan);
+        }
+        if (!!AfterTime) {
+            $("#AfterTime").val(AfterTime);
+        }
+        if (!!EndTimeSpan) {
+            $("#EndTimeSpan").val(EndTimeSpan);
+        }
+
+        //获取表单
+        //if (!!keyValue) {
+        //    $.SetForm({
+        //        url: "../../Works/Paiban/EditForm?keyValue=" + keyValue,
+        //        param: {},
+        //        success: function (data) {
+        //            $("#form1").formDeserialize(data);
+        //        }
+        //    });
+        //} else {
+        //    $("#OrganizeTree").ComboBoxTreeSetValue(departmentId);
+        //}
+    }
+
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var postData = $("#form1").formSerialize();
+        $.SaveForm({
+            url: "/..@Url.Action("SaveForm")?WorksetType=update",
+            loading: "正在保存数据...",
+            param: postData,
+            success: function () {
+                $.currentIframe().$("#gridTable").resetSelection();
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+
+    }
+    function LabelWorkTime(start, end) {
+        var StartSplit = start.split(':');
+        var EndSplit = end.split(':');
+        var startNum = parseInt(StartSplit[0]);
+        var endNum = parseInt(EndSplit[0]);
+        if (startNum <= endNum) {
+            $("#dayTime").text("");
+        } else {
+            $("#dayTime").text("次日");
+        }
+    }
+
+    function checkTime() {
+        var EndTime = $("#EndTime").val();
+        var StartTime = $("#StartTime").val();
+        //var r = /^((20|21|22|23|[0-1]\d)\:[0-5][0-9])/;
+        //var startBool = r.test(StartTime);
+        //var endBool = r.test(EndTime);
+        //if (!startBool) {
+        //    dialogMsg('请注意时间格式！如：18:01,05:01', 0);
+        //    var strTime = WorkTimes.split('-');
+        //    $("#StartTime").val(strTime[0]);
+        //}
+        //if (!endBool) {
+        //    dialogMsg('请注意时间格式！如：18:01,05:01', 0);
+        //    var strTime = WorkTimes.split('-');
+        //    $("#EndTime").val(strTime[1]);
+        //}
+        //if (startBool && endBool) {
+            var StartSplit = StartTime.split(':');
+            var EndSplit = EndTime.split(':');
+            var StartJsTime = new Date(2001, 01, 02, StartSplit[0], StartSplit[1]);
+            var EndJsTime;
+            var startNum = parseInt(StartSplit[0]);
+            var endNum = parseInt(EndSplit[0]);
+            var startminutes= parseInt(StartSplit[1]);
+            var endminutes= parseInt(EndSplit[1]);
+            if (startNum > endNum) {
+                EndJsTime = new Date(2001, 01, 03, EndSplit[0], EndSplit[1])
+                $("#dayTime").text("次日");
+            } else if (startNum == endNum) {
+                if (startminutes >= endminutes) {
+                    EndJsTime = new Date(2001, 01, 03, EndSplit[0], EndSplit[1])
+                    $("#dayTime").text("次日");
+                }
+            }else {
+                EndJsTime = new Date(2001, 01, 02, EndSplit[0], EndSplit[1])
+                $("#dayTime").text("");
+            }
+       
+            var dayTimeRsult = (EndJsTime - StartJsTime) / 1000 / 60;
+            var dayTimeHour = parseInt(dayTimeRsult / 60)
+            var dayTimeMinute = dayTimeRsult % 60;
+        
+            var Time = "";
+            if (dayTimeHour < 10) {
+                Time = "0" + dayTimeHour + "时";
+            } else {
+                Time = dayTimeHour + "时";
+            }
+            if (dayTimeMinute < 10) {
+                Time = Time + "0" + dayTimeMinute+"分";
+            } else {
+                Time = Time + dayTimeMinute+"分";
+            }
+            if (!dayTimeRsult) {
+                Time = 24 + "时";
+            }
+            $("#TimeLength").val(Time);
+        //}
+    }
+    function checkName() {
+        var Name = $("#name").val();
+        if (Name == '') {
+            dialogMsg('班次名称不能为空', 0);
+            $("#name").val(WorkName);
+        }
+    }
+    function checkNum() {
+        var EndTime = parseInt($("#EndTimeSpan").val());
+        var StartTime = parseInt($("#StartTimeSpan").val());
+        if (isNaN(StartTime)) {
+            dialogMsg('请注意结束打卡时间只能为数字！', 0);
+            $("#StartTimeSpan").val(StartTimeSpan);
+        }
+        if (isNaN(EndTime)) {
+            dialogMsg('请注意开始打卡时间只能为数字！', 0);
+            $("#EndTimeSpan").val(EndTimeSpan);
+
+        }
+        var AfterTime = parseInt($("#AfterTime").val());
+        if (isNaN(AfterTime)) {
+            dialogMsg('请注意午休时间只能为数字！', 0);
+            $("#AfterTime").val(AfterTime);
+
+        }
+    }
+</script>
+<div style="margin-left: 10px; margin-top: 20px; margin-right: 30px;">
+    <table class="form">
+
+        <tr>
+            <th class="formTitle" style="width:100px">班次名称<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <input id="name" type="text" class="form-control" onblur="checkName()" />
+                <input id="WorkSettingId" type="hidden" class="form-control" />
+            </td>
+
+        </tr>
+
+        <tr>
+            <th class="formTitle">上班：<font face="宋体">*</font></th>
+            <td class="formValue">
+                <div>
+                    <input id="StartTime" readonly type="text" class="form-control input-wdatepicker"  onblur="checkTime()"   onfocus="WdatePicker({dateFmt:'HH:mm'})" />
+                </div>
+            </td>
+            <td class="formValue"></td>
+            <td class="formValue">
+                <div>
+                    <input id="StartTimeSpan" type="text" class="form-control" onblur="checkNum()" />
+                </div>
+            </td>
+            <th class="formTitle">分钟前开始打卡<font face="宋体">*</font></th>
+        </tr>
+        <tr>
+            <th class="formTitle">下班：<font face="宋体">*</font></th>
+            <td class="formValue">
+                <div>
+                    <input id="EndTime" readonly type="text" class="form-control input-wdatepicker"   onblur="checkTime()"  onfocus="WdatePicker({dateFmt:'HH:mm'})" />
+                </div>
+            </td>
+            <td class="formValue"><label id="dayTime"></label></td>
+            <td class="formValue">
+                <div>
+                    <input id="EndTimeSpan" type="text" class="form-control" onblur="checkNum()" />
+                </div>
+            </td>
+            <th class="formTitle">分钟后打卡<font face="宋体">*</font></th>
+        </tr>
+        <tr>
+
+            <th class="formTitle">合计工作时长</th>
+            <td class="formValue" colspan="3"><input id="TimeLength" type="text" class="form-control" readonly="readonly" /> </td>
+        </tr>
+        <tr>
+
+            <th class="formTitle">午休时常(分)</th>
+            <td class="formValue" colspan="3"><input id="AfterTime" type="text" class="form-control" style="width:100px" value="0" onblur="checkNum()"  /> </td>
+        </tr>
+    </table>
+</div>
+
+@*<tr>
+        <th class="formTitle">部门名称<font face="宋体">*</font></th>
+        <td class="formValue">
+            <input id="FullName" type="text" onblur="$.ExistField(this.id,'../../BaseManage/Department/ExistEnCode')" class="form-control" placeholder="请输入名称" isvalid="yes" checkexpession="NotNull" />
+        </td>
+        <th class="formTitle">部门编号<font face="宋体">*</font></th>
+        <td class="formValue">
+            <input id="EnCode" type="text" onblur="$.ExistField(this.id,'../../BaseManage/Department/ExistFullName')" class="form-control" placeholder="编码后台自动生成" readonly="readonly" />
+        </td>
+    </tr>*@

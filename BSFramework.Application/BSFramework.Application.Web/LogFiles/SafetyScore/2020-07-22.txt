@@ -1,0 +1,11 @@
+2020-07-22 11:15:36 用户：超级管理员  id：System开始编辑积分配置 
+ {"Id":null,"Score":123123.0,"Standard":"123123","Sort":1,"ScoreType":"自动","IsOpen":1,"Remark":"123123123","CreateDate":"0001-01-01T00:00:00","CreateUserId":null,"CreateUserName":null,"ModifyDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null} 
+------------------------------------------------------------
+2020-07-22 17:34:25 用户：超级管理员  id：System开始编辑积分管理数据87d6002a-f56b-4ae8-8def-bc35a8d3929a 
+ {"Id":null,"RuleId":null,"UserName":"侯学典,张志强,张建军","UserId":"f7181271-0481-4af5-b3d6-f679521251da,73bc7d3d-726f-4536-9f39-45e0b108c5ca,2e43b59c-6d58-44e2-aa25-daae87f36a30","Gender":null,"Score":1.0,"Area":"1","Reasons":"rtyr","ScoreType":null,"DeptId":null,"DeptName":null,"DeptCode":null,"CreateUserId":null,"CreateUserName":null,"CreateDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null,"ModifyDate":"0001-01-01T00:00:00"} 
+------------------------------------------------------------
+2020-07-22 17:34:42 用户：超级管理员  id：System开始编辑积分管理数据905ad158-5b12-4abe-bd4c-26143489b1bd 
+ {"Id":"905ad158-5b12-4abe-bd4c-26143489b1bd","RuleId":null,"UserName":"王莹,耿丽英,牛丽娜","UserId":"a58ef3f6-ccea-42e9-8f40-6a971530a5aa,81d0aff9-0f2f-4db8-9096-119655021f19,e0c13276-edc2-4bed-800d-45229ef868a2","Gender":null,"Score":1.0,"Area":"1","Reasons":"rtyr","ScoreType":null,"DeptId":null,"DeptName":null,"DeptCode":null,"CreateUserId":null,"CreateUserName":null,"CreateDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null,"ModifyDate":"0001-01-01T00:00:00"} 
+------------------------------------------------------------
+2020-07-22 17:35:14 用户：超级管理员  id：System开始删除积分管理数据6be08702-9491-4324-8208-93d3efec40b9 
+------------------------------------------------------------

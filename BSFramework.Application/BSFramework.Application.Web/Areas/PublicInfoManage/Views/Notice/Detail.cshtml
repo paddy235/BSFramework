@@ -1,0 +1,433 @@
+﻿@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<link href="~/Content/scripts/plugins/cxColor/css/jquery.cxcolor.css" rel="stylesheet" />
+<link href="~/content/scripts/plugins/webuploader/webuploader.css" rel="stylesheet" />
+<link href="~/content/scripts/plugins/webuploader/webuploader-demo.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/ckeditor/ckeditor.js"></script>
+<script src="~/Content/scripts/plugins/simditor/js/module.min.js"></script>
+<script src="~/Content/scripts/plugins/simditor/js/uploader.min.js"></script>
+<script src="~/Content/scripts/plugins/simditor/js/hotkeys.min.js"></script>
+<script src="~/Content/scripts/plugins/cxColor/js/jquery.cxcolor.js"></script>
+<script type="text/javascript" src="~/content/scripts/plugins/webuploader/webuploader.min.js"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script type="text/javascript" src="~/content/scripts/business/common.js"></script>
+
+<script>
+    var keyValue = '@ViewBag.id';//request('keyValue');
+    var editor = null;
+    $(function () {
+        //CKEDITOR.replace('NewsContent');
+        initControl();
+    })
+    //初始化控件
+    function initControl() {
+        //公告类别
+        $("#Category").ComboBox({
+            param: { EnCode: "NoticeCategory" },
+            url: "../../SystemManage/DataItemDetail/GetDataItemListJson",
+            description: "==请选择==",
+            id: "ItemValue",
+            text: "ItemName",
+            height: "230px"
+        });
+        //获取表单
+        if (!!keyValue) {
+            //editor = CKEDITOR.instances.NewsContent;
+            $.SetForm({
+                url: "../../PublicInfoManage/Notice/GetFormJson",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    if (data && data.formData) {
+                        $("#form1").formDeserialize(data.formData);
+                        jQuery('[name="isimport"][value="' + data.formData.IsImport.toString() + '"]').attr('checked', true);
+                    }
+                    //editor.insertHtml(data.NewsContent);
+                    //$("#FullHead").attr("color", data.FullHeadColor).css("color", data.FullHeadColor);
+                    if (data && data.files && data.files.length > 0) {
+                        var html = "";
+                        $(data.files).each(function (i, item) {
+                            html += '<div class="filelist"><div class="row" style="margin:10px;"><div class="col-sm-6">' + (item.FileName + item.FileExtensions) + '</div><div class="col-sm-2"><a href="../../ResourceFile/DownloadFile?keyValue=' + item.FileId + '\" target="_blank" style="cursor:pointer"  title="下载文件"><i class="fa fa-download"></i></a></div></div></div>' +
+                            '<p class="imgWrap"></p>' +
+                           '<p class="progress" style="display:none;"><span></span></p>';
+                        });
+                        $("#dndArea").append(html);
+                    }
+
+                    $("#form1").find('.form-control,.ui-select,input').attr('disabled', 'disabled');
+
+                }
+            });
+        }
+    }
+    //选择颜色-设置标题色彩
+    function SelectColorEvent() {
+        var mycolor = $("#select_color").cxColor();
+        mycolor.show();
+        $("#select_color").bind("change", function () {
+            $("#FullHead").css("color", this.value).attr("color", this.value);
+        });
+    }
+    //保存表单
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        //editor = CKEDITOR.instances.NewsContent;
+        var json = jQuery('#form1').serializeJSON();
+        $.SaveForm({
+            url: "../../PublicInfoManage/Notice/SaveForm?keyValue=" + keyValue,
+            param: json,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+
+    jQuery(function () {
+        var $ = jQuery,    // just in case. Make sure it's not an other libaray.
+
+            $wrap = $('#uploader'),
+
+            // 图片容器
+           // $queue = $('<div class="filelist"></div>')
+            //    .appendTo($wrap.find('.queueList')),
+
+            // 状态栏，包括进度和控制按钮
+           // $statusBar = $wrap.find('.statusBar'),
+
+            // 文件总体选择信息。
+            $info = $statusBar.find('.info'),
+
+
+
+            // 没选择文件之前的内容。
+            $placeHolder = $wrap.find('.placeholder'),
+
+            // 总体进度条
+           // $progress = $statusBar.find('.progress').hide(),
+
+            // 添加的文件数量
+            fileCount = 0,
+
+            // 添加的文件总大小
+            fileSize = 0,
+
+            // 优化retina, 在retina下这个值是2
+            ratio = window.devicePixelRatio || 1,
+
+            // 缩略图大小
+            thumbnailWidth = 110 * ratio,
+            thumbnailHeight = 110 * ratio,
+
+            // 可能有pedding, ready, uploading, confirm, done.
+            state = 'pedding',
+
+            // 所有文件的进度信息，key为file id
+            percentages = {},
+
+            supportTransition = (function () {
+                var s = document.createElement('p').style,
+                    r = 'transition' in s ||
+                          'WebkitTransition' in s ||
+                          'MozTransition' in s ||
+                          'msTransition' in s ||
+                          'OTransition' in s;
+                s = null;
+                return r;
+            })(),
+
+            // WebUploader实例
+            uploader;
+
+        if (!WebUploader.Uploader.support()) {
+            alert('Web Uploader 不支持您的浏览器！如果你使用的是IE浏览器，请尝试升级 flash 播放器');
+            throw new Error('WebUploader does not support the browser you are using.');
+        }
+
+        // 实例化
+        uploader = WebUploader.create({
+            auto: true,
+            pick: {
+                id: '#filePicker',
+                innerHTML: '点击选择文件'
+            },
+            dnd: '#uploader .queueList',
+            paste: document.body,
+
+            accept: {
+                title: '常用文档',
+                extensions: 'doc,docx,pdf,xls,xlsx,rar,zip,txt,jpg,gif,png,gif,ppt,pptx',
+                mimeTypes: '*/*'
+            },
+
+            // swf文件路径
+            swf: '/../content/scripts/plugins/webuploader/Uploader.swf',
+
+            disableGlobalDnd: true,
+            chunked: false,
+            server: '../../Utility/PostFile?recId=' + keyValue + "&filePath=Notice&isDate=1",
+            fileNumLimit: 5,
+            fileSizeLimit: 500 * 1024 * 1024,
+            fileSingleSizeLimit: 100 * 1024 * 1024
+        });
+
+
+
+
+        function updateTotalProgress() {
+            var loaded = 0,
+                total = 0,
+                spans = $progress.children(),
+                percent;
+
+            $.each(percentages, function (k, v) {
+                total += v[0];
+                loaded += v[0] * v[1];
+            });
+
+            percent = total ? loaded / total : 0;
+
+            spans.eq(0).text(Math.round(percent * 100) + '%');
+            spans.eq(1).css('width', Math.round(percent * 100) + '%');
+            updateStatus();
+        }
+
+        function updateStatus() {
+            var text = '', stats;
+
+            //if (state === 'ready') {
+            //    text = '选中' + fileCount + '个文件，共' +
+            //            WebUploader.formatSize(fileSize) + '。';
+            //} else if (state === 'confirm') {
+            stats = uploader.getStats();
+            //    if (stats.uploadFailNum) {
+            //        text = '已成功上传' + stats.successNum + '个文件，' +
+            //            stats.uploadFailNum + '个文件上传失败，<a class="retry" href="#">重新上传</a>'
+            //    }
+
+            //} else {
+            stats = uploader.getStats();
+            //    text = '共' + fileCount + '个（' +
+            //            WebUploader.formatSize(fileSize) +
+            //            '），已上传' + stats.successNum + '个';
+
+            //    if (stats.uploadFailNum) {
+            //        text += '，失败' + stats.uploadFailNum + '个';
+            //    }
+            //}
+
+            //$info.html(text);
+        }
+
+        function setState(val) {
+            var file, stats;
+
+            if (val === state) {
+                return;
+            }
+
+
+
+            state = val;
+
+            switch (state) {
+                case 'pedding':
+                    $placeHolder.removeClass('element-invisible');
+                    $queue.parent().removeClass('filled');
+                    $queue.hide();
+                    $statusBar.addClass('element-invisible');
+                    uploader.refresh();
+                    break;
+
+                case 'ready':
+                    $placeHolder.addClass('element-invisible');
+
+                    $queue.parent().addClass('filled');
+                    $queue.show();
+                    $statusBar.removeClass('element-invisible');
+                    uploader.refresh();
+                    break;
+
+                case 'uploading':
+
+                    $progress.show();
+
+                    break;
+
+                case 'paused':
+                    $progress.show();
+                    break;
+
+                case 'confirm':
+                    $progress.hide();
+                    stats = uploader.getStats();
+                    if (stats.successNum && !stats.uploadFailNum) {
+                        setState('finish');
+                        return;
+                    }
+                    break;
+                case 'finish':
+                    stats = uploader.getStats();
+                    if (stats.successNum) {
+                        dialogMsg('上传成功！', 0);
+                    } else {
+                        // 没有成功的图片，重设
+                        state = 'done';
+                        location.reload();
+                    }
+                    break;
+            }
+
+            updateStatus();
+        }
+        uploader.onBeforeFileQueued = function (file) {
+
+
+        }
+        uploader.onUploadProgress = function (file, percentage) {
+            var $li = $('#' + file.id),
+                $percent = $li.find('.progress span');
+
+            $percent.css('width', percentage * 100 + '%');
+            percentages[file.id][1] = percentage;
+            updateTotalProgress();
+        };
+
+        uploader.onFileQueued = function (file) {
+            fileCount++;
+            fileSize += file.size;
+
+            if (fileCount === 1) {
+                //$placeHolder.addClass('element-invisible');
+                $statusBar.show();
+            }
+
+            addFile(file);
+            setState('ready');
+            updateTotalProgress();
+        };
+
+        uploader.onFileDequeued = function (file) {
+            fileCount--;
+            fileSize -= file.size;
+
+            if (!fileCount) {
+                setState('pedding');
+            }
+            //addFile(file);
+            removeFile(file);
+            updateTotalProgress();
+
+        };
+
+        uploader.on('all', function (type) {
+            var stats;
+            switch (type) {
+                case 'uploadFinished':
+                    setState('confirm');
+                    break;
+
+                case 'startUpload':
+                    setState('uploading');
+                    break;
+
+                case 'stopUpload':
+                    setState('paused');
+                    break;
+
+            }
+        });
+
+        uploader.onError = function (code) {
+            dialogMsg("对不起，上传失败，请稍后再试！", 0);
+
+        };
+
+
+
+        $info.on('click', '.retry', function () {
+            uploader.retry();
+        });
+
+        $info.on('click', '.ignore', function () {
+            alert('todo');
+        });
+
+        updateTotalProgress();
+    });
+
+</script>
+<div style="margin-top: 20px; margin-right: 30px;">
+    <table class="form" style="table-layout: auto;">
+        <tr>
+            @*<td class="formTitle">公告类别<font face="宋体">*</font></td>
+                <td class="formValue">
+                    <div id="Category" type="select" class="ui-select" isvalid="yes" checkexpession="NotNull" ></div>
+                </td>*@
+            <td class="formTitle">发布时间</td>
+            <td class="formValue">
+                <input id="ReleaseTime" name="ReleaseTime" readonly type="text" class="form-control" value="@BSFramework.Util.Time.GetToday("yyyy/MM/dd HH:mm")" />
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">标题<font face="宋体">*</font></td>
+            <td class="formValue" colspan="3">
+                <input id="FullHead" name="FullHead" type="text" class="form-control" style="color: #000000;" placeholder="请输入标题" isvalid="yes" checkexpession="NotNull" />
+                @*<span id="select_color" class="input-button" style="width: 18px; margin-top: -9px; height: auto;" title="使用彩色标题" onclick="SelectColorEvent()">
+                    <img src="~/Content/images/large_tiles.png" /></span>*@
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle" valign="top" style="padding-top: 4px;">内容</th>
+            <td class="formValue" colspan="3">
+                <textarea id="NewsContent" name="NewsContent" class="form-control" rows="5"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle" valign="top" style="padding-top: 4px;">发布范围</th>
+            <td class="formValue" colspan="3">
+                <div class="input-group" style="width:100%;" onclick="">
+                    <textarea id="DeptName" name="DeptName" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" rows="5" onfocus="this.blur();"></textarea>
+                    @*<span class="input-group-addon" title="选择班组" style="cursor:pointer;">...</span>*@
+                    <input id="DeptId" type="hidden" name="DeptId" />
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle" valign="top" style="padding-top: 4px;">材料</th>
+            <td class="formValue" colspan="3">
+                <div id="uploader" style="border:2px dashed gray; margin-top:10px; height:120px;overflow-y:auto;">
+                    <div class="queueList" style="margin-top:15px;">
+                        <div id="dndArea" class="placeholder" >
+                            <div id="filePicker" style="margin-left:25px; margin-top:0px;float:left;"></div>
+                        </div>
+                    </div>
+                    @*<div class="statusBar" style="display:none;">
+                        <div class="progress">
+                            <span class="text">0%</span>
+                            <span class="percentage"></span>
+                        </div>
+                        <div class="info"></div>
+                    </div>*@
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle" valign="top" style="padding-top: 4px;">重要通知</th>
+            <td class="formValue" colspan="3">
+                <ul>
+                    <li style="list-style:none; float:left; width:50px;">
+                        <input name="isimport" value="true" type="radio" id="yes" /><label for="yes">是</label>
+                    </li>
+                    <li style="list-style:none; float:left; width:50px;">
+                        <input name="isimport" value="false" type="radio" id="no" checked="checked" /><label for="no">否</label>
+                    </li>
+                </ul>
+
+            </td>
+        </tr>
+    </table>
+</div>

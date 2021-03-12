@@ -1,0 +1,421 @@
+﻿@model BSFramework.Entity.WorkMeeting.DepartmentTaskEntity
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<style>
+
+    .form-control[readonly] {
+        background-color: #eee;
+    }
+</style>
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<script src="~/Content/scripts/business/common.js"></script>
+<script src="~/Content/scripts/jquery/jquery.serializeJSON.min.js"></script>
+<script src="~/Content/scripts/jquery/jquery.url.js"></script>
+@Html.Partial("UserSelect")
+@Html.Partial("DepartmentSelect")
+
+<script>
+    var subtasks = JSON.parse('@Html.Raw(HttpUtility.JavaScriptStringEncode(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SubTasks, new Newtonsoft.Json.Converters.IsoDateTimeConverter() {DateTimeFormat = "yyyy-MM-dd" })))');
+    var userid = '@ViewBag.userid';
+    jQuery(function () {
+        if (jQuery('#Status').val() == '已完成') jQuery('#finish').attr('checked', true);
+
+        if (jQuery('#CreateUserId').val() == userid) { }
+        else if (jQuery('#DutyUserId').val() == userid) {
+            jQuery('#Content').attr('readonly', true);
+            jQuery('#StartDate').attr('readonly', true).removeAttr('onfocus');
+            jQuery('#EndDate').attr('readonly', true);
+            jQuery('#EndDate').attr('readonly', true).removeAttr('onfocus');
+            jQuery('#DutyUser').attr('readonly', true);
+            jQuery('#DutyUser').attr('readonly', true).removeAttr('onclick');
+            jQuery('#Remark').attr('readonly', true);
+        } else if (jQuery('#TodoUserId').val() == userid) {
+            jQuery('#Content').attr('readonly', true);
+            jQuery('#StartDate').attr('readonly', true).removeAttr('onfocus');
+            jQuery('#EndDate').attr('readonly', true);
+            jQuery('#EndDate').attr('readonly', true).removeAttr('onfocus');
+            jQuery('#DutyUser').attr('readonly', true);
+            jQuery('#DutyUser').attr('readonly', true).removeAttr('onclick');
+            jQuery('#TodoUser').attr('readonly', true).removeAttr('onclick');
+            jQuery('#Remark').attr('readonly', true);
+        }
+
+        if (!jQuery('#ParentTaskId').val()) {
+            jQuery('#TodoUser').parent().prev().prev().removeClass('col-xs-8');
+            jQuery('#TodoUser').parent().prev().prev().addClass('col-xs-11');
+            jQuery('#TodoUser').parent().prev().remove();
+            jQuery('#TodoUser').parent().remove();
+        }
+
+        jQuery('#finish').change(function () {
+            if (jQuery(this).prop('checked'))
+                jQuery('#Status').val('已完成');
+            else
+                jQuery('#Status').val('未开始');
+        });
+
+        jQuery('#grid').jqGrid({
+            rownumbers: true,
+            height: $(window).height() - 410,
+            autowidth: true,
+            datatype: 'local',
+            rowNum: 100,
+            colModel: [
+                { name: 'TaskId', hidden: true, key: true },
+                { name: 'State', hidden: true },
+                { name: 'DutyUserId', hidden: true },
+                { name: 'DutyDepartmentId', hidden: true },
+                { name: 'CreateUser', hidden: true },
+                { name: 'CreateTime', hidden: true },
+                { name: 'Remark', hidden: true },
+                { name: 'UpdateRecords', hidden: true },
+                { name: 'IsPublish', hidden: true },
+                {
+                    name: 'action', label: '操作', width: 100, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        var html = "";
+                        if (rowObject.State == '-1') {
+                            html += "<a href=\"javascript:fn$edit('" + rowObject.TaskId + "')\" title=\"编辑\" style=\"color:blue;padding-left:0px;\">编辑</a> ";
+                            html += "<a href=\"javascript:fn$delete('" + rowObject.TaskId + "')\" title=\"删除\" style=\"color:blue;padding-left:0px;\">删除</a> ";
+                        } else {
+                            html += "<a href=\"javascript:fn$view('" + rowObject.TaskId + "')\" title=\"查看\" style=\"color:blue;padding-left:0px;\">查看</a> ";
+                            if (rowObject.Status != '已取消') {
+                                var date = new Date();
+                                date.setDate(1);
+                                var ed = new Date(rowObject.EndDate);
+                                if (ed >= date) {
+                                    html += "<a href=\"javascript:fn$edit('" + rowObject.TaskId + "')\" title=\"编辑\" style=\"color:blue;padding-left:0px;\">编辑</a> ";
+                                    //if (userid == rowObject.CreateUserId)
+                                    html += "<a href=\"javascript:fn$cancel('" + rowObject.TaskId + "')\" title=\"取消\" style=\"color:blue;padding-left:0px;\">取消</a> ";
+                                }
+                            }
+                        }
+                        return html;
+                    }
+                },
+                { name: 'Content', label: '工作任务', width: 300, align: 'center', sortable: false },
+                {
+                    name: 'Status', label: '状态', align: 'center', width: 80, sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        if (cellvalue == "未开始") {
+                            var now = new Date();
+                            var date = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                            var sd = new Date(rowObject.StartDate + ' 00:00');
+                            var ed = new Date(rowObject.EndDate + ' 00:00');
+                            if (sd <= date && ed >= date) return '进行中'
+                            else if (ed < date) return '未完成'
+                            else return cellvalue;
+                        } else return cellvalue;
+                    }
+                },
+                { name: 'DutyUser', label: '责任人', align: 'center', sortable: false },
+                { name: 'DutyDepartment', label: '责任部门', align: 'center', sortable: false },
+                { name: 'StartDate', label: '计划开始时间', align: 'center', sortable: false },
+                { name: 'EndDate', label: '计划结束时间', align: 'center', sortable: false }
+            ],
+            data: subtasks
+        });
+
+    });
+
+    function valid(formdata) {
+        if (!formdata.Content) {
+            dialogMsg('请输入工作任务！', 0);
+            return false;
+        }
+        if (!formdata.StartDate) {
+            dialogMsg('请选择计划时间！', 0);
+            return false;
+        }
+        if (!formdata.EndDate) {
+            dialogMsg('请选择计划时间！', 0);
+            return false;
+        }
+        if (!formdata.DutyDepartment) {
+            dialogMsg('请选择责任部门！', 0);
+            return false;
+        }
+        if (!formdata.DutyUser) {
+            dialogMsg('请选择责任人！', 0);
+            return false;
+        }
+
+        return true;
+    }
+
+    function AcceptClick() {
+        var formdata = jQuery('form').serializeJSON();
+
+        if (!valid(formdata)) return;
+
+        formdata.SubTasks = jQuery('#grid').jqGrid('getRowData');
+
+        Loading(true, '正在处理数据...');
+        jQuery.ajax({
+            url: '/..@Url.Action("Edit")/' + '@ViewBag.id',
+            contentType: 'application/json',
+            type: 'POST',
+            data: JSON.stringify(formdata),
+            success: function (data) {
+                if (data.type == "3") {
+                    dialogAlert(data.message, -1);
+                } else {
+                    Loading(false);
+                    dialogMsg(data.message, 1);
+                    $.currentIframe().fn$refresh();
+                    dialogClose();
+                }
+            },
+            complete: function () {
+                Loading(false);
+            }
+        });
+    }
+
+    function select1() {
+        selectUser(jQuery('#DutyDepartmentId').val(), 'single', function (data) {
+            jQuery('#DutyUserId').val(data.UserId);
+            jQuery('#DutyUser').val(data.RealName);
+        });
+    }
+
+    function select2() {
+        selectUser(jQuery('#DutyDepartmentId').val(), 'single', function (data) {
+            jQuery('#TodoUserId').val(data.UserId);
+            jQuery('#TodoUser').val(data.RealName);
+        });
+    }
+
+    function selectdept() {
+        selectDepartment('single', '', function (node) {
+            if (node) {
+                jQuery('#DutyDepartmentId').val(node.value);
+                jQuery('#DutyDepartment').val(node.text);
+            }
+
+        });
+    }
+
+    function newtask() {
+        var formdata = jQuery('form').serializeJSON();
+        if (!valid(formdata)) return;
+
+        dialogOpen({
+            id: "Edit2",
+            title: '新增工作任务',
+            url: '/..@Url.Action("Edit2")?section=new',
+            width: "800px",
+            height: "400px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    function newtaskcallback(task) {
+        jQuery('.unwritten').remove();
+        if (task.TaskId) {
+            if (task.finish == '完成') task.Status = '已完成';
+            jQuery('#grid').jqGrid('setRowData', task.TaskId, task);
+        } else {
+            task.Status = "未开始";
+            task.TaskId = newGuid();
+            var leng = jQuery('#grid').jqGrid('getRowData').length;
+            jQuery('#grid').jqGrid('addRowData', task.TaskId, task);
+        }
+    }
+
+    function getForm() {
+        return jQuery('form').serializeJSON();
+    }
+
+    function getTask(id) {
+        return jQuery('#grid').jqGrid('getRowData', id);
+    }
+
+    function fn$view(id) {
+        dialogOpen({
+            id: "Edit2",
+            title: '查看工作任务',
+            url: '/..@Url.Action("Detail2")/' + id,
+            width: "800px",
+            height: "500px",
+            btn: null,
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    function fn$edit(id) {
+        var row = jQuery('#grid').jqGrid('getRowData', id);
+        if (row.State == '-1') {
+            dialogOpen({
+                id: "Edit2",
+                title: '编辑工作任务',
+                url: '/..@Url.Action("Edit2")/' + id,
+                width: "800px",
+                height: "400px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        } else {
+            dialogOpen({
+                id: "Edit2",
+                title: '编辑工作任务',
+                url: '/..@Url.Action("Update2")/' + id,
+                width: "800px",
+                height: "500px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        }
+    }
+
+    function fn$delete(id) {
+        jQuery('#grid').jqGrid('delRowData', id);
+    }
+
+    function fn$cancel(id) {
+        var idx = dialogConfirm('该任务取消后其子任务将会被取消，是否取消？', function (yes) {
+            if (yes) {
+                jQuery('#grid').jqGrid('setCell', id, 'Status', '已取消');
+                jQuery('tr#' + id).find('td[aria-describedby="grid_action"] > a[title="编辑"]').remove();
+                jQuery('tr#' + id).find('td[aria-describedby="grid_action"] > a[title="取消"]').remove();
+                top.layer.close(idx);
+            }
+        });
+    }
+
+    function startChange() {
+        var now = new Date();
+        var date = new Date(now.getFullYear(), now.getMonth(), 1);
+        var val = new Date(jQuery('#StartDate').val());
+        if (val < date) {
+            jQuery('#StartDate').val('');
+            dialogMsg('开始时间不能早于当月1号！', 0);
+        }
+    }
+
+    function endChange() {
+        var start = new Date(jQuery('#StartDate').val());
+        var end = new Date(jQuery('#EndDate').val());
+        if (!(end >= start)) {
+            jQuery('#EndDate').val('');
+            dialogMsg('结束时间必须大于或等于开始时间！', 0);
+        }
+    }
+
+</script>
+<div class="container-fluid">
+    <div class="panel-body form-horizontal">
+        <div class="form-group">
+            <label class="col-xs-1 control-label">工作任务<span style="color:red;">*</span></label>
+            <div class="col-xs-10">
+                @Html.HiddenFor(x => x.TaskId)
+                @Html.HiddenFor(x => x.ParentTaskId)
+                @Html.HiddenFor(x => x.CreateUserId)
+                @Html.TextBoxFor(x => x.Content, new { @class = "form-control", placeholder = "请输入" })
+            </div>
+            <div class="col-xs-1 checkbox">
+                <label>
+                    @Html.HiddenFor(x => x.Status)
+                    <input type="checkbox" id="finish" name="finish" value="完成"> 完成
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-1 control-label">计划时间<span style="color:red;">*</span></label>
+            <div class="col-xs-5">
+                @Html.TextBoxFor(x => x.StartDate, new { @class = "form-control", onfocus = "WdatePicker({onpicked:startChange});this.blur()", style = "width:200px;display:inline", Value = Model.StartDate == null ? string.Empty : Model.StartDate.Value.ToString("yyyy-MM-dd") })
+                <span style="line-height:26px;">~</span>
+                @Html.TextBoxFor(x => x.EndDate, new { @class = "form-control", onfocus = "WdatePicker({onpicked:endChange});this.blur()", style = "width:200px;display:inline", Value = Model.EndDate == null ? string.Empty : Model.EndDate.Value.ToString("yyyy-MM-dd") })
+            </div>
+            <label class="col-xs-1 control-label">责任部门<span style="color:red;">*</span></label>
+            <div class="col-xs-2">
+                @Html.HiddenFor(x => x.DutyDepartmentId)
+                @Html.TextBoxFor(x => x.DutyDepartment, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+            <label class="col-xs-1 control-label">责任人<span style="color:red;">*</span></label>
+            <div class="col-xs-2">
+                @Html.HiddenFor(x => x.DutyUserId)
+                @Html.TextBoxFor(x => x.DutyUser, new { @class = "form-control", onfocus = "this.blur()", onclick = "select1('DutyUser,,DutyUserId');" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-1 control-label">任务说明</label>
+            <div class="col-xs-8">
+                @Html.TextAreaFor(x => x.Remark, new { @class = "form-control", placeholder = "请输入", rows = "3", maxlength = 500 })
+            </div>
+            <label class="col-xs-1 control-label">授权责任人</label>
+            <div class="col-xs-2">
+                @Html.HiddenFor(x => x.TodoUserId)
+                @Html.TextBoxFor(x => x.TodoUser, new { @class = "form-control", onfocus = "this.blur()", onclick = "select2('TodoUser,,TodoUserId');" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-1 control-label">变更记录</label>
+            <div class="col-xs-11">
+                @Html.TextAreaFor(x => x.UpdateRecords, new { @class = "form-control", rows = "3", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-1 control-label">创建人</label>
+            <div class="col-xs-2">
+                @Html.TextBoxFor(x => x.CreateUser, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+            <label class="col-xs-1 control-label">创建时间</label>
+            <div class="col-xs-2">
+                @Html.TextBoxFor(x => x.CreateTime, new { @class = "form-control", Value = Model.CreateTime.ToString("yyyy-MM-dd"), @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading row">
+                <label class="col-sm-11" style="line-height:26px;">子任务</label>
+                <div class="col-sm-1">
+                    <a id="btn-new" class="btn btn-default" style="height:26px;padding-top:3px;" onclick="newtask();">新增</a>
+                </div>
+            </div>
+            <div class="panel-body" style="padding-left:0px;padding-top:0px;padding-bottom:0px;padding-right:0px;">
+                <table id="grid"></table>
+            </div>
+        </div>
+        @*<div class="row">
+                <div class="col-xs-3" style="padding-left:0px;padding-right:0px;">
+                    <div class="row">
+                        <div class="col-xs-3" style="padding-left:10px;padding-right:10px;">工作任务</div>
+                        <div class="col-xs-9" style="padding-left:10px;padding-right:10px;">
+                            @Html.TextBoxFor(x => x.StartDate, new { @class = "form-control", onfocus = "WdatePicker();", style = "width:200px;float:left;" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-3" style="padding-left:0px;padding-right:0px;">
+                    <div class="row">
+                        <div class="col-xs-12" style="padding-left:10px;padding-right:10px;">
+                            @Html.TextBoxFor(x => x.EndDate, new { @class = "form-control", onfocus = "WdatePicker();", style = "width:200px;float:left;" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-3" style="padding-left:0px;padding-right:0px;">
+                    <div class="row">
+                        <div class="col-xs-3" style="padding-left:10px;padding-right:10px;">责任部门</div>
+                        <div class="col-xs-9" style="padding-left:10px;padding-right:10px;">
+                            @Html.TextBoxFor(x => x.DutyDepartment, new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-3" style="padding-left:0px;padding-right:0px;">
+                    <div class="row">
+                        <div class="col-xs-3" style="padding-left:10px;padding-right:10px;">责任人</div>
+                        <div class="col-xs-9" style="padding-left:10px;padding-right:10px;">
+                            @Html.TextBoxFor(x => x.DutyDepartment, new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+    </div>
+    @*</div>*@
+</div>

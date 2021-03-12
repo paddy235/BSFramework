@@ -1,0 +1,163 @@
+﻿@{
+    ViewBag.Title = "Index2";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+
+}
+@*<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group a.btn {
+            margin-top: 4px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+    .form-group {
+        margin-bottom: 0px;
+    }
+</style>*@
+<script src="@Url.Content("~/Content/scripts/plugins/datepicker/WdatePicker.js")"></script>
+<script src="~/Content/scripts/plugins/AdminPrettyDesktopFirst/js/LoadData.js"></script>
+<script>
+    var selectedRowIndex;
+    var _parentId = "";
+    var _isOrg = "";
+    var deptid = "@ViewBag.deptid";
+    var rootdeptid = '@ViewBag.deptid';
+    var currUserAccount = "@BSFramework.Application.Code.OperatorProvider.Provider.Current().Account";
+
+    jQuery(function () {
+        var type = '@ViewBag.type';
+        InitialPage();
+        //GetTree();
+
+        if (type == 4) //首页跳转，当前季度
+        {
+            jQuery('#meetingstarttime').val('@ViewBag.from');
+            jQuery('#meetingendtime').val('@ViewBag.to');
+        }
+
+        jQuery('#grid').jqGrid({
+            height: $(window).height() - 170,
+            autowidth: true,
+            colModel: [
+                { label: '日期', name: 'MeetingStartTime', align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' } },
+                { label: '班组', name: 'DeptName', align: 'center' },
+                { label: '班前会', name: 'StartMeeting', align: 'center', formatter: function (cellvalue, options, rowObject) { return '照片：' + rowObject.Pic1 + '，视频：' + (rowObject.Video1 || '0') } },
+                { label: '班后会', name: 'EndMeeting', align: 'center', formatter: function (cellvalue, options, rowObject) { return '照片：' + rowObject.Pic2 + '，视频：' + (rowObject.Video2 || '0') } },
+                { label: '工作任务', name: 'Job1', align: 'center' },
+                { label: '反馈图片任务', name: 'Job2', align: 'center' },
+                { label: '反馈音频任务', name: 'Job3', align: 'center' },
+                { label: '未完成任务', name: 'Job4', align: 'center' },
+                { label: '闭环任务', name: 'Job5', align: 'center' },
+            ],
+            url: '@Url.Action("GetData2")',
+            postData: { deptid: deptid },
+            datatype: "json",
+            shrinkToFit: true,
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            forceFit: true,
+            rowNum: 20,
+            rownumbers: true,
+            pager: "#gridPager",
+        });
+    });
+
+
+    function fn$query() {
+        jQuery('#grid').jqGrid('setGridParam', { postData: { deptid: deptid } }).trigger("reloadGrid");
+    }
+
+    function onNodeSelected(item) {
+        deptid = item.id;
+        fn$query();
+    }
+
+
+    //初始化页面
+    function InitialPage() {
+        $('#layout').layout({
+            west: {
+                size: 300
+            },
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $("#grid").setGridHeight($(window).height() - 170);
+                $("#departments").height($(window).height() - 50);
+            }, 200);
+            e.stopPropagation();
+        });
+
+        $("#departments").height($(window).height() - 50);
+    }
+
+</script>
+<audio id="audio" src="" controls autoplay style="width:483px;display:none;"></audio>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                <div class="col-md-10">
+                    组织机构
+                </div>
+                <div class="col-md-2 text-right" style="padding-right:8px;">
+                    <i class="fa fa-arrow-left" onclick="setBar(this)" style="cursor:pointer;" title="展开/收起"></i>
+                </div>
+            </div>
+            @Html.Partial("~/Areas/BaseManage/Views/Department/Tree.cshtml")
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title">
+                任务统计
+            </div>
+            <div class="titlePanel">
+
+                <div class="title-search">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label for="team">日期</label>
+                            <input type="text" class="form-control" id="meetingstarttime" onfocus="WdatePicker();" readonly="readonly">
+                            - <input type="text" class="form-control" id="meetingendtime" onfocus="WdatePicker();" readonly="readonly">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="team" style="display:none" placeholder="请输入关键字">
+                        </div>
+                        <div class="form-group">
+                            <a id="btn_Search" class="btn btn-primary" onclick="fn$query()"><i class="fa fa-search"></i>&nbsp;查询</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="toolbar">
+                    @*<script>$('.toolbar').authorizeButton()</script>*@
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="grid"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

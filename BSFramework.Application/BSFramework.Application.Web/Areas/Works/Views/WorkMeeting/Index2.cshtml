@@ -1,0 +1,433 @@
+﻿@{
+    ViewBag.Title = "Index2";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+    Dictionary<string, int> dic = ViewBag.TodayWork;
+}
+<script src="@Url.Content("~/Content/scripts/plugins/datepicker/WdatePicker.js")"></script>
+<script src="~/Content/scripts/plugins/AdminPrettyDesktopFirst/js/LoadData.js"></script>
+<script>
+    var selectedRowIndex;
+    var _parentId = "";
+    var _isOrg = "";
+    var deptid = "@ViewBag.deptid";
+    var rootdeptid = '@ViewBag.deptid';
+    var currUserAccount = "@BSFramework.Application.Code.OperatorProvider.Provider.Current().Account";
+    var type = '@ViewBag.type';
+    var getDeptid = request('getdeptid');
+    jQuery(function () {
+        $('#layout').layout({
+            west: {
+                size: 300
+            },
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+
+        $("#departments").height($(window).height() - 50);
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $("#gridTable").setGridHeight($(window).height() - 199);
+                $("#departments").height($(window).height() - 50);
+            }, 200);
+            e.stopPropagation();
+        });
+     
+
+        if (type == 4) //首页跳转，当前季度
+        {
+            jQuery('#meetingstarttime').val('@ViewBag.from');
+            jQuery('#meetingendtime').val('@ViewBag.to');
+        }
+
+        setTimeout('loadGrid();', 20);
+
+        setTimeout('GetIsMeet();', 100);
+
+    });
+
+    function loadGrid() {
+        queryJson = {
+           deptid: deptid
+        };
+        if (getDeptid) {
+            queryJson = {
+                deptid: getDeptid
+            };
+        }
+        jQuery('#gridTable').jqGrid({
+            postData: queryJson,
+            height: $(window).height() - 199,
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'MeetingId', hidden: true, align: 'center' },
+                {
+                    label: '操作', name: 'action', width: 150, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        var html = "";
+                        //html += "<a href=\"javascript:fn$view('" + rowObject.aftermeetingid + "')\" title=\"查看\" style=\"color:blue;padding-left:0px;\">查看</a> ";
+
+                        //    if (rowObject.afterisover == "已完成") {
+                        //        html += "<a href=\"javascript:btn_edit('" + rowObject.aftermeetingid + "')\" title=\"编辑\" style=\"color:blue;padding-left:0px;\">编辑</a> ";
+                        //    }
+                        //    html += "<a href=\"javascript:btn_delete('" + rowObject.aftermeetingid + "')\" title=\"删除\" style=\"color:blue;padding-left:0px;\">删除</a> ";
+                        return html;
+                    }
+                },
+                { label: '班组', name: 'GroupName', index: 'GroupName', width: 230, align: 'center', sortable: false },
+                { label: '日期', name: 'MeetingStartTime', index: 'MeetingStartTime', width: 230, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' } },
+                { label: '结束时间', hidden: true, name: 'MeetingEndTime', index: 'MeetingEndTime', width: 230, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' } },
+                {
+                    label: '会议时间', name: 'time1', width: 270, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        var d1 = new Date(parseInt(rowObject.MeetingStartTime.replace(/^\/Date\(/, '').replace(/\)\/$/, '')));
+                        var d2 = new Date(parseInt(rowObject.MeetingEndTime.replace(/^\/Date\(/, '').replace(/\)\/$/, '')));
+                        return (d1.getHours() < 10 ? ('0' + d1.getHours()) : d1.getHours()) + ':' + (d1.getMinutes() < 10 ? ('0' + d1.getMinutes()) : d1.getMinutes()) + '~' + (d2.getHours() < 10 ? ('0' + d2.getHours()) : d2.getHours()) + ':' + (d2.getMinutes() < 10 ? ('0' + d2.getMinutes()) : d2.getMinutes());
+                    }
+                },
+                {
+                    label: '会议状态', name: 'afterisover', index: 'afterisover', width: 270, align: 'center', sortable: false, formatter: function (i, obj, rowObject) {
+                        var afterpic = jQuery.grep(rowObject.Files, function (o, i) { return o.Description == '照片' }).length;
+                        var video = jQuery.grep(rowObject.Files, function (o, i) { return o.Description == '视频' });
+                        var aftervideo = video.length ? video[0].duration : '';
+                        var afterHtml = rowObject.IsOver == true ? '已完成' : '进行中';
+                        if (afterpic > 0) {
+                            afterHtml += '     <img src="@Url.Content("~/Content/styles/static/images/pic.png")" alt=""> ' + afterpic;
+                        }
+                        if (aftervideo && aftervideo != "00:00") {
+                            afterHtml += '    <img src="@Url.Content("~/Content/styles/static/images/audios.png")" alt=""> ' +
+                                aftervideo;
+                        }
+                        return afterHtml;
+                    }
+                },
+                {
+                    label: '会议时间', name: 'beforetime', index: 'beforestarttime', width: 270, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        if (rowObject.ShouldStartTime) {
+                            var d1 = new Date(parseInt(rowObject.ShouldStartTime.replace(/^\/Date\(/, '').replace(/\)\/$/, '')));
+                            var d2 = new Date(parseInt(rowObject.ShouldEndTime.replace(/^\/Date\(/, '').replace(/\)\/$/, '')));
+                            return (d1.getHours() < 10 ? ('0' + d1.getHours()) : d1.getHours()) + ':' + (d1.getMinutes() < 10 ? ('0' + d1.getMinutes()) : d1.getMinutes()) + '~' + (d2.getHours() < 10 ? ('0' + d2.getHours()) : d2.getHours()) + ':' + (d2.getMinutes() < 10 ? ('0' + d2.getMinutes()) : d2.getMinutes());
+                        } else return '';
+                    }
+                },
+                {
+                    label: '会议状态', name: 'beforeisover', index: 'beforeisover', width: 270, align: 'center', sortable: false, formatter: function (i, obj, row) {
+                        if (row.Files2 == null) row.Files2 = [];
+                        var beforepic = jQuery.grep(row.Files2, function (o, i) { return o.Description == '照片' }).length;
+                        var video = jQuery.grep(row.Files2, function (o, i) { return o.Description == '视频' });
+                        var beforevideo = video.length ? video[0].duration : '';
+                        var beforeHtml = row.IsOver2 == true ? '已完成' : '未开始';
+                        if (beforepic > 0) {
+                            beforeHtml += '     <img src="@Url.Content("~/Content/styles/static/images/pic.png")" alt=""> ' + beforepic;
+                        }
+                        if (beforevideo && beforevideo != "00:00") {
+                            beforeHtml += '    <img src="@Url.Content("~/Content/styles/static/images/audios.png")" alt=""> ' +
+                                beforevideo;
+                        }
+                        return beforeHtml;
+                    }
+                }
+            ],
+            url: '@Url.Action("GetList")?type=' + type,
+            datatype: "json",
+            shrinkToFit: true,
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            forceFit: true,
+            rowNum: 20,
+            rownumbers: true,
+            pager: "#gridPager",
+            
+            gridComplete: function () {
+                var gridid = this.id;
+                $("#" + this.id).setSelection(selectedRowIndex, false);
+                var rows = $("#" + this.id).jqGrid("getRowData");//获取当前页记录行数据
+                //查询用户对该模块的数据操作权限
+                $(rows).each(function (i, item) {
+                    var uId = item.MeetingId;
+                    var html = "";
+                    var weekTotal = item.weekTotal;
+                    var monthTotal = item.monthTotal;
+                    //var weekNum = $("#weekNum").text();
+                    //var monthNum = $("#monthNum").text();
+
+                    //if (weekTotal != weekNum) {
+                    //    $("#weekNum").text(weekTotal);
+                    //}
+
+                    //if (monthTotal != monthNum) {
+                    //    $("#monthNum").text(monthTotal);
+                    //}
+
+                    html += "<a href=\"javascript:fn$view('" + uId + "')\" title=\"查看\">查看</a>";
+
+                    if (item.afterisover != "进行中" || currUserAccount == "System") {
+                        html += "<a href=\"javascript:btn_edit('" + uId + "')\" title=\"编辑\" code=\"edit\" >编辑</a>";
+                    }
+                    html += "<a href=\"javascript:btn_delete('" + uId + "')\" title=\"删除\" code=\"delete\" >删除</a>";
+
+                    $("td[aria-describedby='" + gridid + "_action']").eq(i).html(html);
+
+                    $("td[aria-describedby='" + gridid + "_afterisover']").eq(i).css("text-align", "left");
+                    $("td[aria-describedby='" + gridid + "_beforeisover']").eq(i).css("text-align", "left");
+
+                });
+                 @if (!BSFramework.Application.Code.OperatorProvider.Provider.Current().IsSystem)
+                {
+                    @Html.Raw("AuthiruzeBtn($('.toolbar'), $('#gridTable'));");//操作按钮权限控制
+                }
+            }
+
+        });
+
+        var groups = [];
+        groups.push({ startColumnName: 'time1', numberOfColumns: 2, titleText: '班前会' });
+        groups.push({ startColumnName: 'beforetime', numberOfColumns: 2, titleText: '班后会' });
+
+        jQuery('#gridTable').jqGrid('setGroupHeaders', {
+            useColSpanStyle: false,
+            groupHeaders: groups
+        });
+
+        jQuery('#gridTable').jqGrid('setFrozenColumns');
+
+
+        $("#btn_Search").click(function () {
+            var radiock = jQuery("input:radio[name='ckradio']:checked").val();
+            console.log(deptid);
+
+            var obj = {
+                deptid: deptid,
+                orderby: radiock,
+                team: jQuery('#team').val(),
+                begin: jQuery('#meetingstarttime').val(),
+                end: jQuery('#meetingendtime').val(),
+                appraise: jQuery('#appraise').val()
+            };
+            jQuery('#gridTable').jqGrid('setGridParam', {
+                postData: obj, page: 1
+            }).trigger('reloadGrid');
+        });
+
+        $("input:radio[name='ckradio']").click(function () {
+            var radiock = jQuery("input:radio[name='ckradio']:checked").val();
+            var obj = {
+                deptid: deptid,
+                orderby: radiock,
+                team: jQuery('#team').val(),
+                meetingstarttime: jQuery('#meetingstarttime').val(),
+                meetingendtime: jQuery('#meetingendtime').val(),
+                appraise: jQuery('#appraise').val()
+            };
+            jQuery('#gridTable').jqGrid('setGridParam', {
+                postData: obj, page: 1
+            }).trigger('reloadGrid');
+        });
+    }
+
+
+
+
+    //编辑
+    function btn_edit(id) {
+        dialogOpen({
+            id: "Form",
+            title: '班前班后会编辑',
+            url: '/..@Url.Action("Detail3")/' + id,
+            width: "1500px",
+            height: "720px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    //删除
+    function btn_delete(keyValue) {
+        if (keyValue) {
+            $.RemoveForm({
+                url: '../../Works/WorkMeeting/RemoveForm',
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $('#gridTable').trigger('reloadGrid');
+                }
+            })
+        } else {
+            dialogMsg('请选择需要删除的记录！', 0);
+        }
+    }
+
+
+    //查看
+    var radiock = jQuery("input:radio[name='ckradio']:checked").val();
+    function fn$view(id) {
+        dialogOpen({
+            id: "Form",
+            title: '班前班后会详情',
+            url: '/..@Url.Action("Detail2")/' + id,
+            width: "1500px",
+            height: "720px",
+            btn: null
+            //callBack: function (iframeId) {
+            //    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            //}
+        });
+    }
+    function GetIsMeet() {
+        var  type="1";
+        $.ajax({
+            url: "@Url.Action("GetIsMeet")",
+            type: "post",
+            dataType: "json",
+            data: { deptid: deptid,type:type },
+            //async: false,
+            success: function (data) {
+                $("#weekNum").text(data.total);
+            }
+        });
+        type="2";
+        $.ajax({
+            url: "@Url.Action("GetIsMeet")",
+            type: "post",
+            dataType: "json",
+            data: { deptid: deptid,type:type },
+            //async: false,
+            success: function (data) {
+                $("#monthNum").text(data.total);
+            }
+        });
+    }
+
+    function workOrdermeeting(type) {
+
+        if (deptid) {
+            window.location.href = '@Url.Action("Index3")?type=' + type;
+        } else {
+            window.location.href = '@Url.Action("Index3")?type=' + type;
+        }
+    }
+    //初始化页面
+
+    /**查看今日工作 风险等级的详情 */
+    function RiskLevelDetail() {
+        dialogOpen({
+            id: "Form",
+            title: '班会任务',
+            url: '/..@Url.Action("RiskLevelDetail")',
+            width: ($(top.window).width() - 200) + "px",
+            height: ($(top.window).height() - 300) + "px",
+            btn:["取消"],
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    function onNodeSelected(node) {
+        deptid = node.id;
+        _parentId = node.EnCode;
+        _isOrg = node.Sort;
+            $('#btn_Search').trigger("click");
+    }
+</script>
+<audio id="audio" src="" controls autoplay style="width:483px;display:none;"></audio>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                <div class="col-md-10">
+                    组织机构
+                </div>
+                <div class="col-md-2 text-right" style="padding-right:8px;">
+                    <i class="fa fa-arrow-left" onclick="setBar(this)" style="cursor:pointer;" title="展开/收起"></i>
+                </div>
+            </div>
+            @*<div id="itemTree" style="border: 1px solid #ccc;border-top:none;"></div>*@
+            @Html.Partial("~/Areas/BaseManage/Views/Department/Tree.cshtml")
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title">
+                班前班后会记录
+                <div class="btn-group" style="float:right;margin-right:50px">
+                    <label>未开班会：</label><label onclick="workOrdermeeting(1)" style="color:blue;text-decoration:underline; cursor:pointer;">
+                        本周
+                        <span id="weekNum">@ViewBag.weektotal</span>  次
+                    </label>&nbsp;&nbsp;&nbsp;&nbsp;<label onclick="workOrdermeeting(2)" style="color:blue;text-decoration:underline; cursor:pointer;">
+                        本月
+                        <span id="monthNum">@ViewBag.monthtotal</span>次
+                    </label>
+                </div>
+
+
+                <div class="btn-group" style="float:right;margin-right:50px">
+                    <label>今日工作</label>
+                    <label>
+                        重大风险<label onclick="RiskLevelDetail()" style="color:red; text-decoration:underline;cursor:pointer;">&nbsp;@dic["重大风险"]&nbsp;</label>项
+                    </label>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <label>
+                        较大风险<label onclick="RiskLevelDetail()" style="color:orange; text-decoration:underline;cursor:pointer;">&nbsp;@dic["较大风险"]&nbsp;</label>项
+                    </label>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <label>
+                        一般风险<label onclick="RiskLevelDetail()" style="color:  gold; text-decoration:underline;cursor:pointer;">&nbsp;@dic["一般风险"]&nbsp;</label>项
+                    </label>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <label>
+                        低风险<label onclick="RiskLevelDetail()" style="color: aqua; text-decoration:underline;cursor:pointer;">&nbsp;@dic["低风险"]&nbsp;</label>项
+                    </label>&nbsp;&nbsp;&nbsp;&nbsp;
+                </div>
+
+            </div>
+            <div class="titlePanel">
+                <div class="title-search">
+                    <div class="form-inline">
+                        @*<div class="form-group">
+                                <label for="department">部门</label>
+                                <input type="text" class="form-control" id="department">
+                            </div>
+                            <div class="form-group">
+                                <label for="team">班组</label>
+                                <input type="text" class="form-control" id="team">
+                            </div>*@
+                        <div class="form-group">
+                            <label for="team">日期</label>
+                            <input type="text" class="form-control" id="meetingstarttime" onfocus="WdatePicker();" readonly="readonly">
+                            - <input type="text" class="form-control" id="meetingendtime" onfocus="WdatePicker();" readonly="readonly">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="team" style="display:none" placeholder="请输入关键字">
+                        </div>
+                        <div class="form-group">
+                            <label for="appraise">评价状态</label>
+                            <select id="appraise" class="form-control">
+                                <option value="0">全部</option>
+                                <option value="1">已评价</option>
+                                <option value="2">未评价</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="toolbar">
+                    <div class="btn-group">
+                        <label>时间排序：</label>
+                        <input type="radio" name="ckradio" value="升" />升
+                        <input type="radio" name="ckradio" value="降" checked="checked" />降
+                    </div>
+                    <div class="btn-group">
+                        <a id="dafen" code="dafen" class="btn btn-default" onclick="dafen()"><i class="fa fa-check"></i>&nbsp;考评打分</a>
+                    </div>
+                    @*<script>$('.toolbar').authorizeButton()</script>*@
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="gridTable"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

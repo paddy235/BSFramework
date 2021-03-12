@@ -1,0 +1,297 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<style>
+    .page {
+        height: 26px;
+        line-height: 24px;
+        border: 1px solid gray;
+        border-radius: 3px;
+        cursor: pointer;
+        background-color: gray;
+    }
+
+        .page li {
+            height: 24px;
+            float: left;
+            padding: 0px 3px;
+            background-color: white;
+        }
+
+        .page .current {
+            background-color: #337ab7;
+            color: white;
+        }
+</style>
+<script src="@Url.Content("~/Content/scripts/plugins/highcharts/highcharts.js")"></script>
+@section Scripts {
+    <script>
+        var chart1, chart2, color = ['rgba(165,170,217,1)', 'rgba(126,86,134,0.8)', 'rgba(248,161,63,1)', 'rgba(186,60,61,0.8)'], pagedata;
+        jQuery(function () {
+            var now = new Date();
+            var year = now.getFullYear();
+            for (var i = year; i > year - 10; i--) {
+                jQuery('#year').append('<option value="' + i + '">' + i + '</option>');
+            }
+
+            jQuery('.page li').click(function () {
+                jQuery('.current').toggleClass('current');
+                jQuery(this).toggleClass('current');
+
+                fn$calc(jQuery(this).data('category'));
+            });
+
+            var width = jQuery('.gridPanel').width();
+            var width1 = width * 0.7;
+            var width2 = width * 0.3 - 1;
+
+            jQuery('#chart1').highcharts({
+                chart: {
+                    height: 300,
+                    width: width1,
+                    type: 'column'
+                },
+                title: {
+                    text: '成本统计'
+                },
+                xAxis: {
+                    categories: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+                },
+                yAxis: [{
+                    min: 0,
+                    title: {
+                        text: '金额'
+                    }
+                }],
+                legend: {
+                    shadow: false
+                },
+                tooltip: {
+                    shared: true,
+                },
+                plotOptions: {
+                    column: {
+                        grouping: false,
+                        shadow: false,
+                        borderWidth: 0
+                    }
+                },
+            });
+            chart1 = jQuery('#chart1').highcharts();
+
+            jQuery('#chart2').highcharts({
+                chart: {
+                    //plotBackgroundColor: null,
+                    //plotBorderWidth: null,
+                    //plotShadow: false,
+                    height: 300,
+                    width: width2,
+                    type: 'pie'
+                },
+                title: {
+                    text: '费用占比'
+                },
+                //tooltip: {
+                //    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                //},
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                            style: {
+                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                            }
+                        }
+                    }
+                },
+            });
+            chart2 = jQuery('#chart2').highcharts();
+
+            jQuery('#year').change(fn$update);
+            jQuery('#dept').change(fn$update);
+
+            fn$update();
+
+            jQuery('#grid').jqGrid({
+                colModel: [
+                    { label: '时间', name: 'Month', index: 'Month', width: 150, align: 'center', sortable: false },
+                    { label: '修理费预算', name: 'Budget1', index: 'Budget1', width: 220, align: 'center', sortable: false },
+                    { label: '修理费消耗', name: 'Budget2', index: 'Budget2', width: 220, align: 'center', sortable: false },
+                    { label: '修理费剩余', name: 'Left1', index: 'Left1', width: 220, align: 'center', sortable: false },
+                    { label: '材料费预算', name: 'Cost1', index: 'Cost1', width: 220, align: 'center', sortable: false },
+                    { label: '材料费消耗', name: 'Cost2', index: 'Cost2', width: 220, align: 'center', sortable: false },
+                    { label: '材料费剩余', name: 'Left2', index: 'Left2', width: 220, align: 'center', sortable: false },
+                    { label: '预算总余额', name: 'Left3', index: 'Left3', width: 220, align: 'center', sortable: false },
+                ],
+                height: $(window).height() - 440,
+                //url: '@Url.Action("GetData")',
+                datatype: "local",
+                footerrow: true,
+                //mtype: 'POST',
+                //postData: { year: jQuery('#year').val() },
+                //viewrecords: true,
+                //gridview: true,
+                //sortable: false,
+                //shrinkToFit: true,
+                //autowidth: true,
+                rowNum: -1,
+                rownumbers: true,
+                altRows: true,
+                gridComplete: function () {
+                    jQuery('#grid').footerData('set', { Budget1: Math.round(jQuery('#grid').getCol('Budget1', false, 'sum') * 100) / 100 }, { formatter: 'number', formatoptions: { decimalSeparator: '.', thousandsSeparator: ',', decimalPlaces: 2, defaultValue: 0 } });
+                    jQuery('#grid').footerData('set', { Budget2: Math.round(jQuery('#grid').getCol('Budget2', false, 'sum') * 100) / 100 }, { formatter: 'number', formatoptions: { decimalSeparator: '.', thousandsSeparator: ',', decimalPlaces: 2, defaultValue: 0 } });
+                    jQuery('#grid').footerData('set', { Left1: Math.round(jQuery('#grid').getCol('Left1', false, 'sum') * 100) / 100 }, { formatter: 'number', formatoptions: { decimalSeparator: '.', thousandsSeparator: ',', decimalPlaces: 2, defaultValue: 0 } });
+                    jQuery('#grid').footerData('set', { Cost1: Math.round(jQuery('#grid').getCol('Cost1', false, 'sum') * 100) / 100 }, { formatter: 'number', formatoptions: { decimalSeparator: '.', thousandsSeparator: ',', decimalPlaces: 2, defaultValue: 0 } });
+                    jQuery('#grid').footerData('set', { Cost2: Math.round(jQuery('#grid').getCol('Cost2', false, 'sum') * 100) / 100 }, { formatter: 'number', formatoptions: { decimalSeparator: '.', thousandsSeparator: ',', decimalPlaces: 2, defaultValue: 0 } });
+                    jQuery('#grid').footerData('set', { Left2: Math.round(jQuery('#grid').getCol('Left2', false, 'sum') * 100) / 100 }, { formatter: 'number', formatoptions: { decimalSeparator: '.', thousandsSeparator: ',', decimalPlaces: 2, defaultValue: 0 } });
+                    jQuery('#grid').footerData('set', { Left3: Math.round(jQuery('#grid').getCol('Left3', false, 'sum') * 100) / 100 }, { formatter: 'number', formatoptions: { decimalSeparator: '.', thousandsSeparator: ',', decimalPlaces: 2, defaultValue: 0 } });
+                }
+            });
+
+        });
+
+        function fn$update() {
+            jQuery.post('@Url.Action("GetSummaryData")', { year: jQuery('#year').val(), deptid: jQuery('#dept').val() || jQuery('#deptid').val() }, function (data) {
+                pagedata = data;
+                while (chart1.series.length > 0) {
+                    chart1.series[0].remove(true);
+                }
+
+                while (chart2.series.length > 0) {
+                    chart2.series[0].remove(true);
+                }
+
+                jQuery.each(data, function (i, o) {
+                    var serie = {
+                        name: o.Category,
+                        data: o.Data,
+                        pointPlacement: o.Category.indexOf('材料费') >= 0 ? -0.2 : 0.2,
+                        pointPadding: o.Category.indexOf('预算') >= 0 ? 0.3 : 0.4,
+                        color: color[i]
+                    }
+                    chart1.addSeries(serie);
+
+                });
+
+                fn$calc(jQuery('.current').data('category'));
+
+                jQuery('.unwritten').remove();
+                jQuery('#grid').jqGrid('clearGridData');
+
+                for (var i = 0; i < 12; i++) {
+                    var budget1 = jQuery.grep(data, function (o, j) { return o.Category == '修理费预算'; })[0].Data[i];
+                    var budget2 = jQuery.grep(data, function (o, j) { return o.Category == '修理费支出'; })[0].Data[i];
+                    var cost1 = jQuery.grep(data, function (o, j) { return o.Category == '材料费预算'; })[0].Data[i];
+                    var cost2 = jQuery.grep(data, function (o, j) { return o.Category == '材料费支出'; })[0].Data[i];
+                    var left1 = Math.round((budget1 - budget2) * 100) / 100;
+                    var left2 = Math.round((cost1 - cost2) * 100) / 100;
+                    var left3 = Math.round((left1 + left2) * 100) / 100;
+
+                    jQuery('#grid').jqGrid('addRowData', i + 1, { Month: (i + 1) + '月', Budget1: budget1, Budget2: budget2, Cost1: cost1, Cost2: cost2, Left1: left1, Left2: left2, Left3: left3 });
+                }
+            }, 'json');
+        }
+
+        function fn$calc(category) {
+            var n1 = 0, n2 = 0;
+            while (chart2.series.length > 0) {
+                chart2.series[0].remove(true);
+            }
+
+            switch (category) {
+                case '总费用':
+                    jQuery.each(jQuery.grep(pagedata, function (o) { return o.Category.indexOf('预算') >= 0; }), function (i, o) {
+                        jQuery.each(o.Data, function (j, p) {
+                            n1 += p;
+                        });
+                    });
+                    jQuery.each(jQuery.grep(pagedata, function (o) { return o.Category.indexOf('支出') >= 0; }), function (i, o) {
+                        jQuery.each(o.Data, function (j, p) {
+                            n2 += p;
+                        });
+                    });
+                    n1 = n1 > n2 ? n1 - n2 : 0;
+                    chart2.addSeries({ name: '金额', data: [{ name: '费用', y: Math.round(n2 * 100) / 100 }, { name: '剩余', y: Math.round(n1 * 100) / 100 }] });
+                    break;
+                case '材料费':
+                    jQuery.each(jQuery.grep(pagedata, function (o, i) { return o.Category == '材料费预算'; })[0].Data, function (i, p) {
+                        n1 += p;
+                    });
+                    jQuery.each(jQuery.grep(pagedata, function (o, i) { return o.Category == '材料费支出'; })[0].Data, function (i, p) {
+                        n2 += p;
+                    });
+                    n1 = n1 > n2 ? n1 - n2 : 0;
+                    chart2.addSeries({ name: '金额', data: [{ name: '费用', y: Math.round(n2 * 100) / 100 }, { name: '剩余', y: Math.round(n1 * 100) / 100 }] });
+                    break;
+                case '修理费':
+                    jQuery.each(jQuery.grep(pagedata, function (o, i) { return o.Category == '修理费预算'; })[0].Data, function (i, p) {
+                        n1 += p;
+                    });
+                    jQuery.each(jQuery.grep(pagedata, function (o, i) { return o.Category == '修理费支出'; })[0].Data, function (i, p) {
+                        n2 += p;
+                    });
+                    n1 = n1 > n2 ? n1 - n2 : 0;
+                    chart2.addSeries({ name: '金额', data: [{ name: '费用', y: Math.round(n2 * 100) / 100 }, { name: '剩余', y: Math.round(n1 * 100) / 100 }] });
+                default:
+                    break;
+            }
+
+        }
+    </script>
+}
+<div class="titlePanel">
+    <div class="title-search">
+        <div class="form-inline">
+            <div class="form-group">
+                <label for="year">年</label>
+                <select id="year" class="form-control" style="width:120px"></select>
+            </div>
+            @*<div class="form-group">
+                    <label for="month">月</label>
+                    <select id="month" class="form-control" style="width:120px">
+                        <option value="">请选择</option>
+                    </select>
+                </div>*@
+            @*<div class="form-group">
+                    <label for="category">费用类型</label>
+                    <select id="category" class="form-control" style="width:120px">
+                        <option value="">请选择</option>
+                        <option value="材料费">材料费</option>
+                        <option value="修理费">修理费</option>
+                    </select>
+                </div>*@
+            <div class="form-group">
+                <label for="dept">提交单位</label>
+                @Html.DropDownList("dept", ViewData["list"] as List<SelectListItem>, new { @class = "form-control" })
+                <input type="hidden" id="deptid" value="@ViewBag.deptid" />
+            </div>
+            @*<div class="form-group">
+                    <a id="btn_Search" class="btn btn-primary" onclick="fn$query();"><i class="fa fa-search"></i>查询</a>
+                </div>*@
+        </div>
+    </div>
+    <div class="toolbar">
+        <div class="btn-group">
+            <ul class="page">
+                <li class="current" data-category="总费用">总费用</li>
+                <li style="margin-left:1px;" data-category="材料费">材料费</li>
+                <li style="margin-left:1px;" data-category="修理费">修理费</li>
+            </ul>
+
+            @*<a id="add" class="btn btn-default" onclick="fn$add()"><i class="fa fa-plus"></i>&nbsp;新增</a>*@
+        </div>
+        @*<script>$('.toolbar').authorizeButton()</script>*@
+    </div>
+</div>
+<div style="border: 1px solid #ccc;border-bottom: none;height:301px;">
+    <div id="chart1" style="float:left;"></div>
+    <div id="chart2" style="float:left;"></div>
+</div>
+<div class="gridPanel">
+    <table id="grid" style="float:left;"></table>
+    <div id="gridPager"></div>
+</div>

@@ -1,0 +1,312 @@
+﻿@using BSFramework.Application.Entity.BaseManage
+
+@model List<string>
+@{
+    ViewBag.Title = "Index3";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")">
+<script src="@Url.Content("~/Content/scripts/base.js")"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script>
+    $(function () {
+        $('#table').delegate('td', 'click', function () {
+            jQuery('#table td').removeClass('select');
+            jQuery(this).addClass('select');
+
+            jQuery('#duty-modal td span').removeClass('on');
+
+            var size = jQuery('#duty-modal tr').size();
+            var h = 52 * (size + 2);
+            var winH = $(window).height();
+            if (h > winH - 100) {
+                h = winH - 100
+            }
+
+            jQuery('#duty-modal div:eq(0)').height(h - 100);
+
+            var date = jQuery(this).data('id');
+
+            jQuery.ajax({
+                url: '@Url.Action("GetDutyPersons")', async: false, data: { date: date }, dataType: 'json', success: function (data) {
+                    if (data.success) {
+                        jQuery.each(data.data, function () {
+                            if (this.ReasonRemark == "白班")
+                                jQuery('#duty-modal tr[data-userid="' + this.UserId + '"').find('td:eq(1) span.my-ck').addClass('on');
+                            else
+                                jQuery('#duty-modal tr[data-userid="' + this.UserId + '"').find('td:eq(2) span.my-ck').addClass('on');
+                        });
+
+                        layer.open({
+                            area: ['500px', h + 'px'],
+                            title: '值班人',
+                            type: 1,
+                            content: $('#duty-modal'),
+                            end: function () {
+                                $('#duty-modal').hide();
+                            }
+                        });
+                    }
+                }
+            });
+        });
+
+        jQuery('#duty-modal td span.my-ck').click(function () {
+            jQuery(this).toggleClass('on');
+        });
+
+        jQuery('.my-close2').click(function () {
+            var data = [], date = jQuery('#table .select').data('id');
+            jQuery('#duty-modal tr').each(function (i, o) {
+                if (jQuery(this).find('td span.on').size() > 0) {
+                    if (jQuery(this).find('td:eq(1) span.on').size() > 0)
+                        data.push({ UserId: jQuery(this).data('userid'), UserName: jQuery(this).find('td:eq(0)').text().trim(), Reason: '值班', ReasonRemark: '白班', UnSignDate: jQuery('#MeetingStartTime').val() });
+
+                    if (jQuery(this).find('td:eq(2) span.on').size() > 0)
+                        data.push({ UserId: jQuery(this).data('userid'), UserName: jQuery(this).find('td:eq(0)').text().trim(), Reason: '值班', ReasonRemark: '夜班', UnSignDate: jQuery('#MeetingStartTime').val() });
+                }
+            });
+
+            jQuery.post('@Url.Action("PostDutyPerson")', { data: JSON.stringify({ MeetingStartTime: date, DutyPerson: data }) }, function (data) {
+                if (data.success)
+                    jQuery('.select div.info').text(data.data);
+            });
+
+            layer.closeAll();
+        });
+
+        @*jQuery('#table tbody td').each(function () {
+            var date = jQuery(this).data('id');
+            jQuery.getJSON('@Url.Action("GetDutyPerson")', { date: date }, function (data) {
+                if (data.success) {
+                    jQuery('#table tbody td[data-id="' + date + '"] div.info').text(data.data);
+                }
+            });
+        });*@
+
+        jQuery('#year').change(function () {
+            jQuery('form').submit();
+        });
+
+        jQuery('#month').change(function () {
+            jQuery('form').submit();
+        });
+    });
+
+    function fn$prev() {
+        var crt = jQuery('#month').val();
+        if (crt == '1') {
+            jQuery('#month').val('12');
+        } else {
+            var chg = parseInt(crt) - 1;
+            jQuery('#month').val(chg);
+        }
+        jQuery('#month').change();
+    }
+
+    function fn$next() {
+        var crt = jQuery('#month').val();
+        if (crt == '12') {
+            jQuery('#month').val('1');
+        } else {
+            var chg = parseInt(crt) + 1;
+            jQuery('#month').val(chg);
+        }
+        jQuery('#month').change();
+    }
+</script>
+<!-- Content Wrapper. Contains page content -->
+<div class="main-content">
+    <div class="container-fluid">
+        @using (Html.BeginForm("Duty", "Attendance"))
+            {
+            <div>
+                <div class="" style="overflow: hidden;">
+                    <div class="pull-left title">
+                        <a href="@Url.Action("Index")">
+                            <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+                            值班表
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-e3ebfd pd-10 my-body">
+                <div class="bg-fff peccancy-index">
+                    <div>
+                        <div class="text-center header" style="margin-bottom:10px;">
+                            <span class="my-select">
+                                @Html.DropDownList("year")
+                                <span class="icon"></span>
+                            </span>
+                            <span class="my-select-group">
+                                <a href="javascript:fn$prev();">左箭头</a>
+                                <span class="my-select">
+                                    @Html.DropDownList("month")
+                                    <span class="icon"></span>
+                                </span>
+                                <a href="javascript:fn$next();">右箭头</a>
+                            </span>
+                            &nbsp;
+                            <a class="my-btn bd-2-3669e1 c-3669e1" href="@Url.Action("Duty")">
+                                回到今天
+                            </a>
+                        </div>
+                        <table id="table" class="table text-center table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>一</th>
+                                    <th>二</th>
+                                    <th>三</th>
+                                    <th>四</th>
+                                    <th>五</th>
+                                    <th>六</th>
+                                    <th>日</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < 6; i++)
+                                {
+                                    <tr>
+                                        <td class="@(((DateTime)ViewData["date"]).AddDays(i * 7 + 1) == DateTime.Today ? "current" : "")" data-id="@Html.Raw(((DateTime)ViewData["date"]).AddDays(i * 7 + 1).ToString("yyyy-MM-dd"))">
+                                            <div>
+                                                <div class="day @(((DateTime)ViewData["date"]).AddDays(i * 7 + 1).Month == (int)ViewData["currentmonth"] ? "" : "c-gray")">@(((DateTime)ViewData["date"]).AddDays(i * 7 + 1).Day)</div>
+                                                <div class="info">
+                                                    @Model[i * 7 + 0]
+                                                    @*@if (Model.Count(x => x.Key == ((DateTime)ViewData["date"]).AddDays(i * 7 + 1).ToString("yyyy-MM-dd")) > 0)
+                                                        {
+                                                            <p style="color:black"> @Model.First(x => x.Key == ((DateTime)ViewData["date"]).AddDays(i * 7 + 1).ToString("yyyy-MM-dd")).ToList()[0].SettingName </p>
+                                                            <p style="color:black"> @Model.First(x => x.Key == ((DateTime)ViewData["date"]).AddDays(i * 7 + 1).ToString("yyyy-MM-dd")).ToList()[0].startSpan </p>
+                                                        }*@
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="@(((DateTime)ViewData["date"]).AddDays(i * 7 + 2) == DateTime.Today ? "current" : "")" data-id="@Html.Raw(((DateTime)ViewData["date"]).AddDays(i * 7 + 2).ToString("yyyy-MM-dd"))">
+                                            <div>
+                                                <div class="day @(((DateTime)ViewData["date"]).AddDays(i * 7 + 2).Month == (int)ViewData["currentmonth"] ? "" : "c-gray")">@(((DateTime)ViewData["date"]).AddDays(i * 7 + 2).Day)</div>
+                                                <div class="info">
+                                                    @Model[i * 7 + 1]
+                                                    @*@if (Model.Count(x => x.Key == ((DateTime)ViewData["date"]).AddDays(i * 7 + 2).ToString("yyyy-MM-dd")) > 0)
+                                                        {
+                                                            <p style="color:black"> @Model.First(x => x.Key == ((DateTime)ViewData["date"]).AddDays(i * 7 + 2).ToString("yyyy-MM-dd")).ToList()[0].SettingName </p>
+
+                                                            <p style="color:black"> @Model.First(x => x.Key == ((DateTime)ViewData["date"]).AddDays(i * 7 + 2).ToString("yyyy-MM-dd")).ToList()[0].startSpan </p>
+                                                        }*@
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="@(((DateTime)ViewData["date"]).AddDays(i * 7 + 3) == DateTime.Today ? "current" : "")" data-id="@Html.Raw(((DateTime)ViewData["date"]).AddDays(i * 7 + 3).ToString("yyyy-MM-dd"))">
+                                            <div>
+                                                <div class="day @(((DateTime)ViewData["date"]).AddDays(i * 7 + 3).Month == (int)ViewData["currentmonth"] ? "" : "c-gray")">@(((DateTime)ViewData["date"]).AddDays(i * 7 + 3).Day)</div>
+                                                <div class="info">
+                                                    @Model[i * 7 + 2]
+                                                    @*@if (Model.Count(x => x.Key == ((DateTime)ViewData["date"]).AddDays(i * 7 + 3).ToString("yyyy-MM-dd")) > 0)
+                                                        {
+                                                            <p style="color:black"> @Model.First(x => x.Key == ((DateTime)ViewData["date"]).AddDays(i * 7 + 3).ToString("yyyy-MM-dd")).ToList()[0].SettingName </p>
+
+                                                            <p style="color:black"> @Model.First(x => x.Key == ((DateTime)ViewData["date"]).AddDays(i * 7 + 3).ToString("yyyy-MM-dd")).ToList()[0].startSpan </p>
+                                                        }*@
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="@(((DateTime)ViewData["date"]).AddDays(i * 7 + 4) == DateTime.Today ? "current" : "")" data-id="@Html.Raw(((DateTime)ViewData["date"]).AddDays(i * 7 + 4).ToString("yyyy-MM-dd"))">
+                                            <div>
+                                                <div class="day @(((DateTime)ViewData["date"]).AddDays(i * 7 + 4).Month == (int)ViewData["currentmonth"] ? "" : "c-gray")">@(((DateTime)ViewData["date"]).AddDays(i * 7 + 4).Day)</div>
+                                                <div class="info">
+                                                    @Model[i * 7 + 3]
+                                                    @*@if (Model.Count(x => x.Key == ((DateTime)ViewData["date"]).AddDays(i * 7 + 4).ToString("yyyy-MM-dd")) > 0)
+                                                        {
+                                                            <p style="color:black"> @Model.First(x => x.Key == ((DateTime)ViewData["date"]).AddDays(i * 7 + 4).ToString("yyyy-MM-dd")).ToList()[0].SettingName </p>
+
+                                                            <p style="color:black"> @Model.First(x => x.Key == ((DateTime)ViewData["date"]).AddDays(i * 7 + 4).ToString("yyyy-MM-dd")).ToList()[0].startSpan </p>
+
+                                                        }*@
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="@(((DateTime)ViewData["date"]).AddDays(i * 7 + 5) == DateTime.Today ? "current" : "")" data-id="@Html.Raw(((DateTime)ViewData["date"]).AddDays(i * 7 + 5).ToString("yyyy-MM-dd"))">
+                                            <div>
+                                                <div class="day @(((DateTime)ViewData["date"]).AddDays(i * 7 + 5).Month == (int)ViewData["currentmonth"] ? "" : "c-gray")">@(((DateTime)ViewData["date"]).AddDays(i * 7 + 5).Day)</div>
+                                                <div class="info">
+                                                    @Model[i * 7 + 4]
+                                                    @*@if (Model.Count(x => x.Key == ((DateTime)ViewData["date"]).AddDays(i * 7 + 5).ToString("yyyy-MM-dd")) > 0)
+                                                        {
+
+                                                            <p style="color:black"> @Model.First(x => x.Key == ((DateTime)ViewData["date"]).AddDays(i * 7 + 5).ToString("yyyy-MM-dd")).ToList()[0].SettingName </p>
+
+                                                            <p style="color:black"> @Model.First(x => x.Key == ((DateTime)ViewData["date"]).AddDays(i * 7 + 5).ToString("yyyy-MM-dd")).ToList()[0].startSpan </p>
+                                                        }*@
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="@(((DateTime)ViewData["date"]).AddDays(i * 7 + 6) == DateTime.Today ? "current" : "")" data-id="@Html.Raw(((DateTime)ViewData["date"]).AddDays(i * 7 + 6).ToString("yyyy-MM-dd"))">
+                                            <div>
+                                                <div class="day @(((DateTime)ViewData["date"]).AddDays(i * 7 + 6).Month == (int)ViewData["currentmonth"] ? "" : "c-gray")">@(((DateTime)ViewData["date"]).AddDays(i * 7 + 6).Day)</div>
+                                                <div class="info">
+                                                    @Model[i * 7 + 5]
+                                                    @*@if (Model.Count(x => x.Key == ((DateTime)ViewData["date"]).AddDays(i * 7 + 6).ToString("yyyy-MM-dd")) > 0)
+                                                        {
+                                                            <p style="color:black"> @Model.First(x => x.Key == ((DateTime)ViewData["date"]).AddDays(i * 7 + 6).ToString("yyyy-MM-dd")).ToList()[0].SettingName </p>
+
+                                                            <p style="color:black"> @Model.First(x => x.Key == ((DateTime)ViewData["date"]).AddDays(i * 7 + 6).ToString("yyyy-MM-dd")).ToList()[0].startSpan </p>
+                                                        }*@
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="@(((DateTime)ViewData["date"]).AddDays(i * 7 + 7) == DateTime.Today ? "current" : "")" data-id="@Html.Raw(((DateTime)ViewData["date"]).AddDays(i * 7 + 7).ToString("yyyy-MM-dd"))">
+                                            <div>
+                                                <div class="day @(((DateTime)ViewData["date"]).AddDays(i * 7 + 7).Month == (int)ViewData["currentmonth"] ? "" : "c-gray")">@(((DateTime)ViewData["date"]).AddDays(i * 7 + 7).Day)</div>
+                                                <div class="info">
+                                                    @Model[i * 7 + 6].ToString()
+                                                    @*@if (Model.Count(x => x.Key == ((DateTime)ViewData["date"]).AddDays(i * 7 + 7).ToString("yyyy-MM-dd")) > 0)
+                                                        {
+                                                            <p style="color:black"> @Model.First(x => x.Key == ((DateTime)ViewData["date"]).AddDays(i * 7 + 7).ToString("yyyy-MM-dd")).ToList()[0].SettingName </p>
+
+                                                            <p style="color:black"> @Model.First(x => x.Key == ((DateTime)ViewData["date"]).AddDays(i * 7 + 7).ToString("yyyy-MM-dd")).ToList()[0].startSpan </p>
+                                                        }*@
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+            </div>
+            <footer class="main-footer">
+                武汉博晟安全技术股份有限公司   版权所有
+            </footer>
+        }
+    </div>
+</div>
+
+@{
+    var users = (IList<UserEntity>)ViewData["users"];
+}
+
+<!--选择值班人员弹出层-->
+<div class="my-modal" id="duty-modal" style="display:none;">
+    <div style="overflow-y:scroll;">
+        <table class="table" style="text-align:center;">
+            <tr>
+                <td style="width:60%;">班组成员</td>
+                <td style="width:20%;">白班</td>
+                <td style="width:20%;">夜班</td>
+            </tr>
+            @for (int i = 0; i < users.Count; i++)
+            {
+                <tr data-userid="@Html.Raw(users[i].UserId)">
+                    <td>@Html.Raw(users[i].RealName)</td>
+                    <td><span class="my-ck"></span></td>
+                    <td><span class="my-ck"></span></td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="text-center mg-t-10">
+        <button class="btn bg-3669e1 my-close2 c-fff" style="width:200px;">确定</button>
+    </div>
+</div>

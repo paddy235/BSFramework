@@ -1,0 +1,121 @@
+﻿@{
+    Layout = null;
+    ViewBag.Title = "GZTZ";
+}
+<script src="@Url.Content("~/Content/scripts/jquery/jquery-1.10.2.min.js")"></script>
+<style type="text/css">
+    .ssjk table tr td {
+        text-align: center;
+        vertical-align:top;
+        width:175px;
+        padding:10px 18px;
+    }
+
+    h4 {
+        font-weight: bold;
+    }
+</style>
+<script>
+    $(function () {
+        $.ajax({
+            url: '@Url.Action("GetGZTZ")',
+            type: 'post',
+            data: {  },
+            loading: "数据提交中...",
+            success: function (data) {
+                document.getElementById("lba").innerText = data.count1;
+                document.getElementById("lbb").innerText = data.count2;
+                document.getElementById("lbc").innerText = data.count3;
+                document.getElementById("lbd").innerText = data.count4;
+                document.getElementById("lbe").innerText = data.count5;
+                document.getElementById("lbf").innerText = data.count6;
+                document.getElementById("lbg").innerText = data.count7;
+                document.getElementById("lbh").innerText = data.count8;
+
+            }
+        });
+    });
+    function tabmeet(item) {
+        @*addTab(item.dataset.id, contentPath + item.dataset.url + "?department=@ViewBag.deptid&type=4",
+            item.dataset.text);*@
+        addTab(item.dataset.id, contentPath + item.dataset.url + "?department=@ViewBag.deptid", item.dataset.text);
+    }
+    function tabkyt(item) {
+        //addTab(item.dataset.id, contentPath + item.dataset.url + "?type=4", item.dataset.text);
+        addTab(item.dataset.id, contentPath + item.dataset.url , item.dataset.text);
+    }
+    function tabact(item) {
+        //addTab(item.dataset.id, contentPath + item.dataset.url + "?type=4", item.dataset.text);
+        addTab(item.dataset.id, contentPath + item.dataset.url , item.dataset.text);
+    }
+    function tabedu(item) {
+        //addTab(item.dataset.id, contentPath + item.dataset.url + "?type=4", item.dataset.text);
+        addTab(item.dataset.id, contentPath + item.dataset.url , item.dataset.text);
+    }
+    function tablegal(item) {
+        addTab(item.dataset.id, contentPath + item.dataset.url , item.dataset.text);
+    }
+    function tabem(item) {
+        addTab(item.dataset.id, contentPath + item.dataset.url, item.dataset.text);
+    }
+    function tabglass(item) {
+        addTab(item.dataset.id, contentPath + item.dataset.url, item.dataset.text);
+    }
+</script>
+<div class="ssjk">
+    <table style="width:100%;margin-top:10px;height:110px;">
+        <tr>
+            <td>
+                <h4 data-id="@ViewBag.meetid" data-url="@ViewBag.meeturl" data-text="@ViewBag.meettext" onclick="tabmeet(this);" >班会日志</h4>
+                <label id="lba"></label> 条
+            </td>
+            <td>
+               @{
+    var name = ViewBag.cpname;
+                <h4 data-id="@ViewBag.kytid" data-url="@ViewBag.kyturl" data-text="@ViewBag.kyttext" onclick="tabkyt(this);" >@name</h4>
+               }
+                <label id="lbb"></label> 条
+            </td>
+            <td>
+               
+                <h4 data-id="@ViewBag.actid" data-url="@ViewBag.acturl" data-text="@ViewBag.acttext" onclick="tabkyt(this);">班组活动</h4>
+                <label id="lbc"></label> 条
+            </td>
+            <td>
+                
+                <h4 data-id="@ViewBag.eduid" data-url="@ViewBag.eduurl" data-text="@ViewBag.edutext" onclick="tabedu(this);">教育培训</h4>
+                <label id="lbd"></label> 条
+            </td>
+            <td>
+               
+                <h4>安全检查</h4>
+                <label>0条</label>
+            </td>
+            <td>
+                
+                <h4>隐患排查</h4>
+                <label>0条</label>
+            </td>
+            <td>
+                
+                <h4 data-id="@ViewBag.legalid" data-url="@ViewBag.legalurl" data-text="@ViewBag.legaltext" onclick="tablegal(this);">违章管理</h4>
+                <label id="lbe"></label> 条
+            </td>
+            <td>
+                
+                <h4 data-id="@ViewBag.emid" data-url="@ViewBag.emurl" data-text="@ViewBag.emtext" onclick="tabem(this);">应急管理</h4>
+                <label id="lbf"></label> 条
+            </td>
+            <td>
+               
+                <h4>工器具管理</h4>
+                <label id="lbg"></label> 条
+            </td>
+            <td>
+                
+                <h4 data-id="@ViewBag.glassid" data-url="@ViewBag.glassurl" data-text="@ViewBag.glasstext" onclick="tabglass(this);">器皿管理</h4>
+                <label id="lbh"></label> 条
+            </td>
+        </tr>
+    </table>
+</div>

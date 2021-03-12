@@ -1,0 +1,319 @@
+﻿@{ 
+    Layout = null;
+
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>我的桌面</title>
+    <link href="~/Content/scripts/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/styles/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/adminPretty/css/Desktop.css?v=n7JXQ4xswzhb5j1Us4vK1iTam3dPuogno9uz8b_LfjI1" rel="stylesheet" />
+    @*<script src="~/Content/scripts/jquery/jquery-1.10.2.min.js"></script>
+        <script src="~/Content/scripts/plugins/echarts/echarts.min.js"></script>
+        <script src="~/Content/adminPretty/Desktop.js"></script>*@
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="~/content/scripts/bootstrap/html5shiv.js"></script>
+        <script src="~/content/scripts/bootstrap/respond.min.js"></script>
+        <script src="~/content/scripts/bootstrap/jquery.placeholder.min.js"></script>
+        <script src="~/content/scripts/bootstrap/json2.js" type="text/javascript"></script>
+    <![endif]-->
+    @*@System.Web.Optimization.Scripts.Render("~/Content/scripts/plugins/jqgrid/js",
+        "~/Content/scripts/plugins/tree/js",
+        "~/Content/scripts/plugins/validator/js",
+                "~/Content/scripts/plugins/datepicker/js",
+        "~/Content/scripts/utils/js")*@
+
+
+
+</head>
+<style>
+    .subblock .content .title {
+        border-bottom: none;
+    }
+</style>
+<script>
+    //本地调用
+    function addTab(dId, href, text)  //主键id，路径，名称
+    {
+
+        $(".navbar-custom-menu>ul>li.open").removeClass("open");
+        var dataId = dId;
+        var menuName = text;
+        top.$.cookie('currentmoduleId', dataId, { path: "/" });
+        top.$.cookie('currentmoduleName', menuName, { path: "/" });
+        var dataUrl = href;
+
+        var flag = true;
+        if (dataUrl == undefined || $.trim(dataUrl).length == 0) {
+            return false;
+        }
+        /*20181122 xjl  主页点击，打开iframe */
+        parent.$('.menuTab').each(function () {
+            //parent.$(this).data('id') == 页面地址 ；
+            //循环判断所有标签，是否有相同地址的页面存在，有则打开，没有则创建
+            // * 原有模块，路径均无参数，主页跳转页面需增加参数，所以不会跳转，而是重新创建一个
+
+            if(parent.$(this).data('id').indexOf(dataUrl) != -1 || dataUrl.indexOf(parent.$(this).data('id')) != -1) {
+            //if (parent.$(this).data('id') == dataUrl) {
+                if (!parent.$(this).hasClass('active')) {  //要打开的页面没有选中，隐藏特效并刷新页面（首页点击，此项必定未false 所以一定会执行）
+                    parent.$(this).addClass('active').siblings('.menuTab').removeClass('active');
+                    parent.$.tab.scrollToTab(this);
+                    parent.$('.mainContent .desktop_iframe').each(function () {
+
+                        if (parent.$(this).data('id').indexOf(dataUrl) != -1 || dataUrl.indexOf(parent.$(this).data('id')) != -1) {
+                            parent.$(this).show().siblings('.desktop_iframe').hide();
+                            parent.$(this).context.src = dataUrl; //刷新iframe
+                            return false;
+                        }
+                    });
+                }
+                flag = false;
+                return false;
+            }
+        });
+        if (flag) {
+            var str = '<a href="javascript:;" class="active menuTab" data-id="' + dataUrl + '" mid="' + dataId + '">' + menuName + ' <i class="fa fa-remove"></i></a>';
+            parent.$('.menuTab').removeClass('active');
+
+            var str1 = '<iframe class="desktop_iframe" id="iframe' + dataId + '" name="iframe' + dataId + '"  width="100%" height="' + parent.$('#mainContent').find('iframe.desktop_iframe').eq(0).height() + '" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" seamless></iframe>';
+            parent.$('.mainContent').find('iframe.desktop_iframe').hide();
+            parent.$('.mainContent').append(str1);
+            // Loading(true);
+            //parent.$('.mainContent iframe:visible').load(function () {
+            //    Loading(false);
+            //});
+            parent.$('.menuTabs .page-tabs-content').append(str);
+            //parent.$.tab.scrollToTab(parent.$('.menuTab.active'));
+            return false;
+        }
+    }
+
+    //双控调用 ， iframe、menutab样式不同，所以无法跳转
+    //function addTab(dId, href, text)  //主键id，路径，名称
+    //{
+
+
+    //    $(".navbar-custom-menu>ul>li.open").removeClass("open");
+    //    var dataId = dId;
+    //    var menuName = text;
+    //    top.$.cookie('currentmoduleId', dataId, { path: "/" });
+    //    top.$.cookie('currentmoduleName', menuName, { path: "/" });
+    //    var dataUrl = top.location.origin + href;
+
+    //    var flag = true;
+    //    if (dataUrl == undefined || $.trim(dataUrl).length == 0) {
+    //        return false;
+    //    }
+    //    /*20181122 xjl  主页点击，打开iframe */
+    //    parent.$('.menuTab').each(function () {
+    //        //parent.$(this).data('id') == 页面地址 ；
+    //        //循环判断所有标签，是否有相同地址的页面存在，有则打开，没有则创建
+    //        // * 原有模块，路径均无参数，主页跳转页面需增加参数，所以不会跳转，而是重新创建一个
+
+    //        if ($(this).data('id').indexOf(dataUrl) != -1 || dataUrl.indexOf($(this).data('id')) != -1) {
+    //            //if (parent.$(this).data('id') == dataUrl) {
+
+    //            if (!parent.$(this).hasClass('active')) {  //要打开的页面没有选中，隐藏特效并刷新页面（首页点击，此项必定未false 所以一定会执行）
+    //                parent.$(this).addClass('active').siblings('.menuTab').removeClass('active');
+    //                parent.$.tab.scrollToTab(this);
+    //                parent.$('.mainContent .LRADMS_iframe').each(function () {
+
+    //                    if (parent.$(this).data('id').indexOf(dataUrl) != -1 || dataUrl.indexOf(parent.$(this).data('id')) != -1) {
+    //                        parent.$(this).show().siblings('.LRADMS_iframe').hide();
+    //                        parent.$(this).context.src = dataUrl; //刷新iframe
+    //                        return false;
+    //                    }
+    //                });
+    //            }
+    //            flag = false;
+    //            return false;
+    //        }
+    //    });
+    //    if (flag) {
+
+    //        var str = '<a href="javascript:;" class="active menuTab" data-id="' + dataUrl + '" mid="' + dataId + '">' + menuName + ' <i class="fa fa-remove"></i></a>';
+    //        parent.$('.menuTab').removeClass('active');
+
+    //        var str1 = '<iframe class="LRADMS_iframe" id="iframe' + dataId + '" name="iframe' + dataId + '"  width="100%" height="' + parent.$('.mainContent').find('iframe.LRADMS_iframe').eq(0).height() + '" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" seamless></iframe>';
+    //        parent.$('.mainContent').find('iframe.LRADMS_iframe').hide();
+    //        parent.$('.mainContent').append(str1);
+    //        // Loading(true);
+    //        //parent.$('.mainContent iframe:visible').load(function () {
+    //        //    Loading(false);
+    //        //});
+    //        parent.$('.menuTabs .page-tabs-content').append(str);
+    //        //parent.$.tab.scrollToTab(parent.$('.menuTab.active'));
+    //        return false;
+    //    }
+    //}
+    function scrollToTab(t) {
+        var f = $.tab.calSumWidth($(t).prevAll()),
+            e = $.tab.calSumWidth($(t).nextAll()),
+            o = $.tab.calSumWidth($(".lea-tabs").children().not(".menuTabs")),
+   r = $(".lea-tabs").outerWidth(!0) - o,
+   i = 0,
+   u;
+        if ($(".page-tabs-content").outerWidth() < r) i = 0;
+        else if (e <= r - $(t).outerWidth(!0) - $(t).next().outerWidth(!0)) {
+            if (r - $(t).next().outerWidth(!0) > e)
+                for (i = f, u = t; i - $(u).outerWidth() > $(".page-tabs-content").outerWidth() - r;) i -= $(u).prev().outerWidth(), u = $(u).prev()
+        } else f > r - $(t).outerWidth(!0) - $(t).prev().outerWidth(!0) && (i = f - $(t).prev().outerWidth(!0));
+        $(".page-tabs-content").animate({
+            marginLeft: 0 - i + "px"
+        }, "fast");
+
+    }
+    function calSumWidth() {
+
+    }
+    function tabkp(item) {
+        addTab(item.dataset.id, contentPath + item.dataset.url + "?department=@ViewBag.deptid&type=3", item.dataset.text);
+    }
+    function tabyg(item) {
+        addTab(item.dataset.id, contentPath + item.dataset.url + "?department=@ViewBag.deptid&type=3", item.dataset.text);
+    }
+</script>
+<body style="margin: 0px;padding:0px; padding:10px;height:100%;min-height:890px;">
+    <div>
+        <div class="row">
+            <div class="col-sm-7 col-md-9  block leftblock">
+                <div class="row subblock" style="height:250px;width:100%;">
+
+                    <div class="content" style="">
+                        <div class="title" style="padding-top:5px;padding-bottom:5px;font-size:14px;font-weight:bold;">
+                            实时监控
+                        </div>
+                        @{Html.RenderAction("SSJK", "AdminPretty", new { area = "Works" });}
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-5 col-md-3  block rightblock">
+                <div class="row subblock" style="height:250px;padding:0px;">
+                    <div class="content">
+                        <div class="title" style="padding-top:5px;padding-bottom:5px;font-size:14px;">
+                            <table style="width:100%;">
+                                <tr>
+                                    <td style="font-weight:bold;text-align:left;">待办事项</td>
+                                    <td style="text-align:right;"><a href="#" onclick="" style="text-decoration:none;font-size:18px;">更多</a></td>
+                                </tr>
+                            </table>
+                        </div>
+                        @{Html.RenderAction("DBSX", "AdminPretty", new { area = "Works" });}
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-7 col-md-6  block leftblock" style="margin-top:10px;">
+                <div class="row subblock" style="height:200px;width:100%;">
+
+                    <div class="content">
+                        <div class="title" style="padding-top:5px;padding-bottom:5px;font-size:14px;">
+                            <table style="width:100%;">
+                                <tr>
+                                    <td style="font-weight:bold;text-align:left;">通知公告</td>
+                                    <td style="text-align:right;"><a href="#" onclick="" style="text-decoration:none;font-size:18px;">更多</a></td>
+                                </tr>
+                            </table>
+                        </div>
+                        @*@{Html.RenderAction("CurrentNotice", "Notice", new { area = "PublicInfoManage" });}*@
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-5 col-md-6  block rightblock" style="margin-top:10px;">
+                <div class="row subblock" style="height:200px;padding:0px;">
+                    <div class="content">
+                        <div class="title" style="padding-top:5px;padding-bottom:5px;font-size:14px;">
+                            <table style="width:100%;">
+                                <tr>
+                                    <td style="font-weight:bold;text-align:left;">考评排名（@ViewData["Season"]）</td>
+                                    <td style="text-align:right;"><a href="#" data-id="@ViewBag.kpid" data-url="@ViewBag.kpurl" data-text="@ViewBag.kptext" onclick="tabkp(this);" style="text-decoration:none;font-size:18px;">更多</a></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        @{Html.RenderAction("KPPM", "AdminPretty", new { area = "Works" });}
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-7 col-md-12  block leftblock" style="margin-top:10px;">
+                <div class="row subblock" style="height:225px;width:100%;">
+                    <div class="content">
+                        <div class="title" style="padding-top:5px;padding-bottom:5px;font-size:14px;">
+                            <table style="width:100%;">
+                                <tr>
+                                    <td style="font-weight:bold;text-align:left;">员工风采</td>
+                                    <td style="text-align:right;"><a href="#" data-id="@ViewBag.ygid" data-url="@ViewBag.ygurl" data-text="@ViewBag.ygtext" onclick="tabyg(this);" style="text-decoration:none;font-size:18px;">更多</a></td>
+                                </tr>
+                            </table>
+                        </div>
+                        @{Html.RenderAction("YGFC", "AdminPretty", new { area = "Works" });}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-7 col-md-12  block leftblock" style="margin-top:10px;height:100%;">
+                <div class="row subblock" style="height:170px;width:100%;">
+                    <div class="content">
+                        <div class="title" style="padding-top:5px;padding-bottom:5px;font-size:14px;font-weight:bold;">
+                            工作台帐
+                        </div>
+                        @{Html.RenderAction("GZTZ", "AdminPretty", new { area = "Works" });}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    //$(function () {
+    //    ScrollImgLeft();
+    //});
+    //function ScrollImgLeft() {
+    //    debugger;
+    //    var speed = 10;
+    //    var scroll_begin = document.getElementById("scroll_begin");
+    //    var scroll_end = document.getElementById("scroll_end");
+    //    var scroll_div = document.getElementById("scroll_div");
+    //    scroll_end.innerHTML = scroll_begin.innerHTML;
+    //    function Marquee() {
+    //        if (scroll_end.offsetWidth - scroll_div.scrollLeft <= 0) {
+    //            scroll_div.scrollLeft -= scroll_begin.offsetWidth;
+    //        }
+    //        else {
+    //            scroll_div.scrollLeft++;
+    //        }
+    //    }
+    //    var MyMar = setInterval(Marquee, speed);
+    //    scroll_div.onmouseover = function () {
+    //        clearInterval(MyMar);
+    //    }
+    //    scroll_div.onmouseout = function () {
+    //        MyMar = setInterval(Marquee, speed);
+    //    }
+    //}
+    //function detail(e) {
+    //    var id = jQuery(e).data('id');
+    //    dialogOpen({
+    //        id: "Detail",
+    //        title: '查看公告',
+    //        url: '/PublicInfoManage/Notice/Detail?keyValue=' + id,
+    //        width: "1000px",
+    //        height: "600px",
+    //        btn: null,
+    //        callBack: function (iframeId) {
+    //            top.document.getElementById(iframeId).contentWindow.AcceptClick();
+    //        }
+    //    });
+    //}
+
+</script>
+

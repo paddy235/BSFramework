@@ -1,0 +1,674 @@
+﻿@model BSFramework.Application.Entity.EmergencyManage.EmergencyReportEntity
+@{
+    ViewBag.Title = "drillHistoryDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .warp {
+        position: relative;
+    }
+
+        .warp .aside {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            z-index: 10;
+            background-color: #fff;
+            border: none;
+            border-left: 2px solid #e3ebfd;
+            border-top: 2px solid #e3ebfd;
+        }
+
+            .warp .aside p {
+                color: #666666;
+                font-size: 16px;
+                margin-top: 10px;
+            }
+
+            .warp .aside button {
+                display: block;
+                width: 100%;
+                line-height: 58px;
+                color: #fff;
+                font-size: 18px;
+                border: none;
+            }
+
+    .step_main {
+        font-size: 16px;
+    }
+
+    /*演练历史详情页面*/
+    .wrap {
+        position: relative;
+    }
+
+    .drillHistory_main {
+        font-size: 16px;
+        padding: 20px 50px 90px 25px;
+    }
+
+    .drill_div {
+        margin-bottom: 20px;
+    }
+
+        .drill_div label {
+            display: inline-block;
+        }
+
+    .drill_list1 > li {
+        height: 44px;
+        margin-bottom: 20px;
+        line-height: 44px;
+    }
+
+        .drill_list1 > li > label {
+            width: 23%;
+        }
+
+        .drill_list1 > li > span {
+            border-bottom: 2px solid #e3ebfd;
+            display: inline-block;
+            height: 44px;
+            width: 72%;
+        }
+
+    .drill_div > div {
+        display: inline-block;
+        width: 92.7%;
+    }
+
+    .content_box {
+        border: 2px solid #e3ebfd;
+        padding: 20px;
+        line-height: 30px;
+    }
+
+    .score_div {
+        line-height: 60px;
+    }
+
+        .score_div i, .score_div .score_span {
+            margin: 0 10px;
+            display: inline-block;
+            width: 32px;
+            height: 60px;
+        }
+
+        .score_div .score_span {
+            color: #999999;
+            font-weight: bold;
+        }
+
+    .drill_div > label {
+        width: 7.3%;
+        float: left;
+    }
+
+    .drill_div > li {
+        margin-bottom: 20px;
+    }
+
+    .score_div > label {
+        margin-right: 30px;
+        cursor: pointer;
+    }
+
+        .score_div > label > span {
+            display: inline-block;
+            height: 30px;
+            width: 30px;
+            background: url("../static/images/checkbox-bg.png");
+            background-repeat: no-repeat;
+            background-position: left center;
+            margin: 15px 10px 0 0;
+            float: left;
+        }
+
+        .score_div > label.check_on > span {
+            background-position: right center;
+        }
+
+    .audio_div {
+        border-bottom: 2px solid #e3ebfd;
+        padding: 18px 0;
+    }
+
+        .audio_div li a {
+            color: #3669e1;
+        }
+
+    .step_div ul li {
+        margin-bottom: 10px;
+    }
+
+        .step_div ul li:last-child {
+            margin-bottom: 0;
+        }
+
+        .step_div ul li > span {
+            display: inline-block;
+            height: 40px;
+            width: 80px;
+            line-height: 40px;
+            text-align: center;
+            background: #f1f4fa;
+            float: left;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+            .step_div ul li > span.active {
+                background: #3669e1;
+                color: #fff;
+            }
+
+        .step_div ul li > div {
+            display: inline-block;
+            border: 2px solid #e3ebfd;
+            width: calc(100% - 100px);
+        }
+
+            .step_div ul li > div > div {
+                padding: 10px 20px;
+            }
+
+                .step_div ul li > div > div:first-child {
+                    border-right: 2px solid #e3ebfd;
+                    width: 80%;
+                }
+
+    /*应急演练进度页面*/
+    .drill_list {
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 20px;
+        padding-top: 10px;
+    }
+
+        .drill_list li {
+            background: url("../images/li_bg1.png") no-repeat;
+            background-size: 100% 100%;
+            height: 66px;
+            font-size: 24px;
+            color: #fff;
+            line-height: 66px;
+            text-align: center;
+        }
+
+            .drill_list li.active {
+                background: url("../images/li_bg2.png") no-repeat;
+                background-size: 100% 100%;
+            }
+
+            .drill_list li:first-child {
+                background: url("../images/first_li_bg1.png") no-repeat;
+                background-size: 100% 100%;
+            }
+
+                .drill_list li:first-child.active {
+                    background: url("../images/first_li_bg2.png") no-repeat;
+                    background-size: 100% 100%;
+                }
+
+            .drill_list li:last-child {
+                background: url("../images/last_li_bg1.png") no-repeat;
+                background-size: 100% 100%;
+            }
+
+                .drill_list li:last-child.active {
+                    background: url("../images/last_li_bg2.png") no-repeat;
+                    background-size: 100% 100%;
+                }
+
+
+    .response_div {
+        height: 100%;
+    }
+
+    .hide_bg, .points_hide_bg, .hide_bg2 {
+        position: relative;
+    }
+
+    .hide_bg {
+        height: 90px;
+    }
+
+        .hide_bg img, .points_hide_bg img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .hide_bg p, .points_hide_bg p, .hide_bg2 img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            font-size: 24px;
+            color: #dfe8f1;
+            font-weight: bold;
+        }
+
+    .points_hide_bg p {
+        font-size: 36px;
+    }
+
+    .response_text, .response_show, .points_show {
+        padding: 15px 20px;
+        line-height: 30px;
+    }
+
+    .response_person {
+        width: 20%;
+    }
+
+    .hide_bg2 {
+        background: #f1f4fa;
+        padding: 10px 0;
+        text-align: center;
+        height: 90px;
+    }
+
+    .height_div {
+    }
+</style>
+<!-- Content Wrapper. Contains page content -->
+<div id="audio-warp" style="height:36px;width:460px;display: none;">
+    <audio id="audio" autoplay></audio>
+</div>
+<div class="main-content">
+    <div class="container-fluid">
+
+        <div class="mg-b-10">
+            <div class="" style="overflow: hidden;">
+                <div class="pull-left title">
+                    <a href="@Url.Action("emergencyHistoryRecord")?page=1&pagesize=12">
+                        <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+                        演练历史详情
+                    </a>
+                </div>
+            </div>
+            <div class="bg-e3ebfd pd-10 wrap">
+                <div class="drillHistory_main bg-fff">
+                    <div class="drill_div" style="margin-bottom: 0;">
+                        <ul class="row drill_list1">
+                            <li class="col-md-4">
+                                <label>演练名称</label>
+                                <span>@Model.emergencyreportname</span>
+                            </li>
+                            <li class="col-md-4">
+                                <label>演练形式</label>
+                                <span>@Model.rehearsetype</span>
+                            </li>
+                            <li class="col-md-4">
+                                <label>演练时间</label>
+                                <span>@Model.planstarttime</span>
+                            </li>
+                            <li class="col-md-4">
+                                <label>主持人</label>
+                                <span>@Model.chairperson</span>
+                            </li>
+                            <li class="col-md-4">
+                                <label>演练地点</label>
+                                <span>@Model.emergencyplace</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="drill_div">
+                        <label>参演人员</label>
+                        <div class="content_box">
+                            <p>@Model.userperson</p>
+                        </div>
+                    </div>
+
+                    <div class="drill_div">
+                        <label>演练目的</label>
+                        <div class="content_box">
+                            <p>@Html.Raw(HttpUtility.HtmlDecode(Model.purpose))</p>
+                        </div>
+                    </div>
+
+                    <div class="drill_div">
+                        <label>情景模拟</label>
+                        <div class="content_box">
+                            <p>@Html.Raw(HttpUtility.HtmlDecode(Model.rehearsescenario))</p>
+                        </div>
+                    </div>
+
+                    <div class="drill_div">
+                        <label>实施步骤</label>
+                        <div class="step_div">
+                            <ul>
+                                @{
+                                    var list = ViewBag.list as List<BSFramework.Application.Entity.EmergencyManage.EmergencyReportStepsEntity>;
+                                    foreach (var item in list)
+                                    {
+                                        <li class="clearfix">
+                                            <span>
+                                                第
+                                                @(item.EmergencySort + 1)
+                                                步
+                                            </span>
+
+                                            <div class="clearfix">
+                                                <div class="pull-left" style="height:200px">
+                                                    <p>
+                                                        @item.EmergencyContext
+                                                    </p>
+                                                </div>
+                                                <div class="pull-left">
+                                                    <p>
+                                                        @item.EmergencyUser
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    }
+
+
+                                }
+
+
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="drill_div">
+                        <label>演练要点</label>
+                        <div class="content_box">
+                            <p>@Model.mainpoints</p>
+                        </div>
+                    </div>
+
+                    <div class="drill_div">
+                        <label>方案评估</label>
+                        <div class="content_box">
+                            @{
+                                var planreport = Model.File.OrderByDescending(x => x.CreateDate).FirstOrDefault(x => x.FileName == "方案评估");
+                                if (planreport != null)
+                                {
+                                    <p>@planreport.FilePath</p>
+                                }
+                                else
+                                {
+                                    <p></p>
+                                }
+                            }
+                        </div>
+                    </div>
+
+                    <div class="drill_div">
+                        <label>效果评估</label>
+                        <div class="content_box">
+                            @{
+                                var effectreport = Model.File.OrderByDescending(x => x.CreateDate).FirstOrDefault(x => x.FileName == "效果评估");
+                                if (effectreport != null)
+                                {
+                                    <p>@effectreport.FilePath</p>
+                                }
+                                else
+                                {
+                                    <p></p>
+                                }
+
+                            }
+                        </div>
+                    </div>
+
+                    <div class="drill_div">
+                        <label style="line-height: 60px;">音频记录</label>
+                        <div class="audio_div">
+                            <ul class="row">
+                                @{
+                                    var audioList = Model.File.Where(x => x.Description == "音频");
+                                    var path = Url.Content("~").Substring(0, @Url.Content("~").Length - 1);
+
+                                    foreach (var item in audioList)
+                                    {
+                                        var filePath = path + item.FilePath.Substring(1, item.FilePath.Length - 1);
+
+                                        //if (item.State == 0)
+                                        //{
+                                        <li class="col-md-2"><div onclick="play(this)" class="play-audio" data-url="@filePath"><img src="../../Content/styles/static/images/horn-icon.png" width="24" />&nbsp;&nbsp;@item.FileName </div></li>
+
+                                        @*}
+                                            else
+                                            {
+                                                <li><div onclick="play(this)" class="play-audio" data-url="@filePath"><img src="../../Content/styles/static/images/horn-icon.png" width="24" />&nbsp;&nbsp;@item.FileName + </div></li>
+
+                                            }*@
+                                    }
+
+                                }
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="drill_div">
+                        <label>演练照片</label>
+                        <div>
+                            <ul class="row" style="min-height:60px;">
+                                @{
+                                    var pic = Model.File.Where(x => x.Description == "照片");
+                                    int k = 0;
+                                    var picpath = Url.Content("~").Substring(0, @Url.Content("~").Length - 1);
+                                    var picJson = "";
+                                    foreach (var item in pic)
+                                    {
+
+                                        var filePath = picpath + item.FilePath.Substring(1, item.FilePath.Length - 1);
+                                        picJson += Html.Raw("{ src: '" + filePath + "'");
+                                        //if (item.State == 0)
+                                        //{
+                                        <li class="col-md-2"><img onclick="playPic(this, @k)" src="@filePath" style="width:160px;height:120px;" /></li>
+                                        @*}
+                                            else
+                                            {
+                                                <li><img onclick="playPic(this,@k)" src="@filePath" style="width:160px;height:120px;" /></li>
+
+                                            }*@
+                                    picJson += "},";
+                                    k++;
+                                }
+                                if (picJson.Length > 2)
+                                {
+                                    picJson = picJson.Substring(0, picJson.Length - 1);
+                                }
+
+                                var GetpicJosn = Html.Raw(HttpUtility.HtmlDecode(picJson));
+                                }
+                            </ul>
+
+
+
+                        </div>
+                    </div>
+
+                    <div class="drill_div">
+                        <label style="line-height: 60px;">是否修订</label>
+                        <div class="score_div">
+
+                            @{
+                                if (Model.isupdate)
+                                {
+
+                                    <span>是</span>
+                                }
+                                else
+                                {
+
+                                    <span>否</span>}
+
+                            }
+
+                        </div>
+                    </div>
+                    <div class="drill_div">
+                        <label style="line-height: 60px;">自评分</label>
+                        <div class="score_div">
+                            <i><img name="score1" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"></i>
+                            <i><img name="score1" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"></i>
+                            <i><img name="score1" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"></i>
+                            <i><img name="score1" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"></i>
+                            <i><img name="score1" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"></i>
+                            <span class="score_span" id="txtScore1">0分</span>
+                        </div>
+                    </div>
+                    <div class="drill_div">
+                        <label style="line-height: 60px;">上级评分</label>
+                        <div class="score_div">
+                            <i><img name="score" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"></i>
+                            <i><img name="score" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"></i>
+                            <i><img name="score" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"></i>
+                            <i><img name="score" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"></i>
+                            <i><img name="score" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"></i>
+                            <span class="score_span" id="txtScore">0分</span>
+                        </div>
+                    </div>
+
+                    <div class="drill_div">
+                        <label>演练评价<br>意见</label>
+                        <div class="content_box">
+                            <p>@Model.evaluation</p>
+                        </div>
+                    </div>
+
+                    <div class="drill_div">
+                        <ul class="row drill_list1">
+                            <li class="col-md-4">
+                                <label>评价人</label>
+                                <span>@Model.evaluationuser</span>
+                            </li>
+                            <li class="col-md-4">
+                                <label>评价时间</label>
+                                @{
+                                    var time = DateTime.Parse("2000-01-01");
+
+
+                                    if (Model.evaluationdate < time)
+                                    {
+                                        <span></span>
+                                    }
+                                    else
+                                    {
+                                        <span>@Model.evaluationdate.ToString("yyyy-MM-dd")</span>
+                                    }
+
+                                }
+
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="main-footer">
+            武汉博晟安全技术股份有限公司   版权所有
+        </footer>
+    </div>
+</div>
+<!-- /.content-wrapper -->
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/audiojs/audio.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/bootstrap/js/bootstrap.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<script>
+    $(function () {
+        getScore(@Model.score)
+        getScore1(@Model.evaluationscore)
+        $('.main-sidebar,.main-content').niceScroll({
+            autohidemode: false
+        });
+        $('.score_div > label').click(function () {
+            $(this).addClass('check_on').siblings().removeClass('check_on');
+        })
+    })
+    function playPic(obj, idx) {
+        var json = {
+            "data": [@GetpicJosn]
+        }
+        json.start = idx;
+        layer.photos({
+            photos: json,
+            anim: 5
+        })
+    }
+    function play(obj) {
+        var isPlay = $(obj).attr('data-play')
+        if (!isPlay || isPlay == 'false') {
+            var src = jQuery(obj).find('img').attr('src');
+            jQuery(obj).find('img').attr('src', src.substring(0, src.lastIndexOf('/') + 1) + 'laba.gif');
+
+            var url = $(obj).data('url');
+            var html = '<audio id="audio1" src="' + url + '" controls autoplay style="width:483px;display:none;"></audio>';
+            $('#audio-warp').html(html);
+            $('#audio1')[0].addEventListener('canplaythrough', function () {
+                this.play();
+            });
+            $(obj).attr('data-play', true);
+            var audio2 = document.getElementById('audio1');
+            audio2.onpause = function () {
+                var audele = jQuery('div[data-url="' + jQuery(this).attr('src') + '"]');
+                var img = jQuery('div[data-url="' + jQuery(this).attr('src') + '"]').find('img');
+                var src = img.attr('src');
+                img.attr('src', src.substring(0, src.lastIndexOf('/') + 1) + 'horn-icon.png');
+                audele.attr('data-play', false)
+            };
+            audio2.pause();
+        } else {
+            var audio1 = document.getElementById('audio1');
+            audio1.pause()
+        }
+        //var url = $(obj).data('url');
+        //$('#audio').attr('src', url);
+        //audiojs.events.ready(function () {
+        //    audiojs.createAll();
+        //})
+        //layer.open({
+        //    type: 1,
+        //    area: ['460px', '36px'],
+        //    content: $('#audio-warp '),
+        //    title: false,
+        //    end: function () {
+        //        $('#audio-warp').html('<audio id="audio" autoplay></audio>').css('display', 'none');
+        //    }
+        //});
+    }
+    var myscore = 0;
+    function getScore(i) {
+        if (i == 10) return;
+        var j = 1;
+        myscore = i;
+        jQuery("#txtScore").text(i + "分");
+        jQuery("img[name='score']").each(function () {
+            if (j <= i) {
+                this.src = "@Url.Content("~/Content/styles/static/images/score_icon1.png")";
+            } else {
+                this.src = "@Url.Content("~/Content/styles/static/images/score_icon2.png")";
+            }
+            j = j + 1;
+        });
+    }
+    var myscore1 = 0;
+    function getScore1(i) {
+        if (i == 10) return;
+        var j = 1;
+        myscore = i;
+        jQuery("#txtScore1").text(i + "分");
+        jQuery("img[name='score1']").each(function () {
+            if (j <= i) {
+                this.src = "@Url.Content("~/Content/styles/static/images/score_icon1.png")";
+            } else {
+                this.src = "@Url.Content("~/Content/styles/static/images/score_icon2.png")";
+            }
+            j = j + 1;
+        });
+    }
+</script>

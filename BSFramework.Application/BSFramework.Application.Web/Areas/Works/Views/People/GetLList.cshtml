@@ -1,0 +1,111 @@
+﻿@using BSFramework.Application.Entity.LllegalManage
+@model IEnumerable<BSFramework.Application.Entity.LllegalManage.LllegalEntity>
+@{
+    ViewBag.Title = "GetLList";
+    Layout = "~/Views/Shared/_Layout1.cshtml";
+}
+
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/person.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/app.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/record.css")" />
+
+
+<script>
+
+    function showinfo(id) {
+        window.parent.location.href = '@Url.Action("Detail", "Lllegal")' + "?id=" + id;
+    }
+</script>
+@using (Html.BeginForm("GetLList", "People", FormMethod.Post, new { @class = "sf", enctype = "multipart/form-data" }))
+{
+    <table class="table text-center table-striped no-mg c-67748d" >
+
+        <thead>
+            <tr>
+                <th width="8%" class="bg-fff">序号</th>
+                <th width="15%" class="bg-fff">违章时间</th>
+                <th width="15%" class="bg-fff">违章地点</th>
+                <th width="15%" class="bg-fff">违章类型</th>
+                <th width="20%" class="bg-fff">违章描述</th>
+                <th width="20%" class="bg-fff">整改情况</th>
+                <th width="7%" class="bg-fff">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+    var lls = (IList<LllegalEntity>)ViewData["LllEntity"];
+            }
+            @for (int i = 0; i < lls.Count(); i++)
+            {
+                int n = ((int)ViewBag.current - 1) * 12 + i + 1;
+                string id = @lls[i].ID;
+                <tr>
+                    <td width="8%">@n</td>
+                    <td width="15%">@lls[i].LllegalTime.ToString("yyyy-MM-dd")</td>
+                    <td width="15%">@lls[i].LllegalAddress</td>
+                    <td width="15%">@lls[i].LllegalType</td>
+                    <td width="20%">@lls[i].LllegalDescribe</td>
+                    <td width="20%">@lls[i].LllegalDepart</td>
+                    <td width="7%">
+                        <a href="#" onclick="showinfo('@id'); ">
+                            <img src="@Url.Content("~/Content/styles/static/images/detail-icon.png")" alt="">
+                            详情
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div style="text-align:center;">
+        <ul class="pagination">
+            @if ((int)ViewBag.current == 1)
+            {
+                <li class="disabled">
+                    <a>首页</a>
+                </li>
+                <li class="disabled">
+                    <a>上一页</a>
+                </li>
+            }
+            else
+            {
+                <li>
+                    @Html.ActionLink("首页", "GetLList", new { page = "1", pagesize = "12", id = ViewBag.Id })
+                </li>
+                <li>
+                    @Html.ActionLink("上一页", "GetLList", new { page = ((int)ViewBag.current - 1).ToString(), pagesize = "12", id = ViewBag.Id })
+                </li>
+            }
+                @for (int i = (ViewBag.current - 1) / 12 * 10; i < (Math.Ceiling((decimal)ViewBag.current / 12) * 10 > ViewBag.pages ? ViewBag.pages : Math.Ceiling((decimal)
+
+                ViewBag.current / 12) * 10); i++)
+                {
+                    <li class="@((i + 1) == ViewBag.current ? " people":string.Empty)">
+                        @Html.ActionLink((i + 1).ToString(), "GetLList", new { page = (i + 1).ToString(), pagesize = "12", id = ViewBag.Id })
+                    </li>
+                }
+            @if ((int)ViewBag.current == (int)ViewBag.pages || (int)ViewBag.pages==0)
+            {
+                <li class="disabled">
+                    <a>下一页</a>
+                </li>
+                <li class="disabled">
+                    <a>末页</a>
+                </li>
+            }
+            else
+            {
+                <li>
+                    @Html.ActionLink("下一页", "GetLList", new { page = ((int)ViewBag.current + 1).ToString(), pagesize = "12", id = ViewBag.Id, type = "editobj" })
+                </li>
+                <li>
+                    @Html.ActionLink("末页", "GetLList", new { page = ((int)ViewBag.pages).ToString(), pagesize = "12", id = ViewBag.Id, type = "editobj" })
+                </li>
+            }
+        </ul>
+    </div>
+}
+
+

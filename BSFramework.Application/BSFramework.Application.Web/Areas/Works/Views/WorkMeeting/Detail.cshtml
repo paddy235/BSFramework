@@ -1,0 +1,671 @@
+﻿@model IList<BSFramework.Entity.WorkMeeting.WorkmeetingEntity>
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/before.css")" />
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/audiojs/audio.min.js")"></script>
+<script src="~/Content/scripts/base.js"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/audiojs/audio.min.js")"></script>
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<script>
+    $(function () {
+        $('.main-sidebar,.main-content').niceScroll({
+            autohidemode: false
+        });
+        $('.table-today tr').hover(function () {
+            $(this).addClass('hover');
+        }, function () {
+            $(this).removeClass('hover');
+        });
+        $('.table-today tr').click(function () {
+            $(this).toggleClass('actives');
+        })
+        $('.user>.dropdown-menu').css({
+            left: $('.user').innerWidth() - $('.user>.dropdown-menu').width() - 65
+        });
+        $('.list-item').hover(function () {
+            $(this).children('div').stop().animate({
+                top: 0
+            }, 500);
+        }, function () {
+            $(this).children('div').stop().animate({
+                top: '194px'
+            }, 500);
+        });
+
+        var json1 = {
+            "data": [
+    @if (Model[0] !=null)
+        {
+            foreach (var item in Model[0].Files)
+    {
+        if (item.Description == "照片") {
+                  @Html.Raw(string.Format("{{ \"src\" : \"{0}\"}},", @Url.Action("DownloadFile", "ResourceFile", new { keyValue = item.FileId, area = "PublicInfoManage" })));
+        }
+    }
+    }
+            ]
+        };
+        var json2 = {
+            "data": [
+        @if (Model[1] !=null)
+    {
+        foreach (var item in Model[1].Files)
+        {
+            if (item.Description == "照片") {
+                      @Html.Raw(string.Format("{{ \"src\" : \"{0}\"}},", @Url.Action("DownloadFile", "ResourceFile", new { keyValue = item.FileId, area = "PublicInfoManage" })));
+            }
+        }
+    }
+            ]
+        };
+
+        $('#images-container1').delegate('li', 'click', function () {
+            json1.start = jQuery(this).index();
+            layer.photos({
+                photos: json1,
+                anim: 5
+            })
+        });
+
+        $('#images-container2').delegate('li', 'click', function () {
+            json1.start = jQuery(this).index();
+            layer.photos({
+                photos: json2,
+                anim: 5
+            })
+        });
+
+        $('#play-audio-container1').delegate('.play-audio', 'click', function () {
+            var isPlay = $(this).attr('data-play')
+            if (!isPlay || isPlay == 'false') {
+                var src = jQuery(this).find('img').attr('src');
+                jQuery(this).find('img').attr('src', src.substring(0, src.lastIndexOf('/') + 1) + 'laba.gif');
+
+                var url = $(this).data('url');
+                var html = '<audio id="audio1" src="' + url + '" controls autoplay style="width:483px;display:none;"></audio>';
+                $('#audio-warp').html(html);
+                $('#audio1')[0].addEventListener('canplaythrough', function () {
+                    this.play();
+                });
+                $(this).attr('data-play', true);
+                var audio2 = document.getElementById('audio1');
+                audio2.onpause = function () {
+                    var audele = jQuery('div[data-url="' + jQuery(this).attr('src') + '"]');
+                    var img = jQuery('div[data-url="' + jQuery(this).attr('src') + '"]').find('img');
+                    var src = img.attr('src');
+                    img.attr('src', src.substring(0, src.lastIndexOf('/') + 1) + 'horn-icon.png');
+                    audele.attr('data-play', false)
+                };
+                audio2.pause();
+            } else {
+                var audio1 = document.getElementById('audio1');
+                audio1.pause()
+            }
+            //var url = $(this).data('url');
+            //var html = '<audio id="audio" src="' + url + '" controls autoplay style="width:483px;display:block;"></audio>';
+            //$('#audio-warp').append(html);
+            //$('#audio')[0].addEventListener('canplaythrough', function () {
+            //    this.play();
+            //});
+            //layer.open({
+            //    type: 1,
+            //    area: ['460px', '36px'],
+            //    content: $('#audio-warp '),
+            //    title: false,
+            //    end: function () {
+            //        $('#audio-warp').empty();
+            //        $('#audio-warp').hide();
+            //    }
+            //})
+        });
+
+        $('#play-audio-container2').delegate('.play-audio', 'click', function () {
+            var isPlay = $(this).attr('data-play')
+            if (!isPlay || isPlay == 'false') {
+                var src = jQuery(this).find('img').attr('src');
+                jQuery(this).find('img').attr('src', src.substring(0, src.lastIndexOf('/') + 1) + 'laba.gif');
+
+                var url = $(this).data('url');
+                var html = '<audio id="audio1" src="' + url + '" controls autoplay style="width:483px;display:none;"></audio>';
+                $('#audio-warp').html(html);
+                $('#audio1')[0].addEventListener('canplaythrough', function () {
+                    this.play();
+                });
+                $(this).attr('data-play', true);
+                var audio2 = document.getElementById('audio1');
+                audio2.onpause = function () {
+                    var audele = jQuery('div[data-url="' + jQuery(this).attr('src') + '"]');
+                    var img = jQuery('div[data-url="' + jQuery(this).attr('src') + '"]').find('img');
+                    var src = img.attr('src');
+                    img.attr('src', src.substring(0, src.lastIndexOf('/') + 1) + 'horn-icon.png');
+                    audele.attr('data-play', false)
+                };
+                audio2.pause();
+            } else {
+                var audio1 = document.getElementById('audio1');
+                audio1.pause()
+            }
+        });
+
+    });
+
+    function fn$edit(el) {
+        jQuery('#grid2 .currentRow').removeClass('currentRow');
+        var job = jQuery(el).parent().parent().addClass('currentRow');
+        layer.open({
+            area: ['1500px', '800px'],
+            title: '工作任务详情',
+            type: 2,
+            content: '@Url.Action("JobDetail")'
+        });
+    }
+    jQuery(function () {
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#grid').setGridWidth(($('.gridPanel').width()));
+                $("#grid").setGridHeight($(window).height() - 140);
+            }, 200);
+            e.stopPropagation();
+        });
+        id = $("#meetingid").val();
+        jQuery('#grid').jqGrid({
+            colModel: [
+                { label: '评价人', name: 'EvaluateUser', align: 'center', sortable: false },
+                { label: '级别', name: 'DeptName', align: 'center', sortable: false },
+                { label: '评价时间', name: 'EvaluateDate', align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d H:i', newformat: 'Y-m-d H:i' } },
+                { label: '评分', name: 'Score', align: 'center', sortable: false },
+                { label: '点评', name: 'EvaluateContent', align: 'center', sortable: false }
+            ],
+            height: 300,
+            autowidth: true,
+            url: '@Url.Action("GetDataEvaluate", "Activity")?keyValue=' + id,
+            datatype: "json",
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 10,
+            rownumbers: true,
+            pager: "#gridPager",
+            gridComplete: function () {
+            }
+        });
+    });
+    function fn$getjob() {
+        var tr = jQuery('tr.currentRow');
+        var jobid = tr.find('td:eq(0) input:eq(0)').val();
+        var job = tr.find('td:eq(1)').text().trim();
+        var json = tr.find('td:eq(0) input:eq(1)').val() || '[]';
+        var jobtype = "班后会";
+        var meetingjobid = tr.find('td:eq(0) input:eq(7)').val();
+        var persons = jQuery.parseJSON(json);
+        var leader = jQuery.grep(persons, function (o) {
+            return o.JobType == "ischecker";
+        });
+        var worker = jQuery.grep(persons, function (o) {
+            return o.JobType == "isdoperson";
+        });
+
+        var teammaters = '';
+        jQuery.each(worker, function (i, o) {
+            teammaters += o.UserName + ',';
+        });
+
+        var prior = tr.find('td:eq(3)').text().trim();
+        var dangerous = '';
+        var measure = '';
+        var remark = '';
+        var description = '';
+        if (jQuery("#MeetingType").val() == "班后会") {
+            dangerous = tr.find('td:eq(0) input:eq(4)').val();
+            measure = tr.find('td:eq(0) input:eq(5)').val();
+            description = tr.find('td:eq(0) input:eq(8)').val();
+        } else {
+            dangerous = tr.find('td:eq(0) input:eq(4)').val();
+            measure = tr.find('td:eq(0) input:eq(5)').val();
+            remark = tr.find('td:eq(0) input:eq(6)').val();
+        }
+        return { meetingjobid: meetingjobid, jobid: jobid, jobtype: jobtype, Job: job, checker: leader.length == 0 ? '' : leader[0].UserName, teammaters: teammaters.replace(/,$/, ''), prior: prior, dangerous: dangerous, measure: measure, remark: remark, Description: description };
+    }
+    function fn$add() {
+        var isEvaluate = 0;
+        id = $("#meetingid").val();
+        if (!id) {
+            layer.msg("请完成班后会后进行评价！");
+            return;
+        }
+        $.ajax({
+            url: '/..@Url.Action("GetIsEvaluate", "Activity")?keyValue=' + id + "&category=''",
+            type: "post",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                isEvaluate = data;
+            }
+        });
+        if (isEvaluate == 0) {
+            dialogOpen({
+                id: "form1",
+                title: '评价',
+                url: '/..@Url.Action("Evaluate", "Activity")?id=' + id,
+                width: "500px",
+                height: "330px",
+                callBack: function (iframeId) {
+
+                    top.document.getElementsByTagName("iframe")[0].contentWindow.AcceptClick();
+
+                }
+            });
+        } else if (isEvaluate > 0) {
+            layer.msg("已评价过此活动");
+        } else if (isEvaluate == -1) {
+            layer.msg("此活动尚未结束");
+        }
+    }
+
+    function fn$refresh() {
+        location.reload();
+    }
+</script>
+<div id="audio-warp" style="height:32px;width:460px;display: none;overflow:hidden;">
+</div>
+<div class="main-content details">
+    <div class="container-fluid">
+        <div class="clearfix mg-b-10">
+            <div class="title">
+                <a href="@Url.Action("List", new { page = 1, pagesize = 12 })">
+                    <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+                    记录详情
+                </a>
+            </div>
+        </div>
+        <div class="bg-e3ebfd pd-10 warp">
+            <div>
+                <h3 class="flag mg-b-10">班前会</h3>
+                <div class="body">
+                    <div class="pd-20 bg-fff work">
+                        <div class="clearfix">
+                            <div class="pull-left w-630">
+                                <label>会议时间</label>
+                                <div>@Model[0].MeetingStartTime.ToString("yyyy-MM-dd HH:mm ") - @((Model[0].MeetingEndTime == DateTime.MinValue ? DateTime.Now : Model[0].MeetingEndTime).ToString("HH:mm"))</div>
+                            </div>
+                            <div class="pull-left  w-630">
+                                <label>主持人</label>
+                                <div>@Html.Raw(Model[0].MeetingPerson)</div>
+                            </div>
+                        </div>
+                        <div class="clearfix">
+                            <label>参加人员</label>
+                            <div>
+                                @Html.Raw(ViewData["users"])
+
+                                @*王鹏辉、柯一技、邢皓晨、李一冰、周海洋、詹二梅、刘和曦、向恒明、何向明、李明天、周小雅、王鹏辉、柯一技、邢皓晨、李一冰、周海洋、詹二梅、刘曦、向恒明、何向明、李明天、周小雅、
+                                    王鹏辉、柯一技、邢皓晨、李一冰、周海洋、詹二梅、刘和曦、向恒明、何向明、李明天、周小雅、王鹏辉、柯一技、邢皓晨、李一冰、周海洋、詹二梅、刘曦、向恒明、何向明、李明天、周小雅、
+                                    王鹏辉、柯一技、邢皓晨、李一冰、周海洋、詹二梅*@
+                            </div>
+                        </div>
+                        <div class="clearfix">
+                            <label>缺勤人员及原因</label>
+                            <div>
+                                @Html.Raw(ViewData["queqin"])
+                            </div>
+                        </div>
+                        <div class="clearfix">
+                            <label>人员状态</label>
+                            <div>
+                                @Html.Raw(ViewData["state"])
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-head f-18 f-w bg-fff pd-10 pd-l-20 c-0d0d0d bd-b-e3ebfd bd-2t-e3ebfd">
+                        工作任务部署
+                    </div>
+                    <table class="table text-center table-striped no-mg c-67748d">
+                        <colgroup>
+                            <col style="width:80px;" />
+                            <col style="width:200px;" />
+                            <col style="width:100px;" />
+                            <col style="width:300px;" />
+                            <col style="width:300px;" />
+                            <col style="width:300px;" />
+                            <col style="width:100px;" />
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th class="bg-fff">序号</th>
+                                <th class="bg-fff">工作任务</th>
+                                <th class="bg-fff">任务类别</th>
+                                <th class="bg-fff">作业人</th>
+                                <th class="bg-fff">计划时间</th>
+                                <th class="bg-fff">危险因素防范措施</th>
+                                <th class="bg-fff">风险等级</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model[0].Jobs.Count; i++)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.Raw(i + 1)
+                                    </td>
+                                    <td>
+                                        @Html.Raw(Model[0].Jobs[i].Job)
+                                    </td>
+                                    <td>
+                                        @Html.Raw(Model[0].Jobs[i].TaskType)
+                                    </td>
+                                    <td>
+                                        @Html.Raw(Model[0].Jobs[i].Relation.JobUser)
+                                    </td>
+                                    <td>
+                                        @Html.Raw(Model[0].Jobs[i].StartTime.ToString("yyyy/M/d H:mm")) - @Html.Raw(Model[0].Jobs[i].EndTime.ToString("yyyy/M/d H:mm"))
+                                    </td>
+                                    <td>
+                                        @Html.Raw("危险因素：" + Model[0].Jobs[i].Dangerous + "</br>防范措施：" + Model[0].Jobs[i].Measure)
+                                    </td>
+                                    <td>
+                                        @Html.Raw(Model[0].Jobs[i].RiskLevel)
+
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <div class="pd-20 bg-fff bd-2t-e3ebfd">
+                        <div class="f-18 f-w c-0d0d0d">其他事项</div>
+                        <div class="table-div f-16 c-4a4e50 lh-36 pd-b-20" style="word-break:break-all;height:auto;min-height:110px;">
+                            @Html.Raw(Model[0].Remark)
+                        </div>
+                    </div>
+                    <div class="pd-20 bg-fff bd-2t-e3ebfd" style="padding-bottom:0;">
+                        <div class="clearfix audio">
+                            <div class="pull-left f-18 f-w c-0d0d0d left">会议音频</div>
+                            <div class="pull-left right">
+                                <ul id="play-audio-container1">
+                                    @for (int i = 0; i < Model[0].Files.Count; i++)
+                                    {
+                                        if (Model[0].Files[i].Description == "音频")
+                                        {
+                                            <li>
+                                                <div data-id="@Model[0].Files[i].FileId" class="play-audio" data-url="@Url.Content(Model[0].Files[i].FilePath)">
+                                                    <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" alt="" width="24">
+                                                    @Html.Raw(Model[0].Files[i].FileName)
+                                                </div>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pd-20 bg-fff bd-2t-e3ebfd photo">
+                        <div class="mg-b-10">
+                            <div class="f-18 f-w c-0d0d0d">会议照片</div>
+                        </div>
+                        <div class="clearfix">
+                            <ul class="images-container" id="images-container1">
+                                @for (int i = 0; i < Model[0].Files.Count; i++)
+                                {
+                                    if (Model[0].Files[i].Description == "照片")
+                                    {
+                                        <li><img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = Model[0].Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:160px;height:120px;"></li>
+                                    }
+                                }
+
+                                @*<li>
+                                        <img src="@Url.Content("~/Content/styles/static/images/temp/1.png")" alt="">
+                                    </li>
+                                    <li>
+                                        <img src="@Url.Content("~/Content/styles/static/images/temp/1.png")" alt="">
+                                    </li>
+                                    <li>
+                                        <img src="@Url.Content("~/Content/styles/static/images/temp/1.png")" alt="">
+                                    </li>*@
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--班后会-->
+            <div>
+                <h3 class="flag mg-b-10">班后会</h3>
+                <div class="body">
+                    <div class="pd-20 bg-fff work">
+                        <div class="clearfix">
+                            <div class="pull-left w-630">
+                                <label>会议时间</label>
+                                <div>
+                                    @if (Model[1] != null)
+                                    {
+                                        @Html.Hidden("meetingid", Model[1].MeetingId);
+                                        @Html.Raw(Model[1].MeetingStartTime.ToString("yyyy-MM-dd HH:mm -"))
+                                        @Html.Raw((Model[1].MeetingEndTime == DateTime.MinValue ? DateTime.Now : Model[1].MeetingEndTime).ToString("HH:mm"))
+                                    }
+                                </div>
+                            </div>
+                            <div class="pull-left  w-630">
+                                <label>主持人</label>
+                                <div>
+                                    @if (Model[1] != null)
+                                    {
+                                        @Html.Raw(Model[1].MeetingPerson)
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix">
+                            <label>参加人员</label>
+                            <div>
+                                @if (Model[1] != null)
+                                {
+                                    @Html.Raw(ViewData["users2"])
+                                }
+                            </div>
+                        </div>
+                        <div class="clearfix">
+                            <label>缺勤人员及原因</label>
+                            <div>
+                                @if (Model[1] != null)
+                                {
+                                    @Html.Raw(ViewData["queqin2"])
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-head f-18 f-w bg-fff pd-10 pd-l-20 c-0d0d0d bd-b-e3ebfd bd-2t-e3ebfd">
+                        工作任务部署
+                    </div>
+                    <table class="table text-center table-striped no-mg c-67748d" id="grid2">
+                        <colgroup>
+                            <col style="width:100px;" />
+                            <col />
+                            <col style="width:300px;" />
+                            <col style="width:300px;" />
+                            <col style="width:150px;" />
+                            <col style="width:80px;" />
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th class="bg-fff">序号</th>
+                                <th class="bg-fff">工作任务</th>
+                                <th class="bg-fff">作业人</th>
+                                <th class="bg-fff">计划时间</th>
+                                <th class="bg-fff">完成情况</th>
+                                <th class="bg-fff">详情</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model[1] != null)
+                            {
+                                for (int i = 0; i < Model[1].Jobs.Count; i++)
+                                {
+                                    <tr @(Model[1].Jobs[i].IsFinished == "cancel" ? "style=background-color:#d6cfd7" : string.Empty)>
+                                        <td>
+                                            @Html.HiddenFor(x => x[1].Jobs[i].JobId)
+                                            @Html.HiddenFor(x => x[1].Jobs[i].Relation.JobUsers, new { Value = Newtonsoft.Json.JsonConvert.SerializeObject(Model[1].Jobs[i].Relation.JobUsers) })
+                                            @Html.HiddenFor(x => x[1].Jobs[i].StartTime, "{0:yyyy/M/d H:mm}")
+                                            @Html.HiddenFor(x => x[1].Jobs[i].EndTime, "{0:yyyy/M/d H:mm}")
+                                            @Html.HiddenFor(x => x[1].Jobs[i].Dangerous)
+                                            @Html.HiddenFor(x => x[1].Jobs[i].Measure)
+                                            @Html.HiddenFor(x => x[1].Jobs[i].Remark)
+                                            @Html.HiddenFor(x => x[1].Jobs[i].Relation.MeetingJobId)
+                                            @Html.HiddenFor(x => x[1].Jobs[i].Description)
+                                            @Html.Raw(i + 1)
+                                        </td>
+                                        <td>
+                                            @Html.Raw(Model[1].Jobs[i].Job)
+                                        </td>
+                                        <td>
+                                            @Html.Raw(Model[1].Jobs[i].Relation.JobUser)
+                                        </td>
+                                        <td>
+                                            @Html.Raw(Model[1].Jobs[i].StartTime.ToString("yyyy/M/d H:mm")) - @Html.Raw(Model[1].Jobs[i].EndTime.ToString("yyyy/M/d H:mm"))
+                                        </td>
+                                        <td>
+                                            <span class="my-checkbox @(Model[1].Jobs[i].Relation.IsFinished == "finish" ? "actives" : string.Empty)"></span>
+                                        </td>
+                                        <td>
+                                            <a class="c-orange" onclick="fn$edit(this);" style="color:orange;cursor:pointer;">详情</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                    <div class="pd-20 bg-fff bd-2t-e3ebfd">
+                        <div class="f-18 f-w c-0d0d0d">当班工作总结</div>
+                        <div class="table-div f-16 c-4a4e50 lh-36 pd-b-20" style="word-break:break-all;height:auto;min-height:110px;">
+                            @if (Model[1] != null)
+                            {
+                                @Html.Raw(Model[1].Remark)
+                            }
+                        </div>
+                    </div>
+                    <div class="pd-20 bg-fff bd-2t-e3ebfd" style="padding-bottom:0;">
+                        <div class="clearfix audio">
+                            <div class="pull-left f-18 f-w c-0d0d0d left">会议音频</div>
+                            <div class="pull-left right">
+                                <ul id="play-audio-container2">
+                                    @if (Model[1] != null)
+                                    {
+                                        for (int i = 0; i < Model[1].Files.Count; i++)
+                                        {
+                                            if (Model[1].Files[i].Description == "音频")
+                                            {
+                                                <li>
+                                                    <div data-id="@Model[1].Files[i].FileId" class="play-audio" data-url="@Url.Content(Model[1].Files[i].FilePath)">
+                                                        <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" alt="" width="24">
+                                                        @Html.Raw(Model[1].Files[i].FileName)
+                                                    </div>
+                                                </li>
+                                            }
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pd-20 bg-fff bd-2t-e3ebfd photo">
+                        <div class="mg-b-10">
+                            <div class="f-18 f-w c-0d0d0d">会议照片</div>
+                        </div>
+                        <div class="clearfix">
+                            <ul class="images-container" id="images-container2">
+                                @if (Model[1] != null)
+                                {
+                                    for (int i = 0; i < Model[1].Files.Count; i++)
+                                    {
+                                        if (Model[1].Files[i].Description == "照片")
+                                        {
+                                            <li><img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = Model[1].Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:160px;height:120px;"></li>
+                                        }
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="pd-20 bg-fff bd-t-e3ebfd">
+                    <div class="f-18 f-w c-0d0d0d" style="position:relative">
+                        活动评价<button class="btn bg-3669e1 c-fff " style="width:130px;position:absolute;left:83%;bottom:10px" onclick="fn$add()">添加评论</button>
+                    </div>
+                    <div>
+                        @if (Model[1] != null)
+                        {
+                            if (Model[1].Evaluates != null)
+                            {
+                                for (int i = 0; i < Model[1].Evaluates.Count; i++)
+                                {
+                                    <p class="right" style="border: 0;width:50%;margin-left: 5%;">
+                                        <table class="score_div">
+                                            <tr>
+                                                <td style="width:120px;"> @Model[1].Evaluates[i].EvaluateUser</td>
+                                                <td style="width:120px;font-size:10px;">@Model[1].Evaluates[i].Nature</td>
+                                                @if (@Model[1].Evaluates[i].Score == 1)
+                                                {
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_full.png")"><span style="font-size:10px;display:none">1</span></td>
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_empty.png")"><span style="font-size:10px;display:none">2</span></td>
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_empty.png")"><span style="font-size:10px;display:none">3</span></td>
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_empty.png")"><span style="font-size:10px;display:none">4</span></td>
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_empty.png")"><span style="font-size:10px;display:none">5</span></td>
+                                                }
+                                                @if (@Model[1].Evaluates[i].Score == 2)
+                                                {
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_full.png")"><span style="font-size:10px;display:none">1</span></td>
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_full.png")"><span style="font-size:10px;display:none">2</span></td>
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_empty.png")"><span style="font-size:10px;display:none">3</span></td>
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_empty.png")"><span style="font-size:10px;display:none">4</span></td>
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_empty.png")"><span style="font-size:10px;display:none">5</span></td>
+                                                }
+                                                @if (@Model[1].Evaluates[i].Score == 3)
+                                                {
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_full.png")"><span style="font-size:10px;display:none">1</span></td>
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_full.png")"><span style="font-size:10px;display:none">2</span></td>
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_full.png")"><span style="font-size:10px;display:none">3</span></td>
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_empty.png")"><span style="font-size:10px;display:none">4</span></td>
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_empty.png")"><span style="font-size:10px;display:none">5</span></td>
+                                                }
+                                                @if (@Model[1].Evaluates[i].Score == 4)
+                                                {
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_full.png")"><span style="font-size:10px;display:none">1</span></td>
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_full.png")"><span style="font-size:10px;display:none">2</span></td>
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_full.png")"><span style="font-size:10px;display:none">3</span></td>
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_full.png")"><span style="font-size:10px;display:none">4</span></td>
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_empty.png")"><span style="font-size:10px;display:none">5</span></td>
+                                                }
+                                                @if (@Model[1].Evaluates[i].Score == 5)
+                                                {
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_full.png")"><span style="font-size:10px;display:none">1</span></td>
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_full.png")"><span style="font-size:10px;display:none">2</span></td>
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_full.png")"><span style="font-size:10px;display:none">3</span></td>
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_full.png")"><span style="font-size:10px;display:none">4</span></td>
+                                                    <td><img name="score" style="width:17px;height:17px;" src="@Url.Content("~/Content/images/start_full.png")"><span style="font-size:10px;display:none">5</span></td>
+                                                }
+                                                <td>
+                                                    <span class="score_span" id="txtScore" style="font-size:10px;padding-left:5px;text-align:inherit;">@Model[1].Evaluates[i].Score 分</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <div>
+                                            <i style="font-size:10px;">@Model[1].Evaluates[i].EvaluateContent</i><i style="padding-left:20px;">@Model[1].Evaluates[i].CREATEDATE</i>
+                                        </div>
+                                    </p>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <footer class="main-footer">
+        武汉博晟安全技术股份有限公司   版权所有
+    </footer>
+</div>

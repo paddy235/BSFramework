@@ -1,0 +1,350 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{42234E7A-B484-479D-B1C1-08A08A59C935}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BSFramework.Application.Mapping</RootNamespace>
+    <AssemblyName>BSFramework.Application.Mapping</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\libs\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccountMap.cs" />
+    <Compile Include="Activity\ActivityActionMap.cs" />
+    <Compile Include="Activity\ActivitySubjectMap.cs" />
+    <Compile Include="Activity\DangerCategoryMap.cs" />
+    <Compile Include="Activity\HumanDangerMap.cs" />
+    <Compile Include="Activity\EvaluateStepsMap.cs" />
+    <Compile Include="Activity\EvaluateTodoMap.cs" />
+    <Compile Include="Activity\HumanDangerTrainingMap.cs" />
+    <Compile Include="Activity\ActivityCategoryMap.cs" />
+    <Compile Include="Activity\ActivitySupplyMap.cs" />
+    <Compile Include="Activity\ReportMap.cs" />
+    <Compile Include="Activity\SafetydayMaterialEntityMap.cs" />
+    <Compile Include="Activity\SafetydayReadEntityMap.cs" />
+    <Compile Include="Activity\ActivityEvaluateMap.cs" />
+    <Compile Include="Activity\ActivityRecordMap.cs" />
+    <Compile Include="Activity\ActivityPersonMap.cs" />
+    <Compile Include="Activity\ActivityMap.cs" />
+    <Compile Include="Activity\DangerMap.cs" />
+    <Compile Include="Activity\MeasuresMap.cs" />
+    <Compile Include="Activity\OrderinfoMap.cs" />
+    <Compile Include="Activity\SafetydayMap.cs" />
+    <Compile Include="Activity\ScreensaverMap.cs" />
+    <Compile Include="Activity\SupplyPeopleMap.cs" />
+    <Compile Include="AppVersionManage\AppVersionMap.cs" />
+    <Compile Include="AttendManage\AttendMap.cs" />
+    <Compile Include="AttendManage\SetAttendMap.cs" />
+    <Compile Include="AuthorizeManage\ModuleFormInstanceMap.cs" />
+    <Compile Include="AuthorizeManage\ModuleFormMap.cs" />
+    <Compile Include="AuthorizeManage\AndroidmenuMap.cs" />
+    <Compile Include="BaseManage\PersonDoshboardMap.cs" />
+    <Compile Include="BaseManage\UserFaceMap.cs" />
+    <Compile Include="BaseManage\UserInfoMap.cs" />
+    <Compile Include="CarcOrCardManage\CCarcdMap.cs" />
+    <Compile Include="CarcOrCardManage\CarcMap.cs" />
+    <Compile Include="CarcOrCardManage\CDangerousMap.cs" />
+    <Compile Include="CarcOrCardManage\CMeasureMap.cs" />
+    <Compile Include="CertificateManage\CertificateMap.cs" />
+    <Compile Include="CertificateManage\UserCertificateMap.cs" />
+    <Compile Include="CustomerManage\CashBalanceMap.cs" />
+    <Compile Include="CustomerManage\ChanceMap.cs" />
+    <Compile Include="CustomerManage\ExpensesMap.cs" />
+    <Compile Include="CustomerManage\InvoiceMap.cs" />
+    <Compile Include="CustomerManage\ReceivableMap.cs" />
+    <Compile Include="CustomerManage\TrailRecordMap.cs" />
+    <Compile Include="CustomerManage\CustomerContactMap.cs" />
+    <Compile Include="CustomerManage\CustomerMap.cs" />
+    <Compile Include="CustomerManage\OrderEntryMap.cs" />
+    <Compile Include="CustomerManage\OrderMap.cs" />
+    <Compile Include="CustomParameterManage\CustomParameterMap.cs" />
+    <Compile Include="CustomParameterManage\CustomTemplateMap.cs" />
+    <Compile Include="DeviceInspection\DeviceInspectionItemJobMap.cs" />
+    <Compile Include="DeviceInspection\DeviceInspectionItemMap.cs" />
+    <Compile Include="DeviceInspection\DeviceInspectionJobMap.cs" />
+    <Compile Include="DeviceInspection\DeviceInspectionMap.cs" />
+    <Compile Include="DeviceInspection\InspectionRecordMap.cs" />
+    <Compile Include="DeviceInspection\ItemResultMap.cs" />
+    <Compile Include="DeptCycletaskManage\DeptCycleTaskMap.cs" />
+    <Compile Include="DeptCycletaskManage\DeptWorkCycleTaskMap.cs" />
+    <Compile Include="DrugManage\DrugInventoryMap.cs" />
+    <Compile Include="DrugManage\DrugGlassWareMap.cs" />
+    <Compile Include="DrugManage\DrugMap.cs" />
+    <Compile Include="DrugManage\DrugOutMap.cs" />
+    <Compile Include="DrugManage\DrugStockMap.cs" />
+    <Compile Include="DrugManage\DrugStockOutMap.cs" />
+    <Compile Include="DrugManage\GlassMap.cs" />
+    <Compile Include="DrugManage\GlassStockMap.cs" />
+    <Compile Include="DrugManage\InstrumentBDMap.cs" />
+    <Compile Include="DrugManage\InstrumentCheckMap.cs" />
+    <Compile Include="DrugManage\InstrumentMap.cs" />
+    <Compile Include="EducationManage\EdActivityMap.cs" />
+    <Compile Include="EducationManage\EdActivityPersonMap.cs" />
+    <Compile Include="EducationManage\EdActivityRecordMap.cs" />
+    <Compile Include="EducationManage\EdActivitySupplyMap.cs" />
+    <Compile Include="EducationManage\EduInventoryMap.cs" />
+    <Compile Include="EducationManage\EduPlanInfoMap.cs" />
+    <Compile Include="EducationManage\EduPlanMap.cs" />
+    <Compile Include="EducationManage\EduPlanVerifyMap.cs" />
+    <Compile Include="EducationManage\TestQuestionsMap.cs" />
+    <Compile Include="EducationManage\EduCommentTagMap.cs" />
+    <Compile Include="EducationManage\EduAnswerMap.cs" />
+    <Compile Include="EducationManage\EduAppraiseMap.cs" />
+    <Compile Include="EducationManage\EduBaseInfoMap.cs" />
+    <Compile Include="EducationManage\EduBookMap.cs" />
+    <Compile Include="EducationManage\EduMessageMap.cs" />
+    <Compile Include="EmergencyManage\EmergencyCardTypeMap.cs" />
+    <Compile Include="EmergencyManage\EmergencyMap.cs" />
+    <Compile Include="EmergencyManage\EmergencyPersonMap.cs" />
+    <Compile Include="EmergencyManage\EmergencyReportMap.cs" />
+    <Compile Include="EmergencyManage\EmergencyReportStepsMap.cs" />
+    <Compile Include="EmergencyManage\EmergencyStepsMap.cs" />
+    <Compile Include="EmergencyManage\EmergencyWorkMap.cs" />
+    <Compile Include="Empower\DepartMap.cs" />
+    <Compile Include="Empower\DepartTypeMap.cs" />
+    <Compile Include="Empower\EmpowerMap.cs" />
+    <Compile Include="Empower\ModelMap.cs" />
+    <Compile Include="EvaluateAbout\DesignationMap.cs" />
+    <Compile Include="EvaluateAbout\EvaluateCategoryItemMap.cs" />
+    <Compile Include="EvaluateAbout\EvaluateCategoryMap.cs" />
+    <Compile Include="EvaluateAbout\EvaluateDeptMap.cs" />
+    <Compile Include="EvaluateAbout\EvaluateGroupMap.cs" />
+    <Compile Include="EvaluateAbout\EvaluateGroupTitleMap.cs" />
+    <Compile Include="EvaluateAbout\EvaluateItemMap.cs" />
+    <Compile Include="EvaluateAbout\EvaluateMap.cs" />
+    <Compile Include="EvaluateAbout\EvaluateMarksRecordsMap.cs" />
+    <Compile Include="EvaluateAbout\EvaluateReviseMap.cs" />
+    <Compile Include="EvaluateAbout\EvaluateScopeMao.cs" />
+    <Compile Include="EvaluateAbout\EvaluateSetMap.cs" />
+    <Compile Include="EvaluateAbout\JobEvaluateMap.cs" />
+    <Compile Include="EvaluateAbout\WeightSetMap.cs" />
+    <Compile Include="ExperienceManage\CommentMap.cs" />
+    <Compile Include="ExperienceManage\QuestionMap.cs" />
+    <Compile Include="FlowManage\WFDelegateRecordMap.cs" />
+    <Compile Include="FlowManage\WFDelegateRuleMap.cs" />
+    <Compile Include="FlowManage\WFDelegateRuleSchemeInfoMap.cs" />
+    <Compile Include="FlowManage\WFProcessInstanceMap.cs" />
+    <Compile Include="FlowManage\WFProcessOperationHistoryMap.cs" />
+    <Compile Include="FlowManage\WFProcessSchemeMap.cs" />
+    <Compile Include="FlowManage\WFProcessTransitionHistoryMap.cs" />
+    <Compile Include="FlowManage\WFSchemeInfoAuthorizeMap.cs" />
+    <Compile Include="FlowManage\WFSchemeInfoMap.cs" />
+    <Compile Include="FlowManage\WFSchemeContentMap.cs" />
+    <Compile Include="FlowManage\WFFrmMainMap.cs" />
+    <Compile Include="InnovationManage\AdviceAuditMap.cs" />
+    <Compile Include="InnovationManage\AdviceMap.cs" />
+    <Compile Include="InnovationManage\QcActivityMap.cs" />
+    <Compile Include="InnovationManage\WorkInnovationAuditMap.cs" />
+    <Compile Include="InnovationManage\WorkInnovationMap.cs" />
+    <Compile Include="KeyBoxManage\KeyBoxMap.cs" />
+    <Compile Include="KeyBoxManage\KeyUseMap.cs" />
+    <Compile Include="LllegalManage\LllegalAcceptMap.cs" />
+    <Compile Include="LllegalManage\LllegalMap.cs" />
+    <Compile Include="LllegalManage\LllegalRefromMap.cs" />
+    <Compile Include="MisManage\FaultRelationMap.cs" />
+    <Compile Include="OndutyManage\FaceAttendanceTimeMap.cs" />
+    <Compile Include="OndutyManage\FaceAttendanceMap.cs" />
+    <Compile Include="OndutyManage\OndutyMeetMap.cs" />
+    <Compile Include="OndutyManage\OndutyMapRecord.cs" />
+    <Compile Include="OndutyManage\OndutyMap.cs" />
+    <Compile Include="OndutyManage\OndutyMeetOnoffMap.cs" />
+    <Compile Include="PeopleManage\DutyDangerMap.cs" />
+    <Compile Include="PeopleManage\DutyMap.cs" />
+    <Compile Include="PeopleManage\LoginInfoMap.cs" />
+    <Compile Include="PeopleManage\PeopleDutyMap.cs" />
+    <Compile Include="PeopleManage\PeopleDutyTypeMap.cs" />
+    <Compile Include="PeopleManage\PeopleMap.cs" />
+    <Compile Include="PerformanceManage\PerformanceMethodSecondMap.cs" />
+    <Compile Include="PerformanceManage\PerformanceMap.cs" />
+    <Compile Include="PerformanceManage\PerformanceSecondMap.cs" />
+    <Compile Include="PerformanceManage\PerformancesetupMap.cs" />
+    <Compile Include="PerformanceManage\PerformancePersonSecondMap.cs" />
+    <Compile Include="PerformanceManage\PerformancesetupSecondMap.cs" />
+    <Compile Include="PerformanceManage\PerformancetitleMap.cs" />
+    <Compile Include="PerformanceManage\PerformancetitleSecondMap.cs" />
+    <Compile Include="PerformanceManage\PerformanceupMap.cs" />
+    <Compile Include="PerformanceManage\PerformanceupSecondMap.cs" />
+    <Compile Include="ProducingCheck\CheckTemplateMap.cs" />
+    <Compile Include="ProducingCheck\CheckCategoryMap.cs" />
+    <Compile Include="PublicInfoManage\NewFileInfoMap.cs" />
+    <Compile Include="PublicInfoManage\PackageMap.cs" />
+    <Compile Include="PublicInfoManage\ScheduleMap.cs" />
+    <Compile Include="PushInfoManage\PushInfoMap.cs" />
+    <Compile Include="PushInfoManage\PushPersonMap.cs" />
+    <Compile Include="QuestionManage\HistoryAnswerMap.cs" />
+    <Compile Include="QuestionManage\HistoryQuestionMap.cs" />
+    <Compile Include="QuestionManage\HistoryUserAnswerMap.cs" />
+    <Compile Include="QuestionManage\QuestionBankMap.cs" />
+    <Compile Include="QuestionManage\TheAnswerMap.cs" />
+    <Compile Include="QuestionManage\TheTitleMap.cs" />
+    <Compile Include="ReportManage\RptTempMap.cs" />
+    <Compile Include="SafeProduceManage\OnLocaleMap.cs" />
+    <Compile Include="SafeProduceManage\SafeProduceMap.cs" />
+    <Compile Include="SafetyScore\AccountRuleMap.cs" />
+    <Compile Include="SafetyScore\SafetyScoreMap.cs" />
+    <Compile Include="SevenSManage\SevenSMap.cs" />
+    <Compile Include="SevenSManage\SevenSOfficeAuditMap.cs" />
+    <Compile Include="SevenSManage\SevenSOfficeMap.cs" />
+    <Compile Include="SevenSManage\SevenSPictureCycleMap.cs" />
+    <Compile Include="SevenSManage\SevensPictureEvaluationMap.cs" />
+    <Compile Include="SevenSManage\SevenSPictureMap.cs" />
+    <Compile Include="SevenSManage\SevenSPictureSetMap.cs" />
+    <Compile Include="SevenSManage\SevenSPlanTimeMap.cs" />
+    <Compile Include="SevenSManage\SevenSTypeMap.cs" />
+    <Compile Include="SweepManage\SweepItemMap.cs" />
+    <Compile Include="SweepManage\SweepMap.cs" />
+    <Compile Include="SystemManage\DistrictPersonMap.cs" />
+    <Compile Include="SystemManage\CodeRuleMap.cs" />
+    <Compile Include="SystemManage\CodeRuleSeedMap.cs" />
+    <Compile Include="PublicInfoManage\FileFolderMap.cs" />
+    <Compile Include="PublicInfoManage\FileInfoMap.cs" />
+    <Compile Include="MessageManage\IMContentMap.cs" />
+    <Compile Include="MessageManage\IMGroupMap.cs" />
+    <Compile Include="MessageManage\IMReadMap.cs" />
+    <Compile Include="MessageManage\IMUserGroupMap.cs" />
+    <Compile Include="AuthorizeManage\AuthorizeMap.cs" />
+    <Compile Include="PublicInfoManage\EmailAddresseeMap.cs" />
+    <Compile Include="PublicInfoManage\NewsMap.cs" />
+    <Compile Include="SystemManage\DataBaseBackupMap.cs" />
+    <Compile Include="AuthorizeManage\FilterIPMap.cs" />
+    <Compile Include="AuthorizeManage\FilterTimeMap.cs" />
+    <Compile Include="SystemManage\DataBaseLinkMap.cs" />
+    <Compile Include="SystemManage\AreaMap.cs" />
+    <Compile Include="AuthorizeManage\ModuleMap.cs" />
+    <Compile Include="AuthorizeManage\ModuleButtonMap.cs" />
+    <Compile Include="AuthorizeManage\ModuleColumnMap.cs" />
+    <Compile Include="BaseManage\DepartmentMap.cs" />
+    <Compile Include="BaseManage\OrganizeMap.cs" />
+    <Compile Include="BaseManage\UserMap.cs" />
+    <Compile Include="SystemManage\DataItemDetailMap.cs" />
+    <Compile Include="SystemManage\DataItemMap.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BaseManage\RoleMap.cs" />
+    <Compile Include="BaseManage\UserRelationMap.cs" />
+    <Compile Include="AuthorizeManage\AuthorizeDataMap.cs" />
+    <Compile Include="PublicInfoManage\EmailCategoryMap.cs" />
+    <Compile Include="PublicInfoManage\EmailContentMap.cs" />
+    <Compile Include="SystemManage\DataSetMap.cs" />
+    <Compile Include="SystemManage\IndexAssocationMap.cs" />
+    <Compile Include="SystemManage\IndexManageMap.cs" />
+    <Compile Include="SystemManage\LogMap.cs" />
+    <Compile Include="SystemManage\AppPackageMap.cs" />
+    <Compile Include="SystemManage\FeedbackMap.cs" />
+    <Compile Include="SystemManage\MessageMap.cs" />
+    <Compile Include="SystemManage\TerminalDataSetMap.cs" />
+    <Compile Include="SystemManage\WorkStandardMap.cs" />
+    <Compile Include="TaskManage\UnSigninMap.cs" />
+    <Compile Include="ToolManage\ToolBorrowMap.cs" />
+    <Compile Include="ToolManage\ToolCheckMap.cs" />
+    <Compile Include="ToolManage\ToolInfoMap.cs" />
+    <Compile Include="ToolManage\ToolInventoryMap.cs" />
+    <Compile Include="ToolManage\ToolNumberMap.cs" />
+    <Compile Include="ToolManage\ToolRepairMap.cs" />
+    <Compile Include="ToolManage\ToolTypeMap.cs" />
+    <Compile Include="WebApp\MedicalMap.cs" />
+    <Compile Include="WebApp\UserExperiencMap.cs" />
+    <Compile Include="WebApp\UserWorkAllocationMap.cs" />
+    <Compile Include="WebApp\UserWorkStateMap.cs" />
+    <Compile Include="WeChatManage\WeChatAppMap.cs" />
+    <Compile Include="WeChatManage\WeChatDeptRelationMap.cs" />
+    <Compile Include="WeChatManage\WeChatUserRelationMap.cs" />
+    <Compile Include="WorkMeeting\DangerAnalysisMap.cs" />
+    <Compile Include="WorkMeeting\DepartmentTaskMap.cs" />
+    <Compile Include="WorkMeeting\DepartmentPublishMap.cs" />
+    <Compile Include="WorkMeeting\DistrictSignInMap.cs" />
+    <Compile Include="WorkMeeting\DistrictJobMap.cs" />
+    <Compile Include="WorkMeeting\JobMeasureMap.cs" />
+    <Compile Include="WorkMeeting\JobDangerousMap.cs" />
+    <Compile Include="WorkMeeting\MeetingQuestionMap.cs" />
+    <Compile Include="WorkMeeting\MeetingRecordMap.cs" />
+    <Compile Include="WorkMeeting\WorkGroupSetMap.cs" />
+    <Compile Include="SetManage\MeasureSetMap.cs" />
+    <Compile Include="SetManage\RiskFactorSetMap.cs" />
+    <Compile Include="WorkMeeting\UserSignSettingMap.cs" />
+    <Compile Include="WorkMeeting\WorkMeetingNoteMap.cs" />
+    <Compile Include="WorkMeeting\MeetSubjectMap.cs" />
+    <Compile Include="WorkMeeting\WorkOrderMap.cs" />
+    <Compile Include="WorkMeeting\WorkSettingMap.cs" />
+    <Compile Include="WorkMeeting\DangerTemplateMap.cs" />
+    <Compile Include="WorkMeeting\JobTemplateMap.cs" />
+    <Compile Include="WorkMeeting\MeetingJobMap.cs" />
+    <Compile Include="WorkMeeting\MeetingSigninMap.cs" />
+    <Compile Include="WorkMeeting\JobUserMap.cs" />
+    <Compile Include="WorkMeeting\CultureTemplateMap.cs" />
+    <Compile Include="WorkMeeting\WorkmeetingMap.cs" />
+    <Compile Include="WorkMeeting\WorkSetupMap.cs" />
+    <Compile Include="WorkMeeting\WorkTimeSortMap.cs" />
+    <Compile Include="WorkPlanManage\WorkPlanContentMap.cs" />
+    <Compile Include="WorkPlanManage\WorkPlanMap.cs" />
+    <Compile Include="YearWorkPlanManage\YearWorkPlanMap.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BSFramework.Application.Entity\BSFramework.Application.Entity.csproj">
+      <Project>{c10920fe-8c74-4993-a7f4-1da189da842c}</Project>
+      <Name>BSFramework.Application.Entity</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!--<Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />-->
+  <!--<Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>-->
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

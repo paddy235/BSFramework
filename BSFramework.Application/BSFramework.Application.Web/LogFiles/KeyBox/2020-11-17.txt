@@ -1,0 +1,6 @@
+2020-11-17 14:06:38 用户：开封管理员  id：511a32e0-82cd-431c-8909-2f58445220ef开始编辑钥匙管理数据 
+ {"ID":null,"CreateDate":null,"CreateUserId":null,"CreateUserName":null,"ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"2793b673-b7e8-43d5-bee4-d5314a855b1d","DeptCode":"001001001004003","DeptName":"锅炉磨煤机班","KeyCode":"glzy11","KeyPlace":"m762","Category":"锅炉专业","CategoryId":"1","State":false,"Sort":"11"} 
+------------------------------------------------------------
+2020-11-17 14:25:30 用户：开封管理员  id：511a32e0-82cd-431c-8909-2f58445220ef开始编辑钥匙管理数据 
+ {"ID":null,"CreateDate":null,"CreateUserId":null,"CreateUserName":null,"ModifyDate":null,"ModifyUserId":null,"ModifyUserName":null,"DeptId":"9ac6c0f9-4157-4eda-9544-2cfb3cc18cd3","DeptCode":"001001001004009","DeptName":"热控二班","KeyCode":"rkzy14","KeyPlace":"asdasxcxz","Category":"热控专业","CategoryId":"3","State":false,"Sort":"14"} 
+------------------------------------------------------------

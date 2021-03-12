@@ -1,0 +1,20 @@
+﻿<script>
+    /// <summary>
+    /// 选择区域
+    /// </summary>
+    ///<param name="winObject">窗体中需要查找domId的对象，一般可写成window.document.body或this.parentNode</param>
+    ///<param name="domId">接收返回值的dom节点的ID</param>
+    /// <param name="checkMode">单选或多选，0:单选，1:多选</param>
+    function selectArea(winObject, domId, checkMode) {
+        return dialogOpen({
+            id: "Area",
+            title: "选择区域",
+            url: '/..@Url.Action("Select", "DistrictPerson", new { area = "SystemManage" })?mode=' + checkMode,
+            width: "1000px",
+            height: "500px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick(winObject, domId);
+            }
+        });
+    }
+</script>

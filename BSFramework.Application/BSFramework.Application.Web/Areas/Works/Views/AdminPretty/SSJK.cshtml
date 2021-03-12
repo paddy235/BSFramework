@@ -1,0 +1,103 @@
+﻿@{
+    Layout = null;
+    ViewBag.Title = "SSJK";
+}
+<script src="@Url.Content("~/Content/scripts/jquery/jquery-1.10.2.min.js")"></script>
+
+<style type="text/css">
+    table tr td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    h4 {
+        margin-top: 20px;
+        font-weight: bold;
+    }
+</style>
+<script>
+    var contentPath = '@Url.Content("~")'.substr(0, '@Url.Content("~")'.length - 1);
+    $(function () {
+        $.ajax({
+            url: '@Url.Action("GetSSJKNumbers")',
+            type: 'post',
+            data: {},
+            loading: "数据提交中...",
+            success: function (data) {
+                document.getElementById("lb1").innerText = data.meeting1;
+                document.getElementById("lb2").innerText = data.meeting2;
+                document.getElementById("lb3").innerText = data.activity1;
+                document.getElementById("lb4").innerText = data.activity2;
+                document.getElementById("lb5").innerText = data.kyt1;
+                document.getElementById("lb6").innerText = data.kyt2;
+                document.getElementById("lb7").innerText = data.lllegals1;
+                document.getElementById("lb8").innerText = data.lllegals2;
+                document.getElementById("lb9").innerText = data.edu1;
+                document.getElementById("lb10").innerText = data.edu2;
+            }
+        });
+    });
+    
+    function showmeetings() {
+
+        addTab("da32bfcf-6956-4cbc-b3f1-933780a9997d", "/bzzd/Works/Danger/Index2", "危险预知训练台账");
+    }
+    function tabmeet1(item) {
+        addTab(item.dataset.id, contentPath + item.dataset.url + "?department=@ViewBag.deptid&type=3", item.dataset.text);
+    }
+    function tabedu1(item) {
+        addTab(item.dataset.id, contentPath + item.dataset.url + "?type=2", item.dataset.text);
+    }
+    function tabkyt1(item) {
+        addTab(item.dataset.id, contentPath + item.dataset.url + "?type=undo", item.dataset.text);
+    }
+    function tabact1(item) {
+        addTab(item.dataset.id, contentPath + item.dataset.url , item.dataset.text);
+        //addTab(item.dataset.id, contentPath + item.dataset.url , item.dataset.text);
+    }
+</script>
+<div class="ssjk">
+    <table style="width:100%;margin-top:25px;">
+        <tr>
+            <td>
+                <img width="80px" height="80px" src="~/Content/styles/static/images/未开班会.png" data-id="@ViewBag.meetid" data-url="@ViewBag.meeturl" data-text="@ViewBag.meettext" onclick="tabmeet1(this);" />
+                <h4>未开班会</h4>
+                <label id="lb1"></label> 个 / <label id="lb2"></label> 次
+            </td>
+            <td>
+                <img width="80px" height="80px" src="~/Content/styles/static/images/未开安全日活动.png" data-id="@ViewBag.actid" data-url="@ViewBag.acturl" data-text="@ViewBag.acttext" onclick="tabact1(this);"  />
+                <h4>未开安全日活动</h4>
+                <label id="lb3"></label> 个 / <label id="lb4"></label> 次
+            </td>
+            <td>
+                <img width="80px" height="80px" src="~/Content/styles/static/images/未展开KYT.png" data-id="@ViewBag.kytid" data-url="@ViewBag.kyturl" data-text="@ViewBag.kyttext" onclick="tabkyt1(this);" />
+                @{
+                    var name = "未开展" + ViewBag.cpname;
+                    <h4>@name</h4>
+                }
+                
+                <label id="lb5"></label> 个 / <label id="lb6"></label> 次
+            </td>
+            <td>
+                <img width="80px" height="80px" src="~/Content/styles/static/images/未整改违章.png" />
+                <h4>未整改违章</h4>
+                <label id="lb7"></label> 个 / <label id="lb8"></label> 次
+            </td>
+            <td>
+                <img width="80px" height="80px" src="~/Content/styles/static/images/未整改隐患.png" />
+                <h4>未整改隐患</h4>
+                <label>0个/0次</label>
+            </td>
+            <td>
+                <img width="80px" height="80px" src="~/Content/styles/static/images/未评价台账.png" data-id="@ViewBag.eduid" data-url="@ViewBag.eduurl" data-text="@ViewBag.edutext" onclick="tabedu1(this);" />
+                <h4>未评价台帐</h4>
+                <label id="lb9"></label> 个 / <label id="lb10"></label> 次
+            </td>
+            <td>
+                <img width="80px" height="80px" src="~/Content/styles/static/images/未闭环任务.png" />
+                <h4>未闭环任务</h4>
+                <label>0个/0次</label>
+            </td>
+        </tr>
+    </table>
+</div>

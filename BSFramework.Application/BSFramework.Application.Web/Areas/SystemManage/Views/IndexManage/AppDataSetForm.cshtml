@@ -1,0 +1,236 @@
+﻿@{
+    ViewBag.Title = "AppDataSetForm";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script src="~/Content/scripts/business/Common.js"></script>
+<!--webUploader文件上传组件-->
+<script src="~/Content/scripts/plugins/uploadify/ajaxfileupload.js"></script>
+<link href="~/content/scripts/plugins/webuploader/webuploader.css" rel="stylesheet" />
+<link href="~/content/scripts/plugins/webuploader/webuploader-demo.css" rel="stylesheet" />
+<script type="text/javascript" src="~/content/scripts/plugins/webuploader/webuploader.min.js"></script>
+<script type="text/javascript" src="~/content/scripts/business/fileupload.js"></script>
+<style type="text/css">
+    .file {
+        position: relative;
+        display: inline-block;
+        overflow: hidden;
+        text-decoration: none;
+        text-indent: 0;
+        cursor: pointer !important;
+    }
+
+        .file input {
+            position: absolute;
+            font-size: 100px;
+            right: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer !important;
+        }
+
+        .file:hover {
+            text-decoration: none;
+            cursor: pointer !important;
+        }
+</style>
+<script>
+    var keyValue = request('keyValue');
+    var mode = request('mode');
+    $(function () {
+        InitUpload();
+        $("#BindModuleId").ComboBoxTree({
+            url: "../../SystemManage/IndexManage/GetMenuList?platform=2",//手机APP是2
+            description: "==请选择==",
+            height: "300px",
+            allowSearch: false
+        });
+        initControl();
+    });
+    //初始化控件
+    function initControl() {
+        //获取表单
+        if (!!keyValue) {
+            $.SetForm({
+                    url: '/..@Url.Action("GetTerminalFormJson")' ,
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#form1").formDeserialize(data);
+
+                    if (data.IsOpen == 1) {
+                        document.getElementById("yes1").checked = true;
+                    } else {
+                        document.getElementById("no1").checked = true;
+                    }
+                    if (data.IsBZ == 1) {
+                        document.getElementById("yes2").checked = true;
+                    } else {
+                        document.getElementById("no2").checked = true;
+                    }
+
+                    if (data.IconUrl) {
+                        document.getElementById('uploadPreview').src = "@Url.Content("~").Substring(0,Url.Content("~").Length-1)" + data.IconUrl;
+                    }
+                }
+            })
+        }
+        $('.icheck input').iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass: 'iradio_square-blue',
+            increaseArea: '20%'
+        });
+    }
+    //人员上传图片
+    function InitUpload() {
+        $('#uploadFile').change(function () {
+            Upload($(this));
+        });
+
+    }
+    //人员上传图片
+    function Upload(self) {
+        var file = self.get(0).files[0];
+        if (file.type.indexOf("image") >= 0) {
+            var size = file.size;
+            var file_id = self.attr("id");
+            var img_id = self.attr("img_id");
+            //上传应用图标
+            $.ajaxFileUpload({
+                 url: '/..@Url.Action("SaveIcon")' ,
+                secureuri: false,
+                fileElementId: file_id,
+                dataType: 'json',
+                success: function (data) {
+                    document.getElementById('uploadPreview').src =  "@Url.Content("~").Substring(0,Url.Content("~").Length-1)"  + data.resultdata;
+                    $("#IconUrl").val(data.resultdata);
+                    dialogMsg(data.message, 1);
+                },
+                complete: function () {
+                    $("#uploadFile").change(function () {
+                        Upload($(this), file_id, img_id);
+                    })
+                }
+            });
+        } else {
+            dialogMsg("仅支持上传图片！", 2);
+        }
+    }
+    //保存表单;
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var postData = $("#form1").formSerialize(keyValue);
+
+        if (document.getElementById("yes1").checked) {
+            postData["IsOpen"] =1;
+        } else {
+            postData["IsOpen"] = 0;
+        }
+        if (document.getElementById("yes2").checked) {
+            postData["IsBZ"] = 1;
+        } else {
+            postData["IsBZ"] = 0;
+        }
+        $.SaveForm({
+            url: '/..@Url.Action("SaveTerminalForm")' +'?keyValue=' + keyValue,
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<div style="margin-top: 20px; margin-right: 30px;">
+    <table class="form">
+        <tr>
+            <td class="formTitle">指标名称<font face="宋体" style="color:red;">*</font></td>
+            <td class="formValue">
+                <input id="Name" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" maxlength="100" />
+                <input type="hidden" id="CreateDate" />
+                <input type="hidden" id="ModifyDate" />
+                <input type="hidden" id="DataSetType" value="2" />
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">指标编码</td>
+            <td class="formValue">
+                <input id="Code" type="text" class="form-control" maxlength="200" />
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">单位</td>
+            <td class="formValue">
+                <input id="Unint" type="text" class="form-control" maxlength="50" />
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">绑定的模块</td>
+            <td class="formValue ">
+                <div id="BindModuleId" type="selectTree" class="ui-select ui-select-focus" isvalid="yes">
+
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">是否启用<font face="宋体" style="color:red;">*</font></td>
+            <td class="formValue icheck">
+                <input type="radio" value="1" id="yes1" name="IsOpen" checked="checked" />&nbsp;<label for="yes1">是</label>&nbsp;&nbsp;&nbsp;
+                <input type="radio" value="0" id="no1" name="IsOpen" />&nbsp;<label for="no1">否</label>
+
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">是否班组指标<font face="宋体" style="color:red;">*</font></td>
+            <td class="formValue icheck">
+                <input type="radio" value="1" id="yes2" name="IsBZ" checked="checked" />&nbsp;<label for="yes2">是</label>&nbsp;&nbsp;&nbsp;
+                <input type="radio" value="0" id="no2" name="IsBZ" />&nbsp;<label for="no2">否</label>
+
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle" style="text-align: left; padding-left: 7px; width: 55px;">图标</th>
+            <td>
+                <div style="margin-top: 10px; text-align: left;">
+                    <div class="file" title="点击上传图标">
+                        <img id="uploadPreview" style="width: 115px; height: 115px;" src="~/Content/images/icon_app_add.png" />
+                        <input type="file" name="uploadFile" id="uploadFile" accept=" image/jpg, image/png, image/jpeg, image/gif, image/bmp">
+                        <input type="hidden" id="IconUrl" />
+                    </div>
+                    <div style="line-height: 14px; color: #75777A; text-align: left;" id="divTips">
+                        点击图片可上传新的图标
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">排序<font face="宋体" style="color:red;">*</font></td>
+            <td class="formValue">
+                <input id="Sort" type="text" class="form-control" isvalid="yes" checkexpession="Num" />
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">备注</td>
+            <td class="formValue">
+                <textarea id="Remark" rows="5" maxlength="500" style="width:100%;"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">自定义编码</td>
+            <td class="formValue ">
+                <input id="CustomCode" type="text" class="form-control" maxlength="200" />
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle"></td>
+            <td class="formValue " style="color:red;">
+                * 如果是双控指标则“自定义编码”必须配置
+            </td>
+        </tr>
+    </table>
+</div>
+

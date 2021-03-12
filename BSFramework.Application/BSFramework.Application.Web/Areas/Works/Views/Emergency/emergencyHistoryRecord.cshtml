@@ -1,0 +1,233 @@
+﻿@model IEnumerable<BSFramework.Application.Entity.EmergencyManage.EmergencyReportEntity>
+@{
+    ViewBag.Title = "emergencyHistoryRecord";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/record.css")" />
+<style>
+    .my-input {
+        padding: 10px;
+    }
+
+        .my-input input[type="text"] {
+            position: relative;
+            z-index: 100;
+            background: none;
+        }
+
+    .list .list-item > div .content {
+        color: #fff;
+        font-size: 18px;
+        line-height: 36px;
+    }
+
+        .list .list-item > div .content h1 {
+            font-size: 20px;
+            line-height: 60px;
+        }
+
+        .list .list-item > div .content p {
+            display: flex;
+            padding: 0 10%;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .list .list-item > div .content i {
+            font-style: normal;
+            color: #cfcfcf;
+        }
+
+        .list .list-item > div .content span {
+            display: inline-block;
+            width: 65px;
+            height: 25px;
+            text-align: center;
+            background: red;
+            line-height: 25px;
+        }
+
+        .list .list-item > div .content .checkSpan {
+            background: #3669e1;
+        }
+
+    #page {
+        text-align: right;
+        padding-right: 20px;
+    }
+
+    span.layui-laypage-count {
+        background: transparent;
+    }
+</style>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script>
+    $(function () {
+        $('.main-sidebar,.main-content').niceScroll({
+            autohidemode: false
+        });
+        $('.table-today tr').hover(function () {
+            $(this).addClass('hover');
+        }, function () {
+            $(this).removeClass('hover');
+        });
+        $('.table-today tr').click(function () {
+            $(this).toggleClass('actives');
+        })
+        $('.user>.dropdown-menu').css({
+            left: $('.user').innerWidth() - $('.user>.dropdown-menu').width() - 65
+        });
+
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#StartTime',
+                type: 'date'
+            });
+            laydate.render({
+                elem: '#EndTime',
+                type: 'date'
+            });
+        })
+
+    });
+    function go(id) {
+        window.location.href = "@Url.Action("drillHistoryDetails")?EmergencyReportId=" + id;
+    }
+    function searchAll() {
+        jQuery('#EndTime').val('');
+        jQuery('#StartTime').val('');
+        jQuery('#name').val('');
+    }
+</script>
+
+<div class="main-content">
+    <div class="container-fluid">
+        @using (Html.BeginForm("emergencyHistoryRecord", "Emergency", new { page = 1, pagesize = 12 }, FormMethod.Post))
+        {
+
+            <div class="title">
+                <a href="@Url.Action("Index")">
+                    <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+                    历史记录
+                </a>
+            </div>
+            <div class="bg-f5f8fe pd-20 my-body">
+                <div class="text-center" style="display: flex;justify-content: space-between;align-items: center;padding: 0 0.6%;">
+                    <label class="f-18 f-w mg-r-15">选择日期：</label>
+                    <span class="my-input mg-r-15">
+                        @Html.TextBox("StartTime", ViewData["from"])
+                        <img src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                    </span>
+                    <span class="my-input mg-r-15">
+                        @Html.TextBox("EndTime", ViewData["to"])
+                        <img src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                    </span>
+                    <span class="my-input mg-r-15">
+                        <input type="text" placeholder="应急演练名称" name="name" id="name" value="@ViewData["name"]">
+                        <img src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                    </span>
+
+                    <button class="my-btn bg-3669e1 mg-r-15" onclick="search()">
+                        <img src="@Url.Content("~/Content/styles/static/images/search-icon.png")" alt="">
+                        搜索
+                    </button>
+                    <button class="my-btn bg-8fadce" onclick="searchAll()">全部</button>
+                </div>
+                <div>
+                    <div class="row text-center list">
+                        @foreach (var item in Model)
+                        {
+
+                            <div class="col-md-3 mg-t-20" onclick="go('@Html.Raw(item.EmergencyReportId)')">
+                                <div class="list-item">
+                                    @if (item.File.Count > 0)
+                                    {
+                                        var picpath = Url.Content("~").Substring(0, @Url.Content("~").Length - 1);
+                                        var filePath = picpath + item.File[0].FilePath.Substring(1, item.File[0].FilePath.Length - 1);
+                                        <img src="@filePath" style="width:160px;height:120px;" />
+                                    }
+                                    else
+                                    {<img src="@Url.Content("~/Content/styles/static/images/temp/345.png")" alt="">}
+
+                                    <div>
+                                        <span class="bg"></span>
+                                        <div class="content">
+                                            <h1>@Html.Raw(item.emergencyreportname)</h1>
+                                            <p><i>主持人：@Html.Raw(item.chairperson)</i></p>
+                                            <p>
+                                                <i>时间：@Html.Raw(item.planstarttime.ToString("yyyy-MM-dd"))</i>
+                                                @if (item.score == 10)
+                                                {
+                                                    <span>未评价</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="checkSpan">已评价</span>
+
+                                                }
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+
+                    </div>
+                    <ul class="pagination">
+                        @if ((int)ViewBag.current == 1)
+                        {
+                            <li class="disabled">
+                                <a>首页</a>
+                            </li>
+                            <li class="disabled">
+                                <a>上一页</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                @Html.ActionLink("首页", "emergencyHistoryRecord", new { page = "1", pagesize = "12" })
+                            </li>
+                            <li>
+                                @Html.ActionLink("上一页", "emergencyHistoryRecord", new { page = ((int)ViewBag.current - 1).ToString(), pagesize = "12" })
+                            </li>
+                        }
+                        @for (int i = (ViewBag.current - 1) / 10 * 10; i < (Math.Ceiling((decimal)ViewBag.current / 10) * 10 > ViewBag.pages ? ViewBag.pages : Math.Ceiling((decimal)ViewBag.current / 10) * 10); i++)
+                        {
+                            <li class="@((i + 1) == ViewBag.current ? "active" : string.Empty)">
+                                @Html.ActionLink((i + 1).ToString(), "emergencyHistoryRecord", new { page = (i + 1).ToString(), pagesize = "12" })
+                            </li>
+                        }
+                        @if ((int)ViewBag.current == (int)ViewBag.pages || (int)ViewBag.pages == 0)
+                        {
+                            <li class="disabled">
+                                <a>下一页</a>
+                            </li>
+                            <li class="disabled">
+                                <a>末页</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                @Html.ActionLink("下一页", "emergencyHistoryRecord", new { page = ((int)ViewBag.current + 1).ToString(), pagesize = "12" })
+                            </li>
+                            <li>
+                                @Html.ActionLink("末页", "emergencyHistoryRecord", new { page = ((int)ViewBag.pages).ToString(), pagesize = "12" })
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <footer class="main-footer">
+                武汉博晟安全技术股份有限公司   版权所有
+            </footer>
+        }
+
+    </div>
+
+</div>

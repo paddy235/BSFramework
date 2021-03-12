@@ -1,0 +1,183 @@
+﻿@model IEnumerable<BSFramework.Application.Entity.DrugManage.DrugStockEntity>
+@using BSFramework.Application.Entity.DrugManage
+
+@{
+    ViewBag.Title = "入库记录";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/Font-Awesome/css/font-awesome.min.css")">
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+@*<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/record.css")" />*@
+<script src="@Url.Content("~/Content/scripts/base.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/hammer.js")"></script>
+<script>
+
+    $(function () {
+
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#from',
+                type: 'date',
+            });
+            laydate.render({
+                elem: '#to',
+                type: 'date',
+            });
+        })
+    });
+
+    function getall() {
+
+        $('#from').val('');
+        $('#to').val('');
+        $('#DrugName').val('');
+    }
+</script>
+<style>
+    .table text-center table-striped no-mg c-67748d tr td {
+        height: 5px;
+    }
+</style>
+<div class="main-content">
+    <div class="container-fluid" style="padding-top:10px;">
+        @using (Html.BeginForm("StockList", "Drug", new { page = ViewBag.page, pagesize = ViewBag.pagesize }, FormMethod.Post))
+        {
+        <div class="mg-b-10">
+            <div class="" style="overflow: hidden;">
+                <div class="pull-left title">
+                    <a href="@Url.Action("StockManage", new { page=1,pagesize=10})">
+                        <img src="~/Content/styles/static/images/arrow-back-icon.png" alt="">
+                        出入库记录
+                    </a>
+                </div>
+            </div>
+
+        </div>
+        <div class="bg-e3ebfd pd-10 my-body">
+            <div class="bg-fff peccancy-list">
+
+                <div class="head">
+                    <div class="searchs text-center" style="overflow: hidden;">
+
+                        <span class="my-input mg-r-15">
+                            <input type="text" name="from" id="from" value="@Html.Raw(ViewData["from"])">
+                            <img src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                        </span>
+                        -
+                        <span class="my-input mg-r-15">
+                            <input type="text" name="to" id="to" value="@Html.Raw(ViewData["to"])">
+                            <img src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                        </span>
+                        <span class="my-input mg-r-15">
+                            <input type="text" name="DrugName" id="DrugName" value="@Html.Raw(ViewData["DrugName"])" placeholder="请输入药品名称">
+                        </span>
+                        <button class="my-btn bg-3669e1 mg-r-15">
+                            <img src="@Url.Content("~/Content/styles/static/images/search-icon.png")" alt="">
+                            搜索
+                        </button>
+                        <button onclick="getall();" class="my-btn bg-8fadce">全部</button>
+                    </div>
+                </div>
+                <div style="min-height:600px;">
+                    <table class="table text-center table-striped no-mg c-67748d">
+                        <thead>
+                            <tr>
+                                <th width="10%" class="bg-fff">序号</th>
+                                <th width="8%" class="bg-fff">药品名称</th>
+                                <th width="7%" class="bg-fff">等级</th>
+                                <th width="10%" class="bg-fff">规格</th>
+                                <th width="10%" class="bg-fff">出入库</th>
+                                <th width="10%" class="bg-fff">数量(瓶)</th>
+                                <th width="10%" class="bg-fff">登记人</th>
+                                <th width="10%" class="bg-fff">登记时间</th>
+                                <th width="10%" class="bg-fff">现存量</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                            var lls = (IList<DrugStockEntity>)ViewData["TList"];
+                            }
+                            @for (int i = 0; i < lls.Count(); i++)
+                            {
+                                var state="入库";
+                                if (lls[i].Type == "1") { state = "出库"; }
+                            int n = i + 1;
+                            string id = lls[i].Id;
+                            string s = lls[i].DrugUSL + lls[i].DrugUnit + "/瓶";
+                            <tr>
+                                <td width="10%">@n</td>
+                                <td width="10%"><a style="text-decoration:none;" href="#">@lls[i].DrugName</a> </td>
+                                <td width="10%">@lls[i].DrugLevel</td>
+                                <td width="10%">@s</td>
+                                <td width="10%">@state</td>
+                                <td width="10%">@lls[i].DrugNum</td>
+                                <td width="10%">@lls[i].CreateUserName</td>
+                                <td width="10%">@lls[i].CreateDate.ToString("yyyy-MM-dd HH:mm")</td>
+                                <td width="10%">@lls[i].StockNum</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="text-align:center;">
+                    <ul class="pagination">
+                        @if ((int)ViewBag.page == 1)
+                        {
+                        <li class="disabled">
+                            <a>首页</a>
+                        </li>
+                        <li class="disabled">
+                            <a>上一页</a>
+                        </li>
+                        }
+                        else
+                        {
+                        <li>
+                            @Html.ActionLink("首页", "StockList", new { page = "1", pagesize = ViewBag.pagesize })
+                        </li>
+                        <li>
+                            @Html.ActionLink("上一页", "StockList", new { page = ((int)ViewBag.page - 1).ToString(), pagesize = ViewBag.pagesize })
+                        </li>
+                        }
+                        @for (int i = (ViewBag.page - 1) / 10 * 10; i < (Math.Ceiling((decimal)ViewBag.page / 10) * 10 > ViewBag.pagecount ? ViewBag.pagecount : Math.Ceiling((decimal)ViewBag.pagecount / 10) * 10); i++)
+                        {
+                        <li class="@((i + 1) == ViewBag.page ? "active" : string.Empty)">
+                            @Html.ActionLink((i + 1).ToString(), "StockList", new { page = (i + 1).ToString(), pagesize = ViewBag.pagesize })
+                        </li>
+                        }
+                        @if ((int)ViewBag.page == (int)ViewBag.pagecount || (int)ViewBag.pagecount == 0)
+                        {
+                        <li class="disabled">
+                            <a>下一页</a>
+                        </li>
+                        <li class="disabled">
+                            <a>末页</a>
+                        </li>
+                        }
+                        else
+                        {
+                        <li>
+                            @Html.ActionLink("下一页", "StockList", new { page = ((int)ViewBag.page + 1).ToString(), pagesize = ViewBag.pagesize })
+                        </li>
+                        <li>
+                            @Html.ActionLink("末页", "StockList", new { page = ((int)ViewBag.pagecount).ToString(), pagesize = ViewBag.pagesize })
+                        </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <footer class="main-footer">
+            武汉博晟安全技术股份有限公司   版权所有
+        </footer>
+        }
+    </div>
+</div>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>

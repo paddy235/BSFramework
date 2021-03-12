@@ -1,0 +1,214 @@
+﻿@{
+    Layout = null;
+    ViewBag.Title = "KPPM";
+}
+<style type="text/css">
+    table tr td ul li {
+        text-align: left;
+        padding: 0px;
+        font-size: 18px;
+        font-weight: bold;
+        line-height: 50px;
+        list-style: none;
+        width: 360px;
+    }
+</style>
+<div>
+    @{
+        var all = (IList<BSFramework.Entity.EvaluateAbout.EvaluateGroupEntity>)ViewData["All"];
+        <table style="width:100%;border:0px;">
+            <tr>
+                <td style="padding-left:10px;">
+                    <ul>
+                        @if (all.Count() > 0)
+                        {
+                            string pct = all[0].Pct.ToString();
+                            if (pct.Length > 5)
+                            {
+                                pct = pct.Substring(0, 5);
+                            }
+                            <li>
+                                <table style="width:100%;">
+                                    <tr>
+                                        <td style="text-align:left;">
+                                            第 1 名：@all[0].GroupName
+                                        </td>
+                                        <td style="text-align:right;">
+                                            @pct 分
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </li>
+                        }
+                        @if (all.Count() > 1)
+                        {
+                            string pct = all[1].Pct.ToString();
+                            if (pct.Length > 5)
+                            {
+                                pct = pct.Substring(0, 5);
+                            }
+                            <li>
+                                <table style="width:100%;">
+                                    <tr>
+                                        <td style="text-align:left;">
+                                            第 2 名：@all[1].GroupName
+                                        </td>
+                                        <td style="text-align:right;">
+                                            @pct 分
+                                        </td>
+                                    </tr>
+                                </table>
+                            </li>
+                        }
+                        @if (all.Count() > 2)
+                        {
+                            string pct = all[2].Pct.ToString();
+                            if (pct.Length > 5)
+                            {
+                                pct = pct.Substring(0, 5);
+                            }
+                            <li>
+                                <table style="width:100%;">
+                                    <tr>
+                                        <td style="text-align:left;">
+                                            第 2 名：@all[2].GroupName
+                                        </td>
+                                        <td style="text-align:right;">
+                                            @pct 分
+                                        </td>
+                                    </tr>
+                                </table>
+                            </li>
+                        }
+                    </ul>
+                </td>
+                <td style="padding-left:50px;">
+                    <ul>
+                        @if (all.Count() < 7)
+                        {
+                            
+                            if (all.Count() > 3)
+                            {
+                                string pct = all[3].Pct.ToString();
+                                if (pct.Length > 5)
+                                {
+                                    pct = pct.Substring(0, 5);
+                                }
+                                <li>
+                                    <table style="width:100%;">
+                                        <tr>
+                                            <td style="text-align:left;">
+                                                第 4 名：@all[3].GroupName
+                                            </td>
+                                            <td style="text-align:right;">
+                                                @pct 分
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </li>
+                            }
+                            if (all.Count() > 4)
+                            {
+                                string pct = all[4].Pct.ToString();
+                                if (pct.Length > 5)
+                                {
+                                    pct = pct.Substring(0, 5);
+                                }
+                                <li>
+                                    <table style="width:100%;">
+                                        <tr>
+                                            <td style="text-align:left;">
+                                                第 5 名：@all[4].GroupName
+                                            </td>
+                                            <td style="text-align:right;">
+                                                @pct 分
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </li>
+                            }
+                            if (all.Count() > 5)
+                            {
+                                string pct = all[5].Pct.ToString();
+                                if (pct.Length > 5)
+                                {
+                                    pct = pct.Substring(0, 5);
+                                }
+                                <li>
+                                    <table style="width:100%;">
+                                        <tr>
+                                            <td style="text-align:left;">
+                                                第 6 名：@all[5].GroupName
+                                            </td>
+                                            <td style="text-align:right;">
+                                                @pct 分
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            int index = all.Count() - 2;
+                            string pct = all[index-1].Pct.ToString();
+                                if (pct.Length > 5)
+                                {
+                                    pct = pct.Substring(0, 5);
+                                }
+                            <li>
+                                <table style="width:100%;">
+                                    <tr>
+                                        <td style="text-align:left;">
+                                            第 @index 名：@all[index-1].GroupName
+                                        </td>
+                                        <td style="text-align:right;">
+                                            @pct 分
+                                        </td>
+                                    </tr>
+                                </table>
+                            </li>
+                            index = all.Count() - 1;
+                            pct = all[index-1].Pct.ToString();
+                                if (pct.Length > 5)
+                                {
+                                    pct = pct.Substring(0, 5);
+                                }
+                                <li>
+                                    <table style="width:100%;">
+                                        <tr>
+                                            <td style="text-align:left;">
+                                                第 @index 名：@all[index-1].GroupName
+                                            </td>
+                                            <td style="text-align:right;">
+                                                @pct 分
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </li>
+                            index = all.Count() ;
+                                pct = all[index-1].Pct.ToString();
+                                if (pct.Length > 5)
+                                {
+                                    pct = pct.Substring(0, 5);
+                                }
+                                <li>
+                                    <table style="width:100%;">
+                                        <tr>
+                                            <td style="text-align:left;">
+                                                第 @index 名：@all[index - 1].GroupName
+                                            </td>
+                                            <td style="text-align:right;">
+                                                @pct 分
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </li>
+                        }
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    }
+</div>

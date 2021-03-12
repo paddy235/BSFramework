@@ -1,0 +1,257 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<script>
+    var DistrictId = '';
+    var DistrictCode = "0";
+        $(function () {
+            $('#layout').layout({
+                applyDemoStyles: false,
+                onresize: function () {
+                    $(window).resize()
+                }
+            });
+
+
+            GetTree();//加载树
+            GetGrid();//加载树
+           // getCodeList();
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#gridTable').setGridWidth(($('.gridPanel').width()));
+                $('#gridTable').setGridHeight($(window).height() - 136.5);
+            }, 200);
+            e.stopPropagation();
+        });
+
+        })
+
+        /**加载树形菜单 */
+        var GetTree = () => {
+            var item = {
+                height: $(window).height() - 60,
+                showcheck: true,
+                url: '/..@Url.Action("getDistrict","SafeProduce")',
+                onnodeclick: function (item) {
+                    $("#itemTree").setCheckedNodeOne(item.id);
+                    DistrictCode = item.Code;
+                    DistrictId = item.id;
+                    $('#btn_Search').trigger("click");
+                }
+            };
+            $("#itemTree").treeview(item);
+            if ($("#itemTree").html().length == 0) {
+                $(".ui-layout-west").hide();
+                $('.ui-layout-center').css({ "padding-left": "5px" });
+                $('#gridTable').setGridWidth(($('.gridPanel').width()));
+                $("#gridTable").setGridHeight($(window).height() - 200);
+            } else {
+                $('#layout').layout({
+                    applyDemoStyles: false,
+                    onresize: function () {
+                        $(window).resize()
+                    }
+                });
+            }
+    }
+
+
+       function GetGrid() {
+           var keyWord = $('#keyWord').val();
+            var queryJson = {
+                KeyWord: keyWord,
+                DistrictId: DistrictId,
+                //DistrictCode: DistrictCode
+            }
+
+
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            postData: { queryJson: JSON.stringify(queryJson) },
+            url: "@Url.Action("GetPageSweepList")",
+            datatype: "json",
+            height: $(window).height() - 190,
+            autowidth: true,
+            cellEdit: true,
+            colModel: [
+                { label: '主键', name: 'ID', hidden: true, align: 'center' },
+                {
+                    label: '操作', name: 'action', width: 120, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        var html = '<a href="javascript:show(\'' + rowObject.ID + '\')"  title="查看"><i class="fa fa-eye"></i></a>';
+                        //html += "<a code='edit' href=javascript:edit('" + rowObject.ID + "')  title='修改'><i class='fa fa-pencil-square-o'></i></a>";
+                        //html += "<a code='delete' href=javascript:del('" + rowObject.ID + "')  title='删除'><i class='fa fa-trash-o'></i></a>";
+                        return html;
+                    }
+                },
+                {
+                    label: "检查日期", name: "CreateDate", width: 120, align: "center", sortable: false
+                    ,
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (formatDate(cellvalue, 'yyyy-MM-dd') < formatDate("1900-01-01", 'yyyy-MM-dd')) {
+                            return "";
+                        } else {
+                            return formatDate(cellvalue, 'yyyy-MM-dd');
+                        }
+
+                    },
+                    formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                },
+                { label: '检查区域', name: 'District', index: 'District', width: 300, align: 'center', sortable: false },
+                { label: '检查情况', name: 'Situation', index: 'Situation', width: 300, align: 'center', sortable: false },
+                { label: '保洁责任人', name: 'CreateUserName', index: 'CreateUserName', width: 200, align: 'center', sortable: false },
+                { label: '验收结果', name: 'State', index: 'State', width: 200, align: 'center', sortable: false },
+                { label: '质量验收人', name: 'ModifyUserName', index: 'ModifyUserName', width: 200, align: 'center', sortable: false },
+
+                { label: '管理责任人', name: 'DutyUser', index: 'DutyUser', width: 200, align: 'center', sortable: false }
+
+
+
+            ],
+            viewrecords: true,
+            rowNum: 30,
+             rowList: [30, 50, 100],
+            pager: "#gridPager",
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            onSelectRow: function () {
+                selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            },
+            loadError: function (xhr, status, error) {
+               //top.location.href = "../../Login/Index?Login_Error=1";
+            },
+            gridComplete: function () {
+                 @*@if (!BSFramework.Application.Code.OperatorProvider.Provider.Current().IsSystem)
+                {
+                    @Html.Raw("AuthiruzeBtn($('.toolbar'), $('#gridTable'));");//操作按钮权限控制
+                }*@
+            }
+        });
+        //$gridTable.authorizeColModel()
+        /**查询条件 */
+        $("#queryCondition .dropdown-menu li").click(function () {
+            var text = $(this).find('a').html();
+            var value = $(this).find('a').attr('data-value');
+            $("#queryCondition .dropdown-text").html(text).attr('data-value', value)
+        });
+        /**查询事件 */
+        $("#btn_Search").click(function () {
+            var queryJson = {
+                //  condition: $("#queryCondition").find('.dropdown-text').attr('data-value'),
+                keyWord: $("#keyWord").val(),
+                DutyTypeId: $("#DutyType").val(),
+                EndData: $("#EndData").val(),
+                StartData: $("#StartData").val(),
+                DistrictId: DistrictId,
+                //DistrictCode: DistrictCode
+            }
+            $("#itemTree").setCheckedNodeOne('0');
+            $gridTable.jqGrid('setGridParam', {
+                postData: { queryJson: JSON.stringify(queryJson) }, page: 1
+            }).trigger('reloadGrid');
+        });
+        $("#btn_SearchAll").click(function () {
+            $("#keyWord").val('');
+            DistrictId = "";
+            DistrictCode = "0";
+            $("#EndData").val("");
+            $("#StartData").val("");
+            $("#DutyType option[value=]").prop("selected", true);
+            $('#btn_Search').trigger("click");
+        });
+        /**查询回车 */
+        $('#keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+        }
+
+        function show(keyValue) {
+        var dlg =  dialogOpen({
+            id: 'Form',
+            title: "详情",
+           url: '/..@Url.Action("Form")?actiontype=show&keyValue=' + keyValue,
+            btn: ["关闭"],
+            width: ($(top.window).width() - 700) + "px",
+           height: ($(top.window).height() - 500) + "px",
+            callBack: function (iframeId) {
+                top.layer.close(dlg);
+            }
+        })
+    }
+
+      function getCodeList() {
+            $.ajax({
+            url: "@Url.Action("GetCodeList", "SafeProduce")",
+            type: 'post',
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            clearForm: true,
+            success: function (data) {
+                $("#DutyType").empty();
+                $("#DutyType").append("<option value=''>全部</option>");
+                for (var i = 0; i < data.length; i++) {
+                    $("#DutyType").append("<option value='" + data[i].ItemValue + "'>" + data[i].ItemName + "</option>");
+                }
+            },
+            error: function (data) {
+            }
+        });
+        }
+</script>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                <div class="col-md-10">
+                    组织机构
+                </div>
+                <div class="col-md-2 text-right" style="padding-right:8px;">
+                    <i class="fa fa-arrow-left" onclick="setBar(this)" style="cursor:pointer;" title="展开/收起"></i>
+                </div>
+            </div>
+            <div id="itemTree"></div>
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title">保洁管理台账</div>
+            <div class="titlePanel">
+                <div class="title-search">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label for="from">关键字</label>
+                            <input id="keyWord" type="text" name="keyWord" class="form-control" style="min-width:300px;" placeholder="请输入关键字" />
+                        </div>
+                        @*<div class="form-group">
+                                <label for="from">责任类别</label>
+                                <select class="form-control" id="DutyType" name="DutyType"><option value="">全部</option></select>
+                            </div>*@
+                        <div class="form-group">
+                            <label for="from">选择日期</label>
+                            <input id="StartData" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd' });" style="width: 150px;" /> -   <input id="EndData" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd' });" style="width: 150px;" />
+                        </div>
+                        <div class="form-group">
+                            <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                            @*<a id="btn_SearchAll" class="btn btn-primary"><i class="fa fa-refresh"></i>&nbsp;重置</a>*@
+                        </div>
+                    </div>
+                </div>
+                <div class="toolbar">
+                    <div class="btn-group">
+
+                        <a onclick="reload()" class="btn btn-default"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+                    </div>
+                    <script>$('.toolbar').authorizeButton();</script>
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="gridTable"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>

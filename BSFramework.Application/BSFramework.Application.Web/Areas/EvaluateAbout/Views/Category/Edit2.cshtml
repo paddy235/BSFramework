@@ -1,0 +1,140 @@
+﻿@model BSFramework.Application.Web.Areas.EvaluateAbout.Models.CategoryItemModel
+
+@{
+    ViewBag.Title = "考评标准";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<script src="~/Content/scripts/business/Common.js" type="text/javascript"></script>
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.url.js")"></script>
+<script>
+    function fn$select() {
+        dialogOpen({
+            id: "Category",
+            title: "选择类别",
+            url: '/..@Url.Action("Select")',
+            width: "300px",
+            height: "500px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick(fn$selectover1);
+            }
+        });
+    }
+
+    function fn$selectover1(node) {
+        if (node) {
+            jQuery('#pcid').val(node.value);
+            jQuery('#pcategory').val(node.text);
+        }
+    }
+
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+
+        var json = jQuery('#form1').serializeJSON();
+        $.SaveForm({
+            url: '@Url.Action("Edit2")',
+            param: json,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().fn$refresh();
+            }
+        })
+    }
+
+    var selele;
+    
+    function fn$select2(id) {
+        selele = id == 'UseDept' ? id : 'EvaluateDept';
+        var select = 'single';
+        if (id == 'UseDept') select = 'multi';
+        showModa('/..@Url.Action("DeptSelect", "Department", new { area = "BaseManage" })', '选择部门', '300px', '600px', { select: select, category: '省级,厂级,部门' }, fn$selectover2);
+    }
+
+    function fn$selectover2(nodes) {
+        if (nodes) {
+            if (jQuery.type(nodes) == 'array') {
+                var str = '';
+                jQuery.each(nodes, function (i, o) {
+                    str += o.text + '|'
+                });
+                jQuery('#' + selele).val(str.replace(/\|$/, ''));
+            } else {
+                jQuery('#' + selele).val(nodes.text);
+                //jQuery('#EvaluateDeptId').val(nodes.id);
+            }
+        }
+    }
+
+    jQuery(function () {
+        var node = $.currentIframe().currentNode;
+
+        if (node) {
+            jQuery('#pcid').val(node.value);
+            jQuery('#pcategory').val(node.text);
+        }
+    });
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right 30px;">
+            @Html.HiddenFor(x => x.ItemId)
+            <table class="form">
+                <tr>
+                    <td class="formTitle">考评要素<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Category.Category, new { @class = "form-control", placeholder = "请选择考评要素", onfocus = "this.blur()", id = "pcategory", isvalid = "yes", checkexpession = "NotNull", onclick = "fn$select();" })
+                        <span class="input-button" onclick="fn$select();" title="选择考评要素">...</span>
+                        @Html.HiddenFor(x => x.Category.CategoryId, new { id = "pcid" })
+                    </td>
+                    <td class="formTitle">标准分</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.Score, new { @class = "form-control", maxlength = 2, placeholder = "请输入标准分" })
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="formTitle">考评内容<font face="宋体">*</font></td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.ItemContent, new { @class = "form-control", maxlength = 500, placeholder = "请输入考评内容", isvalid = "yes", checkexpession = "NotNull", style = "height:60px;" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">考评标准<font face="宋体">*</font></td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.ItemStandard, new { @class = "form-control", maxlength = 500, placeholder = "请输入考评标准", isvalid = "yes", checkexpession = "NotNull", style = "height:60px;" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle" style="width:90px;">考评部门</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.EvaluateDept, new { @class = "form-control", placeholder = "请选择考评部门", onfocus = "this.blur()", onclick = "fn$select2();" })
+                        <span class="input-button" onclick="fn$select2();" title="请选择考评部门">...</span>
+                        @*<input id="EvaluateDeptId" type="hidden" name="EvaluateDeptId" />*@
+                    </td>
+                    <td class="formTitle" style="width:90px;">适用部门</td>
+                    <td class="formValue">
+                        @*@Html.TextBoxFor(x => x.UseDept, new { @class = "form-control", placeholder = "请选择适用班组", onfocus = "this.blur()", onclick = "fn$select3();" })
+                        <span class="input-button" onclick="fn$select3();" title="请选择适用部门">...</span>
+                        <input type="hidden" id="UseDeptId" />*@
+
+                        <div class="input-group" style="width:100%;" onclick="selectDept('/../@Url.Action("SelectBZ", "Department", new { area = "BaseManage" })', '', 1, 0, '选择班组', this.parentNode, 'UseDept,UseDeptId')">
+                            @*<input id="UseDept" name="UseDept" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" onfocus="this.blur();" />*@
+                            @Html.TextBoxFor(x => x.UseDept, new { @class = "form-control", placeholder = "请选择适用班组", onfocus = "this.blur()" })
+                            <span class="input-group-addon" title="选择班组" style="cursor:pointer;">...</span>
+                            <input id="UseDeptId" type="hidden" name="UseDeptId" />
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="ExpandInfo" class="tab-pane">
+            <div class="app_layout app_preview" style="border-top: 1px solid #ccc;" id="frmpreview"></div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+2020-07-27 19:32:57 用户：超级管理员  id：System开始编辑积分管理数据da3f550a-b57f-47c8-9762-a2dd1c13c79f 
+ {"Id":null,"RuleId":null,"UserName":"边牧,泰迪","UserId":"e3501745-e40e-1022-4571-8f777e3fa02a,08dbc037-9413-fd7f-c3e2-fb3dae425d43","Gender":null,"Score":9.9,"Area":"士大夫；发所带来的发；士大夫手动阀手动阀 大师傅似的 手动阀手动阀士大夫士大夫士大夫士大夫士大夫士大","Reasons":"平台新增","ScoreType":null,"DeptId":null,"DeptName":null,"DeptCode":null,"CreateUserId":null,"CreateUserName":null,"CreateDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null,"ModifyDate":"0001-01-01T00:00:00"} 
+------------------------------------------------------------
+2020-07-27 20:27:58 用户：超级管理员  id：System开始编辑积分管理数据f9f4c6e1-0670-4ba7-a1e1-867df4d712b4 
+ {"Id":null,"RuleId":null,"UserName":"泰迪","UserId":"08dbc037-9413-fd7f-c3e2-fb3dae425d43","Gender":null,"Score":50.3,"Area":"阿萨","Reasons":"趣味请问","ScoreType":null,"DeptId":null,"DeptName":null,"DeptCode":null,"CreateUserId":null,"CreateUserName":null,"CreateDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null,"ModifyDate":"0001-01-01T00:00:00"} 
+------------------------------------------------------------
+2020-07-27 21:06:25 用户：超级管理员  id：System开始编辑积分配置7b6e92b1-e322-4c73-b4a8-7450b4f0b0f2 
+ {"Id":"7b6e92b1-e322-4c73-b4a8-7450b4f0b0f2","Score":4.0,"Standard":"登记重大隐患（未整改）","Sort":0,"ScoreType":"自动","IsOpen":1,"Remark":"加1","CreateDate":"2020-07-23T09:46:55","CreateUserId":"System","CreateUserName":"超级管理员","ModifyDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null} 
+------------------------------------------------------------
+2020-07-27 21:06:40 用户：超级管理员  id：System开始编辑积分配置d6167433-2b4a-4eca-b236-af67877944a2 
+ {"Id":"d6167433-2b4a-4eca-b236-af67877944a2","Score":3.0,"Standard":"登记一般隐患（未整改）","Sort":0,"ScoreType":"自动","IsOpen":1,"Remark":"加1","CreateDate":"2020-07-23T09:46:30","CreateUserId":"System","CreateUserName":"超级管理员","ModifyDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null} 
+------------------------------------------------------------
+2020-07-27 21:06:51 用户：超级管理员  id：System开始编辑积分配置63c9d783-64c2-4747-b0f8-642eabb4e9dd 
+ {"Id":"63c9d783-64c2-4747-b0f8-642eabb4e9dd","Score":3.0,"Standard":"早安中铝","Sort":0,"ScoreType":"自动","IsOpen":1,"Remark":"加1","CreateDate":"2020-07-23T09:45:34","CreateUserId":"System","CreateUserName":"超级管理员","ModifyDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null} 
+------------------------------------------------------------
+2020-07-27 21:07:31 用户：超级管理员  id：System开始编辑积分配置726c5168-eacc-4078-83d9-11b282327488 
+ {"Id":"726c5168-eacc-4078-83d9-11b282327488","Score":1.4,"Standard":"班前一题","Sort":1,"ScoreType":"自动","IsOpen":1,"Remark":"减0.6","CreateDate":"2020-07-23T09:41:24","CreateUserId":"System","CreateUserName":"超级管理员","ModifyDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null} 
+------------------------------------------------------------
+2020-07-27 21:07:57 用户：超级管理员  id：System开始编辑积分配置7b6e92b1-e322-4c73-b4a8-7450b4f0b0f2 
+ {"Id":"7b6e92b1-e322-4c73-b4a8-7450b4f0b0f2","Score":4.5,"Standard":"登记重大隐患（未整改）","Sort":0,"ScoreType":"自动","IsOpen":1,"Remark":"加1.5","CreateDate":"2020-07-23T09:46:55","CreateUserId":"System","CreateUserName":"超级管理员","ModifyDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null} 
+------------------------------------------------------------
+2020-07-27 21:09:09 用户：超级管理员  id：System开始编辑积分配置e440ee5f-b6d7-4619-918e-766e1007c6aa 
+ {"Id":"e440ee5f-b6d7-4619-918e-766e1007c6aa","Score":2.3,"Standard":"登记违章","Sort":0,"ScoreType":"自动","IsOpen":1,"Remark":"加0.3","CreateDate":"2020-07-23T09:47:55","CreateUserId":"System","CreateUserName":"超级管理员","ModifyDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null} 
+------------------------------------------------------------

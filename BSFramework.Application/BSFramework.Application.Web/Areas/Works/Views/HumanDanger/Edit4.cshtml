@@ -1,0 +1,349 @@
+﻿@model BSFramework.Application.Entity.Activity.HumanDangerEntity
+
+@{
+    ViewBag.Title = "考评标准";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<link href="@Url.Content("~/Content/scripts/plugins/bootstrap-select/bootstrap-select.min.css")" rel="stylesheet" />
+<link href="@Url.Content("~/Content/scripts/plugins/jqgrid/jqgrid.css")" rel="stylesheet" />
+<script src="~/Content/scripts/business/Common.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.url.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/bootstrap-select/bootstrap-select.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jqgrid/grid.locale-cn.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/jqgrid/jqgrid.js")"></script>
+
+
+<script>
+    var deptid = '@ViewBag.deptid';
+    var checkDeptId = "@Model.DeptId".split(",");
+    var dfop =
+    {
+        cbiconpath: top.contentPath + "/Content/scripts/plugins/tree/images/icons/",
+        icons: ["checkbox_0.png", "checkbox_1.png", "checkbox_2.png"],
+    };
+    jQuery(function () {
+
+        $("#DeptNameTree").mouseleave(function () {
+            $(this).hide();
+            $("#DeptName").val($("#DeptNameTree").getCheckedTexts());
+            $("#DeptId").val($("#DeptNameTree").getCheckedIds());
+            $("#DeptName").show();
+        })
+
+        var measures = jQuery.parseJSON(jQuery('#Measures').val());
+        jQuery('#Measures').val('');
+
+        jQuery('#grid').jqGrid({
+            datatype: 'local',
+            data: measures || [],
+            height: 200,
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'HumanDangerMeasureId', hidden: true, key: true },
+                {
+                    label: '操作', name: 'action', width: 120, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        var html = "";
+                        html += "<a href=\"javascript:fn$edit('" + rowObject.HumanDangerMeasureId + "')\" title=\"修改\" style=\"color:blue;padding-left:0px;\">修改</a> ";
+                        html += "<a href=\"javascript:fn$delete('" + rowObject.HumanDangerMeasureId + "')\" title=\"删除\" style=\"color:blue;padding-left:0px;\">删除</a> ";
+                        return html;
+                    }
+                },
+                { label: "风险类别", name: "Category", width: 300, align: "center", sortable: false },
+                { label: "风险因素", name: "DangerReason", width: 300, align: "center", sortable: false },
+                { label: "风险预控措施", name: "MeasureContent", width: 300, align: "center", sortable: false },
+                { label: "CategoryId", name: "CategoryId", width: 300, align: "center", sortable: false, hidden: true },
+                { label: "MeasureId", name: "MeasureId", width: 300, align: "center", sortable: false, hidden: true }
+            ],
+            rownumbers: true,
+            rowNum: 20,
+            viewrecords: true,
+            pager: '#gridPager',
+        });
+
+        jQuery('#DangerLevel').selectpicker('val', '@Model.DangerLevel'.split(','));
+        jQuery('#TaskType').selectpicker('val', '@Model.TaskType'.split(','));
+
+        jQuery('#Task').attr('readonly', 'readonly');
+        jQuery('#TaskArea').attr('readonly', 'readonly');
+        jQuery('#DeptName').attr('readonly', 'readonly');
+        jQuery('#DangerLevel').attr('readonly', 'readonly');
+        jQuery('#OtherMeasure').attr('readonly', 'readonly');
+        jQuery('#newitem').hide();
+        jQuery('#DangerLevel').attr('disabled', 'disabled');
+        jQuery('#TaskType').attr('disabled', 'disabled');
+        jQuery('#grid').jqGrid('hideCol', "action").setGridWidth(970);
+        //非查看则显示适用部门
+        //$("#DeptName").click(function () {
+        //    $("#DeptNameTree").show();
+        //    $(this).hide();
+        //})
+
+        //initTree()//加载树
+        //$("#DeptNameTree").setCheckedNodes(checkDeptId)
+
+        //for (var i = 0; i < checkDeptId.length; i++) {
+        //    var checkIds = $("#DeptNameTree").getCheckedAllNodes();
+        //    if (checkIds.indexOf(checkDeptId[i])<0) {
+        //        $("#DeptNameTree").setCheckedNodeOne(checkDeptId[i])
+        //    }
+        //    //var nid = checkDeptId[i].replace(/[^\w]/gi, "_");
+        //    //console.log(nid)
+        //    //var et = $("#" + "DeptNameTree" + "_" + nid + "_cb");
+        //    //if (et.length == 1) {
+        //    //    et.attr("src", dfop.cbiconpath + dfop.icons[1]);
+        //    //}
+        //}
+    });
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+
+        var data = jQuery('#grid').jqGrid('getRowData');
+        if (data.length == 0) {
+            //dialogMsg("没有风险预控措施！", 2);
+            top.layer.msg("没有风险预控措施！", { icon: 2, time: 2000, shift: 5 });
+            return;
+        }
+
+        var postData = $("#form1").formSerialize();
+        postData.Measures = data;
+
+        if (!postData.DangerLevel) {
+            top.layer.msg("请选择人身伤害风险！", { icon: 2, time: 2000, shift: 5 });
+            return;
+        } else if (postData.DangerLevel.length > 1) {
+            top.layer.msg("人身伤害风险只能选择一个！", { icon: 2, time: 2000, shift: 5 });
+            return;
+        }
+
+        Loading(true, '正在处理数据...');
+        jQuery.ajax({
+            contentType: 'application/json',
+            type: 'POST',
+            url: '@Url.Action("Approve")',
+            data: JSON.stringify(postData),
+            success: function (data) {
+                if (data.type == "3") {
+                    //dialogAlert(data.message, -1);
+                    top.layer.msg(data.message, { icon: 2, time: 2000, shift: 5 });
+                } else {
+                    Loading(false);
+                    dialogMsg(data.message, 1);
+                    if ($.currentIframe())
+                        $.currentIframe().fn$refresh();
+                    else {
+                        top.fn$query();
+                    }
+                    dialogClose();
+                }
+            },
+            complete: function () {
+                Loading(false);
+            }
+        })
+    }
+
+    function fn$edit(id) {
+        dialogOpen({
+            id: "EditItem",
+            title: '新增风险预控措施',
+            url: '/../@Url.Action("EditItem")' + '?id=' + id + '&frameid=' + jQuery(self.frameElement).attr('id'),
+            width: "600px",
+            height: "400px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    function fn$delete(id) {
+        return top.layer.confirm('确认要删除？', {
+            icon: 7,
+            title: "系统提示",
+            btn: ['确认', '取消']
+        }, function () {
+            jQuery('#grid').jqGrid('delRowData', id);
+            top.layer.close(top.layer.index);
+        });
+        @*$.RemoveForm({
+            url: '/..@Url.Action("Remove")' + '/' + id,
+            success: function (data) {
+                fn$refresh();
+            }
+        });*@
+    }
+
+    function fn$additem() {
+        @*dialogOpen({
+            id: "EditItem",
+            title: '新增风险预控措施',
+            url: '/..@Url.Action("EditItem")' + '?frameid=' + jQuery(self.frameElement).attr('id'),
+            width: "600px",
+            height: "400px",
+            callBack: function (iframeId) {
+                //top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                layero.find('iframe')[0].contentWindow.AcceptClick();
+            }
+        });*@
+        top.layer.open({
+            type: 2,
+            title: '新增风险预控措施',
+            area: ['600px', '400px'],
+            content: '/..@Url.Action("EditItem")' + '?frameid=' + jQuery(self.frameElement).attr('id'),
+            btn: '确定',
+            yes: function (index, layero) {
+                layero.find('iframe')[0].contentWindow.AcceptClick();
+            }
+        });
+
+    }
+
+    function getCurrentData(id) {
+        var row = jQuery('#grid').jqGrid('getRowData', id);
+        return row;
+    }
+
+    function fn$additemcallback(item) {
+        jQuery('.unwritten').remove();
+        var index = jQuery('#grid').jqGrid('getInd', item.HumanDangerMeasureId);
+        if (index > 0) {
+            jQuery('#grid').jqGrid('setRowData', item.HumanDangerMeasureId, item);
+        } else {
+            jQuery('#grid').jqGrid('addRowData', item.HumanDangerMeasureId, item);
+        }
+    }
+
+
+    function cascade(fn, item, args) {
+        if (fn(item, args, 1) != false) {
+            if (item.ChildNodes != null && item.ChildNodes.length > 0) {
+                var cs = item.ChildNodes;
+                for (var i = 0, len = cs.length; i < len; i++) {
+                    cascade(fn, cs[i], args);
+                }
+            }
+        }
+    }
+
+    function check(item, state, type) {
+        var id = "DeptNameTree";//控件的Id
+        var pstate = item.checkstate;
+        if (type == 1) {
+            item.checkstate = state;
+        }
+        else {// go to childnodes
+            var cs = item.ChildNodes;
+            var l = cs.length;
+            var ch = true;
+            for (var i = 0; i < l; i++) {
+                if ((state == 1 && cs[i].checkstate != 1) || state == 0 && cs[i].checkstate != 0) {
+                    ch = false;
+                    break;
+                }
+            }
+            if (ch) {
+                item.checkstate = state;
+            }
+            else {
+                item.checkstate = 2;
+            }
+        }
+        //change show
+        if (item.render && pstate != item.checkstate) {
+            var nid = item.id.replace(/[^\w]/gi, "_");
+            var et = $("#" + id + "_" + nid + "_cb");
+            if (et.length == 1) {
+                et.attr("src", dfop.cbiconpath + dfop.icons[item.checkstate]);
+            }
+        }
+    }
+</script>
+<div style="margin:10px">
+    @Html.HiddenFor(x => x.HumanDangerId)
+    <table class="form">
+        <tr>
+            <td class="formTitle" style="width:120px;">工作任务<font face="宋体">*</font></td>
+            <td class="formValue">
+                @Html.TextBoxFor(x => x.Task, new { @class = "form-control", placeholder = "请输入工作任务", isvalid = "yes", checkexpession = "NotNull", maxlength = 200, @readonly = "readonly" })
+            </td>
+            <td class="formTitle" style="width:120px;">作业区域</td>
+            <td class="formValue">
+                @Html.TextBoxFor(x => x.TaskArea, new { @class = "form-control", placeholder = "请输入作业区域", maxlength = 200 })
+            </td>
+        </tr>
+        @*<tr>
+                <td class="formTitle">适用部门</td>
+                <td class="formValue" colspan="3">
+                    <div id="DeptNameTree" style="border: 1px solid #ccc;border-top:none; max-height:300px; display:none;"></div>
+
+                    <textarea id="DeptName" readonly="readonly" class="form-control" rows="3">@Model.DeptName</textarea>
+                    <input id="DeptId" type="hidden" value="@Model.DeptId" />
+                </td>
+
+            </tr>*@
+        <tr>
+            <td class="formTitle">人身伤害风险<font face="宋体">*</font></td>
+            <td class="formValue">
+                @Html.DropDownListFor(x => x.DangerLevel, ViewData["DangerLevel"] as List<SelectListItem>, new { @class = "form-control selectpicker", multiple = "multiple", placeholder = "请选择人身伤害风险", isvalid = "yes", checkexpession = "NotNull" })
+            </td>
+            <td class="formTitle">作业性质类型<font face="宋体">*</font></td>
+            <td class="formValue">
+                @Html.DropDownListFor(x => x.TaskType, ViewData["TaskType"] as List<SelectListItem>, new { @class = "form-control selectpicker", multiple = "multiple", isvalid = "yes", checkexpession = "NotNull" })
+                <input id="Measures" type="hidden" value="@Newtonsoft.Json.JsonConvert.SerializeObject(Model.Measures)" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <a id="newitem" class="btn btn-default" onclick="fn$additem()">新增风险预控措施</a>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" style="padding-top:10px;">
+                <table id="grid"></table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" style="padding-top:5px;">审核记录</td>
+        </tr>
+        <tr>
+            <td colspan="4" style="padding-top:10px;">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered" style="text-align:center;">
+                        <colgroup>
+                            <col style="width:80px" />
+                            <col style="width:200px" />
+                            <col style="width:200px" />
+                            <col style="width:200px" />
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>审核人</th>
+                                <th>审核部门</th>
+                                <th>审核时间</th>
+                            </tr>
+                        </thead>
+                        @{
+                            var index = 0;
+                        }
+                        @foreach (var item in Model.ApproveRecords)
+            {
+                index++;
+                            <tr>
+                                <td>@Html.Raw(index)</td>
+                                <td>@Html.Raw(item.ApproveUser)</td>
+                                <td>@Html.Raw(item.ApproveDeptName)</td>
+                                <td>@Html.Raw(item.ApproveTime)</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

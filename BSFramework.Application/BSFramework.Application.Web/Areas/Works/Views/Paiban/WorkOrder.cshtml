@@ -1,0 +1,220 @@
+﻿@model IEnumerable<IGrouping<string, BSFramework.Entity.WorkMeeting.WorkOrder>>
+@{
+    ViewBag.Title = "WorkOrder";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script>
+    var selectedRowIndex;
+
+    jQuery(function () {
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#gridTable').setGridWidth(($('.gridPanel').width()));
+                $("#gridTable").setGridHeight($(window).height() - 108.5);
+            }, 200);
+            e.stopPropagation();
+        });
+
+        JsTime();
+
+        function timestampToTime(timestamp) {
+            var date = new Data(timestamp);
+            Y = date.getFullYear() + '/';
+            M = (data.getMonth() + 1 < 10 ? '0' + (data.getMonth() + 1) : date.getMonth() + 1) + '/';
+            return Y + M;
+        }
+        var colModel = getMonthDayscolModel();
+        //var End = $("#EndTime").val();
+        jQuery('#gridTable').jqGrid({
+            url: '/..@Url.Action("GetWorkOrderData")?startTime=' + $("#StartTime").val(),// + '&endTime=' + End,
+            datatype: "json",
+            height: $(window).height() - 165,
+            shrinkToFit: false,
+            gridview: true,
+            autowidth: true,
+            colModel: colModel,
+            rownumbers: true,
+           rowNum:-1,
+            onCellSelect: function (rowid, iCol, cellcontent, e) {
+                    row_idx = rowid;
+                    col_idx = iCol;
+                    if (iCol < 2) return;
+                    var orderId = $("#gridTable tr:eq(" + row_idx + ")  td:last").text();
+
+                    dialogOpen({
+                        id: "updateTime",
+                        title: '时间修改',
+                        url: '/..@Url.Action("Form2")?row=' + row_idx +
+                            '&col=' + col_idx + '&TimeSpan=' + $("#StartStr").val() + '&TimeStr=' + cellcontent
+                        + '&orderId=' + orderId + '&context=' + cellcontent,
+                        width: "400px",
+                        height: "350px",
+                        callBack: function (iframeId) {
+                            top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                        }
+                    });
+            }
+        });
+        jQuery('#gridTable').jqGrid('setFrozenColumns');
+        $("#btn_Search").click(function () {
+            $("#StartStr").val($("#StartTime").val());
+            jQuery('#gridTable').GridUnload();
+            var colModel = getMonthDayscolModel();
+            jQuery('#gridTable').jqGrid({
+                url: '/..@Url.Action("GetWorkOrderData")?startTime=' + $("#StartTime").val(),// + '&endTime=' + End,
+                datatype: "json",
+                height: $(window).height() - 165,
+                shrinkToFit: false,
+                gridview: true,
+                autowidth: true,
+                rownumbers: true,
+                colModel: colModel,
+                rowNum: -1,
+                onCellSelect: function (rowid, iCol, cellcontent, e) {
+                    row_idx = rowid;
+                    col_idx = iCol;
+                    if (iCol < 2) return;
+                  var orderId = $("#gridTable tr:eq(" + row_idx + ")  td:last").text();
+
+                    dialogOpen({
+                        id: "updateTime",
+                        title: '时间修改',
+                        url: '/..@Url.Action("Form2")?row=' + row_idx +
+                            '&col=' + col_idx + '&TimeSpan=' + $("#StartStr").val() + '&TimeStr=' + cellcontent
+                        + '&orderId=' + orderId + '&context=' + cellcontent,
+                        width: "400px",
+                        height: "350px",
+                        callBack: function (iframeId) {
+                            top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                        }
+                    });
+
+                }
+
+            })
+
+            jQuery('#gridTable').jqGrid('setFrozenColumns');
+        });
+
+    });
+    function getMonthDayscolModel() {
+        var Start = $("#StartTime").val();
+        var Startsplit = Start.split('-');
+        var year = Startsplit[0];
+        var month = Startsplit[1];
+        var thisDate = new Date(year, month, 0);
+        var days = thisDate.getDate();
+        var colModel = new Array();
+        colModel[0] = { label: '班组', name: 'fullname', width: 200, align: 'center', frozen: true, sortable: false };
+        colModel[days + 1] = { label: 'worktimesortid', name: 'worktimesortid', width: 200, align: 'center', hidden: true };
+        for (var i = 1; i <= days; i++) {
+            colModel[i] = {
+                label: i, name: 'Time' + i, width: 120, align: 'center', sortable: false
+
+            };
+        }
+        return colModel;
+    }
+
+    function JsTime() {
+        //初始化时间
+        var myJsTime = "@BSFramework.Util.Time.GetToday()";
+        var strTime = myJsTime.split('-');
+        $("#StartTime").val(strTime[0] + "-" + strTime[1] + "-01");
+        var Time = $("#StartTime").val();
+        $("#StartStr").val(Time);
+
+    }
+
+
+    //新增
+    function add() {
+        idx = dialogOpen({
+            id: "Form",
+            title: '排班设置',
+            url: '/..@Url.Action("WorkOrderSet")?useType=save',
+            width: "700px",
+            height: "700px",
+            btn: null
+        });
+    };
+    function edit() {
+        idx = dialogOpen({
+            id: "Form",
+            title: '时间设置',
+            url: '/..@Url.Action("WorkOrderSet")?useType=update',
+            width: "700px",
+            height: "430px",
+            btn: null
+        });
+    };
+    function addmore() {
+        $.ajax({
+           url: '/..@Url.Action("nextyear")?startTime=' + $("#StartTime").val(),
+            type: "post",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.message == "操作成功。") {
+                    $("#gridTable").resetSelection();
+                    $("#gridTable").trigger("reloadGrid");
+                } else {
+                    dialogMsg('数据生成失败！', 0);
+                }
+            }
+        });
+    }
+    function btn_delete() {
+        var keyValue = $("#gridTable").jqGridRowValue("WorkOrderId");
+        if (keyValue) {
+            $.RemoveForm({
+                url: '/..@Url.Action("OrderRemoveForm")',
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    if (data.message == "删除成功。") {
+                        $("#gridTable").resetSelection();
+                        $("#gridTable").trigger("reloadGrid");
+                    }
+                }
+            })
+        } else {
+            dialogMsg('请选择需要选项！', 0);
+        }
+    }
+</script>
+<div class="titlePanel">
+    <div class="title-search">
+        <table>
+            <tr>
+
+                <th class="formTitle">开始时间</th>
+                <td class="formValue">
+                    <input id="StartStr" type="hidden" >
+                    <input id="StartTime" readonly type="text" class="form-control input-wdatepicker"    onfocus="WdatePicker({dateFmt:'yyyy-MM-01'})">
+                </td>
+                @*<th class="formTitle">结束时间</th>
+                    <td class="formValue">
+                        <input id="EndTime" readonly type="text" class="form-control input-wdatepicker" onfocus="WdatePicker()">
+                    </td>*@
+                <td style="padding-left: 5px;">
+                    <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="toolbar">
+        <div class="btn-group">
+
+            <a id="editstate" class="btn btn-default" onclick="add()"><i class="fa fa-gavel"></i>&nbsp;排班管理</a>
+            <a id="editstate" class="btn btn-default" onclick="addmore()"><i class="fa fa-gavel"></i>&nbsp;数据生成</a>
+            @*<a id="del" class="btn btn-default" onclick="btn_delete()"><i class="fa fa-gavel"></i>&nbsp;删除</a>*@
+            @*<a id="editstate" class="btn btn-default" onclick="edit()"><i class="fa fa-gavel"></i>&nbsp;时间修改</a>*@
+        </div>
+
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="gridTable"></table>
+
+</div>

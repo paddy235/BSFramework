@@ -1,0 +1,742 @@
+﻿@using BSFramework.Entity.WorkMeeting
+@using BSFramework.Application.Entity.BaseManage
+
+@model BSFramework.Entity.WorkMeeting.WorkmeetingEntity
+@{ ViewBag.Title = "Start";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/before.css")" />
+<style>
+    .tbx {
+        width: 100%;
+        border: none;
+        outline: none;
+        text-align: center;
+    }
+
+    .handler a {
+        display: block;
+        color: #3669e1;
+    }
+
+    .handler li.active a {
+        color: #fff;
+    }
+
+    .Validform_checktip {
+        text-align: center;
+        font-size: 12px;
+        line-height: 20px;
+    }
+
+    .Validform_wrong {
+        color: red;
+    }
+
+    .c-orange:hover {
+        color: orange;
+    }
+
+    .reason_list{width:100%;height:120px;}
+    .reason_list li{float:left;width:50%;text-align:center;margin:10px 0;}
+    .reason_select{display:inline-block;height:30px;width:30px;background:url('@Url.Content("~/Content/styles/static/images/checkbox-bg.png")') no-repeat left center;
+    position:relative;top:11px;margin-right:10px;}
+    .reason_on{background-position:right center;}
+    .layui-layer-title {
+        font-weight: bold;
+    }
+
+    select {
+        border: none;
+        min-height: 28px;
+    }
+
+
+    .table {
+        margin-bottom: 0px;
+    }
+
+        .table thead tr th, .table tbody tr td * {
+            text-align: center;
+        }
+
+        .table > tbody > tr > td {
+        line-height:14px;
+            padding: 8px 4px;
+            vertical-align: middle;
+        }
+
+            .table > tbody > tr > td > div {
+                width: 100%;
+                height: 40px;
+                border: 1px solid #e3ebfd;
+            }
+
+
+    .col0 {
+        width: 360px;
+        padding-left: 8px !important;
+    }
+
+    .col1 {
+        width: 180px;
+    }
+
+    .col2 {
+        width: 360px;
+    }
+
+    .col3 {
+        width: 260px;
+    }
+
+    .col4 {
+        width: 80px;
+    }
+
+    .col5 {
+        width: 100px;
+    }
+
+    .col6 {
+        width: 80px;
+    }
+
+    .col7 {
+        width: 80px;
+    }
+</style>
+<script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/base.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.dateFormat.js")"></script>
+<script>
+
+    $(function () {
+        $('.main-sidebar,.main-content').niceScroll({
+            autohidemode: false
+        });
+        $('.table-today tr').hover(function () {
+            $(this).addClass('hover');
+        }, function () {
+            $(this).removeClass('hover');
+        });
+        $('.table-today tr').click(function () {
+            $(this).toggleClass('actives');
+        });
+        $('.user>.dropdown-menu').css({
+            left: $('.user').innerWidth() - $('.user>.dropdown-menu').width() - 65
+        });
+        $('.list-item').hover(function () {
+            $(this).children('div').stop().animate({
+                top: 0
+            }, 500);
+        }, function () {
+            $(this).children('div').stop().animate({
+                top: '194px'
+            }, 500);
+        });
+
+        $('#sign').click(function () {
+            var size = jQuery('#sign-modal li').size();
+            var h = 52 * (size + 2);
+            var winH = $(window).height();
+            if (h > winH - 100) {
+                h = winH - 100
+            }
+
+            layer.open({
+                area: ['300px', h + 'px'],
+                title: '签到',
+                type: 1,
+                content: $('#sign-modal'),
+                end: function () {
+                    $('#sign-modal').hide();
+                }
+            });
+        });
+
+        //人员签到
+        jQuery('#sign-modal li').click(function () {
+            jQuery(this).parent().find('li').removeClass('current');
+            jQuery(this).addClass('current');
+            jQuery('#reason li .reason_select').removeClass('reason_on');
+            if (jQuery(this).find('span').hasClass('on')) {
+                layer.open({
+                    area: ['300px', '260px'],
+                    title: '原因',
+                    type: 1,
+                    content: $('#reason'),
+                    end: function () {
+                        $('#reason').hide();
+                    }
+                });
+
+                //jQuery(this).removeClass('on');
+                //jQuery(this).next().val('False');
+            }
+            else {
+                jQuery(this).find('span.my-radio').addClass('on');
+                jQuery(this).find('input:eq(0)').val('True');
+                fn$calcSign();
+            }
+        });
+        //统计实到
+        jQuery('#modal').on('hide.bs.modal', function () {
+            jQuery('#ActuallyJoin').val(jQuery('#sign li input[name*="IsSigned"][value="True"]').length);
+            jQuery('#ActuallyJoin').prev().text(jQuery('#sign li input[name*="IsSigned"][value="True"]').length);
+        });
+
+        //设置实到人员，并设置状态
+        jQuery('#modal1').on('show.bs.modal', function () {
+            jQuery('#state').empty();
+            jQuery('#sign li input[name*="IsSigned"][value="True"]').each(function (i) {
+                if (i == 0)
+                    jQuery('#state').append('<li data-id="' + jQuery(this).parent().data('id') + '" class="selected">' + jQuery(this).prev().prev().text() + '</li>');
+                else
+                    jQuery('#state').append('<li data-id="' + jQuery(this).parent().data('id') + '">' + jQuery(this).prev().prev().text() + '</li>');
+
+            });
+            fn$setcondition(jQuery('#state li:first').get(0));
+
+            jQuery('#state').find('li').click(function () {
+                fn$setcondition(this);
+            });
+        });
+
+        //保存状态
+        jQuery('#conditionitems span').click(function () {
+            var condition = jQuery(this).text();
+
+            jQuery('#conditionitems span').removeClass('on');
+            jQuery(this).addClass('on');
+
+            var id = jQuery('#state .selected').data('id');
+            jQuery('#sign li[data-id="' + id + '"] input[name*="MentalCondition"]').val(condition);
+        });
+
+        //保存着装
+        jQuery('#closingitems span').click(function () {
+            jQuery('#closingitems span').removeClass('on');
+            jQuery(this).addClass('on');
+        });
+
+        //是否完成
+        jQuery('#grid tr td[class*="isfinished"] span').click(function () {
+            var el = this;
+            var dataid = jQuery(el).parent().prev().prev().children('input:eq(1)').val();
+            layer.msg('状态更新中...', { icon: 16, shade: 0.1, time: 0 });
+            if (jQuery(this).hasClass('actives')) {
+                jQuery.post('@Url.Action("UpdateState")', { IsFinished: 'undo', MeetingJobId: dataid }, function (data) {
+                    if (data.type == 1) {
+                        layer.closeAll();
+                        jQuery(el).removeClass('actives');
+                        jQuery(el).next().val('undo');
+                    }
+                    else {
+                        layer.alert(data.message || '更新失败！', { icon: 2, shade: 0.1 });
+                    }
+                }, 'json');
+            }
+            else {
+                jQuery.post('@Url.Action("UpdateState")', { IsFinished: 'finish', MeetingJobId: dataid }, function (data) {
+                    if (data.type == 1) {
+                        layer.closeAll();
+                        jQuery(el).addClass('actives');
+                        jQuery(el).next().val('finish');
+                    }
+                    else {
+                        layer.alert(data.message || '更新失败！', { icon: 2, shade: 0.1 });
+                    }
+                }, 'json');
+            }
+        });
+
+        jQuery('#grid').parent().prev().css('padding-right', (jQuery('#grid').parent().width() - jQuery('#grid').width() + 'px'));
+
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '.datetime',
+                range: true,
+                //type: "time",
+                format: "yyyy/MM/Md HH:mm"
+            });
+        });
+
+        fn$jobuser();
+
+        $('.my-close').click(function () {
+            layer.closeAll();
+            return false;
+        });
+
+        jQuery('.sf').Validform({
+            tiptype: 3
+        });
+
+        $(window).resize(function () {
+            setTimeout(() => {
+                setH();
+            }, 30)
+        }).trigger('resize');
+    });
+
+
+    //设置。body的高度
+    function setH() {
+        $('.my-body').css('min-height', $('.my-body').height() + 5);
+        $('.body').height($('.my-body').height() - 50);
+    }
+
+    function fn$jobuser() {
+        var size = jQuery('#jobuser-modal li').size();
+        var h = 52 * (size + 2);
+        var winH = $(window).height();
+        if (h > winH - 100) {
+            h = winH - 100
+        }
+        jQuery('.selectPerson').click(function () {
+            layer.open({
+                area: ['300px', h + 'px'],
+                title: '选择作业人',
+                type: 1,
+                content: $('#jobuser-modal')
+            });
+
+            jQuery('#jobuser-modal .my-radio').removeClass('on');
+            var userid = jQuery(this).prev().val();
+            var ids = userid.split(',');
+            for (var i = 0; i < ids.length; i++) {
+                jQuery('#jobuser-modal li[data-id="' + ids[i] + '"] .my-radio').addClass('on');
+            }
+        });
+    }
+
+    function fn$calcSign() {
+        var cnt = 0;
+        jQuery('#sign-modal li input[id*="IsSigned"]').each(function () {
+            if (jQuery(this).val() == 'True') cnt++;
+        });
+        jQuery('#ActuallyJoin').prev().text(cnt);
+        jQuery('#ActuallyJoin').val(cnt);
+    }
+
+    //查看详情工作任务
+    function fn$edit(el) {
+        jQuery('#grid .currentRow').removeClass('currentRow');
+        var job = jQuery(el).parent().parent().addClass('currentRow');
+        var jobId = job.find('td:eq(0) input:eq(0)').val();
+        var meetingjobid = job.find('td:eq(2) input:eq(1)').val();
+        layer.open({
+            area: ['1600px', '800px'],
+            title: '工作任务详情',
+            type: 2,
+            content: '@Url.Action("ChangeJob")?id=' + jobId + '&meetingjobid=' + meetingjobid
+        });
+    }
+
+    //获取工作任务详情
+    function fn$getjob() {
+        var tr = jQuery('tr.currentRow');
+        var jobid = tr.find('td:eq(0) input:eq(0)').val();
+        var job = tr.find('td:eq(0)').text().trim();
+        var json = tr.find('td:eq(2) input:last').val() || '[]';
+        var jobtype = jQuery('#MeetingType').val();
+        var persons = jQuery.parseJSON(json);
+        var leader = jQuery.grep(persons, function (o) {
+            return o.JobType == "ischecker";
+        });
+        var worker = jQuery.grep(persons, function (o) {
+            return o.JobType == "isdoperson";
+        });
+        var teammaters = '';
+        jQuery.each(worker, function (i, o) {
+            teammaters += o.UserName + ',';
+        });
+
+        var userId = tr.find('td:eq(3) input').val();
+
+        //var prior = tr.find('td:eq(3)').text();
+        var dangerous = tr.find('td:eq(4) input:eq(7)').val();
+        var measure = tr.find('td:eq(4) input:eq(6)').val();
+        var meetingId = $("#OtherMeetingId").val();
+        var remark = tr.find('td:eq(4) input:eq(8)').val();
+        var Description = tr.find('td:eq(4) input:eq(9)').val();
+        var meetingjobid = tr.find('td:eq(3) input:eq(1)').val();
+        var taskType = tr.find('td:eq(1)').text().trim();
+        var riskLevel = tr.find('td:eq(5)').text().trim();
+        return {
+            Description: Description,
+            meetingId: meetingId,
+            jobid: jobid,
+            jobtype: jobtype,
+            job: job,
+            checker: leader.length == 0 ? '' : leader[0].UserName,
+            teammaters: teammaters.replace(/,$/, ''),
+            dangerous: dangerous,
+            measure: measure,
+            persons: json,
+            remark: remark,
+            userId: userId,
+            meetingjobid: meetingjobid,
+            RiskLevel: riskLevel,
+            TaskType: taskType,
+            StartTime: tr.find('td:eq(4) input:eq(3)').val(),
+            EndTime: tr.find('td:eq(4) input:eq(4)').val()
+        };
+    }
+
+    //页面回调函数
+    function fn$callback() {
+        setTimeout(function () {
+            layer.closeAll();
+            window.location.reload();
+        }, 200);
+    }
+
+    //新增任务
+    function fn$newjob() {
+        layer.open({
+            title: '临时工作录入',
+            type: 2,
+            area: ['1200px', '800px'],
+            content: '@Url.Action("NewJob")?id=@Html.Raw(Model.OtherMeetingId)',
+            btn:['确定', '取消'],
+            yes: function (index, obj) {
+                var win = window[obj.find('iframe')[0]['name']];
+                win.fn$save();
+            }
+        });
+    }
+
+    function getJobDangers() {
+        return null;
+    }
+
+</script>
+<div class="main-content">
+    <div class="container-fluid">
+
+        @using (Html.BeginForm("End", "WorkMeeting", FormMethod.Post, new { @class = "sf" }))
+        {
+@Html.HiddenFor(x => x.MeetingId)
+                @Html.HiddenFor(x => x.MeetingType)
+                                @Html.HiddenFor(x => x.GroupId)
+                                                @Html.HiddenFor(x => x.GroupName)
+                                                                @Html.HiddenFor(x => x.OtherMeetingId)
+                                                                                @Html.HiddenFor(x => x.MeetingPerson)
+                                                                                                @Html.HiddenFor(x => x.ShouldStartTime)
+                                                                                                                @Html.HiddenFor(x => x.ShouldEndTime)
+
+                                                                                                                                <div class="clearfix mg-b-10">
+                                                                                                                                    <div class="pull-left">
+                                                                                                                                        <div class="my-tab">
+                                                                                                                                            <ul class="clearfix handler">
+                                                                                                                                                <li>@(string.IsNullOrEmpty(Model.OtherMeetingId) ? @Html.ActionLink("班前会", "Index") : @Html.ActionLink("班前会", "Edit", new { id = Model.OtherMeetingId }))</li>
+                                                                                                                                                <li class="active">@(string.IsNullOrEmpty(Model.OtherMeetingId) ? @Html.ActionLink("班后会", "End") : @Html.ActionLink("班后会", "Index"))</li>
+                                                                                                                                            </ul>
+                                                                                                                                        </div>
+                                                                                                                                    </div>
+                                                                                                                                    <div class="pull-right">
+                                                                                                                                        <a href="@Url.Action("List", new { page = "1", pagesize = "12"})">
+                                                                                                                                            <img src="@Url.Content("~/Content/styles/static/images/index_29.png")" style="margin-top:-2px;" alt="">
+                                                                                                                                            历史记录
+                                                                                                                                        </a>
+                                                                                                                                    </div>
+                                                                                                                                </div>
+                                                                                                                                                <div class="bg-e3ebfd pd-10 my-body warp">
+                                                                                                                                                    @if (!string.IsNullOrEmpty(Model.OtherMeetingId))
+                                                                                                                                                    {
+                                                                                                                                    <div class="aside pd-20 bd-e3ebfd" style="position:fixed;bottom:50px;right:60px;">
+                                                                                                                                        @*<div class="clearfix mg-b-20">
+                                                                                                                                                <div class="pull-left">
+                                                                                                                                                    <img src="@Url.Content("~/Content/styles/static/images/erweima.png")" alt="">
+                                                                                                                                                </div>
+                                                                                                                                                <div class="pull-right mg-l-10">
+                                                                                                                                                    <p>用APP扫码</p>
+                                                                                                                                                    <p>可上传会议</p>
+                                                                                                                                                    <p class="c-3669e1">图片和音频</p>
+                                                                                                                                                </div>
+                                                                                                                                            </div>*@
+                                                                                                                                        <input type="submit" class="bg-3669e1" style="border:none;color:white;width:100%;font-size:18px;line-height:60px;width:210px;" value="开始会议" />
+                                                                                                                                        @*<button class="bg-3669e1">保存记录</button>*@
+                                                                                                                                        @*<button class="bg-3669e1">保存记录</button>*@
+                                                                                                                                    </div>}
+                                                                                                                                                    <div class="clearfix f-18 head" style="display:none;">
+                                                                                                                                                        <div class="pull-left mg-r-120" id="sign">
+                                                                                                                                                            <img src="@Url.Content("~/Content/styles/static/images/icon-14.png")" alt="">
+                                                                                                                                                            签到
+                                                                                                                                                        </div>
+                                                                                                                                                        <div class="pull-left mg-r-120">
+                                                                                                                                                            应到 <b class="c-3669e1">@Model.ShouldJoin</b> 人
+                                                                                                                                                            @Html.HiddenFor(x => x.ShouldJoin)
+                                                                                                                                                        </div>
+                                                                                                                                                        <div class="pull-left mg-r-120">
+                                                                                                                                                            实到 <b class="c-3669e1">@Model.ActuallyJoin</b>@Html.HiddenFor(x => x.ActuallyJoin) 人
+                                                                                                                                                        </div>
+                                                                                                                                                    </div>
+                                                                                                                                                    <div class="body" style="background:#fff;">
+                                                                                                                                                        <div class="table-head f-15 f-w bg-fff pd-10 pd-l-20 c-0d0d0d bd-b-e3ebfd">
+                                                                                                                                                            工作任务部署
+                                                                                                                                                        </div>
+                                                                                                                                                        <div style="background-color:white;">
+                                                                                                                                                            <table class="table table-striped" style="margin-bottom:0px;">
+                                                                                                                                                                <thead>
+                                                                                                                                                                    <tr>
+                                                                                                                                                                        <th class="col0">工作任务</th>
+                                                                                                                                                                        <th class="col1">任务类别</th>
+                                                                                                                                                                        <th class="col2">作业人</th>
+                                                                                                                                                                        <th class="col3">计划时间</th>
+                                                                                                                                                                        <th class="col4">完成情况</th>
+                                                                                                                                                                        <th class="col5">风险等级</th>
+                                                                                                                                                                        <th class="col6">详情</th>
+                                                                                                                                                                    </tr>
+                                                                                                                                                                </thead>
+                                                                                                                                                                <tbody>
+                                                                                                                                                                </tbody>
+                                                                                                                                                            </table>
+                                                                                                                                                        </div>
+                                                                                                                                                        <div style="background-color:white;">
+                                                                                                                                                            <table class="table text-center table-striped" style="border-bottom:1px solid #e3ebfd;" id="grid">
+                                                                                                                                                                <tbody>
+                                                                                                                                                                    @for (int i = 0; i < Model.Jobs.Count; i++)
+                                                                                                                                                                    {
+
+                                                                                                                                                    <tr @(Model.Jobs[i].IsFinished == "cancel" ? "style=background-color:#d6cfd7" : string.Empty)>
+                                                                                                                                                        <td class="col0">
+                                                                                                                                                            @Html.HiddenFor(x => x.Jobs[i].JobId)
+                                                                                                                                                            @Html.DisplayFor(x => x.Jobs[i].Job)
+                                                                                                                                                        </td>
+                                                                                                                                                        <td class="col1"> @Html.DisplayFor(x => x.Jobs[i].TaskType)</td>
+                                                                                                                                                        <td class="col2">
+                                                                                                                                                            @Html.HiddenFor(x => x.Jobs[i].Relation.JobUserId)
+                                                                                                                                                            @Html.HiddenFor(x => x.Jobs[i].Relation.MeetingJobId)
+                                                                                                                                                            @Html.DisplayFor(x => x.Jobs[i].Relation.JobUser)
+                                                                                                                                                            @Html.Hidden("Jobs[" + i + "].Relation_JobUsers", Newtonsoft.Json.JsonConvert.SerializeObject(Model.Jobs[i].Relation.JobUsers))
+                                                                                                                                                        </td>
+                                                                                                                                                        <td class="col3">@Model.Jobs[i].StartTime.ToString("yyyy/MM/dd HH:mm") - @Model.Jobs[i].EndTime.ToString("yyyy/MM/dd HH:mm")</td>
+                                                                                                                                                        <td class="isfinished col4" style="padding-bottom:5px; padding-top:6px;">
+                                                                                                                                                            @if (Model.Jobs[i].IsFinished != "cancel")
+                                                                                                                                                            {
+                                                                                                                                        <span class="my-checkbox @(Model.Jobs[i].IsFinished == "finish" ? "actives" : string.Empty)"></span>}
+                                                                                                                                                            @Html.HiddenFor(x => x.Jobs[i].IsFinished)
+                                                                                                                                                            @Html.HiddenFor(x => x.Jobs[i].Job)
+                                                                                                                                                            @Html.HiddenFor(x => x.Jobs[i].Relation.JobUser)
+                                                                                                                                                            @Html.HiddenFor(x => x.Jobs[i].StartTime)
+                                                                                                                                                            @Html.HiddenFor(x => x.Jobs[i].EndTime)
+                                                                                                                                                            @Html.HiddenFor(x => x.Jobs[i].PlanId)
+                                                                                                                                                            @Html.HiddenFor(x => x.Jobs[i].Measure)
+                                                                                                                                                            @Html.HiddenFor(x => x.Jobs[i].Dangerous)
+                                                                                                                                                            @*@Html.Hidden("Jobs[" + i + "].Persons", Newtonsoft.Json.JsonConvert.SerializeObject(Model.Jobs[i].Persons))*@
+                                                                                                                                                            @Html.HiddenFor(x => x.Jobs[i].Remark)
+                                                                                                                                                            @Html.HiddenFor(x => x.Jobs[i].Description)
+                                                                                                                                                        </td>
+                                                                                                                                                        <td class="col5">@Html.DisplayFor(x => x.Jobs[i].RiskLevel)</td>
+                                                                                                                                                        @if (Model.Jobs[i].IsFinished != "cancel")
+                                                                                                                                                        {
+                                                                                                                                    <td class="col6"><a class="c-orange" onclick="fn$edit(this);" style="color:orange;cursor:pointer;">详情</a></td>
+ }
+                                                                                                                                else
+                                                                                                                                {
+                                                                                                            <td class="col7">已取消</td>
+}
+                                                                                                                                                    </tr>
+}
+                                                                                                                                                                </tbody>
+                                                                                                                                                            </table>
+                                                                                                                                                        </div>
+                                                                                                                                                        @{ if (!string.IsNullOrEmpty(Model.OtherMeetingId))
+                                                                                                                                                            {
+                                                                                                                                            <div class="text-center table bg-fff" style="border-top:1px solid #e3ebfd;padding:10px 0; margin-bottom:6px;">
+                                                                                                                                                <a class="add icon-btn" href="javascript:;" onclick="fn$newjob(this)" id="btn-new"></a>
+                                                                                                                                            </div> } }
+                                                                                                                                                        <div class="pd-20 bg-fff bd-2t-e3ebfd">
+                                                                                                                                                            <div class="f-18 f-w c-0d0d0d">当班工作总结</div>
+                                                                                                                                                            <div class="table-div f-16 c-4a4e50 lh-36 pd-b-20" contenteditable>
+                                                                                                                                                                @Html.TextAreaFor(x => x.Remark, new { style = "height:100%;width:100%;border:2px solid #e3ebfd;outline:none;color:#333;padding:0 10px;resize:none;", maxlength = 500 })
+                                                                                                                                                            </div>
+                                                                                                                                                        </div>
+                                                                                                                                                        <div class="pd-20 bg-fff bd-2t-e3ebfd" style="padding-bottom:0;">
+                                                                                                                                                            <div class="clearfix audio">
+                                                                                                                                                                <div class="pull-left f-18 f-w c-0d0d0d left">现场音频</div>
+                                                                                                                                                                <div class="pull-left right">
+                                                                                                                                                                    @*<ul>
+                                                                                                                                                                            <li>
+                                                                                                                                                                                <div>20180302164533.mp3</div>
+                                                                                                                                                                                <button></button>
+                                                                                                                                                                            </li>
+                                                                                                                                                                            <li>
+                                                                                                                                                                                <div>20180302164533.mp3</div>
+                                                                                                                                                                                <button></button>
+                                                                                                                                                                            </li>
+                                                                                                                                                                            <li>
+                                                                                                                                                                                <div>20180302164533.mp3</div>
+                                                                                                                                                                                <button></button>
+                                                                                                                                                                            </li>
+                                                                                                                                                                            <li>
+                                                                                                                                                                                <div>20180302164533.mp3</div>
+                                                                                                                                                                                <button></button>
+                                                                                                                                                                            </li>
+                                                                                                                                                                            <li>
+                                                                                                                                                                                <div>20180302164533.mp3</div>
+                                                                                                                                                                                <button></button>
+                                                                                                                                                                            </li>
+                                                                                                                                                                        </ul>*@
+                                                                                                                                                                </div>
+                                                                                                                                                            </div>
+                                                                                                                                                        </div>
+                                                                                                                                                        <div class="pd-20 bg-fff bd-2t-e3ebfd photo" style="padding-bottom:0;">
+                                                                                                                                                            <div class="mg-b-10">
+                                                                                                                                                                <div class="f-18 f-w c-0d0d0d">现场照片</div>
+                                                                                                                                                            </div>
+                                                                                                                                                            <div class="clearfix">
+                                                                                                                                                                <ul style="min-height:60px;">
+                                                                                                                                                                    @*@for (int i = 0; i < Model.Files.Count; i++)
+                                                                                                                                                                        {
+                                                                                                                                                                            if (Model.Files[i].Description == "音频")
+                                                                                                                                                                            {
+                                                                                                                                                                                <li><div data-id="@Model.Files[i].FileId">Html.Raw(Model.Files[i].FileName)</div></li>
+                                                                                                                                                                            }
+                                                                                                                                                                        }*@
+
+
+                                                                                                                                                                    @*<li>
+                                                                                                                                                                            <img src="@Url.Content("~/Content/styles/static/images/temp/1.png")" alt="">
+                                                                                                                                                                            <button></button>
+                                                                                                                                                                        </li>
+                                                                                                                                                                        <li>
+                                                                                                                                                                            <img src="@Url.Content("~/Content/styles/static/images/temp/1.png")" alt="">
+                                                                                                                                                                            <button></button>
+                                                                                                                                                                        </li>
+                                                                                                                                                                        <li>
+                                                                                                                                                                            <img src="@Url.Content("~/Content/styles/static/images/temp/1.png")" alt="">
+                                                                                                                                                                            <button></button>
+                                                                                                                                                                        </li>*@
+                                                                                                                                                                </ul>
+                                                                                                                                                            </div>
+                                                                                                                                                        </div>
+                                                                                                                                                    </div>
+                                                                                                                                                </div>
+                                                                                                                                                                <footer class="main-footer">
+                                                                                                                                                                    武汉博晟安全技术股份有限公司   版权所有
+                                                                                                                                                                </footer>
+                                                                                                                                                                                <div class="sign my-modal" id="sign-modal" style="display:none;">
+                                                                                                                                                                                    <ul class="nav my-nav">
+                                                                                                                                                                                        @for (int i = 0; i < Model.Signins.Count; i++)
+                                                                                                                                                                                        {
+                                                                                                                                                                        <li data-id="@Html.Raw(Model.Signins[i].SigninId)">
+                                                                                                                                                                            <span>@Html.Raw(Model.Signins[i].PersonName)</span> <span class="my-radio @(Model.Signins[i].IsSigned ? "on" : string.Empty)"></span>
+                                                                                                                                                                            @Html.HiddenFor(x => x.Signins[i].IsSigned)
+                                                                                                                                                                            @Html.HiddenFor(x => x.Signins[i].UserId)
+                                                                                                                                                                            @Html.HiddenFor(x => x.Signins[i].PersonName)
+                                                                                                                                                                            @Html.HiddenFor(x => x.Signins[i].MentalCondition)
+                                                                                                                                                                            @Html.HiddenFor(x => x.Signins[i].ClosingCondition)
+                                                                                                                                                                            @Html.HiddenFor(x => x.Signins[i].SigninId)
+                                                                                                                                                                            @Html.HiddenFor(x => x.Signins[i].Reason)
+                                                                                                                                                                        </li>
+}
+                                                                                                                                                                                    </ul>
+                                                                                                                                                                                    <div class="text-center mg-t-10">
+                                                                                                                                                                                        <button class="btn bg-3669e1 c-fff my-close" style="width:200px;">确定</button>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>}
+    </div>
+</div>
+
+
+@*<div class="modal fade sign" id="modal1" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                    <h4 class="modal-title">人员状态</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4 bd-r-ecf2fe bd-w5" style="padding:0 40px;">
+                            <div>
+                                <div class="my-search  mg-b-20 my-search-md">
+                                    <div class="lh-62 clearfix">
+                                        <input type="text">
+                                        <button class="c-3669e1 f-18">搜索</button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <ul class="nav my-nav" id="state">
+                                        <li>钟违章</li>
+                                        <li>管得严</li>
+                                        <li>郑守辉</li>
+                                        <li>张强</li>
+                                        <li>闵浩</li>
+                                        <li>詹二梅</li>
+                                        <li>胡涛</li>
+                                        <li>邢皓晨</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="my-tabs">
+                                <div class="mg-b-20">
+                                    <div>
+                                        <ul class="clearfix" id="tab">
+                                            <li class="active"><a href="javascript:;">精神状态</a></li>
+                                            <li><a href="javascript:;">个人着装情况</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="tab-item show" id="conditionitems">
+                                        <span data-item="正常">正常</span>
+                                        <span data-item="疲劳">疲劳</span>
+                                        <span data-item="酒后上岗">酒后上岗</span>
+                                        <span data-item="情绪异常">情绪异常</span>
+                                        <span data-item="健康状况异常">健康状况异常</span>
+                                        <span data-item="其他">其他</span>
+                                    </div>
+                                    <div class="tab-item" id="closingitems">
+                                        <span data-item="正常">正常</span>
+                                        <span data-item="个人着装异常">个人着装异常</span>
+                                        <span data-item="安全鞋">安全鞋</span>
+                                        <span data-item="其他">其他</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+<!--签到人员未到弹出窗-->
+<div id="reason" class="sign">
+    <ul class="reason_list">
+        <li><i class="reason_select"></i><span>调休</span></li>
+        <li><i class="reason_select"></i><span>事假</span></li>
+        <li><i class="reason_select"></i><span>公休</span></li>
+        <li><i class="reason_select"></i><span>病假</span></li>
+        <li><i class="reason_select"></i><span>出差</span></li>
+        <li><i class="reason_select"></i><span>其他</span></li>
+    </ul>
+</div>
+<script>
+    $(function () {
+        $('.reason_list li').click(function () {
+            jQuery(this).parent().find('li').removeClass('on');
+            jQuery(this).parent().find('.reason_select').removeClass('reason_on');
+            jQuery(this).toggleClass('on');
+            jQuery(this).find('.reason_select').toggleClass('reason_on');
+
+            jQuery('#sign-modal li.current span.my-radio').removeClass('on');
+            jQuery('#sign-modal li.current input:eq(0)').val('False');
+            jQuery('#sign-modal li.current input:eq(6)').val(jQuery(this).text().trim());
+            fn$calcSign();
+            setTimeout(function () {
+                layer.close(layer.index);
+            }, 100);
+        });
+    })
+</script>
+

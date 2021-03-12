@@ -1,0 +1,78 @@
+﻿@{
+    ViewBag.Title = "EvalDepts";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+
+<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group a.btn {
+            margin-top: 4px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+</style>
+<script>
+    var selectedRowIndex;
+    var eid = '@ViewBag.eid';
+    jQuery(function () {
+        
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#grid').setGridWidth(($('.gridPanel').width()));
+                $("#grid").setGridHeight($(window).height() - 140);
+            }, 200);
+            e.stopPropagation();
+        });
+
+        if ('@ViewBag.allowadd' != "True") {
+            jQuery('#add').hide();
+        }
+
+        jQuery('#grid').jqGrid({
+            autowidth: true,
+            colModel: [
+                { label: '部门', name: 'DeptName', index: 'DeptName', width: 300, align: 'center', sortable: false },
+                {
+                    label: '状态', name: 'IsSubmitted', index: 'IsSubmitted', width: 180, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        if (rowObject.IsSubmitted) {
+                            return "<span style=''>已提交</span>";
+                        } else
+                        {
+                            return "<span style='color:red;'>未提交</span>";
+                        }
+                    }
+                }
+            ],
+            height: $(window).height() - 140,
+            url: '@Url.Action("GetDeptData")?eid='+eid,
+            datatype: "json",
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 20,
+            rownumbers: true,
+            pager: "#gridPager",
+
+        });
+    });
+
+
+
+</script>
+<div class="gridPanel">
+    <table id="grid"></table>
+    <div id="gridPager"></div>
+</div>

@@ -1,0 +1,185 @@
+﻿
+@{
+    ViewBag.Title = "RiskLevelDetail";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+  <script src="@Url.Content("~/Content/scripts/plugins/datepicker/WdatePicker.js")"></script>
+  <script>
+      var RiskLevel = request('RiskLevel');
+      $(function () {
+          if (RiskLevel) {
+              jQuery('#riskLevel option').each(function () {
+                  if (this.innerText == RiskLevel) {
+                      this.selected = "selected";
+                      return false;
+                  }
+              });
+          }
+        //查询
+        $("#btn_Search").click(function () {
+            var queryJson = {
+                KeyWord: $("#keyword").val(),
+                StartTime: $("#startTime").val(),
+                RiskLevel: $("#riskLevel").val(),
+            }
+            $('#gridTable').jqGrid('setGridParam', {
+                postData: { queryJson: JSON.stringify(queryJson) }, page: 1
+            }).trigger('reloadGrid');
+
+            RiskLevelDetail();
+        })
+
+        //查询
+        $("#btn_SearchAll").click(function () {
+            $("#riskLevel").val('');
+            var date = new Date();
+            var year = date.getFullYear();
+            var month = date.getMonth() + 1;
+            var day = date.getDate();
+            var timeStr = year + "-" + month + '-' + day;
+            $("#startTime").val(timeStr);
+            $("#keyword").val('');
+            $("#btn_Search").click();
+        })
+
+        InitGrid();
+        RiskLevelDetail();
+    });
+
+
+    /**加载列表 */
+      function InitGrid() {
+          var queryJson = {
+              StartTime: $("#startTime").val(),
+              RiskLevel: RiskLevel
+          };
+          $('#gridTable').jqGrid({
+              postData: { queryJson: JSON.stringify(queryJson) }, page: 1,
+              url: "@Url.Action("GetJobPagedList")",
+              datatype: "json",
+              height: $(window).height() - 240,
+              autowidth: true,
+              colModel: [
+                  {
+                      label: '任务名称', name: 'Job', index: 'Job', width: 300, align: 'center', sortable: false
+                  },
+                  {
+                      label: '任务类别', name: 'TaskType', index: 'TaskType', width: 150, align: 'center', sortable: false
+                  },
+                  {
+                      label: '单位', name: 'FullName', index: 'FullName', width: 100, align: 'center', sortable: false
+                  },
+                  {
+                      label: '作业人', name: 'JobUsers', index: 'JobUsers', width: 200, align: 'center', formatter: function (cellvalue, options, rowObject) {
+                          var html = "";
+                          if (!!rowObject.JobUsers && rowObject.JobUsers.length > 0) {
+                              for (var i = 0; i < rowObject.JobUsers.length; i++) {
+                                  html += rowObject.JobUsers[i]+",";
+                              }
+                          }
+                          html = html.substring(0, html.lastIndexOf(","));
+                          return html;
+                      }, sortable: false },
+                  {
+                      label: '作业时间', name: 'StartTime', index: 'StartTime', width: 300, align: 'center', formatter: function (cellvalue, options, rowObject) {
+                          var html = rowObject.StartTime +"~"+ rowObject.EndTime;
+                          return html;
+                      }, sortable: false },
+                  {
+                      label: '危险因素及防范措施', name: 'Dangerous', index: 'Dangerous', width: 450, align: 'center', formatter: function (cellvalue, options, rowObject) {
+                          var html = "";
+                          if (!!rowObject.Dangerous) {
+                              html += "危险因素：" + rowObject.Dangerous
+                              if (!!rowObject.Measure) {
+                                  html += "</br>防范措施" + rowObject.Measure;
+                              }
+                          } else if (!!rowObject.Measure) {
+                              html += "防范措施" + rowObject.Measure;
+                          }
+                          return html;
+                      }, sortable: false},
+              ],
+              viewrecords: true,
+              rowNum: 10,
+              rowList: [10, 20, 30],
+              pager: "#gridPager",
+              sortname: 'CreateDate',
+              sortorder: 'desc',
+              rownumbers: true,
+              shrinkToFit: true,
+              multiselect: false,
+              gridview: true,
+              onSelectRow: function (rowid, status) {
+                  selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+              },
+              onSelectAll: function (aRowids, status) {
+
+              },
+          })
+      }
+
+ /**查看今日工作 风险等级的详情 */
+    function RiskLevelDetail() {
+        $.ajax({
+            url: "/..@Url.Action("TodayWorkStatistics")",
+            type: "GET",
+            data: { startTime: $("#startTime").val() },
+            success: function (data) {
+                data = JSON.parse(data);
+                var html = ' 今日工作 重大风险<b style="color:red;font-size:38px;"> ' + data.重大风险 + ' </b>项，较大风险<b style="color:orange;font-size:38px;">  ' + data.较大风险 + ' </b>项，一般风险<b style="color:gold;font-size:38px;">  ' + data.一般风险 + ' </b>项，低风险<b style="color:aqua;font-size:38px;">  ' + data.低风险 + ' </b>项';
+                $("#WorkStatistics").html(html);
+            },
+            error: function (error) {
+
+            }
+        });
+    }
+
+    /**关闭 */
+    function AcceptClick() {
+        dialogClose();
+    }
+  </script>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+    </div>
+    <div class="ui-layout-center" style="margin-left:10px;">
+        <div class="center-Panel">
+            <div class="panel-Title">班会任务</div>
+            <div class="titlePanel">
+                <div class="title-search">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label for="from">风险等级</label>
+                            <select class="form-control" id="riskLevel" name="riskLevel">
+                                <option value="">==全部==</option>
+                                <option value="重大风险">重大风险</option>
+                                <option value="较大风险">较大风险</option>
+                                <option value="一般风险">一般风险</option>
+                                <option value="低风险">低风险</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="from">日期</label>
+                            <input id="startTime" name="startTime" type="text" class="form-control input-datepicker" isvalid="no" value="@DateTime.Now.ToString("yyyy-MM-dd")" checkexpession="NotNull" onfocus="WdatePicker({ dateFmt: 'yyyy-M-d' })" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label for="from">关键字</label>
+                            <input id="keyword" type="text" name="keyword" class="form-control" style="min-width:300px;" placeholder="任务名称关键字" />
+                        </div>
+                        <div class="form-group">
+                            <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                            <a id="btn_SearchAll" class="btn btn-primary"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="gridPanel">
+                <h1 style="margin:10px 0px 20px 10px;" id="WorkStatistics">今日工作 重大风险<b style="color:red;font-size:38px;"> 0 </b>项，较大风险<b  style="color:orange;font-size:38px;"> 0 </b>项，一般风险<b  style="color:gold;font-size:38px;"> 0 </b>项，低风险<b  style="color:aqua;font-size:38px;"> 0 </b>项</h1>
+                <table id="gridTable"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>

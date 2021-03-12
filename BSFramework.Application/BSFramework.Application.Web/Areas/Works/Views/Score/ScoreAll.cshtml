@@ -1,0 +1,266 @@
+﻿@model IList<BSFramework.Application.Entity.PeopleManage.PeopleEntity>
+@using BSFramework.Application.Entity.PeopleManage
+@{
+    ViewBag.Title = "ScoreAll";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/manage.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/Font-Awesome/css/font-awesome.min.css")" />
+<script src="@Url.Content("~/Content/scripts/plugins/echarts/echarts.min.js")"></script>
+
+<style type="text/css">
+    .my-select {
+        position: relative;
+        display: inline-block;
+        margin: 5px;
+        vertical-align: middle;
+    }
+
+    .scoreAll li div {
+        width: 50%;
+        height: 200px;
+    }
+
+    i {
+        font-style: normal;
+        color: #ddd;
+        display: inline-block;
+        margin-left: 20px;
+        font-weight: 100;
+    }
+
+   
+
+        .scoreAll li {
+            width: 32.8%;
+            height: 200px;
+            margin-right: 0.8%;
+            margin-bottom: 10px;
+            background: #fff;
+            float: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4%;
+            font-size: 12px;
+            line-height: 20px;
+        }
+
+            .scoreAll li span {
+                font-size: 20x;
+                font-weight: 100;
+            }
+
+            .scoreAll li dl {
+                width: 60%;
+                height: 90px;
+                margin-bottom: 0;
+            }
+
+            .scoreAll li dt {
+                font-weight: 100;
+            }
+
+                .scoreAll li dt strong {
+                    margin-left: 20px;
+                }
+
+            .scoreAll li:nth-of-type(3n) {
+                margin-right: 0;
+            }
+
+
+</style>
+<script>
+    $(function () {
+        jQuery('#year').change(function () {
+            jQuery('form').submit();
+        });
+
+        jQuery('#month').change(function () {
+            jQuery('form').submit();
+        });
+    });
+    function fn$prev() {
+        var crt = jQuery('#month').val();
+        if (crt == '1') {
+            jQuery('#month').val('12');
+        } else {
+            var chg = parseInt(crt) - 1;
+            jQuery('#month').val(chg);
+        }
+        jQuery('#month').change();
+    }
+
+    function fn$next() {
+        var crt = jQuery('#month').val();
+        if (crt == '12') {
+            jQuery('#month').val('1');
+        } else {
+            var chg = parseInt(crt) + 1;
+            jQuery('#month').val(chg);
+        }
+        jQuery('#month').change();
+    }
+</script>
+
+
+<div class="main-content">
+    <div class="container-fluid">
+        @using (Html.BeginForm("ScoreAll", "Score", FormMethod.Post, new { style = "height:100%;" }))
+        {
+            <div class="row clearfix">
+                <div class="col-md-9">
+                    <div class="clearfix my-title">
+                        <a class="pull-left">
+                            @*<img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">*@评分统计
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="manage">
+                <p class="top" style="position: relative;">
+                    @Html.DropDownList("year")
+
+                    <span style="border:1px solid #b0b8c1;border-right: 0;"><a href="javascript:fn$prev();"><</a></span>
+                    @Html.DropDownList("month")
+
+                    <span style="border:1px solid #b0b8c1;border-left: 0;"><a href="javascript:fn$next();">></a></span>
+                    <img src="@Url.Content("~/Content/styles/static/images/tongj.png")" style="position: absolute;right: 120px;" />
+                    <i style="width：100px;position: absolute;right: 24px;color:#000;font-size:14px;display:inline-block;"><a href="@Url.Action("MonthAll", "Score", new { area = "Works", currentmonth = ViewData["currentmonth"] ,currentyear=ViewData["currentyear"]})">月度数据统计</a></i>
+                </p>
+                
+                    <ul class='scoreAll' style="overflow:auto;">
+                        @foreach (PeopleEntity p in Model)
+                {
+                            <li>
+                                <div id="@p.ID" onclick="show(this);"></div>
+                                <dl>
+                                    <dt><span>@p.Name</span><i style="color:black">@p.Quarters</i></dt>
+                                    <dt>完成任务数<strong>@p.Jobs</strong></dt>
+                                    <dt>当月总分<strong>@p.Scores</strong></dt>
+                                </dl>
+                            </li>
+                        }
+
+                    </ul>
+                
+            </div>
+            <footer class="main-footer">
+                武汉博晟安全技术股份有限公司   版权所有
+            </footer>
+        }
+    </div>
+
+</div>
+
+
+<script>
+    $(function () {
+        $('.main-sidebar,.main-content').niceScroll({
+            autohidemode: false
+        });
+        $('.table-today tr').hover(function () {
+            $(this).addClass('hover');
+        }, function () {
+            $(this).removeClass('hover');
+        });
+        $('.table-today tr').click(function () {
+            $(this).toggleClass('actives');
+        })
+        console.log($('.user').innerWidth())
+        $('.user>.dropdown-menu').css({
+            left: $('.user').innerWidth() - $('.user>.dropdown-menu').width() - 65
+        })
+
+        var year = $("#year").val();
+        var month = $("#month").val();
+        $.ajax({
+            url: '@Url.Action("GetPercents")',
+            type: 'post',
+            data: { year: year, month: month },
+            success: function (data) {
+                for (var i in data.ids) {
+                    count(data.pers[i], data.ids[i]);
+                }
+
+                //var h = 0;
+                //jQuery('.manage').children().each(function () {
+                //    h += jQuery(this).height();
+                //});
+                //jQuery('.manage').height(h);
+            }
+        });
+    });
+    function show(obj) {
+        var month = $('#month').val();
+        var year = $('#year').val();
+        window.location.href = "@Url.Action("PersonScore")?id=" + obj.id + "&currentmonth=" + month + "&currentyear=" + year;
+    }
+    function count(num, obj) {
+        var month = $('#month').val();
+        var year = $('#year').val();
+        var Chart4 = echarts.init(document.getElementById(obj))
+        option = {
+            title: {
+                show: true,
+                text: num + '%\n任务完成率',
+                x: 'center',
+                y: 'center',
+                textStyle: {
+                    fontSize: '14',
+                    color: 'gray',
+                    fontWeight: '800'
+                }
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'left',
+                show: false
+            },
+            color: ['#487ffe', '#ecedf1'],
+            series:
+		        {
+		            name: obj,
+		            type: 'pie',
+		            radius: ['65%', '75%'],
+		            avoidLabelOverlap: true,
+		            hoverAnimation: false,
+		            label: {
+		                normal: {
+		                    show: false,
+		                    position: 'center'
+		                },
+		                emphasis: {
+		                    show: false
+		                }
+		            },
+		            labelLine: {
+		                normal: {
+		                    show: false
+		                }
+		            },
+		            data: [
+		                { value: num, name: '' },
+		                { value: 100 - num, name: '' }
+		            ]
+		        }
+
+        };
+
+        Chart4.setOption(option);
+        Chart4.on('click', function (param) {
+            window.location.href = "@Url.Action("PersonScore")?id=" + param.name + "&currentmonth=" + month + "&currentyear=" + year;
+        });
+    }
+    function tongji() {
+        var arr = $('.scoreAll li div')
+        arr.map(function (item, idx) {
+            count(98, idx)
+        })
+    }
+
+</script>

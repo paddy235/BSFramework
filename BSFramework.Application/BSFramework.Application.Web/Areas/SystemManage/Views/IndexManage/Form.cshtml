@@ -1,0 +1,221 @@
+﻿@using BSFramework.Application.Code;
+@{
+ViewBag.Title = "表单页面";
+Layout = "~/Views/Shared/_Form.cshtml";
+
+}
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script src="~/Content/scripts/business/Common.js"></script>
+
+<script>
+    var keyValue = request('keyValue');
+    var mode = request('mode');
+    $(function () {
+        initControl();
+    });
+    //选取图标
+    function SelectIcon() {
+        dialogOpen({
+            id: "SelectIcon",
+            title: '选取图标',
+            url: '/AuthorizeManage/Module/Icon?ControlId=Icon',
+            width: "1000px",
+            height: "600px",
+            btn: false
+        })
+    }
+    //初始化控件
+    function initControl() {
+        $("#ItemRole").ComboBoxTree({
+            url: top.contentPath+'/AuthorizeManage/Module/GetTreeJson' ,
+            description: "==请选择==",
+            height: "195px",
+            allowSearch: true,
+            click: function (item) {
+                $("#ItemType").val(item.id);
+                console.log(item)
+            }
+        });
+
+
+        //获取表单
+        if (!!keyValue) {
+            $.SetForm({
+                    url: '/..@Url.Action("GetFormJson")' ,
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#form1").formDeserialize(data);
+                   
+                    if (data.IsOpen == 1) {
+                        document.getElementById("yes1").checked = true;
+                    } else {
+                        document.getElementById("no1").checked = true;
+                    }
+                }
+            })
+        }
+        $('.icheck input').iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass: 'iradio_square-blue',
+            increaseArea: '20%'
+        });
+       
+
+        if (!!TitleId) {
+            $("#TitleId").val(TitleId);
+        }
+        if (!!TitleName) {
+            $("#TitleName").val(TitleName)
+        }
+    }
+    //保存表单;
+    function AcceptClick() {
+        var itemStyle = "";
+        if ($("#ItemStyle").val().length > 0) {
+            $("#ItemStyle").val(encodeURIComponent($("#ItemStyle").val()));
+        }
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var postData = $("#form1").formSerialize(keyValue);
+     
+        if (document.getElementById("yes1").checked) {
+            postData["IsOpen"] =1;
+        } else {
+            postData["IsOpen"] = 0;
+        }
+        $.SaveForm({
+            url: '/..@Url.Action("SaveForm")' +'?keyValue=' + keyValue,
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<div style="margin-top: 20px; margin-right: 30px;">
+    <table class="form">
+        @*<tr>
+            <td class="formTitle">项目分类<font face="宋体" style="color:red;">*</font></td>
+            <td class="formValue icheck kind">
+                <input type="radio" value="SSJK" id="jk" name="ItemKind" onclick="alert(1)" />&nbsp;<label for="jk">实时监控</label>&nbsp;&nbsp;&nbsp;
+                <input type="radio" value="DBSX" id="sx" name="ItemKind" onclick="alert(2)" />&nbsp;<label for="sx">待办事项</label>
+            </td>
+        </tr>*@
+        <tr>
+            <td class="formTitle">指标名称<font face="宋体" style="color:red;">*</font></td>
+            <td class="formValue">
+                <input id="ItemName" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" maxlength="250"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">指标编码<font face="宋体" style="color:red;">*</font></td>
+            <td class="formValue">
+                <input id="ItemCode" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" maxlength="512" />
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">单位</td>
+            <td class="formValue">
+                <input id="ItemKind" type="text" class="form-control"   maxlength="32" />
+            </td>
+        </tr>
+        @*<tr>
+             <td class="formTitle">项目类型</td>
+             <td class="formValue icheck">
+                 <div id="ItemType" type="select" class="ui-select">
+                     <ul>
+                         <li data-value="安全检查">安全检查</li>
+                         <li data-value="隐患排查">隐患排查</li>
+                         <li data-value="反违章">反违章</li>
+                         <li data-value="危险源">危险源</li>
+                         <li data-value="事故事件">事故事件</li>
+                         <li data-value="外包工程">外包工程</li>
+                         <li data-value="高风险作业">高风险作业</li>
+                         <li data-value="安全风险">安全风险</li>
+                         <li data-value="预警指标">预警指标</li>
+                         <li data-value="特种设备及人员">特种设备及人员</li>
+                         <li data-value="教育培训">教育培训</li>
+                         <li data-value="外包工程流程">外包工程流程</li>
+                     </ul>
+                 </div>
+             </td>
+         </tr>
+        <tr>
+             <td class="formTitle">所属单位<font face="宋体" style="color:red;">*</font></td>
+             <td class="formValue">
+                 <input id="DeptName" type="text" class="form-control" isvalid="yes" readonly="readonly" value="@OperatorProvider.Provider.Current().DeptName" />
+                 <input type="hidden" id="DeptCode" value="@OperatorProvider.Provider.Current().DeptCode" />
+                 <input type="hidden" id="DeptId" value="@OperatorProvider.Provider.Current().DeptId" />
+             </td>
+         </tr>
+         <tr>
+             <td class="formTitle">适用范围<font face="宋体" style="color:red;">*</font></td>
+             <td class="formValue icheck">
+                 <input type="checkbox" value="公司领导" id="role1" name="ItemRole" />&nbsp;<label for="role1">公司领导</label>&nbsp;&nbsp;&nbsp;
+                 <input type="checkbox" value="一般用户" id="role2" name="ItemRole" />&nbsp;<label for="role2">一般用户</label>
+
+             </td>
+         </tr>
+         <tr>
+             <td class="formTitle">图标</td>
+             <td class="formValue icheck">
+                 <div class="input-group">
+                     <input id="Icon" type="text" placeholder="如：../content/images/a_19.png" class="form-control" value="../content/images/a_19.png" />
+                     <span class="input-group-addon" onclick="SelectIcon()" title="选取图标">...</span>
+                 </div>
+             </td>
+         </tr>*@
+        <tr>
+            <td class="formTitle">地址<font face="宋体" style="color:red;">*</font></td>
+            <td class="formValue icheck">
+                <input id="Address" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" placeholder="(不做跳转填 # )如：../HiddenTroubleManage/HTBaseInfo/Index?mode=qbyh" value="(不做跳转填 # )如：../HiddenTroubleManage/HTBaseInfo/Index?mode=qbyh" maxlength="512" />
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">跳转菜单</td>
+            <td class="formValue">
+                <input  type="hidden" id="ItemType"/>
+                <div id="ItemRole" type="selectTree" class="ui-select ui-select-focus" >
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">是否启用<font face="宋体" style="color:red;">*</font></td>
+            <td class="formValue icheck">
+                <input type="radio" value="1" id="yes1" name="IsOpen" checked="checked" />&nbsp;<label for="yes1">是</label>&nbsp;&nbsp;&nbsp;
+                <input type="radio" value="0" id="no1" name="IsOpen" />&nbsp;<label for="no1">否</label>
+
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">执行函数</td>
+            <td class="formValue icheck">
+                <input id="Callback" type="text" class="form-control" placeholder="如：openTab" value="top.openTab('', '{Url}','{ItemName}')" />
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">样式设置</td>
+            <td class="formValue icheck">
+                <textarea id="ItemStyle" class="form-control" rows="5" placeholder="如：<li onclick='{Callback}'><img src='{Icon}'><br><p>{ItemName}<br><span>{Num}</span></p></li>"><li onclick="{Callback}"><img src='{Icon}'><br><p>{ItemName}<br><span>{Num}</span></p></li>
+                </textarea>
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">排序号<font face="宋体" style="color:red;">*</font></td>
+            <td class="formValue">
+                <input id="SortCode" type="text" class="form-control" isvalid="yes" checkexpession="Num" />
+            </td>
+        </tr>
+        <tr style="color:red;">
+            <td class="formTitle" style="padding-left:8px;">表达式说明：</td>
+            <td class="formValue">
+                1.{ItemName}:项目名称，{Callback}:执行函数，{Url}:跳转地址，{Icon}:图标地址，{Num}:项目计算的结果。以上表达式程序在执行时会自动计算。<br />
+
+            </td>
+        </tr>
+    </table>
+</div>

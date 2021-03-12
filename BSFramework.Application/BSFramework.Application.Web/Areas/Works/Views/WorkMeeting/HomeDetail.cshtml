@@ -1,0 +1,204 @@
+﻿@model BSFramework.Entity.WorkMeeting.MeetingJobEntity
+@{
+    ViewBag.Title = "HomeDetail";
+    Layout = "~/Views/Shared/_LayoutEmptyScroll.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/launch-activity.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/app.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/before.css")" />
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+<style>
+    .audio-list {
+        float: left;
+    }
+
+        .audio-list li {
+            list-style: none;
+        }
+
+    .image-list {
+    }
+
+        .image-list li {
+            list-style: none;
+            float: left;
+            margin: 10px;
+        }
+
+            .image-list li img {
+                cursor: pointer;
+            }
+
+    .Validform_checktip {
+        text-align: center;
+        font-size: 12px;
+        line-height: 20px;
+    }
+
+    .Validform_wrong {
+        color: red;
+    }
+
+    .w-30- {
+        width: 33%;
+    }
+
+    .w-90- {
+        width: 99%;
+    }
+</style>
+<script>
+    jQuery(function () {
+        $('.play-audio-container').delegate('.play-audio', 'click', function () {
+            var url = $(this).data('url');
+            var html = '<audio id="audio" src="' + url + '" controls autoplay style="width:483px;display:block;"></audio>';
+            $('#audio-warp').append(html);
+            $('#audio')[0].addEventListener('canplaythrough', function () {
+                this.play();
+            });
+            layer.open({
+                type: 1,
+                area: ['460px', '36px'],
+                content: $('#audio-warp '),
+                title: false,
+                end: function () {
+                    $('#audio-warp').empty();
+                    $('#audio-warp').hide();
+                }
+            })
+        });
+    });
+</script>
+<div id="audio-warp" style="height:32px;width:460px;display: none;overflow:hidden;">
+</div>
+<div class="main-content" style="margin-left:50px">
+    <div class="container-fluid">
+        <div class="bg-fff pd-10">
+            <div class="clearfix">
+                <div class="pull-left my-form-control w-90-">
+                    <label>工作</label>
+                    <div>
+                        @Html.TextBoxFor(x => x.Job, new { @class = "block", nullmsg = "不能为空", datatype = "*1-200", placeholder = "请输入工作任务", @readonly = true })
+                    </div>
+                </div>
+            </div>
+
+            <div class="clearfix">
+                <div class="pull-left my-form-control w-30-">
+                    <label>工作负责人</label>
+                    <div>
+                        @Html.TextBoxFor(x => x.Relation.JobUsers.FirstOrDefault(row => row.JobType == "ischecker").UserName, new { @class = "block", nullmsg = "不能为空", datatype = "*1-200", placeholder = "请输入工作负责人", @readonly = true })
+                    </div>
+                </div>
+                <div class="pull-left my-form-control w-30-">
+                    <label>工作组成员</label>
+                    <div>
+                        @Html.HiddenFor(x => x.Relation.JobUserId)
+                        @Html.Hidden("Persons", Newtonsoft.Json.JsonConvert.SerializeObject(Model.Relation.JobUsers))
+                        @Html.TextBox("xxxx", ViewData["xxxx"], new { @class = "block datetime", @readonly = true })
+                    </div>
+                </div>
+                <div class="pull-left my-form-control w-30-">
+                    <label>计划时间</label>
+                    <div>
+                        @Html.TextBox("JobTime", ViewData["JobTime"], new { @class = "block datetime", nullmsg = "不能为空", datatype = "*1-30", placeholder = "", @readonly = true })
+
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix">
+                <div class="pull-left my-form-control w-90-">
+                    <label>危险因素</label>
+                    <div>
+                        @Html.TextAreaFor(x => x.Dangerous, new { @class = "block", placeholder = "", @readonly = true })
+
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix">
+                <div class="pull-left my-form-control w-90-">
+                    <label>防范措施</label>
+                    <div>
+                        @Html.TextAreaFor(x => x.Measure, new { @class = "block", placeholder = "", @readonly = true })
+
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix">
+                <div class="pull-left my-form-control w-90-">
+                    <label>任务说明</label>
+                    <div>
+                        @Html.TextAreaFor(x => x.Description, new { @class = "block", placeholder = "", @readonly = true })
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix">
+                <div class="pull-left my-form-control w-90-">
+                    <label>备注</label>
+                    <div>
+                        @Html.TextAreaFor(x => x.Remark, new { @class = "block", placeholder = "", @readonly = true })
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix audio" id="audiopart">
+                <div class="pull-left my-form-control w-90-">
+                    <label>音频</label>
+
+
+                </div>
+
+            </div>
+            @{
+                var picpath = Url.Content("~").Substring(0, @Url.Content("~").Length - 1);
+                foreach (var item in Model.Files.Where(x => x.Description == "音频").GroupBy(x => x.CreateUserName).ToList())
+                {
+                    <div class="clearfix audio" id="audiopart">
+                        <div class="pull-left my-form-control w-90-">
+                            <div class="audio-list">
+                                <ul class="play-audio-container" id="play-audio-container">
+                                    @foreach (var items in Model.Files.Where(x => x.Description == "音频" & x.CreateUserName == item.Key))
+                                    {
+                                        var filePath = picpath + items.FilePath.Substring(1, items.FilePath.Length - 1);
+                                        <li>@items.CreateUserName<div class="play-audio" data-url="@filePath"><img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@items.FileName</div></li>
+                                    }
+                                </ul>
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+
+            }
+            <div class="clearfix audio" id="imagepart">
+                <div class="pull-left my-form-control w-90-">
+                    <label>照片</label>
+                </div>
+            </div>
+            @{
+
+                foreach (var item in Model.Files.Where(x => x.Description == "照片").GroupBy(x => x.CreateUserName).ToList())
+                {
+                    <div class="clearfix audio" id="imagepart">
+                        <div class="pull-left my-form-control w-90-">
+                            <div class="image-list">
+                                @item.Key
+                                <ul id="" class="images-container" style="min-height:60px;">
+
+
+                                    @foreach (var items in Model.Files.Where(x => x.Description == "照片" & x.CreateUserName == item.Key))
+                                    {
+                                        var filePath = picpath + items.FilePath.Substring(1, items.FilePath.Length - 1);
+                                        <li><img data-id="@items.FileId" src="@filePath" alt="" style="width:160px;height:120px;" /></li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>

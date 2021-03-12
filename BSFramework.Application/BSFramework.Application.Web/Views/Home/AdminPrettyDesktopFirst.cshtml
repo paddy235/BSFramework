@@ -1,0 +1,1661 @@
+﻿@using BSFramework.Application.Entity.SystemManage;
+@using BSFramework.Application.Entity.PublicInfoManage.ViewMode;
+@{
+    List<IndexManageEntity> indexManageEntities = ViewBag.IndexManageEntitys;//分类
+    List<IndexAssocationEntity> assocationEntities = ViewBag.IndexAssocationEntitys;//关联关系
+    List<TerminalDataSetEntity> dataSetEntities = ViewBag.DataSetEntitys;//指标
+    List<KeyValue> keyValues = ViewBag.KeyValues;
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Scroll inside sections and slides - Scrolloverflow - fullPage.js</title>
+    <meta name="author" content="Alvaro Trigo Lopez" />
+    <meta name="description" content="fullPage scroll inside sections and slides. Scrolloverflow option." />
+    <meta name="keywords" content="fullpage,scrolloverflow,inside,overflow,scroll,jquery,demo,screen,fullscreen,backgrounds,full-screen" />
+    <meta name="Resource-type" content="Document" />
+
+    @*<!-- <link rel="stylesheet" href="./css/swiper.min.css"> -->
+        <!-- <link rel="stylesheet" type="text/css" href="./css/idangerous.swiper.css"> -->
+        <link rel="stylesheet" href="./css/fullpage.css">
+        <link rel="stylesheet" type="text/css" href="./css/common.css">
+        <link rel="stylesheet" href="./css/main.css">
+        <link rel="stylesheet" href="./css/index_2.css">
+        <link rel="stylesheet" href="./css/index_3.css">
+        <script src="./js/echarts.min.js"></script>
+        <script src="./js/jquery-2.2.4.min.js"></script>
+        <script src="./js/fullpage.js"></script>
+        <script src="./js/scrolloverflow.min.js"></script>
+        <!-- <script src="js/idangerous.swiper.min.js"></script> -->
+        <script src="js/nicescroll.min.js"></script>*@
+    <link rel="stylesheet" href="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/css/swiper.min.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/css/idangerous.swiper.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/css/fullpage.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/css/common.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/css/main.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/css/index_2.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/css/index_3.css")" />
+    <script src="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/js/echarts.min.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/js/jquery-2.2.4.min.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/js/fullpage.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/js/scrolloverflow.min.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/js/nicescroll.min.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/business/Common.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/scripts/utils/framework-ui.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/js/LoadData.js")"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+</head>
+<script>
+    $(function () {
+        $.ajax({
+            url: '/..@Url.Action("GetIndexCalcScore", "Evaluate", new { area = "EvaluateAbout" })',
+            type: "get",
+            dataType: "json",
+            success: function (Resultdata) {
+                var data = Resultdata.data;
+                var html = "";
+                for (var i = 0; i < data.length; i++) {
+                    switch (i) {
+                        case 0:
+                            html += '<li><span class="range_span1"><i class="first_i">' + data[i].Index + '</i></span><span class="range_span2">' + data[i].Category + '</span> <span class="range_span3">' + data[i].Percent1 + '</span><span class="range_span4">' + data[i].Percent + '</span> </li>';
+                            break;
+                        case 1:
+                            html += '<li><span class="range_span1"><i class="second_i">' + data[i].Index + '</i></span><span class="range_span2">' + data[i].Category + '</span> <span class="range_span3">' + data[i].Percent1 + '</span><span class="range_span4">' + data[i].Percent + '</span> </li>';
+
+                            break;
+                        case 2:
+                            html += '<li><span class="range_span1"><i class="third_i">' + data[i].Index + '</i></span><span class="range_span2">' + data[i].Category + '</span> <span class="range_span3">' + data[i].Percent1 + '</span><span class="range_span4">' + data[i].Percent + '</span> </li>';
+
+                            break;
+                        default:
+                            html += '<li><span class="range_span1"><i>' + data[i].Index + '</i></span><span class="range_span2">' + data[i].Category + '</span> <span class="range_span3">' + data[i].Percent1 + '</span><span class="range_span4">' + data[i].Percent + '</span> </li>';
+
+                            break;
+
+                    }
+                }
+                $(".range_list").html(html);
+            }
+
+        });
+
+        $.ajax({
+            url: '/..@Url.Action("GetDeductsIndex", "Evaluate", new { area = "EvaluateAbout" })',
+            type: "get",
+            dataType: "json",
+            success: function (Resultdata) {
+                var data = Resultdata.data;
+                var html = ' <colgroup><col width="9%"><col width="44%"> <col width="23%"><col width="8%"><col width="16%"> </colgroup><tr><th><p>序号</p></th><th><p>原因</p></th> <th><p>所属班组</p></th><th><p>加/减分</p></th><th><p>打分日期</p></th></tr>';
+                for (var i = 0; i < data.length; i++) {
+                    html += " <tr><td>" + (i + 1) + "</td><td><p>" + data[i].ItemContent + "</p></td> <td><p>" + data[i].GroupNames + "</p></td><td>";
+                    if (data[i].Times > 0) {
+                        html += "+" + data[i].Times;
+                    } else {
+                        html += data[i].Times;
+                    }
+                    html+= "</td> <td><p>" + String(data[i].CreateTime).substr(0, 10) + "</p></td> </tr>";
+                }
+                $("#GetDeductsIndex").html(html);
+            }
+
+        });
+    })
+</script>
+
+<body>
+    <a id="a_helper" style="background-color: cornflowerblue;    color: white;    position: fixed;    bottom: 30px;    right: 80px;    width: 40px;    border-radius: 50px;    height: 40px;    text-align: center;    line-height: 40px; float:left;z-index:999; " href="javascript:void(0)" >支持</a>
+    <img id="QR_Help" src="@ViewBag.QRCode" style="position: fixed;    bottom: 80px;    right: 45px;    float:left;z-index:999;  border:10px solid white; display:none; width:250px; height:250px;" />
+    <div id="fullpage">
+        <div class="section" id="section1">
+            <div class="slide" id="slide1">
+                <section id='first-section'>
+                    <div class="main2 clearfix">
+                        <div class="main2_left fl">
+                            <div class="main2_sec1">
+                                <div class="sec_top clearfix">
+                                    <h3 class="sec_title fl">未闭环隐患统计</h3>
+                                    <ul class="secTab fr clearfix">
+                                        <li class="active">部门</li>
+                                        <li>专业</li>
+                                        <li>区域</li>
+                                    </ul>
+                                </div>
+
+                                <div class="sec_content">
+                                    <div class="table_div table_div1">
+                                        <table id="secTabTable"></table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="main2_sec2">
+                                <div class="sec_top">
+                                    <h3 class="sec_title">隐患整改率统计</h3>
+                                </div>
+
+                                <div class="sec_content">
+                                    <div id="sec2_chart">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="main2_right fr">
+                            <div class="main2_sec3">
+                                <div class="sec_top">
+                                    <h3 class="sec_title">实时扣分</h3>
+                                </div>
+
+                                <div class="sec_content">
+                                    <div class="table_div table_div2">
+                                        <table id="GetDeductsIndex"></table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="main2_sec4">
+                                <div class="sec_top">
+                                    <h3 class="sec_title">考评扣分统计</h3>
+                                </div>
+
+                                <div class="sec_content">
+                                    <div class="list_title">
+                                        <span class="range_span1"><strong>排行</strong></span><span class="range_span2">考评项目</span>
+                                        <span class="range_span3">平均得分</span><span class="range_span4">得分率</span>
+                                    </div>
+                                    <div class="list_div">
+                                        <ul class="range_list"></ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="slide" id="slide2">
+                <section id="section">
+                    <div class="aside-left">
+                        <div class="new" style="height:100%;">
+                            <div class="lt-top">
+                                <img src="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/bzjs.png")" alt="">
+                            </div>
+                            @if (indexManageEntities != null && indexManageEntities.Count > 0)
+                            {
+
+                                <div class="base-top">
+                                    @foreach (var item in indexManageEntities)
+                                    {
+                                        <div class="b-l-list">
+                                            <div class="b-l-top">
+                                                <img src="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/more.png")" alt="">
+                                                @item.Title
+                                            </div>
+                                            <div class="b-l-content">
+                                                @if (assocationEntities.Any(x => x.TitleId == item.Id))
+                                                {
+                                                    var Ids = assocationEntities.Where(x => x.TitleId == item.Id).Select(p => p.DataSetId).ToList();
+                                                    var datasetList = dataSetEntities.Where(p => Ids.Contains(p.Id)).ToList();
+                                                    if (datasetList != null && datasetList.Count > 0)
+                                                    {
+
+                                                        foreach (var ds in datasetList)
+                                                        {
+
+                                                            KeyValue keyValue = keyValues.FirstOrDefault(x => x.key.Contains(ds.Code.Trim()));
+                                                            string rawStr = string.Empty;
+                                                            if (keyValue != null && !string.IsNullOrEmpty(keyValue.value))
+                                                            {
+                                                                rawStr = keyValue.value + ds.Unint;
+                                                            }
+                                                            else
+                                                            {
+                                                                rawStr = "0" + ds.Unint;
+                                                            }
+                                                            <div class="msg-list clearfix">
+                                                                <div class="classmsg fl" data-id="@ds.BindModuleId" data-text="@ds.Name" data-type="@ds.IsBZ" data-url="@ds.Address" @Html.Raw(!string.IsNullOrEmpty(ds.Address) ?  (ds.Address.Equals("#") ? "" : "onclick=\"tabact1(this);\"") : "")>
+                                                                    @ds.Name
+                                                                </div>
+                                                                <div class="count fr">
+
+                                                                    @rawStr
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div style="color:white; text-align:center; vertical-align:middle; margin-top:200px;">
+                                    <h1>暂无指标信息，请进行配置</h1>
+                                </div>
+                            }
+                        </div>
+
+                    </div>
+                    <div class="aside-middle" id="box">
+                        <div class="aside-c-content">
+                            <div class="aside-e-pic">
+                                <div class="tv-top clearfix">
+                                    <div class="lookunit fl">
+                                        查看单位：
+                                    </div>
+                                    <div class="inputvalue fr">
+                                        <input type="text" placeholder="请输入单位名称" id="deptid">
+                                    </div>
+                                </div>
+                                <div class="tv-bottom" id="ldt">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="aside-right">
+                        <!-- <span class="span0"></span>
+                        <span class="span1"></span>
+                        <span class="span2"></span>
+                        <span class="span3"></span> -->
+                        <div class="right-content">
+                            <div class="top-title">
+                                <img src="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/ssjk.png")" alt="">
+                            </div>
+                            <div class="top-lt-a clear">
+                                <div class="top-item fl" data-id="@ViewBag.meetid" data-url="@ViewBag.meeturl" data-text="@ViewBag.meettext" onclick="tabmeet1(this);">
+                                    <div class="a-q-number"><label id="lbmeet"></label></div>
+                                    <div class="tubiao">
+                                        <img src="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/1.png")" alt="">
+                                    </div>
+                                    <div class="a-q-date">
+                                        连续一周
+                                    </div>
+                                    <div class="core-water">
+                                        未开班会班组
+                                    </div>
+                                </div>
+                                <div class="top-item fl" data-id="@ViewBag.actid" data-url="@ViewBag.acturl" data-text="@ViewBag.acttext" onclick="tabact1(this);">
+                                    <div class="a-q-number"><label id="lbact"></label></div>
+                                    <div class="tubiao">
+                                        <img src="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/2.png")" alt="">
+                                    </div>
+                                    <div class="a-q-date">
+                                        连续两周
+                                    </div>
+                                    <div class="core-water">
+                                        @ViewBag.EdTitle
+                                    </div>
+                                </div>
+                                <div class="top-item fl" src="~/Content/styles/static/images/未展开KYT.png" data-id="@ViewBag.kytid" data-url="@ViewBag.kyturl" data-text="@ViewBag.kyttext" onclick="tabkyt1(this);">
+                                    <div class="a-q-number"><label id="lbkyt"></label></div>
+                                    <div class="tubiao">
+                                        <img src="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/3.png")" alt="">
+                                    </div>
+                                    <div class="a-q-date">
+                                        @ViewBag.title1
+                                    </div>
+                                    <div class="core-water">
+                                        @ViewBag.title2
+                                    </div>
+                                </div>
+                                <div class="top-item fl">
+                                    <div class="a-q-number">0</div>
+                                    <div class="tubiao">
+                                        <img src="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/4.png")" alt="">
+                                    </div>
+                                    <div class="a-q-date">
+                                        培训次数
+                                    </div>
+                                    <div class="core-water">
+                                        未达标班组
+                                    </div>
+                                </div>
+                                <div class="top-item fl" data-id="@ViewBag.eduid" data-url="@ViewBag.eduurl" data-text="@ViewBag.edutext" onclick="tabedu1(this);">
+                                    <div class="a-q-number"><label id="lbappraise"></label></div>
+                                    <div class="tubiao">
+                                        <img src="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/5.png")" alt="">
+                                    </div>
+                                    <div class="a-q-date active">
+                                    </div>
+                                    <div class="core-water active">
+                                        未评价台账
+                                    </div>
+                                </div>
+                                <div class="top-item fl">
+                                    <div class="a-q-number">0</div>
+                                    <div class="tubiao">
+                                        <img src="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/6.png")" alt="">
+                                    </div>
+                                    <div class="a-q-date active">
+                                    </div>
+                                    <div class="core-water active">
+                                        未闭环任务个数
+                                    </div>
+                                </div>
+                                <div class="top-item fl" data-id="wz" data-url="/LllegalManage/LllegalRegister/SdIndex?reformStatus=未整改" data-text="未整改违章" onclick="tabwz(this);">
+                                    <div class="a-q-number"><label id="lbwz">0</label></div>
+                                    <div class="tubiao">
+                                        <img src="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/7.png")" alt="">
+                                    </div>
+                                    <div class="a-q-date active">
+                                    </div>
+                                    <div class="core-water active">
+                                        未整改违章
+                                    </div>
+                                </div>
+                                <div class="top-item fl" data-id="yh" data-url="/HiddenTroubleManage/HTBaseInfo/Index?ChangeStatus=未整改" data-text="未整改隐患" onclick="tabyh(this);">
+                                    <div class="a-q-number"><label id="lbyh">0</label></div>
+                                    <div class="tubiao">
+                                        <img src="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/8.png")" alt="">
+                                    </div>
+                                    <div class="a-q-date active">
+                                    </div>
+                                    <div class="core-water active">
+                                        未整改隐患
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+            </div>
+
+            <div class="slide" id="slide3">
+                <section id='last-section'>
+                    <div class="main2 clearfix">
+                        <div class="main3_left fl">
+                            <div class="main3_sec1">
+                                <div class="sec_top clearfix">
+                                    <h3 class="sec_title fl">通知公告</h3>
+                                    <a href="javascript:Tongzhi()" class="" style="color:white; float:right; margin-top:15px;">更多</a>
+                                </div>
+
+                                <div class="sec_content" id="News">
+                                </div>
+                            </div>
+                            <div class="main3_sec2">
+                                <div class="sec_top">
+                                    <h3 class="sec_title">班组考评</h3>
+
+                                </div>
+                                <div class="sec_content clearfix" id="kpdata">
+                                    <div class="sec2_left fl">
+                                        <div class="teamList_div" style="margin-bottom: 45px" id="kp_bbbz">
+                                        </div>
+                                        <div class="teamList_div" id="kp_xjbz">
+                                        </div>
+                                    </div>
+                                    <div class="sec2_right fr">
+                                        <div class="teamList_div" id="kp_dbbz">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="main3_right fr">
+                            <div class="main3_sec3">
+                                <div class="sec_top">
+                                    <h3 class="sec_title">各部门未闭环违章统计</h3>
+                                </div>
+
+                                <div class="sec_content">
+                                    <div class="table_div table_div3" id="wzlist">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="main3_sec4">
+                                <div class="sec_top">
+                                    <h3 class="sec_title">各部门违章整改率统计</h3>
+                                </div>
+
+                                <div class="sec_content">
+                                    <div id="sec4_chart"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-safe" id="detail-safe">
+        <div class="detail-c-c">
+            <div class="detail-header">
+                安全状态详情 <div class="mode-close"></div>
+            </div>
+            <div class="detail-c-content">
+                <div class="d-table clearfix">
+                    <div class="d-lidt-c clearfix">
+                        <div class="t-i-0">序号</div>
+                        <div class="t-i-1">分项指标名称</div>
+                        <div class="t-i-2">权重</div>
+                        <div class="t-i-3">得分</div>
+                        <div class="t-i-4">加权得分</div>
+                    </div>
+                    <div class="d-lidt-c clearfix">
+                        <div class="t-i-0">0</div>
+                        <div class="t-i-1">0</div>
+                        <div class="t-i-2">0</div>
+                        <div class="t-i-3">0</div>
+                        <div class="t-i-4">0</div>
+                    </div>
+                    <div class="d-lidt-c clearfix">
+                        <div class="t-i-0">0</div>
+                        <div class="t-i-1">0</div>
+                        <div class="t-i-2">0</div>
+                        <div class="t-i-3">0</div>
+                        <div class="t-i-4">0</div>
+                    </div>
+                    <div class="d-lidt-c clearfix">
+                        <div class="t-i-0">0</div>
+                        <div class="t-i-1">0</div>
+                        <div class="t-i-2">0</div>
+                        <div class="t-i-3">0</div>
+                        <div class="t-i-4">0</div>
+                    </div>
+                    <div class="d-lidt-c clearfix">
+                        <div class="t-i-0">0</div>
+                        <div class="t-i-1">0</div>
+                        <div class="t-i-2">0</div>
+                        <div class="t-i-3">0</div>
+                        <div class="t-i-4">0</div>
+                    </div>
+                    <div class="d-lidt-c clearfix">
+                        <div class="t-i-0">0</div>
+                        <div class="t-i-1">0</div>
+                        <div class="t-i-2">0</div>
+                        <div class="t-i-3">0</div>
+                        <div class="t-i-4">0</div>
+                    </div>
+                    <div class="d-lidt-c clearfix">
+                        <div class="t-i-0">0</div>
+                        <div class="t-i-1">0</div>
+                        <div class="t-i-2">0</div>
+                        <div class="t-i-3">0</div>
+                        <div class="t-i-4">0</div>
+                    </div>
+                    <div class="d-lidt-c clearfix">
+                        <div class="t-i-0">0</div>
+                        <div class="t-i-1">0</div>
+                        <div class="t-i-2">0</div>
+                        <div class="t-i-3">0</div>
+                        <div class="t-i-4">0</div>
+                    </div>
+                    <div class="d-lidt-c clearfix">
+                        <div class="t-i-0">0</div>
+                        <div class="t-i-1">0</div>
+                        <div class="t-i-2">0</div>
+                        <div class="t-i-3">0</div>
+                        <div class="t-i-4">0</div>
+                    </div>
+                    <div class="d-lidt-c clearfix">
+                        <div class="t-i-0">0</div>
+                        <div class="t-i-1">0</div>
+                        <div class="t-i-2">0</div>
+                        <div class="t-i-3">0</div>
+                        <div class="t-i-4">0</div>
+                    </div>
+                    <div class="d-lidt-c clearfix">
+                        <div class="t-i-0">0</div>
+                        <div class="t-i-1">0</div>
+                        <div class="t-i-2">0</div>
+                        <div class="t-i-3">0</div>
+                        <div class="t-i-4">0</div>
+                    </div>
+                </div>
+                <div class="d-table-title">
+                    <div class="d-t-c active">
+                        隐患排查治理
+                    </div>
+                    <div class="d-t-c">
+                        安全风险管控
+                    </div>
+                    <div class="d-t-c">
+                        事故事件管理
+                    </div>
+                    <div class="d-t-c">
+                        危险源管理
+                    </div>
+                    <div class="d-t-c">
+                        应急管理
+                    </div>
+                    <div class="d-t-c">
+                        职业健康
+                    </div>
+                    <div class="d-t-c">
+                        人员管理
+                    </div>
+                    <div class="d-t-c">
+                        特种设备管理
+                    </div>
+                    <div class="d-t-c">
+                        安全教育培训
+                    </div>
+                </div>
+                <div class="next-table">
+                    <div class="next-table-list clearfix">
+                        <div class="next-i-item">指标</div>
+                        <div class="next-i-item">分值</div>
+                        <div class="next-i-item">评分标准</div>
+                        <div class="next-i-item">扣分</div>
+                        <div class="next-i-item">得分</div>
+                    </div>
+                    <div class="next-table-list clearfix">
+                        <div class="next-i-item">指标</div>
+                        <div class="next-i-item">分值</div>
+                        <div class="next-i-item">评分标准</div>
+                        <div class="next-i-item">扣分</div>
+                        <div class="next-i-item">得分</div>
+                    </div>
+                    <div class="next-table-list clearfix">
+                        <div class="next-i-item">指标</div>
+                        <div class="next-i-item">分值</div>
+                        <div class="next-i-item">评分标准</div>
+                        <div class="next-i-item">扣分</div>
+                        <div class="next-i-item">得分</div>
+                    </div>
+                    <div class="next-table-list clearfix">
+                        <div class="next-i-item">指标</div>
+                        <div class="next-i-item">分值</div>
+                        <div class="next-i-item">评分标准</div>
+                        <div class="next-i-item">扣分</div>
+                        <div class="next-i-item">得分</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="detail-diago">
+        <div class="detail-c-d">
+            <div class="detail-header1">
+                一般隐患率低于100%的部门 <div class="mode-close1"></div>
+            </div>
+            <div class="dtable">
+                <div class="d-t-a clearfix">
+                    <div class="partitem">序号</div>
+                    <div class="partitem">单位/部门</div>
+                    <div class="partitem">重大隐患整改率</div>
+                </div>
+                <div class="d-t-a clearfix">
+                    <div class="partitem">序号</div>
+                    <div class="partitem">单位/部门</div>
+                    <div class="partitem">重大隐患整改率</div>
+                </div>
+                <div class="d-t-a clearfix">
+                    <div class="partitem">序号</div>
+                    <div class="partitem">单位/部门</div>
+                    <div class="partitem">重大隐患整改率</div>
+                </div>
+                <div class="d-t-a clearfix">
+                    <div class="partitem">序号</div>
+                    <div class="partitem">单位/部门</div>
+                    <div class="partitem">重大隐患整改率</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    
+    @*<script type="text/javascript" src="./js/scrolloverflow.js"></script>
+        <script type="text/javascript" src="./js/fullpage.js"></script>*@
+    <script type="text/javascript" src="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/js/scrolloverflow.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/js/fullpage.js")"></script>
+    <script type="text/javascript">
+        var myFullpage = new fullpage('#fullpage', {
+            // anchors: ['firstPage', 'secondPage', '3rdPage', '4thPage'],
+            // sectionsColor: ['#4A6FB1', '#939FAA', '#323539'],
+            scrollOverflow: true,
+        });
+        if (window.addEventListener) {
+            myFullpage.silentMoveTo(1, 1);
+        }
+    </script>
+    <!-- <script src="./js/swiper.min.js"></script> -->
+    <script type="text/javascript">
+
+        $('.message-c-coy').niceScroll({
+            autohidemode: false,
+            cursorcolor: "#3477e4",
+            cursorborderradius: "0px",
+            cursorwidth: "3px",
+            background: "#dedfe1",
+            cursorborder: "none"
+        });
+        $('.right-content').niceScroll({
+            autohidemode: false,
+            cursorcolor: "#3477e4",
+            cursorborderradius: "0px",
+            cursorwidth: "3px",
+            background: "#dedfe1",
+            cursorborder: "none"
+        });
+        $('.new').niceScroll({
+            autohidemode: false,
+            cursorcolor: "#3477e4",
+            cursorborderradius: "0px",
+            cursorwidth: "3px",
+            background: "#dedfe1",
+            cursorborder: "none"
+        });
+    </script>
+    <script>
+
+        function bumen() {
+            $.ajax({
+                url: '/..@Url.Action("HomeIndex", "ERCHTMS", new { area = "Works" })?mode=1',
+                type: "get",
+                dataType: "json",
+                success: function (Resultdata) {
+                    var html = ' <colgroup><col width="9%"><col width="37%"><col width="27%"><col width="27%"></colgroup> <tr><th><p>序号</p></th><th><p>单位/部门</p></th><th><p>未闭环一般隐患(占比)</p></th>  <th><p>未闭环重大隐患(占比)</p></th></tr>';
+                    if (Resultdata.Code == "0") {
+                        var data = Resultdata.data
+                        for (var i = 0; i < data.length; i++) {
+                            html += "<tr><td>" + (i + 1) + "</td><td><p>" + data[i].name + "</p></td><td><p>" + data[i].s1 + "</p></td><td><p>" + data[i].s2 + "</p></td></tr>";
+                        }
+                    }
+
+                    $("#secTabTable").html(html);
+                }
+            });
+        }
+
+        function zhuanye() {
+            $.ajax({
+                url: '/..@Url.Action("HomeIndex", "ERCHTMS", new { area = "Works" })?mode=3',
+                type: "get",
+                dataType: "json",
+                success: function (Resultdata) {
+                    var html = ' <colgroup><col width="9%"><col width="37%"><col width="27%"><col width="27%"></colgroup> <tr><th><p>序号</p></th><th><p>单位/部门</p></th><th><p>未闭环一般隐患(占比)</p></th>  <th><p>未闭环重大隐患(占比)</p></th></tr>';
+                    if (Resultdata.Code == "0") {
+                        var data = Resultdata.data
+                        for (var i = 0; i < data.length; i++) {
+                            html += "<tr><td>" + (i + 1) + "</td><td><p>" + data[i].name + "</p></td><td><p>" + data[i].s1 + "</p></td><td><p>" + data[i].s2 + "</p></td></tr>";
+                        }
+                    }
+
+                    $("#secTabTable").html(html);
+                }
+            });
+        }
+        function quyu() {
+            $.ajax({
+                url: '/..@Url.Action("HomeIndex", "ERCHTMS", new { area = "Works" })?mode=2',
+                type: "get",
+                dataType: "json",
+                success: function (Resultdata) {
+                    var html = ' <colgroup><col width="9%"><col width="37%"><col width="27%"><col width="27%"></colgroup> <tr><th><p>序号</p></th><th><p>单位/部门</p></th><th><p>未闭环一般隐患(占比)</p></th>  <th><p>未闭环重大隐患(占比)</p></th></tr>';
+                    if (Resultdata.Code == "0") {
+                        var data = Resultdata.data
+                        for (var i = 0; i < data.length; i++) {
+                            html += "<tr><td>" + (i + 1) + "</td><td><p>" + data[i].name + "</p></td><td><p>" + data[i].s1 + "</p></td><td><p>" + data[i].s2 + "</p></td></tr>";
+                        }
+                    }
+
+                    $("#secTabTable").html(html);
+                }
+            });
+        }
+        $(function () {
+            bumen();
+
+            $('.secTab li').click(function () {
+                var typename = $(this).text();
+                switch (typename) {
+                    case "部门":
+                        bumen();
+                        break;
+                    case "专业":
+                        zhuanye();
+                        break;
+                    case "区域":
+                        quyu();
+                        break;
+                    default:
+                        bumen();
+                        break;
+
+                }
+                $(this).addClass('active').siblings().removeClass('active');
+            })
+            var scrollParam = {
+                autohidemode: false,
+                cursorcolor: "#387dfc",
+                cursorwidth: "5px",
+                background: "#0f1a45",
+                cursorborder: "none",
+                cursorborderradius: "0"
+            }
+            $('.table_div1').niceScroll(scrollParam);
+            $('.table_div2').niceScroll(scrollParam);
+            $('.list_div').niceScroll(scrollParam);
+
+            $.ajax({
+                url: '/..@Url.Action("HomeIndex", "ERCHTMS", new { area = "Works" })?mode=4',
+                type: "get",
+                dataType: "json",
+                success: function (Resultdata) {
+                    var zd = [];
+                    var yb = [];
+                    var dept = [];
+                    if (Resultdata.Code == "0") {
+                        var data = Resultdata.data;
+
+                        for (var i = 0; i < data.length; i++) {
+                            zd[i] = data[i].zdzgl;
+                            yb[i] = data[i].ybzgl;
+                            dept[i] = data[i].fullname;
+                        }
+
+                    }
+                    option = {
+                        title: {
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'none'
+                            }
+                        },
+                        legend: {
+                            data: ['一般隐患', '重大隐患'],
+                            itemGap: 30,
+                            textStyle: {
+                                color: '#c7e6fa'
+                            }
+                        },
+                        toolbox: {
+                        },
+                        calculable: true,
+                        grid: {
+                            left: '1%',
+                            right: '1%',
+                            bottom: '6%',
+                            top: '15%',
+                            containLabel: true
+                        },
+                        xAxis: [
+                            {
+                                type: 'category',
+                                axisLabel: {
+                                    interval: 0,
+                                    rotate: 15,
+                                    textStyle: {
+                                        color: '#c7e6fa'
+                                    }
+                                },
+                                axisLine: {
+                                    lineStyle: {
+                                        color: "rgba(85,113,255,.3)"
+                                    }
+                                },
+                                data: dept
+                            },
+                            {
+                                type: 'category',
+                                axisLine: { show: false },
+                                axisTick: { show: false },
+                                axisLabel: {
+                                    show: false
+                                },
+                                splitArea: { show: false },
+                                splitLine: { show: false, },
+                                data: dept
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                type: 'value',
+                                axisLabel: {
+                                    formatter: '{value}',
+                                    textStyle: {
+                                        color: '#c7e6fa'
+                                    }
+                                },
+                                axisLine: {
+                                    lineStyle: {
+                                        color: "rgba(85,113,255,.3)"
+                                    }
+                                },
+                                splitLine: {
+                                    lineStyle: {
+                                        color: "rgba(85,113,255,.3)"
+                                    }
+                                }
+                            }
+                        ],
+                        dataZoom: [
+                            {
+                                type: 'slider',
+                                show: true,
+                                start: 80,
+                                end: 100,
+                                //handleSize:1,
+                                bottom: 0,
+                                height: 12,
+                                textStyle: false,
+                                zoomLock: false,
+                                filterMode: 'empty'
+                            }
+                        ],
+                        series: [
+                            {
+                                name: '一般隐患',
+                                type: 'bar',
+                                barWidth: '35%',
+                                stack: '隐患',
+                                itemStyle: {
+                                    normal: {
+                                        color: new echarts.graphic.LinearGradient(
+                                            0, 0, 0, 1,
+                                            [
+                                                { offset: 0, color: '#5377ff' },
+                                                { offset: 0.5, color: '#3c6cfc' },
+                                                { offset: 1, color: '#2560f8' }
+                                            ]
+                                        ),
+                                        label: {
+                                            show: true,
+                                            position: 'top',
+                                            textStyle: {
+                                                color: '#c7e6fa'
+                                            }
+                                        }
+                                    }
+                                },
+                                data: yb
+                            },
+                            {
+                                name: '重大隐患',
+                                type: 'bar',
+                                zlevel: 1,
+                                stack: '隐患',
+                                barWidth: '35%',
+                                itemStyle: {
+                                    normal: {
+                                        color: '#13acff',
+                                        label: {
+                                            show: true,
+                                            position: 'top',
+                                            textStyle: {
+                                                color: '#c7e6fa'
+                                            }
+                                        }
+                                    }
+                                },
+                                data: zd
+                            }
+                        ]
+                    };
+                    var chart = echarts.init(document.getElementById('sec2_chart'));
+                    chart.setOption(option);
+                }
+
+            });
+
+        })
+    </script>
+
+    <script>
+        var deptid = "@ViewBag.deptid";
+        var categories = [];
+        var lwngth = '70%';
+        var aWidth = document.body.offsetWidth;
+        var lines = [
+                        {
+                            value: [100, 200, 300, 1, 230, 399, 200, 100],
+                            name: "实时状况",
+                            itemStyle: {
+                                normal: {
+                                    color: '#13acff',
+                                    label: {
+                                        show: true,
+                                        position: 'top',
+                                        textStyle: {
+                                            color: '#fa475a'
+                                        }
+                                    }
+                                }
+                            },
+                            symbolSize: 10,
+                            symbol: 'image:@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/red.png")',
+                        },
+                        {
+                            value: [10, 20, 30, 1, 23, 39, 200, 140],
+                            name: "班组最高分",
+                            itemStyle: {
+                                normal: {
+                                    color: '#fbe769',
+                                    label: {
+                                        show: true,
+                                        position: 'top',
+                                        textStyle: {
+                                            color: '#fbe769'
+                                        }
+                                    }
+                                }
+                            },
+                            symbolSize: 10,
+                            symbol: 'image:@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/yellow.png")',
+                            symbolRotate: 100
+                        },
+                        {
+                            value: [10, 207, 30, 1, 20, 99, 20, 10],
+                            name: "同比对标",
+                            itemStyle: {
+                                normal: {
+                                    color: '#aca3f9',
+                                    label: {
+                                        show: true,
+                                        position: 'top',
+                                        textStyle: {
+                                            color: '#aca3f9'
+                                        }
+                                    }
+                                }
+                            },
+                            symbolSize: 10,
+                            symbol: 'image:@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/purple.png")',
+                            symbolRotate: -10
+                        },
+                        {
+                            value: [10, 200, 300, 1, 20, 319, 599, 800],
+                            name: "环比对标",
+
+                            itemStyle: {
+                                normal: {
+                                    color: '#44fefe',
+                                    label: {
+                                        show: true,
+                                        position: 'top',
+                                        textStyle: {
+                                            color: '#44fefe'
+                                        }
+                                    }
+                                }
+                            },
+                            symbolSize: 10,
+                            symbol: 'image:@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/green.png")',
+                            symbolRotate: -10,
+                            icon: "triangle"
+                        },
+        ];
+        var options = {
+            title: {
+                text: ""
+            },
+            tooltip: {},
+            legend: {
+                bottom: 20,
+                data: [
+                {
+                    name: "实时状况",
+                    textStyle: {
+                        color: '#c7e6fa'
+                    },
+                    icon: 'image:@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/red.png")'
+                },
+                {
+                    name: "班组最高分",
+                    textStyle: {
+                        color: '#c7e6fa'
+                    },
+                    icon: 'image:@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/yellow.png")'
+                },
+                {
+                    name: "同比对标",
+                    textStyle: {
+                        color: '#c7e6fa'
+                    },
+                    icon: 'image:@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/purple.png")'
+                },
+                {
+                    name: "环比对标",
+                    textStyle: {
+                        color: '#c7e6fa'
+                    },
+                    icon: 'image:@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/green.png")'
+                }
+                ]
+            },
+
+            //radar: {
+            //    splitNumber: 5,
+            //    textStyle: {
+            //        color: "#fff",
+            //        backgroundColor: "#999",
+            //        borderRadius: 3,
+            //        padding: [3, 5],
+            //        fontSize: 20
+            //    },
+            //    axisLine: {
+            //        show: false,
+            //        lineStyle: {
+            //            color: "#fff",
+            //        },
+            //    },
+            //    //indicator: [
+            //    //    { name: '基础建设', max: 1000 },
+            //    //    { name: '创新建设', max: 1000 },
+            //    //    { name: '绩效管理', max: 1000 },
+            //    //    { name: '7s管理', max: 1000 },
+            //    //    { name: '成本建设', max: 1000 },
+            //    //    { name: '和谐建设', max: 1000 },
+            //    //    { name: '技能建设', max: 1000 },
+            //    //    { name: '安全管理', max: 1000 },
+            //    //],
+            //    radius: lwngth,
+            //    splitLine: {
+            //        show: true,
+            //        lineStyle: {
+            //            width: 1,
+            //            color: "#2053a1",
+
+            //        }
+            //    },
+            //    splitArea: {
+            //        areaStyle: {
+            //            color: ["rgba(32,83,161,0.9)", "rgba(32,83,161,0.7)", "rgba(32,83,161,0.5)", "rgba(32,83,161,0.4)", "rgba(32,83,161,0.2)", "rgba(32,83,161,0)"]
+            //        }
+            //    },
+            //    name: {
+            //        textStyle: {
+            //            color: '#fff',
+            //            fontSize: 20
+            //        }
+            //    }
+            //},
+            @*series: [
+                {
+                    name: "",
+                    type: "radar",
+                    data: [
+                        {
+                            value: [100, 200, 300, 1, 230, 399, 200, 100],
+                            name: "实时状况",
+                            itemStyle: {
+                                normal: {
+                                    color: '#13acff',
+                                    label: {
+                                        show: true,
+                                        position: 'top',
+                                        textStyle: {
+                                            color: '#fa475a'
+                                        }
+                                    }
+                                }
+                            },
+                            symbolSize: 10,
+                            symbol: 'image:@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/red.png")',
+                        },
+                        {
+                            value: [10, 20, 30, 1, 23, 39, 200, 140],
+                            name: "班组最高分",
+                            itemStyle: {
+                                normal: {
+                                    color: '#fbe769',
+                                    label: {
+                                        show: true,
+                                        position: 'top',
+                                        textStyle: {
+                                            color: '#fbe769'
+                                        }
+                                    }
+                                }
+                            },
+                            symbolSize: 10,
+                            symbol: 'image:@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/yellow.png")',
+                            symbolRotate: 100
+                        },
+                        {
+                            value: [10, 207, 30, 1, 20, 99, 20, 10],
+                            name: "同比对标",
+                            itemStyle: {
+                                normal: {
+                                    color: '#aca3f9',
+                                    label: {
+                                        show: true,
+                                        position: 'top',
+                                        textStyle: {
+                                            color: '#aca3f9'
+                                        }
+                                    }
+                                }
+                            },
+                            symbolSize: 10,
+                            symbol: 'image:@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/purple.png")',
+                            symbolRotate: -10
+                        },
+                        {
+                            value: [10, 200, 300, 1, 20, 319, 599, 800],
+                            name: "环比对标",
+
+                            itemStyle: {
+                                normal: {
+                                    color: '#44fefe',
+                                    label: {
+                                        show: true,
+                                        position: 'top',
+                                        textStyle: {
+                                            color: '#44fefe'
+                                        }
+                                    }
+                                }
+                            },
+                            symbolSize: 10,
+                            symbol: 'image:@Url.Content("~/Content/scripts/plugins/AdminPrettyDesktopFirst/img/new/green.png")',
+                            symbolRotate: -10,
+                            icon: "triangle"
+                        },
+                    ]
+                }
+            ]*@
+        }
+
+        function fn$selectover2(node) {
+            if (node) {
+                jQuery('#deptid').val(node.text);
+                deptid = node.id;
+                loaddata();
+            }
+        }
+
+        var chart1 = echarts.init(document.getElementById('ldt'));
+        chart1.setOption(options);
+
+        function loaddata() {
+            jQuery.post('@Url.Action("GetEvaluateJson", "Evaluate", new { area = "EvaluateAbout"})', { deptid: deptid }, function (data) {
+                if (!data || data.length == 0) {
+                    jQuery('#ldt').empty();
+                    jQuery('#ldt').append('<span>no data</span>');
+                    return;
+                }
+
+                var linemax = 0;
+                jQuery.each(data, function (i, o) {
+                    jQuery.each(o.data, function (j, p) { var ss = parseFloat(p.Score); linemax = ss > linemax ? ss : linemax; });
+                });
+
+                var categories = [], values = [];
+                jQuery.each(data[0].data, function () {
+                    categories.push({ name: this.Category, max: linemax });
+                });
+
+                jQuery.each(data, function (i) {
+                    if (!this.data) return;
+                    item = { name: this.name, value: [], itemStyle: lines[i].itemStyle, symbolSize: lines[i].symbolSize, symbol: lines[i].symbol, symbolRotate: lines[i].symbolRotate, icon: lines[i].icon };
+                    jQuery.each(this.data, function () {
+                        item.value.push(Math.round(this.Score*100)/100);
+                    });
+                    values.push(item);
+                });
+
+                chart1.setOption({
+                    radar: {
+                        textStyle: {
+                            color: "#fff",
+                            backgroundColor: "#999",
+                            borderRadius: 3,
+                            padding: [3, 5],
+                            fontSize: 20
+                        },
+                        axisLine: {
+                            show: false,
+                            lineStyle: {
+                                color: "#fff",
+                            },
+                        },
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                width: 1,
+                                color: "#2053a1",
+                            }
+                        },
+                        splitArea: {
+                            areaStyle: {
+                                color: ["rgba(32,83,161,0.9)", "rgba(32,83,161,0.7)", "rgba(32,83,161,0.5)", "rgba(32,83,161,0.4)", "rgba(32,83,161,0.2)", "rgba(32,83,161,0)"]
+                            }
+                        },
+                        name: {
+                            textStyle: {
+                                color: '#fff',
+                                fontSize: 20
+                            }
+                        },
+                        indicator: categories
+                    },
+                    series: {
+                        name: "",
+                        type: "radar",
+                        data: values
+                    }
+                });
+            }, 'json');
+        }
+
+        jQuery(function () {
+            jQuery('#deptid').click(function () {
+                showModa('/..@Url.Action("DeptSelect", "Department", new { area = "BaseManage" })', '选择部门', '300px', '600px', { select: 'single', category: '' }, fn$selectover2);
+            });
+
+            if (aWidth < 1800) {
+                lwngth = '50%';
+            }
+
+            loaddata();
+        });
+    </script>
+    @*右屏 违章整改率统计图*@
+    <script>
+        $(function () {
+            var scrollParam = {
+                autohidemode: false,
+                cursorcolor: "#387dfc",
+                cursorwidth: "5px",
+                background: "#0f1a45",
+                cursorborder: "none",
+                cursorborderradius: "0"
+            }
+            $('.notice_list').niceScroll(scrollParam);
+            $('.table_div3').niceScroll(scrollParam);
+            $('.team_list3').niceScroll(scrollParam);
+        })
+        $(function () {
+            $.ajax({
+                url: '@Url.Action("getYHWZ")',
+                type: 'post',
+                data: { mode: "6" },
+                loading: "数据提交中...",
+                success: function (data) {
+                    var name = new Array();
+                    var yb = new Array();
+                    var jyz = new Array();
+                    var yz = new Array();
+                    $(data).each(function (j, item) {
+                        name.push(item[1].Value);
+                        yb.push(item[3].Value);
+                        jyz.push(item[4].Value);
+                        yz.push(item[5].Value);
+                    });
+                    var start = 0; var show = false;
+                    if (name.length <= 7) { start = 10; show = false; }
+                    else if (name.length <= 20) { start = 20; show = true; }
+                    else if (name.length <= 50) { start = 50; show = true; }
+                    else { start = 95; show = true; }
+                    option1 = {
+                        title: {
+                        },
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            data: ['一般违章', '较严重违章', '严重违章'],
+                            itemGap: 30,
+                            textStyle: {
+                                color: '#c7e6fa'
+                            }
+                        },
+                        toolbox: {
+                        },
+                        calculable: true,
+                        grid: {
+                            left: '1%',
+                            right: '1%',
+                            bottom: '6%',
+                            top: '15%',
+                            containLabel: true
+                        },
+                        xAxis: [
+                            {
+                                type: 'category',
+                                axisLabel: {
+                                    textStyle: {
+                                        color: '#c7e6fa'
+                                    }
+                                },
+                                axisLine: {
+                                    lineStyle: {
+                                        color: "rgba(85,113,255,.3)"
+                                    }
+                                },
+                                axisLabel: {
+                                    interval: 0,
+                                    rotate: 15,
+                                    textStyle: {
+                                        color: '#fff'
+                                    }
+                                },
+                                data: name
+                            },
+                            {
+                                type: 'category',
+                                axisLine: { show: false },
+                                axisTick: { show: false },
+                                axisLabel: {
+                                    show: false
+                                },
+                                splitArea: { show: false },
+                                splitLine: { show: false, },
+                                data: name
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                type: 'value',
+                                axisLabel: {
+                                    formatter: '{value} %',
+                                    textStyle: {
+                                        color: '#c7e6fa'
+                                    }
+                                },
+                                axisLine: {
+                                    lineStyle: {
+                                        color: "rgba(85,113,255,.3)"
+                                    }
+                                },
+                                splitLine: {
+                                    lineStyle: {
+                                        color: "rgba(85,113,255,.3)"
+                                    }
+                                }
+                            }
+                        ],
+                        series: [
+                            {
+                                name: '一般违章',
+                                type: 'bar',
+                                barWidth: '15%',
+                                itemStyle: {
+                                    normal: {
+                                        color: '#2850fa',
+                                        label: {
+                                            show: false
+                                        }
+                                    }
+                                },
+                                data: yb
+                            },
+                            {
+                                name: '较严重违章',
+                                type: 'bar',
+                                // xAxisIndex:1,
+                                barWidth: '15%',
+                                itemStyle: {
+                                    normal: {
+                                        color: '#ffd117',
+                                        label: {
+                                            show: false
+                                        }
+                                    }
+                                },
+                                data: jyz
+                            },
+                            {
+                                name: '严重违章',
+                                type: 'bar',
+                                // xAxisIndex:1,
+                                barWidth: '15%',
+                                itemStyle: {
+                                    normal: {
+                                        color: '#ff5661',
+                                        label: {
+                                            show: false
+                                        }
+                                    }
+                                },
+                                data: yz
+                            }
+                        ],
+                        dataZoom: [{
+                            type: 'slider',
+                            show: show,
+                            start: start,
+                            end: 100,
+                            height: 12,
+                            bottom: 0,
+                            zoomLock: false,
+                            textStyle: false
+                            //handleSize:8
+                        }]
+                    };
+                    var chart1 = echarts.init(document.getElementById('sec4_chart'));
+                    chart1.setOption(option1);
+                }
+            });
+        });
+
+    </script>
+
+    @*主屏 右侧指标*@
+    <script>
+        var contentPath = '@Url.Content("~")'.substr(0, '@Url.Content("~")'.length - 1);
+        $(function () {
+            $.ajax({
+                url: '@Url.Action("GetSSJKNumbers")',
+                type: 'post',
+                data: {},
+                loading: "数据提交中...",
+                success: function (data) {
+                    document.getElementById("lbmeet").innerText = data.meet;
+
+                    var EdTitle = '@ViewBag.EdTitle';
+                    if (EdTitle.indexOf("安全学习日") >=0)
+                        {
+                            document.getElementById("lbact").innerText = data.aqxxr;
+                        }
+                        else {
+                           document.getElementById("lbact").innerText = data.act;
+                        }
+                        var title2 = '@ViewBag.title2';
+                    if (title2.indexOf("人身风险预控")>=0)
+                        {
+                           document.getElementById("lbkyt").innerText = data.rsfxyk;
+                        }
+                        else
+                        {
+                            document.getElementById("lbkyt").innerText = data.kyt;
+                        }
+
+
+                    //document.getElementById("lbkyt").innerText = data.kyt;//人身风险预控或者危险预知
+                    document.getElementById("lbappraise").innerText = data.appr;//未评价台账
+                    document.getElementById("lbyh").innerText = data.yh;//未整改隐患
+                    document.getElementById("lbwz").innerText = data.wz;//未整改违章
+                }
+            });
+        });
+        function calSumWidth() {
+
+        }
+        function tabkp(item) {
+            addTabSK(item.dataset.id, contentPath + item.dataset.url + "?department=@ViewBag.deptid&type=3", item.dataset.text);
+        }
+        function tabyg(item) {
+            addTabSK(item.dataset.id, contentPath + item.dataset.url + "?department=@ViewBag.deptid&type=3", item.dataset.text);
+        }
+
+
+
+
+        function showmeetings() {
+
+            addTabSK("da32bfcf-6956-4cbc-b3f1-933780a9997d", "/bzzd/Works/Danger/Index2", "危险预知训练台账");
+        }
+        function tabmeet1(item) {
+            addTabSK(item.dataset.id, contentPath + item.dataset.url + "?department=@ViewBag.deptid&type=3", item.dataset.text);
+        }
+        function tabedu1(item) {
+            addTabSK(item.dataset.id, contentPath + item.dataset.url + "?type=2", item.dataset.text);
+        }
+        function tabkyt1(item) {
+            addTabSK(item.dataset.id, contentPath + item.dataset.url + "?type=undo", item.dataset.text);
+        }
+        function tabyh(item) {
+            var path = top.location.pathname;
+            var ind = path.indexOf('/', 2);
+            path = path.substring(0, ind);
+            addTabSK(item.dataset.id, path + item.dataset.url, item.dataset.text);
+        }
+        function tabwz(item) {
+            var path = top.location.pathname;
+            var ind = path.indexOf('/', 2);
+            path = path.substring(0, ind);
+            addTabSK(item.dataset.id, path + item.dataset.url, item.dataset.text);
+        }
+        function tabact1(item) {
+            if (item.dataset.type == "0") {
+                var path = top.location.pathname;
+                var ind = path.indexOf('/', 2);
+                path = path.substring(0, ind);
+                addTabSK(item.dataset.id, path + item.dataset.url, item.dataset.text);
+            } else {
+                addTabSK(item.dataset.id, contentPath + item.dataset.url, item.dataset.text);
+            }
+            //addTabSK(item.dataset.id, contentPath + item.dataset.url , item.dataset.text);
+        }
+
+        function Tongzhi() {
+            var path = top.location.origin + top.location.pathname;
+            console.log(path)
+            addTabSK("e3f5f7f5-023e-4fb6-80de-d7538b242588", path + "/RoutineSafetyWork/Announcement/Index?mId=e3f5f7f5-023e-4fb6-80de-d7538b242588", "通知公告");
+        }
+    </script>
+    @*右屏 通知公告、考评班组、未闭环违章列表*@
+    <script>
+        $(function () {
+            $.ajax({
+                url: '@Url.Action("getNewSData")',
+                type: 'post',
+                data: {},
+                loading: "数据提交中...",
+                success: function (data) {
+                    var html = ' <ul class="notice_list">';
+                    $(data).each(function (j, item) {
+                        html += '<li id="' + item.Id + '" onclick="ShowDetail(this)"><a href="javascript:void(0)"><p style="color:white;">' + item.Title + '<i class="new_icon"></i></p><span style="color:white;">' + item.ReleaseTime + '</span></a><input name="Content" type="hidden" value="' + item.Content + '" /><input name="Publisher" type="hidden" value="' + item.Publisher + '" /><input name="PublisherDept" type="hidden" value="' + item.PublisherDept + '" /><input name="Title" type="hidden" value="' + item.Title + '" /><input name="ReleaseTime" type="hidden" value="' + item.ReleaseTime + '" /></li>';
+                    });
+                    html += '</ul>';
+                    $("#News").html(html);
+                }
+            });
+        });
+        $(function () {
+            $.ajax({
+                url: '@Url.Action("getKPData")',
+                type: 'post',
+                data: {},
+                loading: "数据提交中...",
+                success: function (data) {
+                    if (data.bbbz.length == 0 && data.xjbz.length == 0 && data.dbbz.length == 0) { //
+                        var html = '<h2>暂无数据</h2>';
+                        $("#kp_bbbz").html(html);
+                    } else {
+                        var ch = data.ch;
+                        if (ch.length > 0) {
+                            var html = '<h2 class="teamList_tit">' + ch[0].ClassName + '</h2><ul class="team_list team_list1 clearfix">';
+                            $(data.bbbz).each(function (j, item) {
+                                html += '<li>' + item.GroupName + '</li>';
+                            });
+                            html += '</ul>';
+                            $("#kp_bbbz").html(html);
+                        }
+                        if (ch.length > 1) {
+                            var html2 = '<h2 class="teamList_tit">' + ch[1].ClassName + '</h2><ul class="team_list team_list2 clearfix">';
+                            $(data.xjbz).each(function (j, item) {
+                                html2 += '<li>' + item.GroupName + '</li>';
+                            });
+                            html2 += '</ul>';
+                            $("#kp_xjbz").html(html2);
+                        }
+                        if (ch.length > 2) {
+                            var html3 = '<h2 class="teamList_tit">' + ch[2].ClassName + '</h2><ul class="team_list team_list3 clearfix">';
+                            $(data.dbbz).each(function (j, item) {
+                                html3 += '<li>' + item.GroupName + '</li>';
+                            });
+                            html3 += '</ul>';
+                            $("#kp_dbbz").html(html3);
+                        }
+                    }
+                }
+            });
+        });
+
+        $(function () {
+            $.ajax({
+                url: '@Url.Action("getYHWZ")',
+                type: 'post',
+                data: { mode: "5" },
+                loading: "数据提交中...",
+                success: function (data) {
+                    var html = '<table><colgroup><col width="8.2%"><col width="30%"><col width="20.6%"><col width="20.6%"><col width="20.6%"></colgroup><tr><th><p style="color:white;">序号</p></th><th><p style="color:white;">单位/部门</p></th><th><p style="color:white;">未闭环一般违章(占比)</p></th><th><p style="color:white;">未闭环较严重违章(占比)</p></th><th><p style="color:white;">未闭环严重违章(占比)</p></th></tr>';
+                    var i = 0;
+                    $(data).each(function (j, item) {
+                        i++;
+                        html += '<tr><td style="color:white;">' + i + '</td><td><p style="color:white;">' + item[4].Value + '</p></td><td><p style="color:white;">' + item[0].Value + '</p></td><td><p style="color:white;">' + item[1].Value + '</p></td><td><p style="color:white;">' + item[2].Value + '</p></td></tr>';
+                    });
+                    html += '</table>';
+                    $("#wzlist").append(html);
+                }
+            });
+        });
+
+
+
+        function ShowDetail(elemt) {
+            //var Content = $(elemt).find("input[name=Content]").val();
+            //var Publisher = $(elemt).find("input[name=Publisher]").val();
+            //var PublisherDept = $(elemt).find("input[name=PublisherDept]").val();
+            //var Title = $(elemt).find("input[name=Title]").val();
+            //var ReleaseTime = $(elemt).find("input[name=ReleaseTime]").val();
+            //var data = {
+            //    Content: Content,
+            //    Publisher: Publisher,
+            //    PublisherDept: PublisherDept,
+            //    Title: Title,
+            //    ReleaseTime: ReleaseTime,
+            //};
+            var url = '/..@Url.Action("NoticeDetail")?Id=' + $(elemt).attr("Id");
+            console.log(url);
+            dialogOpen({
+                id: "Detail",
+                title: '查看培训信息',
+                url: url,
+                width: "1000px",
+                height: "900px",
+                btn: ['确定'],
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        }
+
+        /**显示客服二维码 */
+        $(function () {
+            $("#a_helper").mouseenter(function () {
+                $("#QR_Help").show(500)
+            }).mouseleave(function () {
+                $("#QR_Help").hide(500)
+            })
+        })
+    </script>
+
+</body>
+</html>
+<style>
+    .teamList_tit {
+        color: #0094ff;
+        font-weight: 600;
+    }
+</style>

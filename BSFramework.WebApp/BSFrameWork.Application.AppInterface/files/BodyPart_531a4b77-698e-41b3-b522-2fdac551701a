@@ -1,0 +1,650 @@
+Info: 2019-09-23 08:40:45-1569199245851
+BaseApplication
+onTrimMemory ... level:20
+
+Info: 2019-09-23 08:42:53-1569199373132
+BaseApplication
+onTrimMemory ... level:20
+
+Debug: 2019-09-23 08:44:48-1569199488919
+LaunchActivity
+LaunchActivity
+
+Info: 2019-09-23 08:46:03-1569199563639
+Upload Process
+resume
+
+Info: 2019-09-23 08:46:03-1569199563639
+Upload Process
+resume
+
+Info: 2019-09-23 08:46:04-1569199564906
+Upload Process
+{}
+
+Info: 2019-09-23 08:46:04-1569199564910
+Upload Process
+{}
+
+Info: 2019-09-23 08:46:11-1569199571362
+Upload Process
+pause
+
+Info: 2019-09-23 08:46:11-1569199571363
+Upload Process
+pause
+
+Info: 2019-09-23 08:46:12-1569199572224
+Upload Process
+destroy
+
+Info: 2019-09-23 08:46:12-1569199572227
+Upload Process
+destroy
+
+Debug: 2019-09-23 10:23:50-1569205430314
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 11:11:39-1569208299080
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 11:18:15-1569208695652
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 13:40:40-1569217240588
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 13:51:34-1569217894790
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 13:51:44-1569217904420
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 14:09:13-1569218953648
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 14:10:12-1569219012436
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 14:17:59-1569219479098
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 14:22:28-1569219748904
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 14:23:17-1569219797738
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 14:24:54-1569219894802
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 14:36:56-1569220616221
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 14:47:17-1569221237680
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 14:52:19-1569221539422
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 14:52:20-1569221540344
+LaunchActivity
+LaunchActivity
+
+Info: 2019-09-23 15:09:55-1569222595098
+Upload Process
+resume
+
+Info: 2019-09-23 15:09:58-1569222598153
+Upload Process
+{}
+
+Info: 2019-09-23 15:10:07-1569222607079
+Upload Process
+pause
+
+Info: 2019-09-23 15:10:07-1569222607494
+Upload Process
+destroy
+
+Info: 2019-09-23 15:10:08-1569222608012
+Upload Process
+resume
+
+Info: 2019-09-23 15:10:15-1569222615665
+Upload Process
+{}
+
+Info: 2019-09-23 15:10:19-1569222619111
+Upload Process
+pause
+
+Info: 2019-09-23 15:10:19-1569222619527
+Upload Process
+destroy
+
+Info: 2019-09-23 15:13:31-1569222811611
+Upload Process
+resume
+
+Info: 2019-09-23 15:13:31-1569222811809
+Upload Process
+{}
+
+Info: 2019-09-23 15:13:41-1569222821264
+Upload Process
+pause
+
+Info: 2019-09-23 15:13:41-1569222821677
+Upload Process
+destroy
+
+Info: 2019-09-23 15:13:42-1569222822567
+Upload Process
+resume
+
+Info: 2019-09-23 15:13:42-1569222822690
+Upload Process
+{}
+
+Info: 2019-09-23 15:13:46-1569222826329
+Upload Process
+pause
+
+Info: 2019-09-23 15:13:46-1569222826743
+Upload Process
+destroy
+
+Debug: 2019-09-23 15:30:40-1569223840929
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 15:30:41-1569223841528
+LaunchActivity
+LaunchActivity
+
+Info: 2019-09-23 15:32:22-1569223942588
+Upload Process
+resume
+
+Info: 2019-09-23 15:32:23-1569223943185
+Upload Process
+{}
+
+Debug: 2019-09-23 15:46:56-1569224816935
+LaunchActivity
+LaunchActivity
+
+Error: 2019-09-23 16:53:12-1569228792111
+Login Request
+java.lang.RuntimeException: Get Modules Error
+	at com.bossien.launch.worker.ConfigUpdateWorker.lambda$null$0(ConfigUpdateWorker.java:109)
+	at com.bossien.launch.worker.-$$Lambda$ConfigUpdateWorker$4c9YnBA2jWZ_WeIz48A5A2kcKOk.apply(lambda)
+	at io.reactivex.internal.functions.Functions$Array2Func.apply(Functions.java:529)
+	at io.reactivex.internal.functions.Functions$Array2Func.apply(Functions.java:516)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.drain(ObservableZip.java:197)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipObserver.onNext(ObservableZip.java:276)
+	at io.reactivex.internal.operators.observable.ObservableMap$MapObserver.onNext(ObservableMap.java:64)
+	at retrofit2.adapter.rxjava2.BodyObservable$BodyObserver.onNext(BodyObservable.java:51)
+	at retrofit2.adapter.rxjava2.BodyObservable$BodyObserver.onNext(BodyObservable.java:37)
+	at retrofit2.adapter.rxjava2.CallExecuteObservable.subscribeActual(CallExecuteObservable.java:43)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at retrofit2.adapter.rxjava2.BodyObservable.subscribeActual(BodyObservable.java:34)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableScalarXMap$ScalarXMapObservable.subscribeActual(ObservableScalarXMap.java:166)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableMap.subscribeActual(ObservableMap.java:33)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableMap.subscribeActual(ObservableMap.java:33)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.subscribeInner(ObservableFlatMap.java:165)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.onNext(ObservableFlatMap.java:139)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.drain(ObservableZip.java:205)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipObserver.onNext(ObservableZip.java:276)
+	at io.reactivex.internal.operators.observable.ObservableScalarXMap$ScalarDisposable.run(ObservableScalarXMap.java:248)
+	at io.reactivex.internal.operators.observable.ObservableJust.subscribeActual(ObservableJust.java:35)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap.subscribeActual(ObservableFlatMap.java:55)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableOnErrorNext.subscribeActual(ObservableOnErrorNext.java:38)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.subscribeInner(ObservableFlatMap.java:165)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.onNext(ObservableFlatMap.java:139)
+	at io.reactivex.internal.operators.observable.ObservableOnErrorNext$OnErrorNextObserver.onNext(ObservableOnErrorNext.java:68)
+	at io.reactivex.internal.operators.observable.ObservableMap$MapObserver.onNext(ObservableMap.java:64)
+	at io.reactivex.internal.operators.observable.ObservableObserveOn$ObserveOnObserver.drainNormal(ObservableObserveOn.java:200)
+	at io.reactivex.internal.operators.observable.ObservableObserveOn$ObserveOnObserver.run(ObservableObserveOn.java:252)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.run(ScheduledRunnable.java:66)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.call(ScheduledRunnable.java:57)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:152)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:265)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1112)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:587)
+	at java.lang.Thread.run(Thread.java:818)
+
+
+Error: 2019-09-23 16:57:51-1569229071075
+Login Request
+java.lang.RuntimeException: Get Modules Error
+	at com.bossien.launch.worker.ConfigUpdateWorker.lambda$null$0(ConfigUpdateWorker.java:109)
+	at com.bossien.launch.worker.-$$Lambda$ConfigUpdateWorker$4c9YnBA2jWZ_WeIz48A5A2kcKOk.apply(lambda)
+	at io.reactivex.internal.functions.Functions$Array2Func.apply(Functions.java:529)
+	at io.reactivex.internal.functions.Functions$Array2Func.apply(Functions.java:516)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.drain(ObservableZip.java:197)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipObserver.onNext(ObservableZip.java:276)
+	at io.reactivex.internal.operators.observable.ObservableMap$MapObserver.onNext(ObservableMap.java:64)
+	at retrofit2.adapter.rxjava2.BodyObservable$BodyObserver.onNext(BodyObservable.java:51)
+	at retrofit2.adapter.rxjava2.BodyObservable$BodyObserver.onNext(BodyObservable.java:37)
+	at retrofit2.adapter.rxjava2.CallExecuteObservable.subscribeActual(CallExecuteObservable.java:43)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at retrofit2.adapter.rxjava2.BodyObservable.subscribeActual(BodyObservable.java:34)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableScalarXMap$ScalarXMapObservable.subscribeActual(ObservableScalarXMap.java:166)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableMap.subscribeActual(ObservableMap.java:33)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableMap.subscribeActual(ObservableMap.java:33)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.subscribeInner(ObservableFlatMap.java:165)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.onNext(ObservableFlatMap.java:139)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.drain(ObservableZip.java:205)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipObserver.onNext(ObservableZip.java:276)
+	at io.reactivex.internal.operators.observable.ObservableScalarXMap$ScalarDisposable.run(ObservableScalarXMap.java:248)
+	at io.reactivex.internal.operators.observable.ObservableJust.subscribeActual(ObservableJust.java:35)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap.subscribeActual(ObservableFlatMap.java:55)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableOnErrorNext.subscribeActual(ObservableOnErrorNext.java:38)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.subscribeInner(ObservableFlatMap.java:165)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.onNext(ObservableFlatMap.java:139)
+	at io.reactivex.internal.operators.observable.ObservableOnErrorNext$OnErrorNextObserver.onNext(ObservableOnErrorNext.java:68)
+	at io.reactivex.internal.operators.observable.ObservableMap$MapObserver.onNext(ObservableMap.java:64)
+	at io.reactivex.internal.operators.observable.ObservableObserveOn$ObserveOnObserver.drainNormal(ObservableObserveOn.java:200)
+	at io.reactivex.internal.operators.observable.ObservableObserveOn$ObserveOnObserver.run(ObservableObserveOn.java:252)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.run(ScheduledRunnable.java:66)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.call(ScheduledRunnable.java:57)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:152)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:265)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1112)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:587)
+	at java.lang.Thread.run(Thread.java:818)
+
+
+Error: 2019-09-23 16:58:04-1569229084401
+Login Request
+java.lang.RuntimeException: Get Modules Error
+	at com.bossien.launch.worker.ConfigUpdateWorker.lambda$null$0(ConfigUpdateWorker.java:109)
+	at com.bossien.launch.worker.-$$Lambda$ConfigUpdateWorker$4c9YnBA2jWZ_WeIz48A5A2kcKOk.apply(lambda)
+	at io.reactivex.internal.functions.Functions$Array2Func.apply(Functions.java:529)
+	at io.reactivex.internal.functions.Functions$Array2Func.apply(Functions.java:516)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.drain(ObservableZip.java:197)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipObserver.onNext(ObservableZip.java:276)
+	at io.reactivex.internal.operators.observable.ObservableMap$MapObserver.onNext(ObservableMap.java:64)
+	at retrofit2.adapter.rxjava2.BodyObservable$BodyObserver.onNext(BodyObservable.java:51)
+	at retrofit2.adapter.rxjava2.BodyObservable$BodyObserver.onNext(BodyObservable.java:37)
+	at retrofit2.adapter.rxjava2.CallExecuteObservable.subscribeActual(CallExecuteObservable.java:43)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at retrofit2.adapter.rxjava2.BodyObservable.subscribeActual(BodyObservable.java:34)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableScalarXMap$ScalarXMapObservable.subscribeActual(ObservableScalarXMap.java:166)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableMap.subscribeActual(ObservableMap.java:33)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableMap.subscribeActual(ObservableMap.java:33)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.subscribeInner(ObservableFlatMap.java:165)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.onNext(ObservableFlatMap.java:139)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.drain(ObservableZip.java:205)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipObserver.onNext(ObservableZip.java:276)
+	at io.reactivex.internal.operators.observable.ObservableScalarXMap$ScalarDisposable.run(ObservableScalarXMap.java:248)
+	at io.reactivex.internal.operators.observable.ObservableJust.subscribeActual(ObservableJust.java:35)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap.subscribeActual(ObservableFlatMap.java:55)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableOnErrorNext.subscribeActual(ObservableOnErrorNext.java:38)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.subscribeInner(ObservableFlatMap.java:165)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.onNext(ObservableFlatMap.java:139)
+	at io.reactivex.internal.operators.observable.ObservableOnErrorNext$OnErrorNextObserver.onNext(ObservableOnErrorNext.java:68)
+	at io.reactivex.internal.operators.observable.ObservableMap$MapObserver.onNext(ObservableMap.java:64)
+	at io.reactivex.internal.operators.observable.ObservableObserveOn$ObserveOnObserver.drainNormal(ObservableObserveOn.java:200)
+	at io.reactivex.internal.operators.observable.ObservableObserveOn$ObserveOnObserver.run(ObservableObserveOn.java:252)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.run(ScheduledRunnable.java:66)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.call(ScheduledRunnable.java:57)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:152)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:265)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1112)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:587)
+	at java.lang.Thread.run(Thread.java:818)
+
+
+Error: 2019-09-23 16:58:10-1569229090178
+Login Request
+java.lang.RuntimeException: Get Modules Error
+	at com.bossien.launch.worker.ConfigUpdateWorker.lambda$null$0(ConfigUpdateWorker.java:109)
+	at com.bossien.launch.worker.-$$Lambda$ConfigUpdateWorker$4c9YnBA2jWZ_WeIz48A5A2kcKOk.apply(lambda)
+	at io.reactivex.internal.functions.Functions$Array2Func.apply(Functions.java:529)
+	at io.reactivex.internal.functions.Functions$Array2Func.apply(Functions.java:516)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.drain(ObservableZip.java:197)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipObserver.onNext(ObservableZip.java:276)
+	at io.reactivex.internal.operators.observable.ObservableMap$MapObserver.onNext(ObservableMap.java:64)
+	at retrofit2.adapter.rxjava2.BodyObservable$BodyObserver.onNext(BodyObservable.java:51)
+	at retrofit2.adapter.rxjava2.BodyObservable$BodyObserver.onNext(BodyObservable.java:37)
+	at retrofit2.adapter.rxjava2.CallExecuteObservable.subscribeActual(CallExecuteObservable.java:43)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at retrofit2.adapter.rxjava2.BodyObservable.subscribeActual(BodyObservable.java:34)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableScalarXMap$ScalarXMapObservable.subscribeActual(ObservableScalarXMap.java:166)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableMap.subscribeActual(ObservableMap.java:33)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableMap.subscribeActual(ObservableMap.java:33)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.subscribeInner(ObservableFlatMap.java:165)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.onNext(ObservableFlatMap.java:139)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.drain(ObservableZip.java:205)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipObserver.onNext(ObservableZip.java:276)
+	at io.reactivex.internal.operators.observable.ObservableScalarXMap$ScalarDisposable.run(ObservableScalarXMap.java:248)
+	at io.reactivex.internal.operators.observable.ObservableJust.subscribeActual(ObservableJust.java:35)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap.subscribeActual(ObservableFlatMap.java:55)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableOnErrorNext.subscribeActual(ObservableOnErrorNext.java:38)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.subscribeInner(ObservableFlatMap.java:165)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.onNext(ObservableFlatMap.java:139)
+	at io.reactivex.internal.operators.observable.ObservableOnErrorNext$OnErrorNextObserver.onNext(ObservableOnErrorNext.java:68)
+	at io.reactivex.internal.operators.observable.ObservableMap$MapObserver.onNext(ObservableMap.java:64)
+	at io.reactivex.internal.operators.observable.ObservableObserveOn$ObserveOnObserver.drainNormal(ObservableObserveOn.java:200)
+	at io.reactivex.internal.operators.observable.ObservableObserveOn$ObserveOnObserver.run(ObservableObserveOn.java:252)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.run(ScheduledRunnable.java:66)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.call(ScheduledRunnable.java:57)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:152)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:265)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1112)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:587)
+	at java.lang.Thread.run(Thread.java:818)
+
+
+Error: 2019-09-23 16:59:45-1569229185764
+Login Request
+java.lang.RuntimeException: Get Modules Error
+	at com.bossien.launch.worker.ConfigUpdateWorker.lambda$null$0(ConfigUpdateWorker.java:109)
+	at com.bossien.launch.worker.-$$Lambda$ConfigUpdateWorker$4c9YnBA2jWZ_WeIz48A5A2kcKOk.apply(lambda)
+	at io.reactivex.internal.functions.Functions$Array2Func.apply(Functions.java:529)
+	at io.reactivex.internal.functions.Functions$Array2Func.apply(Functions.java:516)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.drain(ObservableZip.java:197)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipObserver.onNext(ObservableZip.java:276)
+	at io.reactivex.internal.operators.observable.ObservableMap$MapObserver.onNext(ObservableMap.java:64)
+	at retrofit2.adapter.rxjava2.BodyObservable$BodyObserver.onNext(BodyObservable.java:51)
+	at retrofit2.adapter.rxjava2.BodyObservable$BodyObserver.onNext(BodyObservable.java:37)
+	at retrofit2.adapter.rxjava2.CallExecuteObservable.subscribeActual(CallExecuteObservable.java:43)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at retrofit2.adapter.rxjava2.BodyObservable.subscribeActual(BodyObservable.java:34)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableScalarXMap$ScalarXMapObservable.subscribeActual(ObservableScalarXMap.java:166)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableMap.subscribeActual(ObservableMap.java:33)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableMap.subscribeActual(ObservableMap.java:33)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.subscribeInner(ObservableFlatMap.java:165)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.onNext(ObservableFlatMap.java:139)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.drain(ObservableZip.java:205)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipObserver.onNext(ObservableZip.java:276)
+	at io.reactivex.internal.operators.observable.ObservableScalarXMap$ScalarDisposable.run(ObservableScalarXMap.java:248)
+	at io.reactivex.internal.operators.observable.ObservableJust.subscribeActual(ObservableJust.java:35)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap.subscribeActual(ObservableFlatMap.java:55)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableOnErrorNext.subscribeActual(ObservableOnErrorNext.java:38)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.subscribeInner(ObservableFlatMap.java:165)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.onNext(ObservableFlatMap.java:139)
+	at io.reactivex.internal.operators.observable.ObservableOnErrorNext$OnErrorNextObserver.onNext(ObservableOnErrorNext.java:68)
+	at io.reactivex.internal.operators.observable.ObservableMap$MapObserver.onNext(ObservableMap.java:64)
+	at io.reactivex.internal.operators.observable.ObservableObserveOn$ObserveOnObserver.drainNormal(ObservableObserveOn.java:200)
+	at io.reactivex.internal.operators.observable.ObservableObserveOn$ObserveOnObserver.run(ObservableObserveOn.java:252)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.run(ScheduledRunnable.java:66)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.call(ScheduledRunnable.java:57)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:152)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:265)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1112)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:587)
+	at java.lang.Thread.run(Thread.java:818)
+
+
+Error: 2019-09-23 17:09:18-1569229758355
+Login Request
+java.lang.RuntimeException: Get Modules Error
+	at com.bossien.launch.worker.ConfigUpdateWorker.lambda$null$0(ConfigUpdateWorker.java:109)
+	at com.bossien.launch.worker.-$$Lambda$ConfigUpdateWorker$4c9YnBA2jWZ_WeIz48A5A2kcKOk.apply(lambda)
+	at io.reactivex.internal.functions.Functions$Array2Func.apply(Functions.java:529)
+	at io.reactivex.internal.functions.Functions$Array2Func.apply(Functions.java:516)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.drain(ObservableZip.java:197)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipObserver.onNext(ObservableZip.java:276)
+	at io.reactivex.internal.operators.observable.ObservableMap$MapObserver.onNext(ObservableMap.java:64)
+	at retrofit2.adapter.rxjava2.BodyObservable$BodyObserver.onNext(BodyObservable.java:51)
+	at retrofit2.adapter.rxjava2.BodyObservable$BodyObserver.onNext(BodyObservable.java:37)
+	at retrofit2.adapter.rxjava2.CallExecuteObservable.subscribeActual(CallExecuteObservable.java:43)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at retrofit2.adapter.rxjava2.BodyObservable.subscribeActual(BodyObservable.java:34)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableScalarXMap$ScalarXMapObservable.subscribeActual(ObservableScalarXMap.java:166)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableMap.subscribeActual(ObservableMap.java:33)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableMap.subscribeActual(ObservableMap.java:33)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.subscribeInner(ObservableFlatMap.java:165)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.onNext(ObservableFlatMap.java:139)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.drain(ObservableZip.java:205)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipObserver.onNext(ObservableZip.java:276)
+	at io.reactivex.internal.operators.observable.ObservableScalarXMap$ScalarDisposable.run(ObservableScalarXMap.java:248)
+	at io.reactivex.internal.operators.observable.ObservableJust.subscribeActual(ObservableJust.java:35)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap.subscribeActual(ObservableFlatMap.java:55)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableOnErrorNext.subscribeActual(ObservableOnErrorNext.java:38)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.subscribeInner(ObservableFlatMap.java:165)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.onNext(ObservableFlatMap.java:139)
+	at io.reactivex.internal.operators.observable.ObservableOnErrorNext$OnErrorNextObserver.onNext(ObservableOnErrorNext.java:68)
+	at io.reactivex.internal.operators.observable.ObservableMap$MapObserver.onNext(ObservableMap.java:64)
+	at io.reactivex.internal.operators.observable.ObservableObserveOn$ObserveOnObserver.drainNormal(ObservableObserveOn.java:200)
+	at io.reactivex.internal.operators.observable.ObservableObserveOn$ObserveOnObserver.run(ObservableObserveOn.java:252)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.run(ScheduledRunnable.java:66)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.call(ScheduledRunnable.java:57)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:152)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:265)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1112)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:587)
+	at java.lang.Thread.run(Thread.java:818)
+
+
+Error: 2019-09-23 17:09:43-1569229783731
+Login Request
+java.lang.RuntimeException: Get Modules Error
+	at com.bossien.launch.worker.ConfigUpdateWorker.lambda$null$0(ConfigUpdateWorker.java:109)
+	at com.bossien.launch.worker.-$$Lambda$ConfigUpdateWorker$4c9YnBA2jWZ_WeIz48A5A2kcKOk.apply(lambda)
+	at io.reactivex.internal.functions.Functions$Array2Func.apply(Functions.java:529)
+	at io.reactivex.internal.functions.Functions$Array2Func.apply(Functions.java:516)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.drain(ObservableZip.java:197)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipObserver.onNext(ObservableZip.java:276)
+	at io.reactivex.internal.operators.observable.ObservableMap$MapObserver.onNext(ObservableMap.java:64)
+	at retrofit2.adapter.rxjava2.BodyObservable$BodyObserver.onNext(BodyObservable.java:51)
+	at retrofit2.adapter.rxjava2.BodyObservable$BodyObserver.onNext(BodyObservable.java:37)
+	at retrofit2.adapter.rxjava2.CallExecuteObservable.subscribeActual(CallExecuteObservable.java:43)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at retrofit2.adapter.rxjava2.BodyObservable.subscribeActual(BodyObservable.java:34)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableScalarXMap$ScalarXMapObservable.subscribeActual(ObservableScalarXMap.java:166)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableMap.subscribeActual(ObservableMap.java:33)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableMap.subscribeActual(ObservableMap.java:33)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.subscribeInner(ObservableFlatMap.java:165)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.onNext(ObservableFlatMap.java:139)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.drain(ObservableZip.java:205)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipObserver.onNext(ObservableZip.java:276)
+	at io.reactivex.internal.operators.observable.ObservableScalarXMap$ScalarDisposable.run(ObservableScalarXMap.java:248)
+	at io.reactivex.internal.operators.observable.ObservableJust.subscribeActual(ObservableJust.java:35)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap.subscribeActual(ObservableFlatMap.java:55)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableOnErrorNext.subscribeActual(ObservableOnErrorNext.java:38)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableZip$ZipCoordinator.subscribe(ObservableZip.java:110)
+	at io.reactivex.internal.operators.observable.ObservableZip.subscribeActual(ObservableZip.java:72)
+	at io.reactivex.Observable.subscribe(Observable.java:12036)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.subscribeInner(ObservableFlatMap.java:165)
+	at io.reactivex.internal.operators.observable.ObservableFlatMap$MergeObserver.onNext(ObservableFlatMap.java:139)
+	at io.reactivex.internal.operators.observable.ObservableOnErrorNext$OnErrorNextObserver.onNext(ObservableOnErrorNext.java:68)
+	at io.reactivex.internal.operators.observable.ObservableMap$MapObserver.onNext(ObservableMap.java:64)
+	at io.reactivex.internal.operators.observable.ObservableObserveOn$ObserveOnObserver.drainNormal(ObservableObserveOn.java:200)
+	at io.reactivex.internal.operators.observable.ObservableObserveOn$ObserveOnObserver.run(ObservableObserveOn.java:252)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.run(ScheduledRunnable.java:66)
+	at io.reactivex.internal.schedulers.ScheduledRunnable.call(ScheduledRunnable.java:57)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:152)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:265)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1112)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:587)
+	at java.lang.Thread.run(Thread.java:818)
+
+
+Debug: 2019-09-23 17:10:40-1569229840287
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 17:14:44-1569230084622
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 17:16:53-1569230213018
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 17:17:17-1569230237948
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 17:20:19-1569230419452
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 17:22:24-1569230544484
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 17:24:19-1569230659838
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 17:27:08-1569230828651
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 17:28:47-1569230927924
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 17:37:22-1569231442336
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 17:38:23-1569231503753
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 17:42:52-1569231772213
+LaunchActivity
+LaunchActivity
+
+Debug: 2019-09-23 18:08:01-1569233281855
+LaunchActivity
+LaunchActivity
+

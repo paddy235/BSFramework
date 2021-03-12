@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>@ViewBag.Title</title>
+    <!--框架必需start-->
+    <script src="~/Content/scripts/jquery/jquery-1.10.2.min.js"></script>
+    <link href="~/Content/styles/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/scripts/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" />
+    <script src="~/Content/scripts/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <!--框架必需end-->
+    <!--bootstrap组件start-->
+    <link href="~/Content/scripts/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Content/scripts/bootstrap/bootstrap.min.js"></script>
+    <!--bootstrap组件end-->
+    <script src="~/Content/scripts/utils/framework-ui.js"></script>
+    <script src="~/Content/scripts/plugins/layout/jquery.layout.js"></script>
+    <script src="~/Content/scripts/plugins/datepicker/WdatePicker.js"></script>
+    @System.Web.Optimization.Styles.Render("~/Content/scripts/plugins/jqgrid/css",
+    "~/Content/scripts/plugins/tree/css",
+    "~/Content/scripts/plugins/datetime/css",
+            "~/Content/styles/framework-ui.css")
+    @System.Web.Optimization.Scripts.Render("~/Content/scripts/plugins/jqgrid/js",
+    "~/Content/scripts/plugins/tree/js",
+    "~/Content/scripts/plugins/validator/js",
+            "~/Content/scripts/plugins/datepicker/js",
+    "~/Content/scripts/utils/js")
+
+
+    <style>
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="~/content/scripts/bootstrap/html5shiv.js"></script>
+        <script src="~/content/scripts/bootstrap/respond.min.js"></script>
+        <script src="~/content/scripts/bootstrap/jquery.placeholder.min.js"></script>
+        <script src="~/content/scripts/bootstrap/json2.js" type="text/javascript"></script>
+        <script src="~/content/scripts/bootstrap/core.js" type="text/javascript"></script>
+    <![endif]-->
+
+</head>
+<body>
+    @RenderBody()
+    @RenderSection("scripts", required: false)
+    @Html.AntiForgeryToken()
+</body>
+</html>

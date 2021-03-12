@@ -1,0 +1,68 @@
+﻿@{
+    ViewBag.Title = "Index4";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+
+<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group a.btn {
+            margin-top: 4px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+</style>
+<script>
+    var selectedRowIndex;
+
+    jQuery(function () {
+        var type = '@ViewBag.type';
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#grid').setGridWidth(($('.gridPanel').width()));
+                $("#grid").setGridHeight($(window).height() - 140);
+            }, 200);
+            e.stopPropagation();
+        });
+
+        jQuery('#grid').jqGrid({
+            autowidth: true,
+            colModel: [
+                
+                { label: '部门', name: 'DeptName', index: 'DeptName',sortable:false, width: 350, align: 'center' },
+                { label: '班组', name: 'GroupName', index: 'GroupName', sortable: false, width: 350, align: 'center' },
+                { label: '日期', name: 'FromTo', index: 'FromTo', sortable: false, width: 400, align: 'center' },
+                { label: '备注', name: 'Remark', index: 'Remark', sortable: false, width: 200, align: 'center' },
+            ],
+            height: $(window).height() - 80,
+            url: '@Url.Action("GetActivityNew")',
+            datatype: "json",
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 20,
+            rownumbers: true,
+            pager: "#gridPager"
+
+        });
+        
+
+    });
+
+</script>
+<div class="gridPanel">
+    <table id="grid"></table>
+    <div id="gridPager"></div>
+</div>

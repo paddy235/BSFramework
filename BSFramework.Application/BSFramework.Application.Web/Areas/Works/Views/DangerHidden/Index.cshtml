@@ -1,0 +1,941 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+    li{list-style:none;}
+    ul{ padding-left:0;}
+	.monthContainer{
+		background: #e4ebfe;
+		padding: 10px;
+		display: flex;
+	}
+    .danger-content{
+        overflow:hidden;
+    }
+		.danger_nav{
+			display: inline-block;
+			width:100%;
+			border-bottom: 1px solid #e4ebfe ;
+		}
+		.danger_nav li{
+		float: left;
+		line-height: 70px;
+		font-size: 16px;
+		font-weight: 800;
+		margin-left: 30px;
+	}
+	.danger_nav li:hover{
+		cursor: pointer;
+	}
+	.danger_nav .active{
+		color:#3769e2;
+		border-bottom: 2px solid #3769e2 ;
+	}
+	.monthAll{
+		background: #fff;
+		flex: 1;
+		height: 100%;
+
+		overflow: hidden;
+	}
+		.dataType,.dataType2{float:right;border:1px solid #ccc;margin-top: 6px;margin-right: 20px;padding-left:0;}
+		.dataType li,.dataType2 li{
+			width:130px;
+			float: left;
+			text-align: center;
+			line-height: 48px;
+		}
+		.dataType li:hover{
+			cursor: pointer;
+		}
+		.dataType .active{
+			background:#3869e0;
+			color: #fff;
+		}
+		.dataType2 li:hover{
+			cursor: pointer;
+		}
+		.dataType2 .active{
+			background:#3869e0;
+			color: #fff;
+		}
+		.main2{padding:0 30px;}
+		.main1{
+			display: block;
+		}
+    detailContent{padding:0;}
+		.detailContent li:last-child{
+			height: 600px;
+			width: 90%;
+			margin:50px auto;
+		}
+		.detailContent2 li{
+			height:620px;
+			width: 90%;
+			margin:50px auto;
+		}
+		.main1 div{
+			float: left;
+		}
+		.main2{
+			height: 320px;
+		}
+		.data{
+			height: 300px;
+			width:50%;
+            margin-top:20px;
+            margin-left:20%;
+		  float:left;
+		  background: url(@Url.Content("~/Content/styles/static/images/danger/icon-danger_03.png)")no-repeat left 5px;padding-left: 20px;
+		}
+		.hideSearch{display: none;margin-left: 30px;}
+
+</style>
+<script>
+    $(function () {
+        //获取菜单(菜单控制)
+        InitMenu($("ul"), undefined);
+    })
+</script>
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-9" style="width:98%;">
+                <div class="clearfix my-title">
+                    <div class="pull-left">隐患统计</div>
+                    <div class="pull-right" style="float: right;">@*<img src="@Url.Content("~/Content/styles/static/images/danger/icon-title.png")" alt="">考评统计*@</div>
+                </div>
+            </div>
+        </div>
+        <div class="monthContainer" style="height: 830px;">
+            <div class="monthAll">
+                <ul class="danger_nav">
+                    <li code="dangerhidden_count" class="active">隐患数量统计</li>
+                    <li code="dangerhidden_rectify">隐患整改情况统计</li>
+                </ul>
+                <ul class="danger-content">
+                    <li class="main">
+                        <div class="mg-t-10 mg-b-10 main1">
+                            <div class="hideSearch">
+                                @*<label class="mg-l-30" style="margin-left: 0;">区域范围：</label>
+                                    <span class="my-select " style="width:260px;">
+                                        <select style="border:none;border-bottom:1px solid #b0b8c1;">
+                                            <option value="中附近">用户自定义区域</option>
+                                        </select>
+                                        <span class="icon"></span>
+                                    </span>*@
+                                <label class="mg-l-30 ">隐患级别</label>
+                                <span class="my-select " style="width:260px;">
+                                    <select id="hidangerSumType" style="border:none;border-bottom:1px solid #b0b8c1;">
+                                        <option value="==请选择==">==请选择==</option>
+                                        <option value="一般隐患">一般隐患</option>
+                                        <option value="重大隐患">重大隐患</option>
+                                    </select>
+                                    <span class="icon"></span>
+                                </span>
+                            </div>
+                              
+                            <label class="mg-l-30">时间范围</label>
+                            <span class="my-select" style="width:260px;">
+                                <select id="dangersum" style="border:none;border-bottom:1px solid #b0b8c1;">
+                                   
+                                </select>
+                                <span class="icon"></span>
+                            </span>
+                            <ul class="dataType">
+                                <li class="active"><img src="@Url.Content("~/Content/styles/static/images/danger/icon1-1.png")" />统计图</li>
+                                <li><img src="@Url.Content("~/Content/styles/static/images/danger/icon2.png")" />趋势图</li>
+                            </ul>
+                        </div>
+                        <ul class="detailContent">
+                            <li>
+                                <div class="main2">
+                                    <div class="data">
+                                        <div id="data" style="width:100%;height: 98%;"></div>
+                                    </div>
+                                </div>
+                                <div style="height: 300px;border-top: 1px solid #e4ebfd;" id="tableContianer">
+                                    <table id="tables" class="table text-center table-striped no-mg c-67748d">
+                                        <thead id="tablehead">
+                                            <tr>
+                                                <th>重大隐患</th>
+                                                <th>一般隐患</th>
+
+                                                <th>合计</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table">
+                                            @*<tr>
+
+                                                    <td>烧杯</td>
+                                                    <td>500gml</td>
+                                                    <td>+2</td>
+                                                </tr>*@
+
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </li>
+                            <li id="chart3"></li>
+                        </ul>
+                    </li>
+                    <li class="main">
+                        <div class="mg-t-10 mg-b-10 main1">
+                            @*<label class="mg-l-30" style="margin-left: 30px;">区域范围：</label>
+                                <span class="my-select " style="width:260px;">
+                                    <select style="border:none;border-bottom:1px solid #b0b8c1;">
+                                        <option value="中附近">用户自定义区域</option>
+                                    </select>
+                                    <span class="icon"></span>
+                                </span>*@
+
+                            <div class="hideSearch2" >
+                                <label class="mg-l-30 ">隐患级别</label>
+                                <span class="my-select " style="width:260px;">
+                                    <select id="hidangerType" style="border:none;border-bottom:1px solid #b0b8c1;">
+                                        <option value="==请选择==">==请选择==</option>
+                                        <option value="一般隐患">一般隐患</option>
+                                        <option value="重大隐患">重大隐患</option>
+                                    </select>
+                                    <span class="icon"></span>
+                                </span>
+                            </div>
+
+                            <label class="mg-l-30">时间范围</label>
+                            <span class="my-select" style="width:260px;">
+                                <select id="hidanger" style="border:none;border-bottom:1px solid #b0b8c1;"></select>
+                                <span class="icon"></span>
+                            </span>
+                            <ul class="dataType2">
+                                <li class="active"><img src="@Url.Content("~/Content/styles/static/images/danger/icon1-1.png")" />统计图</li>
+                                <li><img src="@Url.Content("~/Content/styles/static/images/danger/icon2.png")" />趋势图</li>
+                            </ul>
+                        </div>
+                        <ul class="detailContent2">
+                            <li id="chart4"></li>
+                            <li id="chart5"></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <footer class="main-footer">
+        武汉博晟安全技术股份有限公司   版权所有
+    </footer>
+</div>
+
+
+<!-- jQuery 2.1.4 -->
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/echarts/echarts.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/bootstrap/js/bootstrap.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<script>
+    jQuery(function () {
+        TimeSelect();
+        load();
+        selectchange();
+        $('.hideSearch2').show();
+    });
+    function load() {
+        var SumTime = $("#dangersum").find("option:selected").text();
+        var hidangerSumType = $("#hidangerSumType").find("option:selected").text();
+        var hidangerTime = $("#hidanger").find("option:selected").text();
+        var hidangerType = $("#hidangerType").find("option:selected").text();
+        ajaxGetHtLevelChart(SumTime);
+        ajaxGetHtNumChart(SumTime, hidangerSumType);
+        ajaxGetHtNumChangeChart(hidangerTime, hidangerType);
+        ajaxGetHtNumReadjustChart(hidangerTime, hidangerType);
+
+    }
+    function selectchange() {
+        $("#dangersum").on('change', function (e, data) {
+            var SumTime = $("#dangersum").find("option:selected").text();
+            var hidangerSumType = $("#hidangerSumType").find("option:selected").text();
+            ajaxGetHtLevelChart(SumTime);
+            ajaxGetHtNumChart(SumTime, hidangerSumType);
+        })
+        $("#hidangerSumType").on('change', function (e, data) {
+            var SumTime = $("#dangersum").find("option:selected").text();
+            var hidangerSumType = $("#hidangerSumType").find("option:selected").text();
+            ajaxGetHtNumChart(SumTime, hidangerSumType);
+        })
+        $("#hidanger").on('change', function (e, data) {
+            var hidangerTime = $("#hidanger").find("option:selected").text();
+            var hidangerType = $("#hidangerType").find("option:selected").text();
+            ajaxGetHtNumChangeChart(hidangerTime, hidangerType);
+            ajaxGetHtNumReadjustChart(hidangerTime, "=");
+        })
+        $("#hidangerType").on('change', function (e, data) {
+            var hidangerTime = $("#hidanger").find("option:selected").text();
+            var hidangerType = $("#hidangerType").find("option:selected").text();
+           // ajaxGetHtNumChangeChart(hidangerTime, hidangerType);
+            ajaxGetHtNumReadjustChart(hidangerTime, hidangerType);
+        })
+    }
+    function TimeSelect() {
+        var myJsTime = "@BSFramework.Util.Time.GetToday()";
+        var year = myJsTime.split('-')[0];
+        var start = parseInt(year) - 2;
+        var end = parseInt(year) + 1;
+        var _html = '';
+        for (var i = start; i < end; i++) {
+            if (i == year) {
+                _html += '<option value="' + i + '" selected="selecteed" >' + i + '</option>';
+
+            } else {
+                _html += '<option value="' + i + '">' + i + '</option>';
+            }
+
+        }
+        $("#dangersum").append(_html);
+        $("#hidanger").append(_html);
+    }
+
+    $('#tableContianer').niceScroll();
+    $('.danger_nav li').click(function () {
+        let index = $(this).index();
+        $(this).addClass('active').siblings().removeClass('active');
+        $('.main').eq(index).show().siblings().hide();
+    })
+    $('.dataType li').click(function () {
+        $(this).addClass('active').siblings().removeClass('active');
+        $('.detailContent li').eq($(this).index()).show().siblings().hide();
+        if ($(this).index() == 0) {
+            $('.hideSearch').hide();
+            $('.hideSearch2').show();
+            $(this).find('img').attr('src', '@Url.Content("~/Content/styles/static/images/danger/icon1-1.png")');
+            $('.dataType li').eq(1).find('img').attr('src', '@Url.Content("~/Content/styles/static/images/danger/icon2.png")');
+        } else {
+            $('.hideSearch').show();
+            $('.hideSearch2').hide();
+            $(this).find('img').attr('src', '@Url.Content("~/Content/styles/static/images/danger/icon2-2.png")');
+            $('.dataType li').eq(0).find('img').attr('src', '@Url.Content("~/Content/styles/static/images/danger/icon1.png")');
+        }
+    })
+    $('.dataType2 li').click(function () {
+        $(this).addClass('active').siblings().removeClass('active');
+        $('.detailContent2 li').eq($(this).index()).show().siblings().hide();
+        if ($(this).index() == 0) {
+            $('.hideSearch2').show();
+            $(this).find('img').attr('src', '@Url.Content("~/Content/styles/static/images/danger/icon1-1.png")');
+            $('.dataType2 li').eq(1).find('img').attr('src', '@Url.Content("~/Content/styles/static/images/danger/icon2.png")');
+        } else {
+            $('.hideSearch2').hide();
+            $(this).find('img').attr('src', '@Url.Content("~/Content/styles/static/images/danger/icon2-2.png")');
+            $('.dataType2 li').eq(0).find('img').attr('src', '@Url.Content("~/Content/styles/static/images/danger/icon1.png")');
+        }
+    })
+
+    function ajaxGetHtLevelChart(StrTime) {
+        $.ajax({
+            url: '/..@Url.Action("GetHtLevelChart")?StrTime=' + StrTime,
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (result) {
+                var GetHtLevelChartData = result;
+                GetHtLevelChartfun(GetHtLevelChartData)
+                InTable(GetHtLevelChartData.sumJson);
+            }
+        });
+    }
+    function InTable(data) {
+
+        //var _htmlhead = '<tr>';
+        //for (var i = 0; i < data.length; i++) {
+        //    _htmlhead += '<th>' + data[i].name + '</th>';
+        //}
+        //_htmlhead += '</tr>';
+        //$("#tablehead").append(_htmlhead);
+        $("#tables tr:gt(0)").empty();
+        $("#tables tr").not(':eq(0)').empty();
+        var tboy = $("#table");
+        if (data.length > 2) {
+            $("#table").find("tr").removeClass()
+            var _html = '<tr>';
+            var one, two, three;
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].name == "一般隐患") {
+                    two = '<td>' + data[i].value + '</td>';
+                } else
+                    if (data[i].name == "重大隐患") {
+                        one = '<td>' + data[i].value + '</td>';
+                    } else {
+                        three = '<td>' + data[i].value + '</td>';
+                    }
+
+            }
+            _html += one;
+            _html += two;
+            _html += three;
+            _html += '</tr>';
+            tboy.append(_html);
+        }
+
+    }
+    function GetHtLevelChartfun(GetHtLevelChartData) {
+        var obj1 = document.getElementById('data');
+        var data1 = GetHtLevelChartData.data;
+        var arr1 = GetHtLevelChartData.arr;
+        var titleColor1 = ['#fda11c'];
+
+        var color1 = ['#f7b425', '#f46032'];
+        function count(obj, color, data, arr, titleColor) {
+            var Chart4 = echarts.init(obj);
+            var option = {
+                title: {
+                    text: '隐患数量统计',
+                    textStyle: {
+                        color: titleColor,
+
+                    }
+                },
+                legend: {
+                    selectedMode: true,
+                    orient: 'vertical',
+                    left: 0,
+                    top: 40,
+                    textStyle: {
+                        fontSize: 12,
+                        color: '#858585'
+                    },
+                    data: data
+
+                },
+                series: [{
+                    type: 'pie',
+                    radius: ['0', '80%'],
+                    hoverAnimation: true,
+                    color: color,
+                    label: {
+                        normal: {
+                            show: true,
+                            formatter: '{b}:{c}%',
+                            color: '#858585',
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false,
+                            length: 15,
+                            length2: 10,
+                            lineStyle: {
+                                color: '#858585'
+                            }
+                        }
+                    },
+                    data: arr
+                }]
+            }
+            Chart4.setOption(option);
+        }
+        count(obj1, color1, data1, arr1, titleColor1);
+    }
+
+    function ajaxGetHtNumChart(StrTime, level) {
+
+        $.ajax({
+            url: '/..@Url.Action("GetHtNumChart")?StrTime=' + StrTime + '&level=' + level,
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (result) {
+                var GetHtNumChartData = result;
+                GetHtNumChartfun(GetHtNumChartData);
+            }
+        });
+    }
+
+    function GetHtNumChartfun(GetHtNumChartData) {
+        function count1(data) {
+            var Chart4 = echarts.init(document.getElementById('chart3'));
+            var colors = ['#33d13e', '#32d03b', '#ccc'];
+            var option = {
+                title: {
+                    text: '隐患数量变化趋势',
+                    x: '40%'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: ['隐患数量'],
+                    x: '50%',
+                    top: '6'
+                },
+                xAxis: [{
+                    type: 'category',
+                    data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                    axisLine: {
+                        lineStyle: {
+                            color: '#cccccc'
+                        }
+                    }
+                }],
+                yAxis: [{
+                    type: 'value',
+                    min: 0,
+                    axisLabel: {
+                        formatter: '{value}',
+                        textStyle: {
+                            color: '#cccccc'
+                        }
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#cccccc'
+                        }
+                    }
+                },
+                    {
+                        type: 'value',
+                        min: 0,
+                        axisLabel: {
+                            formatter: '{value}',
+                            textStyle: {
+                                color: '#cccccc'
+                            }
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: '#cccccc'
+                            }
+                        }
+
+                    }
+                ],
+                series: [
+
+                    {
+                        name: '隐患数量',
+                        type: 'line',
+                        data: data,
+                        symbol: 'star' + 4,
+                        symbolSize: 6,
+                        color: '#30d03c',
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true
+                                }
+                            },
+                        },
+                        lineStyle: {
+                            color: '#30d03c',
+                        }
+                    }
+                ]
+            };
+            Chart4.setOption(option);
+        }
+        var data1 = GetHtNumChartData;
+        count1(data1);
+    }
+
+    function ajaxGetHtNumChangeChart(StrTime, level) {
+        $.ajax({
+            url: '/..@Url.Action("GetHtNumChangeChart")?StrTime=' + StrTime + '&level=' + level,
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (result) {
+                var GetHtNumChangeChartData = result;
+                GetHtNumChangeChartfun(GetHtNumChangeChartData);
+            }
+        });
+    }
+
+    function GetHtNumChangeChartfun(GetHtNumChangeChartData) {
+        function count2(data) {
+            var Chart4 = echarts.init(document.getElementById('chart5'));
+            var colors = ['#33d13e', '#32d03b', '#ccc'];
+            var option = {
+                title: {
+                    text: '隐患整改变化趋势图',
+                    x: '40%'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: ['隐患整改率', '一般隐患整改率', '重大隐患整改率'],
+                    x: '60%',
+                    top: '6'
+                },
+                xAxis: [{
+                    type: 'category',
+                    data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                    axisLine: {
+                        lineStyle: {
+                            color: '#cccccc'
+                        }
+                    }
+                }],
+                yAxis: [{
+                    type: 'value',
+                    min: 0,
+                    axisLabel: {
+                        formatter: '{value}',
+                        textStyle: {
+                            color: '#cccccc'
+                        }
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#cccccc'
+                        }
+                    }
+                },
+                    {
+                        type: 'value',
+                        min: 0,
+                        axisLabel: {
+                            formatter: '{value}',
+                            textStyle: {
+                                color: '#cccccc'
+                            }
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: '#cccccc'
+                            }
+                        }
+
+                    }
+                ],
+                series: [
+
+                    {
+                        name: '一般隐患整改率',
+                        type: 'line',
+                        data: data[1],
+                        symbol: 'star' + 4,
+                        symbolSize: 6,
+                        color: '#31d13d',
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true
+                                }
+                            },
+                        },
+                        lineStyle: {
+                            color: '#31d13d',
+                        }
+                    },
+                    {
+                        name: '重大隐患整改率',
+                        type: 'line',
+                        data: data[2],
+                        symbol: 'star' + 4,
+                        symbolSize: 6,
+                        color: '#f56133',
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true
+                                }
+                            },
+                        },
+                        lineStyle: {
+                            color: '#f56133',
+                        }
+                    },
+                    {
+                        name: '隐患整改率',
+                        type: 'line',
+                        data: data[0],
+                        symbol: 'circle',
+                        symbolSize: 6,
+                        color: '#f7b425',
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true
+                                }
+                            },
+                        },
+                        lineStyle: {
+                            color: '#f7b425',
+                        }
+                    }
+                ]
+            };
+            var option1 = {
+                title: {
+                    text: '隐患整改变化趋势图',
+                    x: '40%'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: ['重大隐患整改率'],
+                    x: '60%',
+                    top: '6'
+                },
+                xAxis: [{
+                    type: 'category',
+                    data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                    axisLine: {
+                        lineStyle: {
+                            color: '#cccccc'
+                        }
+                    }
+                }],
+                yAxis: [{
+                    type: 'value',
+                    min: 0,
+                    axisLabel: {
+                        formatter: '{value}',
+                        textStyle: {
+                            color: '#cccccc'
+                        }
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#cccccc'
+                        }
+                    }
+                },
+                    {
+                        type: 'value',
+                        min: 0,
+                        axisLabel: {
+                            formatter: '{value}',
+                            textStyle: {
+                                color: '#cccccc'
+                            }
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: '#cccccc'
+                            }
+                        }
+
+                    }
+                ],
+                series: [
+
+                    {
+                        name: '重大隐患整改率',
+                        type: 'line',
+                        data: data[0],
+                        symbol: 'star' + 4,
+                        symbolSize: 6,
+                        color: '#f56133',
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true
+                                }
+                            },
+                        },
+                        lineStyle: {
+                            color: '#f56133',
+                        }
+                    }
+                ]
+            };
+            var option2 = {
+                title: {
+                    text: '隐患整改变化趋势图',
+                    x: '40%'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: ['一般隐患整改率'],
+                    x: '60%',
+                    top: '6'
+                },
+                xAxis: [{
+                    type: 'category',
+                    data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                    axisLine: {
+                        lineStyle: {
+                            color: '#cccccc'
+                        }
+                    }
+                }],
+                yAxis: [{
+                    type: 'value',
+                    min: 0,
+                    axisLabel: {
+                        formatter: '{value}',
+                        textStyle: {
+                            color: '#cccccc'
+                        }
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#cccccc'
+                        }
+                    }
+                },
+                    {
+                        type: 'value',
+                        min: 0,
+                        axisLabel: {
+                            formatter: '{value}',
+                            textStyle: {
+                                color: '#cccccc'
+                            }
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: '#cccccc'
+                            }
+                        }
+
+                    }
+                ],
+                series: [
+
+                    {
+                        name: '一般隐患整改率',
+                        type: 'line',
+                        data: data[0],
+                        symbol: 'star' + 4,
+                        symbolSize: 6,
+                        color: '#31d13d',
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true
+                                }
+                            },
+                        },
+                        lineStyle: {
+                            color: '#31d13d',
+                        }
+                    }
+
+                ]
+            };
+            Chart4.setOption(option);
+        }
+        var data2 = GetHtNumChangeChartData;
+        count2(data2);
+    }
+
+
+    function ajaxGetHtNumReadjustChart(StrTime, level) {
+        $.ajax({
+            url: '/..@Url.Action("GetHtNumReadjustChart")?StrTime=' + StrTime + '&level=' + level,
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (result) {
+                var GetHtNumReadjustChartData = result;
+                GetHtNumReadjustChartfun(GetHtNumReadjustChartData);
+            }
+        });
+    }
+    function GetHtNumReadjustChartfun(GetHtNumReadjustChartData) {
+        function count3(data) {
+            var Chart4 = echarts.init(document.getElementById('chart4'));
+            var colors = ['#63b2ff', '#ffc468'];
+            var option = {
+                title: {
+                    text: '隐患整改变化趋势',
+                    x: '40%'
+                },
+
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                        type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                legend: {
+                    data: ['已整改隐患数', '未整改隐患数'],
+                    x: '60%',
+                    y: '6'
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                {
+                    name: '已整改隐患数',
+                    type: 'bar',
+                    stack: '总量',
+                    barWidth: '30%',
+                    color: colors[0],
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'inside'
+
+                        }
+                    },
+                    data: data[0]
+                },
+                {
+                    name: '未整改隐患数',
+                    type: 'bar',
+                    stack: '总量',
+                    color: colors[1],
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'inside'
+                        }
+                    },
+                    data: data[1]
+                }]
+            }
+            Chart4.setOption(option);
+        }
+        var data3 = GetHtNumReadjustChartData;
+        count3(data3);
+    }
+
+
+
+    $('.main p strong').click(function () {
+        $(this).addClass('select').siblings().removeClass('select');
+        var type = $(this).attr('data-id');
+        if (type == 0) {
+            $('.main1').show();
+            $('.main2').hide();
+        } else {
+            $('.main1').hide();
+            $('.main2').show();
+        }
+    })
+    $(function () {
+        $('.main-sidebar,.main-content').niceScroll({
+            autohidemode: false
+        });
+        $('.table-today tr').hover(function () {
+            $(this).addClass('hover');
+        }, function () {
+            $(this).removeClass('hover');
+        });
+        $('.table-today tr').click(function () {
+            $(this).toggleClass('actives');
+        });
+        console.log($('.user').innerWidth())
+        $('.user>.dropdown-menu').css({
+            left: $('.user').innerWidth() - $('.user>.dropdown-menu').width() - 65
+        });
+    })
+
+</script>

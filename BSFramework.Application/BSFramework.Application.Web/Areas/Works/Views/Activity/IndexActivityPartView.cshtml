@@ -1,0 +1,135 @@
+﻿
+@{
+    ViewBag.Title = "IndexActivityPartView";
+    Layout = null;
+}
+<script src="~/Content/scripts/jquery/jquery-2.0.3.min.js"></script>
+<script src="~/Content/scripts/plugins/echarts/echarts.min.js"></script>
+<link href="~/Content/styles/framework-ui.css" rel="stylesheet" />
+<script src="~/Content/styles/static/js/rem.js"></script>
+<link href="~/Content/styles/static/css/indexmanage.css" rel="stylesheet" />
+<style>
+    select {
+        width: 4rem;
+        height: 1rem;
+        line-height: 1rem;
+        border-radius: 0.15rem;
+        margin-right: 0.1rem;
+    }
+</style>
+<script>
+    var colorList = ["#c23531", "#2f4554", "#61a0a8", "#d48265", "#91c7ae", "#749f83", "#ca8622", "#bda29a", "#6e7074", "#546570", "#c4ccd3", "#37A2DA", "#67E0E3", "#FFDB5C", "#ff9f7f", "#E062AE", "#9d96f5", "#37A2DA", "#32C5E9", "#9FE6B8", "#FFDB5C", "#ff9f7f", "#fb7293", "#e7bcf3", "#8378EA", "#96BFFF"];
+    $(function () {
+        LoadPie();
+        $("#select_DateType").change(function () {
+            LoadPie($(this).val());
+        })
+    })
+    function LoadPie(dateType) {
+        if (!dateType) dateType = "月度";
+        var mychart = echarts.init(document.getElementById('chart'));
+        mychart.showLoading();//开始加载
+        $.ajax({
+            url: "@Url.Action("ActivityTypeCount")",
+            type: "GET",
+            data: { dateType: dateType },
+            success: function (data) {
+                mychart.hideLoading();
+                $("#tabledata").html("");
+                var html = "<tr>"; var addhtml = "";
+                var i = 0;
+                for (var item in data) {
+
+                    var html = "<div style='margin-top:0px;'> <span style='background:" + colorList[i] + ";top:0rem;'></span>";
+                    html += data[item].name + "<span>|<a style=\"cursor:pointer;\"";
+                        html +=" onclick=\"javascript:top.openTab('','@Url.Action("Index5", "Activity", new { area= "Works"})?category=" + data[item].name + "','班组活动')\">";
+                    html += data[item].value + "次</a></span> </div>";
+                    addhtml += html;
+                    i++;
+                }
+                $("#tabledata").append(addhtml);
+
+
+
+                mychart.setOption({
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{a}<br/>{b}：{c}({d}%)'
+                    },
+                    label: {
+                        show: false,
+                        position:'center'
+                                     //formatter: '{a|{a}}     {abg|}\n {hr|} \n {b|{b}:} {c}  {per|{d} %}'
+                    },
+                    //legend: {
+                    //    orient: 'vertical',
+                    //    right: 0,
+                    //    data: data,
+
+                    //},
+                    series: [
+                        {
+                            name: '班组活动统计',
+                            type: 'pie',
+                            radius: ['50%', '80%'],
+                            data: data,
+                            itemStyle: {
+                                normal: {
+                                    color: function (params) {
+                                        return colorList[params.dataIndex]
+                                    }
+                                }
+                            },
+                            avoidLabelOverlap: false,
+                            label: {
+                                show: false,
+                                position: 'center'
+                            },
+                            emphasis: {
+                                label: {
+                                    show: true,
+                                    fontSize: '14',
+                                    fontWeight: 'bold'
+                                }
+                            },
+                            labelLine: {
+                                show: false
+                            },
+                        }
+                    ],
+                });
+                mychart.on('click', function (param) {
+                    console.log(param);
+                    switch (param.name) {
+                        case "":
+                            break;
+                        default:
+                            break;
+                    }
+                })
+            },
+            error: function (error) { console.error(error) }
+        })
+
+    }
+</script>
+
+<div>
+    <div class="item_title">
+        <b>班组活动统计</b>
+        <select id="select_DateType" style="
+    float: right;
+    line-height: 48px;
+    margin: 10px 10px;">
+            <option>月度</option>
+            <option>季度</option>
+            <option>年度</option>
+        </select>
+    </div>
+    <div class="content chart2_content" style=" width: 100%;">
+        <div id="chart" style="width:60%;min-height:300px;"></div>
+        <div class="finish" id="tabledata" style="width:40%">
+
+        </div>
+    </div>
+</div>

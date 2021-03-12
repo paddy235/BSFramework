@@ -1,0 +1,198 @@
+﻿@using BSFramework.Application.Entity.PublicInfoManage
+
+@model BSFramework.Entity.WorkMeeting.CultureTemplateEntity
+
+@{
+    ViewBag.Title = "Index";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/reset.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/skin-1.css")">
+    <style>
+        .part p {
+            text-indent: 2em;
+        }
+    </style>
+    <script>
+        document.ondblclick = function () {
+            window.location.href = '@Url.Action("Index", "Home", new { area = string.Empty })';
+        }
+    </script>
+</head>
+<body>
+    <div class="warp">
+        <div class="header">
+            <img src="@Url.Content("~/Content/styles/static/images/logo1.png")" alt="">
+            <h1>协众人之力&nbsp;&nbsp;&nbsp;创集团典范</h1>
+        </div>
+        <div class="body">
+            <div class="left">
+                <div class="area area-1">
+                    <div class="title title-1"></div>
+                    <div class="part">
+                        @{
+                            var model = Model.Contents.Find(x => x.ContentSubject == "班组简介");
+                            if (model != null)
+                            {
+                                @Html.Raw(model.CultureContent)
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="area area-2">
+                    <div class="title title-2"></div>
+                    <div>
+                        @{
+                            model = Model.Contents.Find(x => x.ContentSubject == "班组成员");
+                            if (model != null)
+                            {
+                                @Html.Raw(model.CultureContent)
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="center">
+                <div class="area area-3">
+                    <div class="title title-3"></div>
+                    <div class="content" style="background-image:none;">
+                        @{
+                            model = Model.Contents.Find(x => x.ContentSubject == "安全理念");
+                            if (model != null)
+                            {
+                                @Html.Raw(model.CultureContent)
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="area area-4">
+                    <div class="title title-4"></div>
+                    <div class="content">
+                        <dl>
+                            <dt>本月完成情况</dt>
+                            <dd>本月违章次数 <a href="@Url.Action("List", "Lllegal", new { area = "Works", page = "1", pagesize = "15", @f = ViewBag.date1, @t = ViewBag.date2 })">@Html.Raw(ViewBag.current1)</a></dd>
+                            <dd>本月任务完成数 <a href="@Url.Action("List", "WorkMeeting", new { area = "Works", page = "1", pagesize = "12", @from = ViewBag.date1, @to = ViewBag.date2 })">@Html.Raw(ViewBag.current2)</a></dd>
+                            <dd>本月任务完成率 <a href="@Url.Action("List", "WorkMeeting", new { area = "Works", page = "1", pagesize = "12", @from = ViewBag.date1, @to = ViewBag.date2 })">@Html.Raw(ViewBag.current3)</a></dd>
+                            <dd>本月危险预知训练次数 <a href="@Url.Action("Index", "Danger", new { area = "Works", @from = ViewBag.date1, @to = ViewBag.date2 })">@Html.Raw(ViewBag.current4)</a></dd>
+                        </dl>
+                        <dl>
+                            <dt>上个月完成情况</dt>
+                            <dd>上月违章次数 <a href="@Url.Action("List", "Lllegal", new { area = "Works", page = "1", pagesize = "15", @f = ViewBag.date3, @t = ViewBag.date4  })">@Html.Raw(ViewBag.last1)</a></dd>
+                            <dd>上月任务完成数 <a href="@Url.Action("List", "WorkMeeting", new { area = "Works", page = "1", pagesize = "12", @from = ViewBag.date3, @to = ViewBag.date4 })">@Html.Raw(ViewBag.last2)</a></dd>
+                            <dd>上月任务完成率 <a href="@Url.Action("List", "WorkMeeting", new { area = "Works", page = "1", pagesize = "12", @from = ViewBag.date3, @to = ViewBag.date4 })">@Html.Raw(ViewBag.last3)</a></dd>
+                            <dd>上月危险预知训练次数 <a href="@Url.Action("Index", "Danger", new { area = "Works", @from = ViewBag.date3, @to = ViewBag.date4 })">@Html.Raw(ViewBag.last4)</a></dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="area area-5">
+                    <div class="title title-5"></div>
+                    <div class="content" style="background-image:none;">
+                        @{
+                            model = Model.Contents.Find(x => x.ContentSubject == "班组荣誉");
+                            if (model != null)
+                            {
+                                @Html.Raw(model.CultureContent)
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="right">
+                <div class="skin-bg-2"></div>
+                <ul class="skin-3">
+                    <li><img src="@Url.Content("~/Content/styles/static/images/skin-3-1.png")" alt=""></li>
+                    <li>
+                        @{
+                            var image1 = ViewBag.image1 as FileInfoEntity;
+                            if (image1 == null)
+                            {
+                                <img src="@Url.Content("~/Content/styles/static/images/skin-3-2.png")" style="width:198px;height:110px;" alt="">
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Detail", "WorkMeeting", new { area = "Works", id = image1.RecId })">
+                                    <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = image1.FileId, area = "PublicInfoManage" })" style="width:198px;height:110px;" alt="">
+                                </a>
+                            }
+                        }
+                    </li>
+                    <li>
+                        @{
+                            var image2 = ViewBag.image2 as List<FileInfoEntity>;
+                            if (image2 != null && image2.Count > 0)
+                            {
+                                <a href="@Url.Action("Detail", "WorkMeeting", new { area = "Works", id = image2[0].RecId })">
+                                    <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = image2[0].FileId, area = "PublicInfoManage" })" style="width:119px;height:110px;" alt="">
+                                </a>
+
+                            }
+                            else
+                            {
+                                <img src="@Url.Content("~/Content/styles/static/images/skin-3-3.png")" style="width:119px;height:110px;" alt="">
+                            }
+                        }
+                    </li>
+                    <li>
+                        @{
+                            var image3 = ViewBag.image3 as List<FileInfoEntity>;
+                            if (image3 != null && image3.Count > 0)
+                            {
+                                <a href="@Url.Action("Detail", "Activity", new { area = "Works", id = image3[0].RecId })">
+                                    <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = image3[0].FileId, area = "PublicInfoManage" })" style="width:198px;height:110px;" alt=""><span>安全日活动</span>
+                                </a>
+                            }
+                            else
+                            {
+                                <img src="@Url.Content("~/Content/styles/static/images/skin-3-4.png")" style="width:198px;height:110px;" alt=""><span>安全日活动</span>
+                            }
+                        }
+                    </li>
+                    <li><img src="@Url.Content("~/Content/styles/static/images/skin-3-5.png")" alt=""></li>
+                    <li>
+                        @{
+                            if (image2 != null && image2.Count > 1)
+                            {
+                                <a href="@Url.Action("Detail", "WorkMeeting", new { area = "Works", id = image2[1].RecId })">
+                                    <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = image2[1].FileId, area = "PublicInfoManage" })" style="width:208px;height:110px;" alt="">
+                                </a>
+
+                            }
+                            else
+                            {
+                                <img src="@Url.Content("~/Content/styles/static/images/skin-3-6.png")" style="width:208px;height:110px;" alt="">
+                            }
+                        }
+                    </li>
+                    <li><img src="@Url.Content("~/Content/styles/static/images/skin-3-7.png")" alt=""></li>
+                    <li><img src="@Url.Content("~/Content/styles/static/images/skin-3-8.png")" alt="" style="width:412px;height:110px;"><span>用心工作感恩企业超越自我</span></li>
+                </ul>
+                <div class="area area-6">
+                    <div class="title title-6"></div>
+                    <div class="content">
+                        <ul style="padding-left:30px;">
+                            @{
+                                var notices = ViewBag.notices as List<NewsEntity>;
+                                if (notices != null)
+                                {
+                                    foreach (var item in notices)
+                                    {
+                                        <li style="list-style:circle;">
+                                            <a href="@Url.Action("NewDetail", "Notice", new { keyValue=@item.NewsId, area = "PublicInfoManage"})" title="@Html.Raw(item.FullHead)">@Html.Raw(item.FullHead)</a>
+                                        </li>
+                                    }
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <img class="skin-1" src="@Url.Content("~/Content/styles/static/images/skin-bg-1.png")" alt="">
+        </div>
+        <div class="footer"></div>
+    </div>
+</body>
+</html>

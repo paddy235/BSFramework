@@ -1,0 +1,128 @@
+﻿@{
+    ViewBag.Title = "流程预览";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<link href="~/Content/styles/framework-flow.css" rel="stylesheet" />
+<link href="~/content/scripts/plugins/icheck/skins/all.css?v=1.0.2" rel="stylesheet">
+<script src="~/content/scripts/plugins/icheck/js/icheck.js?v=1.0.2"></script>
+<script>
+    var keyValue = request('keyValue');
+    var schemeVersion = request('schemeVersion');
+    var processSchemeId = request('processSchemeId');
+    $(function () {
+        var schemeContent;
+        var _width = $(window).width() * 0.9 - 20;
+        if (_width > 1000)
+        {
+            _width = 1000;
+        }
+        if (keyValue) {
+            $.SetForm({
+                url: "../../FlowManage/FlowDesign/GetSchemeContentJson",
+                param: { keyValue: keyValue, SchemeVersion: schemeVersion },
+                success: function (data) {
+                    schemeContent = JSON.parse(data.SchemeContent);
+                    $('#frmpreview').frmPreview({
+                        tablecotent: schemeContent.Frm.FrmContent,
+                        width: _width
+                    });
+                    $('#frmname').html(schemeContent.Frm.FrmName);
+                    console.log(schemeContent);
+                    $('#FlowPanel').flowdesign({
+                        height: $(window).height() - 18,
+                        width: $(window).width() - 20,
+                        flowcontent: schemeContent.Flow,
+                        frmData: JSON.parse(schemeContent.Frm == "" ?"[]":schemeContent.Frm.FrmContent),
+                        haveTool: false,
+                        preview:1
+                    });
+                }
+            });
+        }
+        else {
+            $.SetForm({
+                url: "../../FlowManage/FlowProcess/GetProcessSchemeJson",
+                param: { keyValue: processSchemeId },
+                success: function (data) {
+                    schemeContent = JSON.parse(JSON.parse(data.SchemeContent).SchemeContent);
+                    $('#frmpreview').frmPreview({
+                        tablecotent: schemeContent.Frm.FrmContent,
+                        width: _width,
+                    });
+                    $('#frmname').html(schemeContent.Frm.FrmName);
+                    $('#FlowPanel').flowdesign({
+                        height: $(window).height() - 18,
+                        width: $(window).width() - 20,
+                        flowcontent: schemeContent.Flow,
+                        frmData: JSON.parse(schemeContent.Frm == "" ? "[]" : schemeContent.Frm.FrmContent),
+                        haveTool: false,
+                        preview: 1
+                    });
+                }
+            });
+        }
+        //resize重设(表格、树形)宽高
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#previewpage').css("height", e.currentTarget.innerHeight-20);
+                $('#formAreas').css("width", e.currentTarget.innerWidth * 0.9-20);
+                if (schemeContent != undefined)
+                {
+                    $('#FlowPanel').flowdesign({
+                        height: e.currentTarget.innerHeight - 18,
+                        width: e.currentTarget.innerWidth - 20,
+                        flowcontent: schemeContent.Flow,
+                        haveTool: false
+                    });
+                }
+            }, 200);
+            e.stopPropagation();
+        });
+        $('#formAreas').css("width", $(window).width() * 0.9-20);
+        $('#previewpage').css("height", $(window).height() - 20);
+
+        $('.item_field_value input').iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass: 'iradio_square-blue',
+            increaseArea: '20%'
+        });
+    });
+    function flowshow()
+    {
+        $('#previewpage').hide();
+        $('#FlowPanel').show();
+    }
+    function frmshow() {
+        $('#FlowPanel').hide();
+        $('#previewpage').show();
+    }
+</script>
+<div style="position:absolute;top:0; right:100px;z-index:1000;background:rgba(0, 0, 0, 0.1);padding:10px;border-radius:0px 0px 5px 5px;">
+    <a class="btn btn-success" onclick="flowshow()">&nbsp;流程预览</a>
+    <a class="btn btn-default" onclick="frmshow()">&nbsp;表单预览</a>
+</div>
+<div class="panels">
+    <div id="previewpage" style="overflow-y:auto;background-color:#fff;display:none;border: 1px solid #ccc;">
+        <div id="formAreas" style="margin: 30px auto;max-width: 1000px;">
+            <div style="border-bottom:1px solid #ccc;text-align:center"><span id="frmname"></span></div>
+            <div class="app_layout app_preview" id="frmpreview"></div>
+        </div>
+    </div>
+    <div id="FlowPanel" style="margin: 0px;border: 1px solid #ccc;"></div>
+    @*<div id="flowdiv" style="margin: 0; padding: 0; border: 1px solid #ccc;"><svg style="overflow: hidden; position: relative; " height="680" version="1.1" width="1375" xmlns="http://www.w3.org/2000/svg"><desc style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); ">Created with Raphaël 2.1.2</desc><defs style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); "></defs><rect style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); cursor: default; " x="10" y="50" width="108" height="50" r="8" rx="8" ry="8" fill="#efeff0" stroke="#587aa9" stroke-width="1.4"></rect><text style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 12px; line-height: normal; font-family: Arial; " x="62" y="75" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" font-size="12px"><tspan style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); " dy="4.5">新步骤</tspan></text><rect style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); cursor: default; " x="279" y="241" width="108" height="50" r="8" rx="8" ry="8" fill="#efeff0" stroke="#cc0000" stroke-width="1.4"></rect><text style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 12px; line-height: normal; font-family: Arial; " x="331" y="266" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" font-size="12px"><tspan style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); " dy="4.5">新步骤2</tspan></text><rect style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); cursor: default; " x="180" y="50" width="108" height="50" r="8" rx="8" ry="8" fill="#efeff0" stroke="#587aa9" stroke-width="1.4"></rect><text style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 12px; line-height: normal; font-family: Arial; " x="232" y="75" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" font-size="12px"><tspan style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); " dy="4.5">新步骤1</tspan></text><path style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); " fill="#898a89" stroke="#898a89" d="M119,75L179,75M179,75L172.81936684998752,71.71369906049877L172.81936684998752,78.28630093950123Z" stroke-width="1.7" x="119" y="75"></path><path style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); " fill="#898a89" stroke="#898a89" d="M289,75L333,240M333,240L334.5828204702172,233.18129929098941L328.2321428906362,234.87481331221102Z" stroke-width="1.7" x="289" y="75"></path></svg></div>
+    <script src="/content/Scripts/plugins/workflow/draw-min.js" type="text/javascript"></script>
+     <script src="/content/Scripts/plugins/workflow/workflow.js" type="text/javascript"></script>
+     <script type="text/javascript">
+         var appid = 'aa80e3aa-6547-416e-839b-a25bc7f2a099';
+         var iframeid = 'tab_aa80e3aa6547416e839ba25bc7f2a099';
+         var dialog = top.mainDialog;
+     </script>*@
+</div>
+<style>
+    body {
+        overflow: hidden;
+    }
+    .panels {
+        padding: 10px;
+    }
+</style>

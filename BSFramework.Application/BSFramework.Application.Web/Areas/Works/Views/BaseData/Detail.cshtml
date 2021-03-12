@@ -1,0 +1,195 @@
+﻿@model BSFramework.Entity.WorkMeeting.JobTemplateEntity
+@using BSFramework.Application.Entity.PublicInfoManage
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<style>
+    .images-container {
+        min-height: 120px;
+    }
+
+        .images-container li {
+            list-style: none;
+            float: left;
+            padding: 0px 5px;
+        }
+
+    .yinpin li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+
+    .items li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+    .ui-jqgrid tr.jqgrow td {
+    white-space:normal !important;
+    height:auto;
+    vertical-align:middle;
+    padding-top:2px;
+    }
+</style>
+<script>
+    jQuery(function () {
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#grid').setGridWidth(($('.gridPanel').width()));
+                $("#grid").setGridHeight($(window).height() - 140);
+            }, 200);
+            e.stopPropagation();
+        });
+        var jobid = jQuery('#JobId').val();
+        jQuery('#grid').jqGrid({
+            colModel: [
+                { label: '潜在危险', name: 'Dangerous', width: 300, align: 'center', sortable: false },
+                { label: '防范措施', name: 'Measure', width: 250, align: 'center', sortable: false }
+            ],
+            height: 300,
+            autowidth: true,
+            url: '@Url.Action("GetDangers")?jobid=' + jobid,
+            datatype: "json",
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 10,
+            rownumbers: true,
+            pager: "#gridPager",
+            gridComplete: function () {
+            }
+        });
+
+        
+        
+    });
+    function showimg()
+    {
+        var json = {
+            "data": [
+                      @Html.Raw(string.Format("{{ \"src\" : \"{0}\"}},",ViewBag.url))
+            ]
+        }
+        debugger;
+        layer.photos({
+            photos: json,
+            anim: 1
+        })
+    }
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style=" padding-right: 30px;">
+            <table class="form">
+                <tr>
+                    <td class="formTitle">工作任务</td>
+                    <td class="formValue">
+                        @Html.TextAreaFor(x => x.JobContent, new { @class = "form-control", @readonly = "readonly" })
+                        @Html.HiddenFor(x=>x.JobId)
+                    </td>
+                    <td class="formTitle">作业类别</td>
+                    <td class="formValue">
+
+                        @Html.TextAreaFor(x => x.WorkType, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">作业岗位</td>
+                    <td class="formValue">
+
+                        @Html.TextAreaFor(x => x.WorkQuarters, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">资源准备</td>
+                    <td class="formValue">
+
+                        @Html.TextAreaFor(x => x.ResPrepare, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">任务描述</td>
+                    <td class="formValue">
+
+                        @Html.TextAreaFor(x => x.WorkDescribe, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">作业区域</td>
+                    <td class="formValue">
+
+                        @Html.TextAreaFor(x => x.WorkArea, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+                @*<tr style="line-height:100px;">
+                    <th class="formTitle" valign="top" style="padding-top: 4px;">
+                        潜在危险
+                    </th>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.d, new { @style = "height:120px;", @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+                <tr style="line-height:100px;">
+                    <th class="formTitle" valign="top" style="padding-top: 4px;">
+                        防范措施
+                    </th>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.m, new { @style = "height:120px;", @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>*@
+                <tr>
+                    <td colspan="4">
+                        <div class="pd-20 bg-fff bd-t-e3ebfd">
+                            <div class="f-16 c-4a4e50 lh-36 pd-b-20" style="word-break:break-all;height:auto;min-height:110px;padding-top:10px;padding-left:10px;">
+                                @*@Html.DisplayFor(x => x.Remark)*@
+                                <div class="gridPanel">
+                                    <table id="grid"></table>
+                                    @*<div id="gridPager"></div>*@
+                                </div>
+
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="line-height:100px;">
+                    <th class="formTitle" valign="top" style="padding-top: 4px;">
+                        示例图片
+                    </th>
+
+                    <td colspan="2">
+                        @*@Html.TextBoxFor(x => x.PicNumber, new { @class = "form-control", @readonly = "readonly" })*@
+                        @*<a id="imgs" ><label id="name"></label></a>*@
+                        @{
+                            if (ViewBag.path != "")
+                            {
+                                <img onclick="showimg();" src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = ViewBag.path, area = "PublicInfoManage" })" alt="" style="width:126px;height:126px;">
+                            }
+                        }
+                        
+                    </td>
+                    @*<td>
+                        <input type="file" name="uploadFile" id="uploadFile" style="display:none;">
+                        <label for="uploadFile" style="margin-left:20px;color:blue;text-align:center;vertical-align:middle;font-size:12px;">上传照片</label>
+                    </td>*@
+                </tr>
+                <tr>
+                    <td class="formTitle">添加人</td>
+                    <td class="formValue">
+
+                        @Html.TextBoxFor(x => x.CreateUser, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                    <td class="formTitle">添加时间</td>
+                    <td class="formValue">
+
+                        @Html.TextBoxFor(x => x.CreateDate, new { @class = "form-control", @readonly = "readonly" })
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+</div>

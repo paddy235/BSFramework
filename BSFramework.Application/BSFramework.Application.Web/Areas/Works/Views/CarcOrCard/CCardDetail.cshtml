@@ -1,0 +1,427 @@
+﻿
+@{
+    ViewBag.Title = "CCardDetail";
+    Layout = "~/Views/Shared/_OrderForm.cshtml";
+}
+
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<script src="~/Content/scripts/business/common.js"></script>
+<script src="~/Content/scripts/jquery/jquery.serializeJSON.min.js"></script>
+<script src="~/Content/scripts/jquery/jquery.url.js"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<link rel="stylesheet" href="~/Content/styles/static/css/index.css">
+<link rel="stylesheet" href="~/Content/styles/static/css/extend.css">
+<link rel="stylesheet" href="~/Content/styles/static/css/launch-activity.css" />
+<link rel="stylesheet" href="~/Content/styles/static/css/before.css" />
+<script src="~/Content/scripts/validator/Validform.min.js"></script>
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+<script src="~/Content/scripts/nicescroll/nicescroll.min.js"></script>
+<script src="~/Content/scripts/base.js"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/audiojs/audio.min.js")"></script>
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<script src="@Url.Content("~/Content/scripts/jquery.cxscroll.min.js")"></script>
+<link href="~/Content/styles/layout.css" rel="stylesheet" />
+<!--播放器-->
+<link href="~/Content/scripts/plugins/video/css/video.min.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/video/js/video.min.js"></script>
+<script src="~/Content/scripts/plugins/video/js/videojs-contrib-hls.min.js"></script>
+<style>
+    .form .formTitle {
+        width: 120px;
+    }
+</style>
+<style>
+    .video li {
+        float: left;
+    }
+
+    .files li {
+        float: left;
+        margin: 0px 5px;
+    }
+
+    .imagelist li {
+        float: left;
+    }
+
+        .imagelist li img {
+            width: 100px;
+            height: 80px;
+        }
+</style>
+<script>
+    var keyvalue = request('keyvalue');
+    var mode = request('mode');
+    var deptid = request('deptid');
+    var userid = '@ViewBag.userid'
+    var CDangerousList = new Array();
+    jQuery(function () {
+        if (keyvalue) {
+                    $.ajax({
+                    url: "@Url.Action("getEntity")?keyvalue=" + keyvalue,
+                    type: "get",
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                           if (data) {
+                                   $("#form1").formDeserialize(data);
+                                   for (var i = 0; i < data.CDangerousList.length; i++) {
+                                       JsonBack(data.CDangerousList[i]);
+                               }
+                               SetFile(data.Files);
+                                }
+
+                            }
+           });
+
+                 if (mode=="edit") {
+
+                } else {
+                jQuery('#grid').jqGrid({
+                    colModel: [
+                             { label: '评价人', name: 'EvaluateUser', align: 'center', sortable: false },
+                        { label: '评价部门', name: 'DeptName', align: 'center', sortable: false },
+                            { label: '评价时间', name: 'EvaluateDate', align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d H:i', newformat: 'Y-m-d H:i' } },
+                            { label: '评分', name: 'Score', align: 'center', sortable: false },
+                            { label: '评价内容', name: 'EvaluateContent', align: 'center', sortable: false }
+                    ],
+                    height: $(window).height() - 470,
+                    width: $(window).width() - 22,
+                    url: '@Url.Action("GetDataEvaluate", "Activity")?keyValue=' + (keyvalue || 'xxxxx'),
+                    datatype: "json",
+                    viewrecords: true,
+                    gridview: true,
+                    sortable: false,
+                    rowNum: 1000,
+                    rownumbers: true,
+                });
+
+                    $("input").attr("disabled", "disabled");
+                    $("span").attr("disabled", "disabled");
+                    $("textarea").attr("disabled", "disabled");
+                    $("#add").css("display", "none");
+                }
+        }
+        $('.play-audio-container2').delegate('.play-audio', 'click', function () {
+            //var Id = $(this).data('id');
+            //document.getElementById(Id).play();
+            var url = $(this).data('url');
+            var html = '<audio id="audio" src="' + url + '" controls autoplay style="width:483px;display:block;"></audio>';
+            $('#audio-warp').append(html);
+            $('#audio')[0].addEventListener('canplaythrough', function () {
+                this.play();
+            });
+            layer.open({
+                type: 1,
+                area: ['460px', '45px'],
+                content: $('#audio-warp '),
+                title: false,
+                end: function () {
+                    $('#audio-warp').empty();
+                    $('#audio-warp').hide();
+                }
+            })
+        });
+        $('.box').delegate('li', 'click', function () {
+            var dataimg = [];
+            $(".safeImg").each(function (o, i) {
+
+                var imgsrc = { src: $(i).find("img").attr("src") };
+                dataimg.push(imgsrc);
+            })
+            var json = {
+                data: dataimg
+            };
+            layer.photos({
+                photos: json,
+                anim: 5
+            })
+        });
+        jQuery('.imagepanel').on('click', ' li', function () {
+            var dataimg = [];
+            jQuery(this).parents('.imagelist').find(" li img").each(function (o, i) {
+                var imgsrc = { src: $(i).attr("src") };
+                dataimg.push(imgsrc);
+            })
+            var json = {
+                data: dataimg
+            };
+            layer.photos({
+                photos: json,
+                anim: 5
+            })
+        });
+
+    });
+    function sel1() {
+        var jobname = $("#DutyName").val();
+        selectRole(userid, deptid, jobname, 1, 2, window.document.body, 'DutyName,DutyId');
+
+    }
+   /// <summary>
+    /// 选择角色
+    /// </summary>
+    ///<param name="deptId">查询条件，根据mode的值查询方式会不同</param>
+    /// <param name="checkMode">单选或多选，0:单选，1:多选</param>
+    /// <param name="mode">查询模式，0:获取机构ID为Ids下所有的部门(即OrganizeId=Ids)，1:获取部门ParentId为Ids下所有部门(即ParentId=Ids)，2:获取部门的parentId在Ids中的部门(即ParentId in(Ids))，3:获取部门Id在Ids中的部门(即DepartmentId in(Ids))</param>
+    ///<param name="winObject">窗体中需要查找domId的对象，一般可写成window.document.body或this.parentNode</param>
+    ///<param name="domId">接收返回值的dom节点的ID，多个用逗号分隔，顺序依次为用户名称,用户账号，用户Id（多选用逗号分隔）</param>
+    function selectRole(userid, deptid, jobname, checkMode, mode, winObject, domId) {
+        return dialogOpen({
+            id: "Role",
+            title: "选择岗位",
+            url: '/..@Url.Action("SelectJob", "Activity")?deptId=' + deptid + "&userid=" + userid + "&checkMode=" + checkMode + "&mode=" + mode + "&jobname=" + jobname,
+            width: "250px",
+            height: "500px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick(winObject, domId);
+            }
+        });
+    }
+
+    function fn$addForm() {
+        dialogOpen({
+            id: 'addForm',
+            title: '风险辨识',
+            url: '/..@Url.Action("DangerList")',
+            width: '800px',
+            height:'500px',
+            callBack: function (iframeId) {
+            top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+     function fn$refresh() {
+        jQuery('#grid').jqGrid().trigger('reloadGrid');
+    }
+    function SetFile(data) {
+        var pichtml = "";
+        var audiohtml = "";
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].Description=="照片") {
+                var scr = '@Url.Action("DownloadFile", "ResourceFile", new { area = "PublicInfoManage" })?keyvalue=' + data[i].FileId;
+                pichtml += ' <li class="safeImg"><img src="' + scr +'" alt="" style="width:180px;height:120px;"></li>';
+            } else {
+                audiohtml += ' <li><div data-id="' + data[i].FileId + '" class="play-audio" data-url="' + data[i].FilePath+'">';
+                audiohtml += ' <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" alt="" width="24">' + data[i].FileName + '</div> </li>';
+                //audiohtml += ' <div style="float:left;">';
+                //audiohtml += '  <audio id="' + data[i].FileId + '" preload="metadata" src="' + data[i].FilePath + '" controls style="width: 483px; display: block; ">该浏览器不支持音频播放</audio>';
+                //audiohtml +='</div></li>'
+            }
+
+        }
+        $("#pic").append(pichtml);
+        $('#audio').append(audiohtml);
+    }
+
+    function JsonBack(json) {
+        if (json) {
+            CDangerousList.push(json);
+        }
+        $("#table_FormSet").html("");
+        var html = "";
+        for (var i = 0; i < CDangerousList.length; i++) {
+            if (CDangerousList[i].MeasureStr) {
+                html += "<tr><td>" + (i + 1) + "</td><td>" + CDangerousList[i].DangerName + "</td><td>" + CDangerousList[i].DangerSource + "</td><td style='word-wrap:break-word;word-break:break-all'>" + CDangerousList[i].MeasureStr + "</td></tr>";
+
+            } else {
+                var MeasureStr = "";
+                for (var n = 0; n < CDangerousList[i].Measure.length; n++) {
+                    MeasureStr += CDangerousList[i].Measure[n].Measure+"<br/>"
+                }
+                html += "<tr><td>" + (i + 1) + "</td><td>" + CDangerousList[i].DangerName + "</td><td>" + CDangerousList[i].DangerSource + "</td><td style='word-wrap:break-word;word-break:break-all'>" + MeasureStr+"</td></tr>";
+
+            }
+           // html += "<tr><td>" + (i + 1) + "</td><td>" + MeasureList[i].DangerName + "</td><td>" + MeasureList[i].DangerSource + "</td><td style='text-overflow:ellipsis;white-space:nowrap;overflow:hidden'>" + MeasureList[i].Measure +"</td></tr>";
+
+        }
+        $("#table_FormSet").append(html);
+    }
+
+       function evaluateaa() {
+
+           var isEvaluate = 0;
+           id = keyvalue;
+        if (!id) {
+            layer.msg("请完成后进行评价！");
+            return;
+        }
+        $.SetForm({
+            url: "/..@Url.Action("GetIsEvaluate", "Activity")",
+            param: { keyValue: id, category: "" },
+            success: function (data) {
+                isEvaluate = data;
+            }
+        });
+        //currentNode = jQuery('#tree').getCurrentNode();
+        if (isEvaluate == 0) {
+            var url = encodeURI('/..@Url.Action("Evaluate", "Activity")?id=' + id + "&iframeId=" + jQuery(self.frameElement).attr('id') + '&category=');
+            dialogOpen({
+                id: "form1",
+                title: '评价',
+                url: url,
+                width: "500px",
+                height: "330px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        } else if (isEvaluate > 0) {
+            layer.msg("已评价过此活动");
+        } else if (isEvaluate == -1) {
+            layer.msg("此活动尚未结束");
+        }
+    }
+    function AcceptClick() {
+          if (!$('#form1').Validform()) {
+            return false;
+        }
+        var WorkName = $("#WorkName").val();
+        if (!WorkName) {
+            dialogMsg('请填写任务名称！', -1);
+            return;
+        }
+        var DutyName = $("#DutyName").val();
+        //if (!DutyName) {
+        //    dialogMsg('请选择岗位！', -1);
+        //    return;
+        //}
+
+        var WorkArea = $("#WorkArea").val();
+        if (!WorkArea) {
+            dialogMsg('请填写作业区域！', -1);
+            return;
+        }
+
+        var MainOperation = $("#MainOperation").val();
+        if (!MainOperation) {
+            dialogMsg('请填写主要操作步骤！', -1);
+            return;
+        }
+        var json = jQuery('#form1').serializeJSON();
+        json["Id"] = $("#Id").val();
+        json["WorkName"] = WorkName;
+        json["DutyName"] = DutyName;
+        json["DutyId"] = $("#DutyId").val();
+        json["WorkArea"] = WorkArea;
+        json["MainOperation"] = MainOperation;
+        json["CDangerousList"] = CDangerousList;
+        $.SaveForm({
+            url: '@Url.Action("SaveForm")',
+            param: json,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+
+</script>
+
+<div style="margin-left: 10px; margin-top: 20px; margin-right: 30px;">
+    <table id="from1" class="form">
+
+        <tr>
+            <th class="formTitle">任务名称<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <input class="form-control" id="WorkName" type="text" value="" checkexpession="NotNull" />
+            </td>
+        </tr>
+        @*<tr>
+
+                <th class="formTitle">作业区域<font face="宋体">*</font></th>
+                <td class="formValue">
+                    <input class="form-control" id="WorkArea" type="text" value="" checkexpession="NotNull" />
+                </td>
+                <th class="formTitle"></th>
+                <td class="formValue">
+                </td>
+            </tr>*@
+        <tr>
+            <th class="formTitle">主要操作步骤<font face="宋体">*</font></th>
+            <td class="formValue" colspan="3">
+                <textarea id="MainOperation" class="form-control" style="height:80px" maxlength="500" checkexpession="NotNull"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <div class="panel panel-default" style="text-align:center">
+                    <div class="panel-heading">
+                        <strong>&nbsp;&nbsp;风险辨识</strong>
+                        <span class="tools pull-right">
+                            <a id="add" class="btn btn-default" style="padding: 2px 5px;" onclick="fn$addForm()"><i class="fa fa-plus"></i>&nbsp;新增</a>&nbsp;&nbsp;&nbsp;<a class="fa fa-chevron-down" title="展开/收起"></a>
+                        </span>
+                    </div>
+                    <div class="panel-body">
+                        <table class="form" style="border-collapse:separate;border-spacing:0px 10px;table-layout:fixed">
+                            <colgroup>
+                                <col style="width:50px;" />
+                                <col style="width:80px;" />
+                                <col style="width:150px;" />
+                                <col style="width:150px;" />
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th class="bg-fff">序号</th>
+                                    <th class="bg-fff">危险名称</th>
+                                    <th class="bg-fff">风险描述</th>
+                                    <th class="bg-fff">采取的控制措施</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table_FormSet">
+                                <tr><td></td></tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr><td colspan="4"><br /></td></tr>
+        <tr><td colspan="4"><br /></td></tr>
+        <tr><td colspan="4"><br /></td></tr>
+        <tr>
+            <th class="formTitle">照片</th>
+            <td class="formValue" colspan="3">
+                <div class="form-group imagepanel">
+                    <ul class="col-xs-11 imagelist" id="pic">
+                    </ul>
+                </div>
+            </td>
+        </tr>
+        <tr><td colspan="4"><br /></td></tr>
+        <tr><td colspan="4"><br /></td></tr>
+        <tr><td colspan="4"><br /></td></tr>
+        <tr>
+            <th class="formTitle">音频</th>
+            <td class="formValue" colspan="3">
+                <ul id="audio" class="play-audio-container2">
+                </ul>
+            </td>
+        </tr>
+        <tr><td colspan="4"><br /></td></tr>
+        <tr><td colspan="4"><br /></td></tr>
+        <tr><td colspan="4"><br /></td></tr>
+        <tr>
+            <td colspan="4">
+                <div class="f-18 f-w c-0d0d0d">
+                    <a id="lr-edit" class="btn btn-default" onclick="evaluateaa()">
+                        <i class="fa fa-pencil-square-o"></i>&nbsp;评价
+                    </a>
+                </div>
+                <div class="f-16 c-4a4e50 lh-36 pd-b-20" style="word-break:break-all;height:auto;min-height:110px;padding-top:20px;">
+                    <div class="gridPanel" style="width:auto">
+                        <table id="grid"></table>
+                        @*<div id="gridPager"></div>*@
+                    </div>
+                </div>
+
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="audio-warp" style="height:45px;width:460px;display: none;overflow:hidden;">
+</div>

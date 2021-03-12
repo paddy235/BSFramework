@@ -1,0 +1,170 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group a.btn {
+            margin-top: 4px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+</style>
+@section Scripts {
+    <script>
+        jQuery(function () {
+            $(window).resize(function (e) {
+                window.setTimeout(function () {
+                    $('#grid').setGridWidth(($('.gridPanel').width()));
+                    $("#grid").setGridHeight($(window).height() - 108.5);
+                }, 200);
+                e.stopPropagation();
+            });
+
+            jQuery('#grid').jqGrid({
+                url: "@Url.Action("GetData")",
+                datatype: "json",
+                mtype: 'POST',
+                height: $(window).height() - 108.5,
+                autowidth: true,
+                colModel: [
+                    {
+                        label: '操作', name: 'action', width: 150, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                            var html = "";
+                            html += "<a href=\"javascript:fn$detail('" + rowObject.TaskName + "')\" title=\"查看\" style=\"color:blue;padding-left:0px;\">查看</a> ";
+                            html += "<a href=\"javascript:edit('" + rowObject.TaskName + "')\" title=\"修改\" style=\"color:blue;padding-left:0px;\">修改</a> ";
+                            html += "<a href=\"javascript:fn$setstate('" + rowObject.TaskName + "', " + (!rowObject.Enabled) + ")\" title=\"" + (rowObject.Enabled ? "禁用" : "启用") + "\" style=\"color:blue;padding-left:0px;\">" + (rowObject.Enabled ? "禁用" : "启用") + "</a> ";
+                            if (rowObject.Enabled)
+                                html += "<a href=\"javascript:fn$execute('" + rowObject.TaskName + "')\" title=\"执行\" style=\"color:blue;padding-left:0px;\">执行</a> ";
+                            return html;
+                        }
+                    },
+                    { label: "执行计划", name: "TaskName", width: 400, align: "center", sortable: false },
+                    {
+                        label: '启用', name: "Enabled", index: "Enabled", width: 100, align: "center",
+                        formatter: function (cellvalue, options, rowObject) {
+                            return cellvalue == true ? "<i class=\"fa fa-toggle-on\"></i>" : "<i class=\"fa fa-toggle-off\"></i>";
+                        }
+                    },
+                    { label: "状态", name: "Status", width: 150, align: "center", sortable: false },
+                    { label: "下次执行时间", name: "NextRunTime", width: 180, align: "center", sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d H:i', newformat: 'Y-m-d H:i' } },
+                    { label: "上次执行时间", name: "LastRunTime", width: 180, align: "center", sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d H:i', newformat: 'Y-m-d H:i' } },
+                    { label: "上次执行结果", name: "LastResult", width: 260, align: "center", sortable: false },
+                ],
+                rownumbers: true,
+                viewrecords: true,
+            });
+        });
+
+        function edit(id) {
+            dialogOpen({
+                id: "Edit",
+                title: '查看',
+                url: '/..@Url.Action("Edit")/' + id,
+                width: "900px",
+                height: "400px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        }
+
+        function fn$detail(id) {
+            dialogOpen({
+                id: "Edit",
+                title: '查看',
+                url: '/..@Url.Action("Edit")/' + id,
+                width: "900px",
+                height: "400px",
+                btn: null,
+                callBack: function (iframeId) {
+                    end();
+                }
+            });
+        }
+
+        function fn$setstate(TaskName, enabled) {
+            var url = enabled ? "@Url.Action("Enable")" : "@Url.Action("Disable")";
+            var msg = enabled ? "启用中，请稍候" : "禁用中，请稍候";
+            Loading(true, msg);
+            jQuery.post(url, { TaskName: TaskName, Enabled: enabled }, function (data) {
+                Loading(false);
+                if (!data.success) {
+                    dialogMsg(data.message, -1);
+                }
+
+                fn$query();
+            }, 'json');
+        }
+
+        function fn$execute(task) {
+            Loading(true, "计划执行中，请稍候");
+            jQuery.post('@Url.Action("Execute")', { TaskName: task }, function (data) {
+                Loading(false);
+                if (!data.success) {
+                    dialogMsg(data.message, -1);
+                }
+
+                fn$query();
+            }, 'json');
+        }
+
+        function fn$query() {
+            jQuery('#grid').trigger("reloadGrid");
+        }
+
+    </script>
+}
+<div class="titlePanel">
+    <div class="title-search">
+        <div class="form-inline">
+            @*<div class="form-group">
+                    <label for="person">总结类型</label>
+                    <select id="category" class="form-control" style="width:120px">
+                        <option>全部</option>
+                        <option>周工作总结</option>
+                        <option>月工作总结</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="start">日期</label>
+                    <input type="text" class="form-control" id="start" onfocus="WdatePicker();" readonly="readonly">
+                    - <input type="text" class="form-control" id="end" onfocus="WdatePicker();" readonly="readonly">
+                </div>
+                <div class="form-group">
+                    <label for="key">搜索</label>
+                    <input type="text" class="form-control" id="key">
+                </div>
+                <div class="form-group">
+                    <a id="btn_Search" class="btn btn-primary" onclick="fn$query();"><i class="fa fa-search"></i>查询</a>
+                </div>*@
+            <div class="form-group">
+                <a id="btn_Search" class="btn btn-primary" onclick="fn$query();">刷新</a>
+            </div>
+        </div>
+    </div>
+    <div class="toolbar">
+        <div class="btn-group">
+            @*<a id="edit" class="btn btn-default" onclick="edit()"><i class="fa fa-pencil"></i>&nbsp;编辑</a>
+            <a id="delete" class="btn btn-default" onclick="delete()"><i class="fa fa-remove"></i>&nbsp;删除</a>*@
+            @*<a id="add" class="btn btn-default" onclick="fn$setting()"><i class="fa fa-plus"></i>&nbsp;设置</a>*@
+        </div>
+        <script>$('.toolbar').authorizeButton()</script>
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="grid"></table>
+</div>

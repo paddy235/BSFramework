@@ -1,0 +1,44 @@
+﻿@{;
+    ViewBag.Title = "表单页面";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script src="~/Content/scripts/business/Common.js" type="text/javascript"></script>
+<script>
+  
+    $(function () {
+        initControl();
+    });
+    function initControl() {
+        $.post("../../PublicInfoManage/Package/GetDefaltPath", function (data) {
+            $("#CodeEncoderURL").val(data);
+        });
+    }
+    //保存表单;
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var postData = $("#form1").formSerialize("");
+        $.SaveForm({
+            url: "../../PublicInfoManage/Package/Bulid?keyValue=" + $("#CodeEncoderURL").val(),
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<div style="margin-top: 20px; margin-right: 30px;">
+    <form id="ff" method="post" enctype="multipart/form-data">
+        <table class="form">
+            <tr>
+                <td class="formTitle">二维码路径<font face="宋体">*</font></td>
+                <td class="formValue">
+                    <input id="CodeEncoderURL" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" />
+                </td>
+            </tr>
+
+        </table>
+        </form>
+</div>

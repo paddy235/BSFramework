@@ -1,0 +1,3 @@
+2020-07-29 09:53:36 用户：超级管理员  id：System开始编辑积分配置726c5168-eacc-4078-83d9-11b282327488 
+ {"Id":"726c5168-eacc-4078-83d9-11b282327488","Score":59.0,"Standard":"班前一题","Sort":1,"ScoreType":"自动","IsOpen":1,"Remark":"减0.6","CreateDate":"2020-07-23T09:41:24","CreateUserId":"System","CreateUserName":"超级管理员","ModifyDate":"0001-01-01T00:00:00","ModifyUserId":null,"ModifyUserName":null} 
+------------------------------------------------------------

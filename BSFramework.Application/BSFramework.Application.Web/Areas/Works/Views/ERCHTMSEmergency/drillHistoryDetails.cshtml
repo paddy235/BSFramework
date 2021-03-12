@@ -1,0 +1,835 @@
+﻿@model BSFramework.Application.Web.Areas.Works.Models.GetDrillRecordBaseDetail
+@{
+    ViewBag.Title = "drillHistoryDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+    td {
+        width: 133px;
+        text-align: center;
+        height: 25px;
+    }
+
+    tr {
+        height: 25px;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .warp {
+        position: relative;
+    }
+
+        .warp .aside {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            z-index: 10;
+            background-color: #fff;
+            border: none;
+            border-left: 2px solid #e3ebfd;
+            border-top: 2px solid #e3ebfd;
+        }
+
+            .warp .aside p {
+                color: #666666;
+                font-size: 16px;
+                margin-top: 10px;
+            }
+
+            .warp .aside button {
+                display: block;
+                width: 100%;
+                line-height: 58px;
+                color: #fff;
+                font-size: 18px;
+                border: none;
+            }
+
+    .step_main {
+        font-size: 16px;
+    }
+
+    /*演练历史详情页面*/
+    .wrap {
+        position: relative;
+    }
+
+    .drillHistory_main {
+        font-size: 16px;
+        padding: 20px 50px 90px 25px;
+    }
+
+    .drill_div {
+        margin-bottom: 20px;
+    }
+
+        .drill_div label {
+            display: inline-block;
+        }
+
+    .drill_list1 > li {
+        height: 44px;
+        margin-bottom: 20px;
+        line-height: 44px;
+    }
+
+        .drill_list1 > li > label {
+            width: 23%;
+        }
+
+        .drill_list1 > li > span {
+            border-bottom: 2px solid #e3ebfd;
+            display: inline-block;
+            height: 44px;
+            width: 72%;
+        }
+
+    .drill_div > div {
+        display: inline-block;
+        width: 92.7%;
+    }
+
+    .content_box {
+        border: 2px solid #e3ebfd;
+        padding: 20px;
+        line-height: 30px;
+    }
+
+    .score_div {
+        line-height: 60px;
+    }
+
+        .score_div i, .score_div .score_span {
+            margin: 0 10px;
+            display: inline-block;
+            width: 32px;
+            height: 60px;
+        }
+
+        .score_div .score_span {
+            color: #999999;
+            font-weight: bold;
+        }
+
+    .drill_div > label {
+        width: 7.3%;
+        float: left;
+    }
+
+    .drill_div > li {
+        margin-bottom: 20px;
+    }
+
+    .score_div > label {
+        margin-right: 30px;
+        cursor: pointer;
+    }
+
+        .score_div > label > span {
+            display: inline-block;
+            height: 30px;
+            width: 30px;
+            background: url("../static/images/checkbox-bg.png");
+            background-repeat: no-repeat;
+            background-position: left center;
+            margin: 15px 10px 0 0;
+            float: left;
+        }
+
+        .score_div > label.check_on > span {
+            background-position: right center;
+        }
+
+    .audio_div {
+        border-bottom: 2px solid #e3ebfd;
+        padding: 18px 0;
+    }
+
+        .audio_div li a {
+            color: #3669e1;
+        }
+
+    .step_div ul li {
+        margin-bottom: 10px;
+    }
+
+        .step_div ul li:last-child {
+            margin-bottom: 0;
+        }
+
+        .step_div ul li > span {
+            display: inline-block;
+            height: 40px;
+            width: 80px;
+            line-height: 40px;
+            text-align: center;
+            background: #f1f4fa;
+            float: left;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+            .step_div ul li > span.active {
+                background: #3669e1;
+                color: #fff;
+            }
+
+        .step_div ul li > div {
+            display: inline-block;
+            border: 2px solid #e3ebfd;
+            width: calc(100% - 100px);
+        }
+
+            .step_div ul li > div > div {
+                padding: 10px 20px;
+            }
+
+                .step_div ul li > div > div:first-child {
+                    border-right: 2px solid #e3ebfd;
+                    width: 80%;
+                }
+
+    /*应急演练进度页面*/
+    .drill_list {
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 20px;
+        padding-top: 10px;
+    }
+
+        .drill_list li {
+            background: url("../images/li_bg1.png") no-repeat;
+            background-size: 100% 100%;
+            height: 66px;
+            font-size: 24px;
+            color: #fff;
+            line-height: 66px;
+            text-align: center;
+        }
+
+            .drill_list li.active {
+                background: url("../images/li_bg2.png") no-repeat;
+                background-size: 100% 100%;
+            }
+
+            .drill_list li:first-child {
+                background: url("../images/first_li_bg1.png") no-repeat;
+                background-size: 100% 100%;
+            }
+
+                .drill_list li:first-child.active {
+                    background: url("../images/first_li_bg2.png") no-repeat;
+                    background-size: 100% 100%;
+                }
+
+            .drill_list li:last-child {
+                background: url("../images/last_li_bg1.png") no-repeat;
+                background-size: 100% 100%;
+            }
+
+                .drill_list li:last-child.active {
+                    background: url("../images/last_li_bg2.png") no-repeat;
+                    background-size: 100% 100%;
+                }
+
+
+    .response_div {
+        height: 100%;
+    }
+
+    .hide_bg, .points_hide_bg, .hide_bg2 {
+        position: relative;
+    }
+
+    .hide_bg {
+        height: 90px;
+    }
+
+        .hide_bg img, .points_hide_bg img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .hide_bg p, .points_hide_bg p, .hide_bg2 img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            font-size: 24px;
+            color: #dfe8f1;
+            font-weight: bold;
+        }
+
+    .points_hide_bg p {
+        font-size: 36px;
+    }
+
+    .response_text, .response_show, .points_show {
+        padding: 15px 20px;
+        line-height: 30px;
+    }
+
+    .response_person {
+        width: 20%;
+    }
+
+    .hide_bg2 {
+        background: #f1f4fa;
+        padding: 10px 0;
+        text-align: center;
+        height: 90px;
+    }
+
+    .height_div {
+    }
+</style>
+<!-- Content Wrapper. Contains page content -->
+<div id="audio-warp" style="height:36px;width:460px;display: none;">
+    <audio id="audio" autoplay></audio>
+</div>
+<div class="main-content">
+    <div class="container-fluid">
+
+        <div class="mg-b-10">
+            <div class="" style="overflow: hidden;">
+                <div class="pull-left title">
+                    <a href="@Url.Action("emergencyHistoryRecord")?page=1&pagesize=12">
+                        <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+                        演练历史详情
+                    </a>
+                </div>
+            </div>
+            <div class="bg-e3ebfd pd-10 wrap">
+                <div class="drillHistory_main bg-fff">
+                    <div class="drill_div" style="margin-bottom: 0;">
+                        <ul class="row drill_list1">
+                            <li class="col-md-4">
+                                <label>演练名称</label>
+                                <span>@Model.drillplanrecordentity.name</span>
+                            </li>
+                            <li class="col-md-4">
+                                <label>演练形式</label>
+                                <span>@Model.drillplanrecordentity.drilltypename</span>
+                            </li>
+                            <li class="col-md-4">
+                                <label>演练时间</label>
+                                <span>@Model.drillplanrecordentity.drilltime</span>
+                            </li>
+                            <li class="col-md-4">
+                                <label>主持人</label>
+                                <span>@Model.drillplanrecordentity.comperename</span>
+                            </li>
+                            <li class="col-md-4">
+                                <label>演练地点</label>
+                                <span>@Model.drillplanrecordentity.drillplace</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="drill_div">
+                        <label>参演人员</label>
+                        <div class="content_box">
+                            <p>@Model.drillplanrecordentity.drillpeoplename</p>
+                        </div>
+                    </div>
+
+                    <div class="drill_div">
+                        <label>演练目的</label>
+                        <div class="content_box">
+                            <p>@Html.Raw(HttpUtility.HtmlDecode(Model.drillplanrecordentity.drillpurpose))</p>
+                        </div>
+                    </div>
+
+                    <div class="drill_div">
+                        <label>情景模拟</label>
+                        <div class="content_box">
+                            <p>@Html.Raw(HttpUtility.HtmlDecode(Model.drillplanrecordentity.scenesimulation))</p>
+                        </div>
+                    </div>
+
+                    <div class="drill_div">
+                        <label>实施步骤</label>
+                        <div class="step_div">
+                            <ul>
+                                @{
+                                    foreach (var item in Model.drillsteplist)
+                                    {
+                                        <li class="clearfix">
+                                            <span>
+                                                第
+                                                @(item.sortid)
+                                                步
+                                            </span>
+
+                                            <div class="clearfix">
+                                                <div class="pull-left" style="height:200px;width:71%">
+                                                    <p>
+                                                        @item.content
+                                                    </p>
+                                                </div>
+                                                <div class="pull-left" style="width:29%">
+                                                    <p>
+                                                        @item.dutypersonname
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    }
+
+
+                                }
+
+
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="drill_div">
+                        <label>演练要点</label>
+                        <div class="content_box">
+                            <p>@Model.drillplanrecordentity.drillkeypoint</p>
+                        </div>
+                    </div>
+                    <div class="drill_div">
+                        <label style="line-height: 60px;">音频记录</label>
+                        <div class="audio_div">
+                            <ul class="row">
+                                @{
+                                    var audioList = Model.vediolist.Where(x => x.filepath.Contains("mp3"));
+
+
+                                    foreach (var item in audioList)
+                                    {
+
+                                        var filePath = item.filepath;
+
+                                        var FileName = item.filename;
+                                        <li class="col-md-2"><div onclick="play(this)" class="play-audio" data-url="@filePath"><img src="../../Content/styles/static/images/horn-icon.png" width="24" />&nbsp;&nbsp;@FileName </div></li>
+
+                                    }
+
+                                }
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="drill_div">
+                        <label>演练照片</label>
+                        <div>
+                            <ul class="row" style="min-height:60px;">
+                                @{
+                                    var pic = Model.picturelist.Where(x => x.filepath.Contains(".jpg") || x.filepath.Contains(".png") || x.filepath.Contains(".jpeg"));
+                                    int k = 0;
+
+                                    var picJson = "";
+                                    foreach (var item in pic)
+                                    {
+
+                                        var filePath = item.filepath;
+                                        picJson += Html.Raw("{ src: '" + filePath + "'");
+
+                                        <li class="col-md-2"><img onclick="playPic(this, @k)" src="@filePath" style="width:160px;height:120px;" /></li>
+
+                                        picJson += "},";
+                                        k++;
+                                    }
+                                    if (picJson.Length > 2)
+                                    {
+                                        picJson = picJson.Substring(0, picJson.Length - 1);
+                                    }
+
+                                    var GetpicJosn = Html.Raw(HttpUtility.HtmlDecode(picJson));
+                                }
+                            </ul>
+
+
+
+                        </div>
+                    </div>
+
+                    <div class="drill_div">
+                        <label style="line-height: 60px;">自评分</label>
+                        <div class="score_div">
+                            <i><img name="score1" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"></i>
+                            <i><img name="score1" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"></i>
+                            <i><img name="score1" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"></i>
+                            <i><img name="score1" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"></i>
+                            <i><img name="score1" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"></i>
+                            <span class="score_span" id="txtScore1">0分</span>
+                        </div>
+                    </div>
+                    <div class="drill_div">
+                        <label style="line-height: 60px;">上级评分</label>
+                        <div class="score_div">
+                            <i><img name="score" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"></i>
+                            <i><img name="score" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"></i>
+                            <i><img name="score" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"></i>
+                            <i><img name="score" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"></i>
+                            <i><img name="score" src="@Url.Content("~/Content/styles/static/images/score_icon2.png")"></i>
+                            <span class="score_span" id="txtScore">0分</span>
+                        </div>
+                    </div>
+
+                    <div class="drill_div">
+                        <label>演练评价<br>意见</label>
+                        <div class="content_box">
+                            <p>@Model.drillplanrecordentity.drillidea</p>
+                        </div>
+                    </div>
+
+                    <div class="drill_div">
+                        <ul class="row drill_list1">
+                            <li class="col-md-4">
+                                <label>评价人</label>
+                                <span>@Model.drillplanrecordentity.assesspersonname</span>
+                            </li>
+                            <li class="col-md-4">
+                                <label>评价时间</label>
+                                @{
+
+
+
+                                    if (string.IsNullOrEmpty(Model.drillplanrecordentity.assesstime))
+                                    {
+                                        <span></span>
+                                    }
+                                    else
+                                    {
+                                        <span>@Convert.ToDateTime(Model.drillplanrecordentity.assesstime).ToString("yyyy-MM-dd")</span>
+                                    }
+
+                                }
+
+                            </li>
+                            <li class="col-md-4">
+                                <input type="button" value="应急演练评估表" onclick="up()" />
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="main-footer">
+            武汉博晟安全技术股份有限公司   版权所有
+        </footer>
+    </div>
+</div>
+
+<div class="outnum" style="overflow-y:auto;font-size:20px">
+    <div style="text-align:right;"><input type="button" value="导出" onclick="exportWord()" /></div>
+    <div id="export_word" style="padding-bottom:50px">
+        <div style="text-align:center;">@(Model.drillplanrecordentity.name)评估表</div>
+        <form id="form2">
+            <table style="width:799px;" border="1" align="center">
+                <tr>
+                    <td>演练名称</td>
+                    <td colspan="2">@Model.drillplanrecordentity.name</td>
+
+                    <td>演练地点</td>
+                    <td colspan="2">@Model.drillassessentity.drillplace</td>
+                </tr>
+                <tr>
+                    <td>组织部门</td>
+                    <td>@Model.drillassessentity.organizedept</td>
+                    <td>总指挥</td>
+                    <td>@Model.drillassessentity.topperson</td>
+                    <td>演练时间</td>
+                    <td>@Model.drillassessentity.drilltime</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">演练类别</td>
+                    <td rowspan="2">@Model.drillassessentity.drilltype</td>
+                    <td rowspan="2">演练内容</td>
+                    <td rowspan="2" colspan="3">@Model.drillplanrecordentity.maincontent</td>
+                </tr>
+                <tr></tr>
+                <tr>
+                    <td rowspan="2">预案适应性充分性评审</td>
+
+                    <td rowspan="2" colspan="5" style="text-align: left;">
+                        适应性:<input value="0" name="suitable" disabled="disabled" type='checkbox'><span>全部能执行</span>
+                        <input value="1" name="suitable" disabled="disabled" type='checkbox'><span>执行过程不够顺利</span>
+                        <input value="2" name="suitable" disabled="disabled" type='checkbox'><span>明显不适宜</span>
+                        <br>
+                        充分性:<input value="0" name="fullable" disabled="disabled" type='checkbox'><span>完全满足应急需求</span>
+                        <input value="1" name="fullable" disabled="disabled" type='checkbox'><span>基本满足应急需求</span>
+                        <input value="2" name="fullable" disabled="disabled" type='checkbox'><span>不充分，必须修改</span>
+                    </td>
+
+                </tr>
+                <tr></tr>
+                <tr>
+                    <td rowspan="10">演练效果评估</td>
+                    <td rowspan="2">演员到位情况</td>
+                    <td colspan="4" rowspan="2" style="text-align: left;">
+                        <input value="0" name="personstandby" disabled="disabled" type='checkbox'><span>迅速准确</span>
+                        <input value="1" name="personstandby" disabled="disabled" type='checkbox'><span>基本按时到位</span>
+                        <input value="2" name="personstandby" disabled="disabled" type='checkbox'><span>个别人员不到位</span>
+                        <input value="3" name="personstandby" disabled="disabled" type='checkbox'><span>重点人员不到位</span>
+                        <br />
+
+                        <input value="0" name="personstandbyduty" disabled="disabled" type='checkbox'><span>职责明确，操作熟练</span>
+                        <input value="1" name="personstandbyduty" disabled="disabled" type='checkbox'><span>职责明确，操作不熟练</span>
+                        <input value="2" name="personstandbyduty" disabled="disabled" type='checkbox'><span>职责不明确，操作不熟</span>
+
+                    </td>
+
+                </tr>
+                <tr></tr>
+                <tr>
+
+                    <td rowspan="2">物资到位情况</td>
+                    <td colspan="4" rowspan="2" style="text-align: left;">
+
+                        现场物资：<input value="0" name="sitesupplies" disabled="disabled" type='checkbox'><span>充分、有效</span>
+                        <input value="1" name="sitesupplies" disabled="disabled" type='checkbox'><span>不充分</span>
+                        <input value="2" name="sitesupplies" disabled="disabled" type='checkbox'><span>严重缺乏</span>
+                        <br>
+
+                        个人防护：<input value="0" name="sitesuppliesduty" disabled="disabled" type='checkbox'><span>防护到位</span>
+                        <input value="1" name="sitesuppliesduty" disabled="disabled" type='checkbox'><span>防护不到位</span>
+                        <input value="2" name="sitesuppliesduty" disabled="disabled" type='checkbox'><span>部分防护不到位</span>
+
+                    </td>
+                </tr>
+                <tr></tr>
+                <tr>
+
+                    <td rowspan="2">协调组织情况</td>
+                    <td colspan="4" rowspan="2" style="text-align: left;">
+
+                        整体组织：<input value="0" name="wholeorganize" disabled="disabled" type='checkbox'><span>准确、高效、满足需求</span>
+                        <input value="1" name="wholeorganize" disabled="disabled" type='checkbox'><span>效率低、有待改进</span>
+                        <br />
+
+                        组织分工：<input value="0" name="dividework" disabled="disabled" type='checkbox'><span>安全、快速</span>
+                        <input value="1" name="dividework" disabled="disabled" type='checkbox'><span>基本完成任务</span>
+                        <input value="2" name="dividework" disabled="disabled" type='checkbox'><span>效率低未完成任务</span>
+
+                    </td>
+                </tr>
+                <tr></tr>
+                <tr>
+
+                    <td rowspan="2">实战效果评价</td>
+                    <td colspan="4" rowspan="2" style="text-align: left;">
+
+                        <input value="0" name="effectevaluate" disabled="disabled" type='checkbox'><span>达到预期目标</span>
+                        <input value="1" name="effectevaluate" disabled="disabled" type='checkbox'><span>基本达到目的，部分环节有待改善</span>
+                        <br />
+
+                        <input value="2" name="effectevaluate" disabled="disabled" type='checkbox'><span>没达到目的，需重新演练</span>
+                        <input value="3" name="effectevaluate" disabled="disabled" type='checkbox'><span>无</span>
+
+                    </td>
+                </tr>
+                <tr></tr>
+                <tr>
+
+                    <td rowspan="2">支援部门协作有效性</td>
+                    <td colspan="4" rowspan="2" style="text-align: left;">
+
+                        报告上级：<input value="0" name="reportsuperior" disabled="disabled" type='checkbox'><span>报告及时</span>
+                        <input value="1" name="reportsuperior" disabled="disabled" type='checkbox'><span>联系不上</span>
+
+
+                        <br />
+                        救援、后勤配合：<input value="0" name="rescue" disabled="disabled" type='checkbox'><span>按要求协作</span>
+                        <input value="1" name="rescue" disabled="disabled" type='checkbox'><span>行动迟缓</span>
+                        <br />
+
+                        警戒、撤离配合：<input value="0" name="evacuate" disabled="disabled" type='checkbox'><span>按要求配合和</span>
+                        <input value="1" name="evacuate" disabled="disabled" type='checkbox'><span>不配合</span>
+
+                    </td>
+                </tr>
+                <tr></tr>
+                <tr>
+                    <td rowspan="4">存在问题和改进措施</td>
+                    <td rowspan="2" colspan="5">
+
+
+                        @Model.drillassessentity.problem;
+
+
+                    </td>
+
+                </tr>
+                <tr></tr>
+                <tr>
+
+                    <td rowspan="2" colspan="5">
+
+
+                        @Model.drillassessentity.measure
+
+                    </td>
+
+                </tr>
+                <tr></tr>
+                <tr>
+                    <td rowspan="2">评价人员</td>
+                    <td rowspan="2" colspan="5">@Model.drillassessentity.valuatepersonname</td>
+
+                </tr>
+                <tr></tr>
+            </table>
+        </form>
+    </div>
+</div>
+<!-- /.content-wrapper -->
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/audiojs/audio.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/bootstrap/js/bootstrap.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/wordjs/FileSaver.js")"></script>
+<script src="@Url.Content("~/Content/scripts/wordjs/jquery.wordexport.js")"></script>
+
+<script>
+    $(function () {
+        ck('suitable', '@Model.drillassessentity.suitable');
+        ck('fullable', '@Model.drillassessentity.fullable');
+        ck('personstandby', '@Model.drillassessentity.personstandby');
+        ck('personstandbyduty', '@Model.drillassessentity.personstandbyduty');
+        ck('sitesupplies', '@Model.drillassessentity.sitesupplies');
+        ck('sitesuppliesduty', '@Model.drillassessentity.sitesuppliesduty');
+        ck('wholeorganize', '@Model.drillassessentity.wholeorganize');
+        ck('dividework', '@Model.drillassessentity.dividework');
+        ck('effectevaluate', '@Model.drillassessentity.effectevaluate');
+        ck('reportsuperior', '@Model.drillassessentity.reportsuperior');
+        ck('rescue', '@Model.drillassessentity.rescue');
+        ck('evacuate', '@Model.drillassessentity.evacuate');
+        @{
+
+              int num1 = 0;
+          }
+        @if (!string.IsNullOrEmpty(Model.drillplanrecordentity.topscore)) {
+            num1 = int.Parse(Model.drillplanrecordentity.topscore);
+        }
+        getScore(@num1)
+        @{
+
+            int num = 0;
+        }
+        @if (!string.IsNullOrEmpty(Model.drillplanrecordentity.selfscore)) {
+            num = int.Parse(Model.drillplanrecordentity.selfscore);
+        }
+        getScore1(@num);
+
+
+        $('.main-sidebar,.main-content').niceScroll({
+            autohidemode: false
+        });
+        $('.score_div > label').click(function () {
+            $(this).addClass('check_on').siblings().removeClass('check_on');
+        })
+    })
+    function playPic(obj, idx) {
+        var json = {
+            "data": [@GetpicJosn]
+        }
+        json.start = idx;
+        layer.photos({
+            photos: json,
+            anim: 5
+        })
+    }
+    function play(obj) {
+        var isPlay = $(obj).attr('data-play')
+        if (!isPlay || isPlay == 'false') {
+            var src = jQuery(obj).find('img').attr('src');
+            jQuery(obj).find('img').attr('src', src.substring(0, src.lastIndexOf('/') + 1) + 'laba.gif');
+
+            var url = $(obj).data('url');
+            var html = '<audio id="audio1" src="' + url + '" controls autoplay style="width:483px;display:none;"></audio>';
+            $('#audio-warp').html(html);
+            $('#audio1')[0].addEventListener('canplaythrough', function () {
+                this.play();
+            });
+            $(obj).attr('data-play', true);
+            var audio2 = document.getElementById('audio1');
+            audio2.onpause = function () {
+                var audele = jQuery('div[data-url="' + jQuery(this).attr('src') + '"]');
+                var img = jQuery('div[data-url="' + jQuery(this).attr('src') + '"]').find('img');
+                var src = img.attr('src');
+                img.attr('src', src.substring(0, src.lastIndexOf('/') + 1) + 'horn-icon.png');
+                audele.attr('data-play', false)
+            };
+            audio2.pause();
+        } else {
+            var audio1 = document.getElementById('audio1');
+            audio1.pause()
+        }
+        //var url = $(obj).data('url');
+        //$('#audio').attr('src', url);
+        //audiojs.events.ready(function () {
+        //    audiojs.createAll();
+        //})
+        //layer.open({
+        //    type: 1,
+        //    area: ['460px', '36px'],
+        //    content: $('#audio-warp '),
+        //    title: false,
+        //    end: function () {
+        //        $('#audio-warp').html('<audio id="audio" autoplay></audio>').css('display', 'none');
+        //    }
+        //});
+    }
+    var myscore = 0;
+    function getScore(i) {
+        if (i == 10) return;
+        var j = 1;
+        myscore = i;
+        jQuery("#txtScore").text(i + "分");
+        jQuery("img[name='score']").each(function () {
+            if (j <= i) {
+                this.src = "@Url.Content("~/Content/styles/static/images/score_icon1.png")";
+            } else {
+                this.src = "@Url.Content("~/Content/styles/static/images/score_icon2.png")";
+            }
+            j = j + 1;
+        });
+    }
+    var myscore1 = 0;
+    function getScore1(i) {
+        if (i == 10) return;
+        var j = 1;
+        myscore = i;
+        jQuery("#txtScore1").text(i + "分");
+        jQuery("img[name='score1']").each(function () {
+            if (j <= i) {
+                this.src = "@Url.Content("~/Content/styles/static/images/score_icon1.png")";
+            } else {
+                this.src = "@Url.Content("~/Content/styles/static/images/score_icon2.png")";
+            }
+            j = j + 1;
+        });
+    }
+
+    function up() {
+        layer.open({
+            type: 1,
+            title: '应急演练评估表',
+            content: $('.outnum'),
+            area: ['900px', '800px']
+        })
+    }
+    function ck(name, ckvalue) {
+        $("input[name='" + name + "']").each(function (i, o) {
+            var nowval = jQuery(this).val();
+            if (nowval == ckvalue) {
+                jQuery(this).attr("checked", true);
+                jQuery(this).next().css("color", "red");
+            }
+        });
+    }
+    function exportWord() {
+        $("#export_word").wordExport("@(Model.drillplanrecordentity.name)评估表");
+    }
+</script>

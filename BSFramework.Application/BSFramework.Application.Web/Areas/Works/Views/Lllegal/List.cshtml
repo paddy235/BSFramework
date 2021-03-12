@@ -1,0 +1,260 @@
+﻿@model IEnumerable<BSFramework.Application.Web.Areas.Works.Models.LllegaEntity>
+
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")">
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/app.css")">
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/base.js")"></script>
+<script>
+    jQuery(function () {
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#from',
+                type: 'date',
+                done: function () {
+                    jQuery('form').submit();
+                }
+            });
+            laydate.render({
+                elem: '#to',
+                type: 'date',
+                done: function (value, date, endDate) {
+                    jQuery('form').submit();
+                }
+            });
+        });
+
+        fn$init();
+
+        jQuery('#filtertype').change(function () {
+            //jQuery('.filtervalue').hide();
+            //var filtertype = jQuery(this).val();
+            //switch (filtertype) {
+            //    case "全部":
+            //        jQuery(this).parent().next().show();
+            //        break;
+            //    case "违章级别":
+            //        jQuery(this).parent().next().next().show();
+            //        break;
+            //    case "违章类型":
+            //        jQuery(this).parent().next().next().next().show();
+            //        break;
+            //    case "违章人员":
+            //        jQuery(this).parent().next().next().next().next().show();
+            //        break;
+            //    default:
+            //        break;
+            //}
+
+            fn$init();
+            jQuery('.filtervalue select').val("");
+            jQuery('.filtervalue input').val("");
+            if (jQuery(this).val() == "全部" || jQuery(this).val() == "核准未通过违章")
+                jQuery('form').submit();
+        });
+
+        jQuery('.filtervalue select').change(function () {
+            jQuery('form').submit();
+        });
+
+        jQuery('.filtervalue input').change(function () {
+            jQuery('form').submit();
+        });
+    });
+
+    function fn$init() {
+        jQuery('.filtervalue').hide();
+        var filtertype = jQuery('#filtertype').val();
+        switch (filtertype) {
+            case "全部":
+                jQuery('#filtertype').parent().next().show();
+                break;
+            case "违章级别":
+                jQuery('#filtertype').parent().next().next().show();
+                break;
+            case "违章类型":
+                jQuery('#filtertype').parent().next().next().next().show();
+                break;
+            case "违章人员":
+                jQuery('#filtertype').parent().next().next().next().next().show();
+                break;
+            default:
+                break;
+        }
+    }
+    function searchFrm(pageindex, pagesize) {
+        $("#page").val(pageindex);
+        $("#pagesize").val(pagesize);
+        jQuery('form').submit();
+    }
+    function exportData() {
+        jQuery('form').attr("action", "Export").submit();
+        jQuery('form').attr("action", "List");
+    }
+</script>
+
+
+<!-- Content Wrapper. Contains page content -->
+<div class="main-content">
+    <div class="container-fluid">
+        <form action="List" method="post">
+            <input type="hidden" name="pagesize" id="pagesize" value="@ViewBag.pagesize" />
+            <input type="hidden" name="page" id="page" value="@ViewBag.page" />
+            <div>
+                <div class="" style="overflow: hidden;">
+                    <div class="pull-left title">
+                        <a href="@Url.Action("Index")">
+                            <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+                            违章治理台帐
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-e3ebfd pd-10 my-body">
+                <div class="bg-fff peccancy-list">
+                    <div class="head">
+                        <div class="searchs" style="overflow: hidden;">
+                            <div class="pull-left mg-r-40">
+                                <label>条件查询&nbsp;&nbsp;</label>
+                                <span class="my-select w-170">
+                                    @Html.DropDownList("filtertype")
+                                    <span class="icon"></span>
+                                </span>&nbsp;&nbsp;
+                                <span class="my-select w-170 filtervalue" style="width:160px;">
+                                    <select name="">
+                                        <option value="全部">全部</option>
+                                    </select>
+                                    <span class="icon"></span>
+                                </span>
+                                <span class="my-select w-170 filtervalue" style="display:none;width:160px;">
+                                    @Html.DropDownList("filtervalue1")
+                                    <span class="icon"></span>
+                                </span>
+                                <span class="my-select w-170 filtervalue" style="display:none;width:160px;">
+                                    @Html.DropDownList("filtervalue2")
+                                    <span class="icon"></span>
+                                </span>
+                                <span class="my-select w-170 filtervalue my-time-group" style="display:none;width:160px;">
+                                    @Html.TextBox("filtervalue3")
+                                </span>
+                            </div>
+                            <div class="pull-left">
+                                <label>违章时间&nbsp;&nbsp;</label>
+                                <span class="my-time-group">
+                                    @Html.TextBox("from", ViewData["from"]);
+                                    <img src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                                </span>&nbsp;&nbsp;
+                                <span class="my-time-group">
+                                    @Html.TextBox("to", ViewData["to"]);
+                                    <img src="@Url.Content("~/Content/styles/static/images/time.png")" alt="">
+                                </span>
+                            </div>
+                            <div class="pull-right">
+                                <a href="javascript:void(0);" onclick="exportData()" style="line-height: 60px;color:#0d0d0d;font-size:16px;">
+                                    <img src="@Url.Content("~/Content/styles/static/images/icon-18.png")" alt="">&nbsp;
+                                    导出
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <table class="table text-center table-striped no-mg c-67748d">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>违章编号</th>
+                                    <th>整改状态</th>
+                                    <th>违章人员</th>
+                                    <th>违章级别</th>
+                                    <th>违章类型</th>
+                                    <th>违章时间</th>
+                                    <th>整改完成时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{ var idx = 1;}
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@Html.Raw(idx)</td>
+                                        <td>@Html.Raw(item.lllegalnumber)</td>
+                                        <td>@Html.Raw(item.flowstate)</td>
+                                        <td>@Html.Raw(item.lllegalperson)</td>
+                                        <td>@Html.Raw(item.lllegallevelname)</td>
+                                        <td>@Html.Raw(item.lllegaltypename)</td>
+                                        <td>@Html.Raw(item.lllegaltime)</td>
+                                        <td>@Html.Raw(item.reformfinishdate)</td>
+                                        <td>
+                                            <a href="@Url.Action("Detail", new { id = item.id })">
+                                                <img src="@Url.Content("~/Content/styles/static/images/detail-icon.png")" alt="">
+                                                详情
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    idx++;
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="text-align:center;">
+                        <ul class="pagination">
+                            @if ((int)ViewBag.page == 1)
+                            {
+                                <li class="disabled">
+                                    <a>首页</a>
+                                </li>
+                                <li class="disabled">
+                                    <a>上一页</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <a href="javascript:void(0);" onclick="searchFrm(1,@ViewBag.pagesize)">首页</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);" onclick="searchFrm(@((int)ViewBag.page - 1),@ViewBag.pagesize)">上一页</a>
+                                </li>
+                            }
+                            @for (int i = (ViewBag.page - 1) / 10 * 10; i < (Math.Ceiling((decimal)ViewBag.page / 10) * 10 > ViewBag.pagecount ? ViewBag.pagecount : Math.Ceiling((decimal)ViewBag.pagecount / 10) * 10); i++)
+                            {
+                                <li class="@((i + 1) == ViewBag.page ? "active" : string.Empty)">
+                                    <a href="javascript:void(0);" onclick="searchFrm(@(i + 1),@ViewBag.pagesize)">@(i + 1)</a>
+                                </li>
+                            }
+                            @if ((int)ViewBag.page == (int)ViewBag.pagecount || (int)ViewBag.pagecount == 0)
+                            {
+                                <li class="disabled">
+                                    <a>下一页</a>
+                                </li>
+                                <li class="disabled">
+                                    <a>末页</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <a href="javascript:void(0);" onclick="searchFrm(@((int)ViewBag.page + 1),@ViewBag.pagesize)">下一页</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);" onclick="searchFrm(@((int)ViewBag.pagecount),@ViewBag.pagesize)">末页</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            <footer class="main-footer">
+                武汉博晟安全技术股份有限公司   版权所有
+            </footer>
+        </form>
+    </div>
+</div>
+<!-- /.content-wrapper -->

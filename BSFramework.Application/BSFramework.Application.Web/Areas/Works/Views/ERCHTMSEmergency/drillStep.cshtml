@@ -1,0 +1,522 @@
+﻿
+@{
+    ViewBag.Title = "drillStep";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    ul {
+    list-style: none;
+}
+      .step_div ul li > div > div:first-child{padding: 0;}
+    .warp {
+        position: relative;
+    }
+
+        .warp .aside {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            z-index: 10;
+            background-color: #fff;
+            border: none;
+            border-left: 2px solid #e3ebfd;
+            border-top: 2px solid #e3ebfd;
+        }
+
+            .warp .aside p {
+                color: #666666;
+                font-size: 16px;
+                margin-top: 10px;
+            }
+
+            .warp .aside button {
+                display: block;
+                width: 100%;
+                line-height: 58px;
+                color: #fff;
+                font-size: 18px;
+                border: none;
+            }
+
+    .step_main {
+        font-size: 16px;
+    }
+
+    /*演练历史详情页面*/
+    .wrap {
+        position: relative;
+    }
+
+    .drillHistory_main {
+        font-size: 16px;
+        padding: 20px 50px 90px 25px;
+    }
+
+
+    .drill_div {
+         margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+        .drill_div label {
+            display: inline-block;
+        }
+
+    .drill_list1 > li {
+        height: 44px;
+        margin-bottom: 20px;
+        line-height: 44px;
+    }
+
+        .drill_list1 > li > label {
+            width: 23%;
+        }
+
+        .drill_list1 > li > span {
+            border-bottom: 2px solid #e3ebfd;
+            display: inline-block;
+            height: 44px;
+            width: 72%;
+        }
+
+    .drill_div > div {
+        display: inline-block;
+        width: 92.7%;
+    }
+
+    .content_box {
+        border: 2px solid #e3ebfd;
+        padding: 20px;
+        line-height: 30px;
+    }
+
+    .score_div {
+        line-height: 60px;
+    }
+
+        .score_div i, .score_div .score_span {
+            margin: 0 10px;
+            display: inline-block;
+            width: 32px;
+            height: 60px;
+        }
+
+        .score_div .score_span {
+            color: #999999;
+            font-weight: bold;
+        }
+
+    .drill_div > label {
+        width: 7.3%;
+        float: left;
+    }
+
+    .score_div > label {
+        margin-right: 30px;
+        cursor: pointer;
+    }
+
+        .score_div > label > span {
+            display: inline-block;
+            height: 30px;
+            width: 30px;
+            background: url("../static/images/checkbox-bg.png");
+            background-repeat: no-repeat;
+            background-position: left center;
+            margin: 15px 10px 0 0;
+            float: left;
+        }
+
+        .score_div > label.check_on > span {
+            background-position: right center;
+        }
+
+    .audio_div {
+        border-bottom: 2px solid #e3ebfd;
+        padding: 18px 0;
+    }
+
+        .audio_div li a {
+            color: #3669e1;
+        }
+
+    .step_div ul li {
+        margin-bottom: 10px;
+    }
+
+        .step_div ul li:last-child {
+            margin-bottom: 0;
+        }
+
+        .step_div ul li > span {
+            display: inline-block;
+            height: 40px;
+            width: 80px;
+            line-height: 40px;
+            text-align: center;
+            background: #f1f4fa;
+            float: left;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+            .step_div ul li > span.active {
+                background: #3669e1;
+                color: #fff;
+            }
+
+        .step_div ul li > div {
+            display: inline-block;
+            border: 2px solid #e3ebfd;
+            width: calc(100% - 100px);
+        }
+
+            .step_div ul li > div > div {
+                padding: 10px 20px;
+            }
+
+                .step_div ul li > div > div:first-child {
+                    border-right: 2px solid #e3ebfd;
+                    width: 80%;
+                }
+
+    /*应急演练进度页面*/
+    .drill_list {
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 20px;
+        padding-top: 10px;
+    }
+
+        .drill_list li {
+            background:url(@Url.Content("~/Content/styles/static/images/li_bg1.png"))  no-repeat;
+            background-size: 100% 100%;
+            height: 66px;
+            font-size: 24px;
+            color: #fff;
+            line-height: 66px;
+            text-align: center;
+        }
+
+            .drill_list li.active {
+                background:url(@Url.Content("~/Content/styles/static/images/li_bg2.png")) no-repeat;
+                background-size: 100% 100%;
+            }
+
+            .drill_list li:first-child {
+                background:url(@Url.Content("~/Content/styles/static/images/first_li_bg1.png")) no-repeat;
+                background-size: 100% 100%;
+            }
+
+                .drill_list li:first-child.active {
+                    background:url(@Url.Content("~/Content/styles/static/images/first_li_bg2.png")) no-repeat;
+                    background-size: 100% 100%;
+                }
+
+            .drill_list li:last-child {
+                background:url(@Url.Content("~/Content/styles/static/images/last_li_bg1.png"))  no-repeat;
+                background-size: 100% 100%;
+            }
+
+                .drill_list li:last-child.active {
+                    background: url(@Url.Content("~/Content/styles/static/images/last_li_bg2.png")) no-repeat;
+                    background-size: 100% 100%;
+                }
+
+
+    .response_div {
+        height: 100%;
+    }
+
+    .hide_bg, .points_hide_bg, .hide_bg2 {
+        position: relative;
+    }
+
+    .hide_bg {
+        height: 90px;
+    }
+
+        .hide_bg img, .points_hide_bg img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .hide_bg p, .points_hide_bg p, .hide_bg2 img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            font-size: 24px;
+            color: #dfe8f1;
+            font-weight: bold;
+        }
+
+    .points_hide_bg p {
+        font-size: 36px;
+    }
+
+    .response_text, .response_show, .points_show {
+        padding: 15px 20px;
+        line-height: 30px;
+    }
+
+    .response_person {
+        width: 20%;
+    }
+
+    .hide_bg2 {
+        background: #f1f4fa;
+        padding: 10px 0;
+        text-align: center;
+        height: 90px;
+    }
+
+    .height_div {
+    }
+</style>
+<!-- Content Wrapper. Contains page content -->
+<div class="main-content">
+    <div class="container-fluid">
+
+        <div class="mg-b-10">
+            <div class="" style="overflow: hidden;">
+                <div class="pull-left title">
+                    <a href="javascript:;">
+
+                        应急演练
+                    </a>
+                </div>
+            </div>
+
+        </div>
+        <div class="bg-e3ebfd pd-10 warp">
+            <div class="aside pd-20 bd-e3ebfd">
+                <div class="clearfix mg-b-20">
+                    <div class="pull-left" id="qrcode">
+                        @*<img src="@Url.Content("~/Content/styles/static/images/erweima.png")">*@
+                    </div>
+                    <div class="pull-right mg-l-10">
+                        <p>用APP扫码</p>
+                        <p>可上传会议</p>
+                        <p class="c-3669e1">图片和音频</p>
+                    </div>
+                </div>
+                @*<button class="bg-3669e1">保存记录</button>*@
+            </div>
+            <div class="bg-fff pd-20 step_main h-100-">
+                <div>
+                    <ul class="row drill_list">
+                        <li class="col-md-2">
+                            演练目的
+                        </li>
+                        <li class="col-md-2">
+                            情景模拟
+                        </li>
+                        <li class="col-md-2">
+                            职责分配
+                        </li>
+                        <li class="col-md-2 active">
+                            实施步骤
+                        </li>
+                        <li class="col-md-2">
+                            演练要点
+                        </li>
+                        <li class="col-md-2">
+                            演练评估
+                        </li>
+                    </ul>
+                </div>
+
+                <div style="padding-bottom: 180px;">
+                    <div class="drill_div">
+                        <label>职责分配</label>
+                        <div class="step_div">
+                            <ul>
+                                @*<li class="clearfix">
+                                        <span>第一步</span>
+                                        <div class="clearfix height_div">
+                                            <div class="pull-left response_div">
+                                                <div class="hide_bg">
+                                                    <img src="@Url.Content("~/Content/styles/static/images/hide_bg.png")">
+                                                    <p>点击查看内容</p>
+                                                </div>
+                                                <div class="response_text" style="display: none;">
+                                                    <p>给煤机在长时间运行后，由于检查、维护工作不到位，皮带跑偏等原因，发生皮带断裂，造成磨煤机保护动作停机，机组负荷降低。</p>
+                                                    <p>#2A给煤机皮带在运转的过程中突然断裂，断裂前机组负荷600MW，断裂后给煤机积煤，磨煤机保护动作停机，机组负荷迅速降低至40MW。</p>
+                                                </div>
+                                            </div>
+                                            <div class="pull-left response_person">
+                                                <div class="hide_bg2" style="display: ;">
+                                                    <img src="@Url.Content("~/Content/styles/static/images/hide_bg2.png")">
+                                                </div>
+                                                <div class="response_show" style="display:none;">
+                                                    <p>李二毛</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>*@
+                                @{
+                                    var context = ViewBag.context;
+                                    foreach (var item in context)
+                                    {
+                                        <li class="clearfix">
+                                            <span>
+                                                第
+                                                @Html.Raw((item.sortid))
+                                                步
+                                            </span>
+                                            <div class="clearfix height_div">
+                                                <div class="pull-left response_div">
+                                                    <div class="hide_bg">
+                                                        <img src="@Url.Content("~/Content/styles/static/images/hide_bg.png")">
+                                                        <p>点击查看内容</p>
+                                                    </div>
+                                                    <div class="response_text" style="display: none;">
+                                                        <span name="contextget" style="font-size: 23px;">
+                                                            @Html.Raw(item.content)
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="pull-left response_person">
+                                                    <div class="hide_bg2" style="display: ">
+                                                        <img src="@Url.Content("~/Content/styles/static/images/hide_bg2.png")">
+                                                    </div>
+                                                    <div class="response_show" style="display:none;">
+                                                        <span style="display:none">
+                                                            @Html.Raw(item.dutyperson)
+                                                        </span>
+                                                        <span name="Persons" style="font-size: 23px;">
+                                                            @Html.Raw(item.dutypersonname)
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    }
+                                }
+
+
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button class="my-btn bg-3669e1 mg-r-15" onclick="up()">上一步</button>
+                        <button class="my-btn bg-3669e1" onclick="go()">下一步</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="main-footer">
+            武汉博晟安全技术股份有限公司   版权所有
+        </footer>
+    </div>
+</div>
+<!-- /.content-wrapper -->
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/qrcode/qrcode.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/bootstrap/js/bootstrap.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/nicescroll/nicescroll.min.js")"></script>
+<script>
+    var entity = @Html.Raw(System.Web.HttpUtility.HtmlDecode(ViewBag.content));
+    function up() {
+        var data = JSON.stringify(entity);
+        //window.location.href = "@Url.Action("drillResponse")?entity=" + data;
+          var form = new CodeSTD.form({
+            url: '@Url.Action("drillResponse")',
+            method: 'POST',
+            params: {
+                entity: data
+            }
+        })
+
+        $(form).submit();
+
+        form = null;
+    }
+    function go() {
+        var data = JSON.stringify(entity);
+        //window.location.href = "@Url.Action("drillPoints")?entity=" + data;
+          var form = new CodeSTD.form({
+            url: '@Url.Action("drillPoints")',
+            method: 'POST',
+            params: {
+                entity: data
+            }
+        })
+
+        $(form).submit();
+
+        form = null;
+    }
+    $(function () {
+
+        //设置命名空间
+        var CodeSTD = window.CodeSTD || {};
+
+        window.CodeSTD = CodeSTD;
+
+
+        CodeSTD.form = function (config) {
+            config = config || {};
+
+            var url = config.url,
+                method = config.method || 'GET',
+                params = config.params || {};
+
+            var form = document.createElement('form');
+            form.action = url;
+            form.method = method;
+            form.target = "_self";
+
+            for (var param in params) {
+                var value = params[param],
+                    input = document.createElement('input');
+
+                input.type = 'hidden';
+                input.name = param;
+                input.value = value;
+
+                form.appendChild(input);
+            }
+            document.body.appendChild(form);
+            return form;
+        }
+        $('.main-sidebar,.main-content').niceScroll({
+            autohidemode:false
+        });
+        $("#qrcode").children().remove();
+        var qrcode = new QRCode(document.getElementById("qrcode"), {
+            width: 120,
+            height: 120
+        });
+        qrcode.clear();
+        qrcode.makeCode('@ViewBag.EmergencyReportId' + "|应急演练");
+        $('.height_div').delegate('.hide_bg2','click',function () {
+            $(this).hide().next().show();
+        });
+        $('.height_div').delegate('.hide_bg','click',function () {
+            $(this).hide().next().show();
+            var height1 = $(this).parent().parent().height();
+            //console.log(height1);
+            var child1 = $(this).parent();
+            var child2 = $(this).parent().next();
+            var child3 = child2.children();
+            //console.log(child1);
+            child1.css('height', height1);
+            child2.css('height', height1);
+            child3.css('height', height1);
+
+        });
+
+        /*$('.height_div').each(function () {
+            var height1 = $(this).height();
+            //console.log(height1);
+            var child1 = $(this).children();
+            //console.log(child1);
+            child1.css('height',height1);
+        });*/
+
+
+    })
+</script>

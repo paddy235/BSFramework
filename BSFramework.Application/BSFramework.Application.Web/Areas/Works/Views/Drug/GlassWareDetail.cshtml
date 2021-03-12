@@ -1,0 +1,158 @@
+﻿@model BSFramework.Application.Entity.DrugManage.DrugGlassWareEntity
+@using BSFramework.Application.Entity.PublicInfoManage
+@{
+    ViewBag.Title = "DetailGlassWare";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>
+<style>
+    .images-container {
+        min-height: 120px;
+    }
+
+        .images-container li {
+            list-style: none;
+            float: left;
+            padding: 0px 5px;
+        }
+
+    .yinpin li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+
+    .items li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+
+    table tr {
+        height: 45px;
+    }
+</style>
+<script>
+    window.onload = function () {
+        if ('@Model.Img' != "") {
+            document.getElementById('uploadPreview').src = '@Model.Img';
+
+        }
+        if ('@Model.BGImg' != "")
+        {
+            document.getElementById('uploadPreview1').src = '@Model.BGImg';
+        }
+    }
+    $(function () {
+
+    });
+    function msds() {
+        var id = '@Model.GlassWareId';
+        dialogOpen({
+            id: "Detail",
+            title: '查看详情',
+            url: '/../@Url.Action("MSDS")/' + id,
+            width: "1300px",
+            height: "900px",
+            btn: null
+        });
+    }
+    function video() {
+        var id = '@Model.GlassWareId';
+        dialogOpen({
+            id: "Detail",
+            title: '查看详情',
+            url: '/../@Url.Action("GlassWareVideo")/' + id,
+            width: "1050px",
+            height: "720px",
+            btn: null
+        });
+    }
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style=" padding-right: 30px;">
+            <table class="form">
+                <tr>
+                    <td class="formTitle">详情图片</td>
+                    <td class="formValue">
+
+                        @*@Html.TextBoxFor(x => x.Img, new { @class = "form-control" })*@
+                        <div class="file">
+                            <label for="uploadFile">
+                                <img id="uploadPreview" style="width: 160px; height: 160px; " src="~/Content/styles/static/images/tools/photo-add.png" />
+                                @*<br />
+                                    点击框可修改图片
+                                    <input type="file" name="uploadFile" id="uploadFile" style="display:none;">
+                                    <input type="hidden" id="tempImageSrc" />*@
+                            </label>
+                            @*<span class="select-btn">选择图库图片</span>*@
+                        </div>
+                    </td>
+                    <td class="formTitle">背景图片</td>
+                    <td class="formValue">
+
+                        @*@Html.TextBoxFor(x => x.Img, new { @class = "form-control" })*@
+                        <div class="file">
+                            <label for="uploadFile">
+                                <img id="uploadPreview1" style="width: 160px; height: 160px; " src="~/Content/styles/static/images/tools/photo-add.png" />
+                                @*<br />
+                                    点击框可修改图片
+                                    <input type="file" name="uploadFile" id="uploadFile" style="display:none;">
+                                    <input type="hidden" id="tempImageSrc" />*@
+                            </label>
+                            @*<span class="select-btn">选择图库图片</span>*@
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">器皿名称<font face="宋体">*</font></td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextBoxFor(x => x.GlassWareName, new { @class = "form-control", @readonly = "readonly" })
+                        @Html.HiddenFor(x => x.CreateDate)
+                        @Html.HiddenFor(x => x.CreateUserId)
+                        @Html.HiddenFor(x => x.CreateUserName)
+                        @Html.HiddenFor(x => x.GlassWareId)
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">操作视频</td>
+                    <td class="formValue" colspan="3">
+                        @*@Html.TextBoxFor(x => x.OperateVideo, new { @class = "form-control" })*@
+                        @{
+                            if (ViewBag.video != "")
+                            {
+                                <a id="video" onclick="video()" style="text-decoration:none;color:blue;margin-left:20px;text-align:center;vertical-align:middle;font-size:12px;" target="_blank">操作视频</a>
+                            }
+                            else
+                            {
+                                @*<a id="video" style="text-decoration: none; color: black;margin-left:20px;text-align:center;vertical-align:middle;font-size:12px;" target="_blank">操作视频</a>*@
+                            }
+                        }
+                        @*<input type="file" name="uploadFile1" id="uploadFile1" style="display:none;">
+                            <label for="uploadFile1" style="margin-left:20px;color:blue;text-align:center;vertical-align:middle;font-size:12px;">上传</label>*@
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle">使用方法</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.UseWay, new { @style = "height:120px;", @class = "form-control", placeholder = "", @readonly = "readonly" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle">注意事项</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.Attention, new { @style = "height:120px;", @class = "form-control", placeholder = "", @readonly = "readonly" })
+                    </td>
+
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

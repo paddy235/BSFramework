@@ -1,0 +1,172 @@
+﻿@{
+    ViewBag.Title = "Index2";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<style>
+    .form-inline .form-group {
+        padding-right: 10px;
+    }
+
+        .form-inline .form-group label {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group input {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .form-inline .form-group a.btn {
+            margin-top: 4px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+</style>
+<script>
+    var selectedRowIndex;
+
+    jQuery(function () {
+        var type = '@ViewBag.type';
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#grid').setGridWidth(($('.gridPanel').width()));
+                $("#grid").setGridHeight($(window).height() - 140);
+            }, 200);
+            e.stopPropagation();
+        });
+
+        jQuery('#grid').jqGrid({
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'ID', hidden: true, align: 'center' },
+                { label: '操作', name: 'action', width: 120, align: 'center' },
+                {
+                    label: '状态', name: 'FlowState', name: 'FlowState', width: 150, align: 'center'
+                },
+                { label: '违章编号', name: 'LllegalNumber', index: 'LllegalNumber', width: 180, align: 'center' },
+                { label: '违章类型', name: 'LllegalType', index: 'LllegalType', width: 180, align: 'center' },
+                { label: '违章等级', name: 'LllegalLevel', index: 'LllegalLevel', width: 180, align: 'center' },
+                { label: '违章时间', name: 'LllegalTime', index: 'LllegalTime', width: 160, align: 'center', formatter: 'date', formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' } },
+                { label: '违章人员', name: 'LllegalPerson', index: 'LllegalPerson', width: 200, align: 'center' },
+                { label: '违章地点', name: 'LllegalAddress', index: 'LllegalAddress', width: 300, align: 'center' },
+            ],
+            height: $(window).height() - 140,
+            url: '@Url.Action("GetData")?type='+type,
+            datatype: "json",
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 20,
+            rownumbers: true,
+            pager: "#gridPager",
+            gridComplete: function () {
+                var gridid = this.id;
+                $("#" + this.id).setSelection(selectedRowIndex, false);
+                var rows = $("#" + this.id).jqGrid("getRowData");//获取当前页记录行数据
+                //查询用户对该模块的数据操作权限
+                $(rows).each(function (i, item) {
+                    var html = "";
+
+                    html += "<a href=\"javascript:fn$view('" + item.ID + "','" + item.ApproveResult + "')\" title=\"查看\">查看</a>";
+                    //html += "<a href=\"javascript:fn$approve('" + item.ID + "')\" title=\"核准\">核准</a>";
+                    //html += "<a href=\"javascript:btn_edit('" + uId + "')\" title=\"编辑\">编辑</a>";
+                    //html += "<a href=\"javascript:btn_delete('" + uId + "')\" title=\"删除\">删除</a>";
+                    $("td[aria-describedby='" + gridid + "_action']").eq(i).html(html);
+                });
+
+            }
+
+        });
+        $("#btn_Search").click(function () {
+            var obj = {
+                no: jQuery('#no').val(),
+                person: jQuery('#person').val(),
+                category: jQuery('#category').val(),
+                level: jQuery('#level').val(),
+                state: jQuery('#state').val(),
+                
+            };
+            jQuery('#grid').jqGrid('setGridParam', {
+                postData: obj, page: 1
+            }).trigger('reloadGrid');
+        });
+
+    });
+
+    function fn$view(id, ApproveResult) {
+        var height = "600px";
+        if (ApproveResult == "核准通过") height = "850px";
+        else height = "600px";
+        dialogOpen({
+            id: "Form",
+            title: '查看违章',
+            url: '/../@Url.Action("CheckApproveItem")/' + id,
+            width: "800px",
+            height: height,
+            btn: null
+        });
+    }
+
+</script>
+<div class="titlePanel">
+    <div class="title-search">
+        @*<table>
+                <tr>
+                    <td>
+                        <span class="formTitle" style="margin:0px 10px;">部门</span>
+                    </td>
+                    <td style="padding-left: 2px;">
+                        <input id="txt_Keyword" type="text" class="form-control" placeholder="请输入要查询关键字" style="width: 200px;" />
+                    </td>
+                    <td style="padding-left: 5px;">
+                        <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                    </td>
+                </tr>
+            </table>*@
+        <div class="form-inline">
+            <div class="form-group">
+                <label for="category">状态</label>
+                @Html.DropDownList("state", ViewData["state"] as IEnumerable<SelectListItem>, new { @class = "form-control", style = "width:120px" })
+                @*<input type="text" class="form-control" id="category">*@
+            </div>
+            <div class="form-group">
+                <label for="category">违章类型</label>
+                @Html.DropDownList("category", ViewData["category"] as IEnumerable<SelectListItem>, new { @class = "form-control", style = "width:120px" })
+                @*<input type="text" class="form-control" id="category">*@
+            </div>
+            <div class="form-group">
+                <label for="level">违章等级</label>
+                @Html.DropDownList("level", ViewData["level"] as IEnumerable<SelectListItem>, new { @class = "form-control", style = "width:120px" })
+            </div>
+            <div class="form-group">
+                <label for="no">违章编号</label>
+                <input type="text" class="form-control" id="no">
+            </div>
+            <div class="form-group">
+                <label for="person">违章人员</label>
+                <input type="text" class="form-control" id="person">
+            </div>
+            <div class="form-group">
+                <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+            </div>
+        </div>
+    </div>
+    <div class="toolbar">
+        <div class="btn-group">
+            @*<a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>*@
+            @*<a id="replace" class="btn btn-default" onclick="reload();"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+                <a id="add" class="btn btn-default" onclick="btn_add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+                <a id="edit" class="btn btn-default" onclick="btn_edit()"><i class="fa fa-pencil-square-o"></i>&nbsp;编辑</a>
+                <a id="delete" class="btn btn-default" onclick="btn_delete()"><i class="fa fa-trash-o"></i>&nbsp;删除</a>*@
+        </div>
+        @*<div class="btn-group">
+                <a id="lr-delete11" class="btn btn-default" onclick="btn_delete()"><i class="fa fa-sitemap"></i>&nbsp;组织架构图</a>
+            </div>*@
+        @*<script>$('.toolbar').authorizeButton()</script>*@
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="grid"></table>
+    <div id="gridPager"></div>
+</div>

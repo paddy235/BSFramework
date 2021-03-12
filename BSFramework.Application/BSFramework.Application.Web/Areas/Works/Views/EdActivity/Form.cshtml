@@ -1,0 +1,695 @@
+﻿@model BSFramework.Application.Entity.EducationManage.EdActivityEntity
+@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<link rel="stylesheet" href="~/Content/styles/static/css/index.css">
+<link rel="stylesheet" href="~/Content/styles/static/css/extend.css">
+<link rel="stylesheet" href="~/Content/styles/static/css/launch-activity.css" />
+<link rel="stylesheet" href="~/Content/styles/static/css/before.css" />
+<script src="~/Content/scripts/validator/Validform.min.js"></script>
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+<script src="~/Content/scripts/nicescroll/nicescroll.min.js"></script>
+<script src="~/Content/scripts/base.js"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/audiojs/audio.min.js")"></script>
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<script src="@Url.Content("~/Content/scripts/jquery.cxscroll.min.js")"></script>
+<link href="~/Content/styles/layout.css" rel="stylesheet" />
+<!--播放器-->
+<link href="~/Content/scripts/plugins/video/css/video.min.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/video/js/video.min.js"></script>
+<script src="~/Content/scripts/plugins/video/js/videojs-contrib-hls.min.js"></script>
+<style>
+
+    .images-container {
+        min-height: 120px;
+    }
+
+    .safeImg {
+        display: block;
+        width: 217px;
+        height: 140px;
+        position: relative;
+    }
+
+    .images-container li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+
+    .ui-jqgrid tr.jqgrow td {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+<script>
+    var keyValue = request('keyValue');
+    var organizeId = request('organizeId');
+    $(function () {
+        initControl();
+
+        var json = {
+            "data": [
+                @foreach (var item in Model.Files)
+        {
+            if (item.Description == "照片") {
+                      @Html.Raw(string.Format("{{ \"src\" : \"{0}\"}},", @Url.Action("DownloadFile", "ResourceFile", new { keyValue = item.FileId, area = "PublicInfoManage" })));
+            }
+        }
+            ]
+        }
+        //$('.images-container').delegate('li', 'click', function () {
+        //    json.start = jQuery(this).index();
+        //    layer.photos({
+        //        photos: json,
+        //        anim: 5
+        //    })
+        //});
+
+        $('#play-audio-container').delegate('.play-audio', 'click', function () {
+            var Id = $(this).data('id');
+            document.getElementById(Id).play();
+            //var url = $(this).data('url');
+            //var html = '<audio id="audio" src="' + url + '" controls autoplay style="width:483px;display:block;"></audio>';
+            //$('#audio-warp').append(html);
+            //$('#audio')[0].addEventListener('canplaythrough', function () {
+            //    this.play();
+            //});
+            //layer.open({
+            //    type: 1,
+            //    area: ['460px', '36px'],
+            //    content: $('#audio-warp '),
+            //    title: false,
+            //    end: function () {
+            //        $('#audio-warp').empty();
+            //        $('#audio-warp').hide();
+            //    }
+            //})
+        });
+
+
+        $('.box').delegate('li', 'click', function () {
+            var dataimg = [];
+            $(".safeImg").each(function (o, i) {
+
+                var imgsrc = { src: $(i).find("img").attr("src") };
+                dataimg.push(imgsrc);
+            })
+            var json = {
+                data: dataimg
+            };
+            layer.photos({
+                photos: json,
+                anim: 5
+            })
+        });
+
+    })
+    //初始化控件
+    function initControl() {
+
+        //获取表单
+        if (!!keyValue) {
+            $.SetForm({
+                url: "../../Works/Activity/GetFormJson",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#form1").formDeserialize(data);
+                }
+            });
+        }
+
+       var  QuestionList = jQuery.parseJSON(jQuery('#QuestionList').val() || '[]');
+
+        jQuery.each(QuestionList, function () {
+            if (this.Id) {
+                this.sort = (jQuery('#table_set tr').length);
+                jQuery('#table_set').append("<tr class='grid-row'><td>" + (jQuery('#table_set tr').length + 1) + "</td>" +
+                    "<td>" + this.topictitle +
+                    "</td><td>" + this.topictype + "</td>" +
+                    "<td><a class='c-orange' onclick='btn_show(\"" + this.Id + "\")' style='color:orange;cursor:pointer;'>查看</a></td></tr>");
+            } else {
+                jQuery('#table_set').append("<tr class='grid-row'><td>" + (jQuery('#table_set tr').length + 1) + "</td>" +
+                    "<td>" + this.topictitle +
+                    "</td><td>" + this.topictype + "</td>" +
+                    "<td><a class='c-orange' onclick='btn_webshow(" + jQuery('#table_set tr').length + ",this);' style='color:orange;cursor:pointer;'>查看</a>  "
+                    + "<a class='c-orange' onclick='btn_Edit(" + jQuery('#table_set tr').length + ",this);' style='color:orange;cursor:pointer;'>编辑</a>  " +
+                    "<a class='c-orange' onclick='btn_del(" + jQuery('#table_set tr').length + ",this);' style='color:orange;cursor:pointer;'>删除</a></td></tr>");
+            }
+
+        });
+    }
+           function btn_show(id) {
+        dialogOpen({
+            id: 'QuestionDetail',
+            title: '查看试题',
+            url: '/..@Url.Action("HistoryDetail", "QuestionBank")?keyvalue=' + id,
+            width: '700px',
+            height: ($(top.window).height() - 600) + 'px',
+            btn: null
+
+        });}
+       function btn_score(id) {
+        dialogOpen({
+            id: 'QuestionDetail',
+            title: '得分排名',
+            url: '/..@Url.Action("answerscore", "QuestionBank")?activityid=' + id,
+            width: '1000px',
+            height: ($(top.window).height() - 400) + 'px',
+            btn: null
+
+        });
+    }
+    //保存表单
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        var postData = $("#form1").formSerialize(keyValue);
+        $.SaveForm({
+            url: "../../Works/Activity/SaveForm?keyValue=" + keyValue,
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+
+  function opendoc(folderid) {
+            $.ajax({
+                     url: "@Url.Action("GetJavaVideoJson", "ResourceFile", new { area= "PublicInfoManage" })",
+                      data: { file_id: folderid },
+                      type: "post",
+                      async: true,
+                success: function (result) {
+                    var resultJosn = JSON.parse(result);
+                    window.open(resultJosn.data.url);
+                }
+                });
+
+    }
+ var i = 0;
+    function fn$play(e) {
+        var url = jQuery(e).data('url');
+        var otherurl = jQuery(e).data("otherurl");
+        var folderid = jQuery(e).data("folderid");
+        //debugger;
+        layer.open({
+            type: 1,
+            title: false,
+            area: ['660px', '490px'],
+            content: jQuery('#videodiv'),
+            end: function () {
+                jQuery('#videodiv').empty();
+                jQuery('#videodiv').attr('display', 'none');
+            }
+        });
+        jQuery('#videodiv').attr('display', 'normal');
+
+        if (folderid) {
+                   $.ajax({
+                     url: "@Url.Action("GetJavaVideoJson", "ResourceFile", new { area= "PublicInfoManage" })",
+                      data: { file_id: folderid },
+                      type: "post",
+                      async: true,
+                success: function (result) {
+                    var resultJosn = JSON.parse(result);
+                    jQuery('#videodiv').append('<video id="preview' + i +'" autoplay="autoplay"  preload="paused" width="640" height="480" style="padding-top:8px;" class="video-js vjs-default-skin vjs-big-play-centered" controls="true"></video>');
+                        var options = {
+                            'techOrder': ['html5']
+                        };
+                        var oVideo = videojs("preview"+i, options, function () {
+                            videojs.log('your player is ready !!!');
+                            this.on("loadstart", function () {
+                                videojs.log('your player is loadstart !!!');
+                            });
+
+                        });
+                        console.log('test');
+                        oVideo.src({
+                            src: resultJosn.data.url,
+                            type: 'application/X-mpegURL'
+                        });
+                    oVideo.play();
+                    i++;
+                     }
+                });
+        } else {
+            //CDN加速
+            if (otherurl) {
+                jQuery('#videodiv').append('<video id="preview' + i + '" autoplay="autoplay"  preload="paused" width="640" height="480" style="padding-top:8px;" class="video-js vjs-default-skin vjs-big-play-centered" controls="true"></video>');
+                var options = {
+                    'techOrder': ['html5']
+                };
+                var oVideo = videojs("preview" + i, options, function () {
+                    videojs.log('your player is ready !!!');
+                    this.on("loadstart", function () {
+                        videojs.log('your player is loadstart !!!');
+                    });
+
+                });
+                console.log('test');
+                oVideo.src({
+                    src: otherurl,
+                    type: 'application/X-mpegURL'
+                });
+                oVideo.play();
+                i++;
+            } else {
+                jQuery('#videodiv').append('<video src="' + url + '" autoplay="autoplay" width="640" height="480" style="padding-top:8px;" controls="controls"><source src="http://rm03.wscdn.hls.xiaoka.tv/live/fczjp0Dc_J60VGMN/playlist.m3u8" type="application/x-mpegURL" id="target"></video>');
+            }
+        }
+
+
+        //jQuery('#videodiv').attr('display', 'normal');
+        //jQuery('#videodiv').append('<video src="' + url + '" autoplay="autoplay" width="1200" height="770" style:"margin:0px auto;" controls="controls"></video>');
+    }
+
+    function fn$refresh() {
+        jQuery("#grid").trigger("reloadGrid");
+        $.currentIframe().$("#gridTable").trigger("reloadGrid");
+    }
+
+    function a() {
+        $("#gridTable").trigger("reloadGrid");
+    }
+    function btn_evaluate() {
+        var isEvaluate = 0;
+        id = jQuery("#ActivityId").val();
+        $.SetForm({
+            url: '/..@Url.Action("GetIsEvaluate", "Activity")',
+            param: { keyValue: id },
+            success: function (data) {
+                isEvaluate = data;
+            }
+        });
+        //currentNode = jQuery('#tree').getCurrentNode();
+        if (isEvaluate == 0) {
+            id = jQuery('#ActivityId').val();
+            dialogOpen({
+                id: "form1",
+                title: '评价',
+                url: encodeURI('/../@Url.Action("Evaluate")?id=' + id + "&iframeId=" + jQuery(self.frameElement).attr('id') + '&category=班组活动'),
+                width: "500px",
+                height: "330px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+        } else if (isEvaluate > 0) {
+            layer.msg("已评价过此活动");
+        } else if (isEvaluate == -1) {
+            layer.msg("此活动尚未结束");
+        }
+    }
+    jQuery(function () {
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#grid').setGridWidth(($('.gridPanel').width()));
+                $("#grid").setGridHeight($(window).height() - 140);
+            }, 200);
+            e.stopPropagation();
+        });
+        id = jQuery('#ActivityId').val();
+        jQuery('#grid').jqGrid({
+            colModel: [
+                { label: '评价人', name: 'EvaluateUser', width: 200, align: 'center', sortable: false },
+                { label: '部门', name: 'DeptName', width: 200, align: 'center', sortable: false },
+                { label: '评价时间', name: 'EvaluateDate', width: 200, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d H:i', newformat: 'Y-m-d H:i' } },
+                { label: '评分', name: 'Score', width: 200, align: 'center', sortable: false },
+                { label: '评价内容', name: 'EvaluateContent', align: 'center', sortable: false }
+            ],
+            height: $(window).height() - 470,
+            autowidth: true,
+            url: '@Url.Action("GetDataEvaluate")?keyValue=' + id,
+            datatype: "json",
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 1000,
+            rownumbers: true,
+            //pager: "#gridPager",
+            //gridComplete: function () {
+            //}
+        });
+    });
+    jQuery(function () {
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#grid1').setGridWidth(($('.gridPanel1').width()));
+                $("#grid1").setGridHeight($(window).height() - 140);
+            }, 200);
+            e.stopPropagation();
+        });
+        id = jQuery('#ActivityId').val();
+        jQuery('#grid1').jqGrid({
+            colModel: [
+
+                { label: '补学时间', name: 'StartDate', width: 300, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d H:i', newformat: 'Y-m-d H:i' } },
+                { label: '结束时间', name: 'EndDate', width: 300, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d H:i', newformat: 'Y-m-d H:i' } },
+                { label: '补学人员', name: 'UserName', width: 300, align: 'center', sortable: false }
+            ],
+            height: 300,
+            autowidth: true,
+            url: '@Url.Action("GetActivitySupply")?keyValue=' + id,
+            datatype: "json",
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 10,
+            rownumbers: true,
+            pager: "#gridPager1",
+            gridComplete: function () {
+            }
+        });
+    });
+</script>
+<div id="audio-warp" style="height:32px;width:460px;display: none;overflow:hidden;">
+</div>
+<div class="main-content1 warp">
+    <div class="container-fluid">
+        @using (Html.BeginForm("Edit", "Activity", FormMethod.Post, new { @class = "sf" }))
+        {
+            @Html.HiddenFor(x => x.ActivityId);
+            <div class="bg-f5f8fe pd-10">
+                <div class="bd-b-e3ebfd bg-fff pd-10">
+                    <div class="clearfix">
+                        <div class="pull-left my-form-control w-100-">
+                            <label>活动主题：</label>
+                            <div>
+                                @Html.DisplayFor(x => x.Subject)
+                            </div>
+                        </div>
+                        <div class="pull-left my-form-control w-50-">
+                            <label>活动时间：</label>
+                            <div>
+                                @Html.Raw(Model.StartTime.ToString("yyyy-MM-dd HH:mm")) - @Html.Raw(Model.State == "Finish" ? Model.EndTime.ToString("HH:mm") : string.Empty)
+                            </div>
+                        </div>
+                        <div class="pull-left my-form-control w-50-">
+                            <label>活动地点：</label>
+                            <div>
+                                @Html.DisplayFor(x => x.ActivityPlace)
+                            </div>
+                        </div>
+                        @*<div class="pull-left my-form-control w-30-">
+                                <label>活动时长：</label>
+                                <div>
+                                    @Html.DisplayFor(x => x.ActivityLimited)
+                                </div>
+                            </div>*@
+                    </div>
+                    <div class="clearfix">
+
+                        <div class="pull-left my-form-control w-50-">
+                            <label>主持人：</label>
+                            <div>
+                                @Html.DisplayFor(x => x.ChairPerson)
+                            </div>
+                        </div>
+                        <div class="pull-left my-form-control w-50-">
+                            <label>记录人：</label>
+                            <div>
+                                @Html.DisplayFor(x => x.RecordPerson)
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="clearfix">
+                        <div class="pull-left my-form-control w-50- input-textarea">
+                            <label>参加人员：</label>
+                            <div>
+                                @Html.Raw(string.Join(",", Model.ActivityPersons.Where(x => x.IsSigned).Select(y => y.Person)))
+                            </div>
+                        </div>
+                        <div class="pull-left my-form-control w-50- input-textarea">
+                            <label>缺勤人员：</label>
+                            <div>
+                                @Html.Raw(string.Join(",", Model.ActivityPersons.Where(x => !x.IsSigned).Select(y => y.Person)))
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix">
+                        <div class="pull-left my-form-control w-50-">
+                            <label>参与领导：</label>
+                            <div>
+                                @Html.DisplayFor(x => x.Leader)
+                            </div>
+                        </div>
+                        <div class="pull-left my-form-control w-50-">
+                            <label>提醒：</label>
+                            <div>
+                                @Html.DisplayFor(x => x.AlertType)
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="pd-20 bg-fff bd-t-e3ebfd">
+                    <div class="f-18 f-w c-0d0d0d">活动记录</div>
+                    <div class="f-16 c-4a4e50 lh-36 pd-b-20" style="word-break:break-all;height:auto;min-height:110px;">
+                        <div class="clearfix">
+                            <div class="pull-left my-form-control w-100-">
+                                <label>内容：</label>
+                                <div>
+                                    @Html.DisplayFor(x => x.Remark)
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="clearfix">
+                            <div class="pull-left my-form-control w-30-">
+                                <label>视频：</label>
+                                <div class="w-100-">
+                                    <ul class="images-container">
+                                        @for (int i = 0; i < Model.Files.Count; i++)
+                                        {
+                                            if (Model.Files[i].Description == "视频")
+                                            {
+                                                if (string.IsNullOrEmpty(Model.Files[i].OtherUrl))
+                                                {
+                                                    <li><img src="@Url.Content("~/Content/images/album.png")" alt="" style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(Model.Files[i].FilePath)" data-otherurl=""></li>
+                                                }
+                                                else
+                                                {
+                                                    <li><img src="@Url.Content("~/Content/images/album.png")" alt="" style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(Model.Files[i].FilePath)" data-otherurl="@Url.Content(Model.Files[i].OtherUrl)"></li>
+                                                }
+                                            }
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="pull-left my-form-control w-100-">
+                                <label>课件材料：</label>
+                                <div class="pull-left right">
+                                    <table>
+                                        @*<ul class="images-container">*@
+                                        @for (int i = 0; i < Model.Files.Count; i++)
+                                        {
+                                            if (Model.Files[i].Description == "课件")
+                                            {
+                                                if (!string.IsNullOrEmpty(Model.Files[i].FolderId) && !string.IsNullOrEmpty(Model.Files[i].FileType))
+                                                {
+                                                    switch (Model.Files[i].FileType)
+                                                    {
+                                                        case "java_video":
+                                                            <tr><td><img src="@Url.Content("~/Content/images/album.png")" alt="" style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(Model.Files[i].FilePath)" data-folderid="@Url.Content(Model.Files[i].FolderId)" data-otherurl=""></td></tr>
+                                                            break;
+                                                        case "net_video":
+                                                            <tr><td><img src="@Url.Content("~/Content/images/album.png")" alt="" style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(Model.Files[i].FilePath)" data-otherurl=""></td></tr>
+                                                            break;
+                                                        case "java_doc":
+                                                            <tr>
+                                                                <td>
+                                                                    <a class="" href="javascript:opendoc('@Url.Content(Model.Files[i].FolderId)')">@Html.Raw(Model.Files[i].FileName)</a><br />
+                                                                </td>
+                                                            </tr>
+                                                            break;
+                                                        default:
+                                                            <tr>
+                                                                <td>
+                                                                    <img src="@Url.Content("~/Content/images/album.png")" alt="" style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(Model.Files[i].FilePath)" data-otherurl="">
+                                                                </td>
+                                                            </tr>
+                                                            break;
+                                                    }
+                                                }
+                                                else
+                                                if (!string.IsNullOrEmpty(Model.Files[i].OtherUrl))
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            <img src="@Url.Content("~/Content/images/album.png")" alt="" style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(Model.Files[i].FilePath)" data-folderid="@Url.Content(Model.Files[i].FolderId)" data-otherurl="">
+                                                        </td>
+                                                    </tr>
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            <img src="@Url.Content("~/Content/images/album.png")" alt="" style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(Model.Files[i].FilePath)" data-folderid="@Url.Content(Model.Files[i].FolderId)" data-otherurl="@Url.Content(Model.Files[i].FilePath)">
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                        }
+                                        @*</ul>*@
+                                    </table>
+
+                                </div>
+                            </div>
+
+                            <div class="pull-left my-form-control w-50-">
+                                <label>照片：</label>
+                                <div class="safeImg_div" style="width:890px;">
+                                    <div id="pic_list_1" class="scroll_horizontal" style="width:890px;">
+
+                                        <div class="box" style="width:790px;">
+                                            <ul class="list" id="Pul">
+
+
+                                                @for (int i = 0; i < Model.Files.Count; i++)
+                                                {
+                                                    if (Model.Files[i].Description == "照片")
+                                                    {
+                                                        <li>
+                                                            <a class="safeImg">
+                                                                <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = Model.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:160px; height:120px;" data-url="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = Model.Files[i].FileId, area = "PublicInfoManage" })">
+                                                            </a>
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @if (Model.Files.Any(x => x.Description == "音频"))
+                            {
+                                <div class="pull-left my-form-control w-100-">
+                                    <label>音频：</label>
+                                    <div class="pull-left right">
+                                        <ul id="play-audio-container">
+                                            @for (int i = 0; i < Model.Files.Count; i++)
+                                            {
+                                                if (Model.Files[i].Description == "音频")
+                                                {
+                                                    <li class="">
+                                                        <div class="play-audio" style="float:left;" data-id="@Model.Files[i].FileId" data-url="@Url.Content(Model.Files[i].FilePath)">
+                                                            <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@Model.Files[i].FileName
+                                                        </div>
+                                                        <div style="float:left; margin-top:10px;">
+                                                            <audio id="@Model.Files[i].FileId" preload="metadata" src="@Url.Content(Model.Files[i].FilePath)" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio>
+                                                        </div>
+                                                    </li>
+                                                }
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="bg-fff pd-10 launch-activity-list bd-t-e3ebfd">
+                    <div class="clearfix pd-b-20 pd-t-10 pd-l-10">
+                        <div class="pull-left f-18 f-w c-0d0d0d">会议材料</div>
+                        <!--<button type="button" class="pull-right add">添加</button>-->
+                    </div>
+                    <div class="">
+                        <ul class="clearfix">
+                            @for (int i = 0; i < Model.Files.Count; i++)
+                            {
+                                if (Model.Files[i].Description == "二维码" || Model.Files[i].Description == "课件" || Model.Files[i].Description == "音频" || Model.Files[i].Description == "照片" || Model.Files[i].Description == "视频")
+                                {
+                                    continue;
+                                }
+                                <li>
+                                    @Html.HiddenFor(x => x.Files[i].FileId)
+                                    <div class="left">@Html.Raw(Model.Files[i].FileName)</div>
+                                    <div class="pull-left right">
+                                        @Html.ActionLink("查看", "DownloadFile", "ResourceFile", new { keyValue = Model.Files[i].FileId, area = "PublicInfoManage" }, new { @class = "btn btn-default" })
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                @{
+                    if (Model.ActivityType == "安全学习日" || Model.ActivityType == "政治学习")
+                    {
+                        <div class="bg-fff pd-10 launch-activity-list bd-t-e3ebfd">
+                            <div class="clearfix pd-b-20 pd-t-10 pd-l-10">
+                                <div class="pull-left f-18 f-w c-0d0d0d">试题</div>
+                                <div class="pull-right"><a class="btn btn-default" onclick="btn_score('@Model.ActivityId')"><i class="fa"></i>&nbsp;得分排名</a></div>
+                            </div>
+                            <div style="overflow-y:auto; ">
+                                @Html.Hidden("QuestionList", ViewData["QuestionList"])
+                                <table class="table" style="border:1px solid #e3ebfd;text-align:center">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align:center">序号</th>
+                                            <th style="text-align:center">题目</th>
+                                            <th style="text-align:center"> 题型</th>
+                                            <th style="text-align:center">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table_set"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+                    }
+                }
+
+                @{
+                    if (Model.ActivityType == "安全学习日" || Model.ActivityType == "政治学习")
+                    {
+                        <div class="pd-20 bg-fff bd-t-e3ebfd">
+                            <div class="f-18 f-w c-0d0d0d">补学记录</div>
+                            <div class="f-16 c-4a4e50 lh-36 pd-b-20" style="word-break:break-all;height:auto;min-height:110px;padding-top:20px;">
+                                @*@Html.DisplayFor(x => x.Remark)*@
+                                <div class="gridPanel">
+                                    <table id="grid1"></table>
+                                    <div id="gridPager1"></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    }
+                }
+
+                <div class="pd-20 bg-fff bd-t-e3ebfd">
+                    <div class="f-18 f-w c-0d0d0d">活动评价</div>
+                    <div class="f-18 f-w c-0d0d0d"><a id="lr-edit" class="btn btn-default" onclick="btn_evaluate()"><i class="fa fa-pencil-square-o"></i>&nbsp;评价</a></div>
+                    <div class="f-16 c-4a4e50 lh-36 pd-b-20" style="word-break:break-all;height:auto;min-height:110px;padding-top:20px;">
+                        @*@Html.DisplayFor(x => x.Remark)*@
+                        <div class="gridPanel">
+                            <table id="grid"></table>
+                            <div id="gridPager"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<div id="videodiv" style="display:none; text-align:center;background-color:black;">
+</div>
+<script>
+    @if (Model.Files.Count(p => p.Description == "照片") > 4)
+         {
+                 @Html.Raw("$('#pic_list_1').cxScroll({  speed: 1000,  time: 2000  })");
+         }
+
+</script>

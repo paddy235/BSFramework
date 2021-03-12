@@ -1,0 +1,1432 @@
+﻿@model BSFramework.Application.Entity.EducationManage.EduBaseInfoEntity
+@using BSFramework.Application.Entity.EducationManage
+@{
+    ViewBag.Title = "Detail2";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<link rel="stylesheet" href="~/Content/styles/static/css/index.css">
+<link rel="stylesheet" href="~/Content/styles/static/css/extend.css">
+<link rel="stylesheet" href="~/Content/styles/static/css/launch-activity.css" />
+<link rel="stylesheet" href="~/Content/styles/static/css/before.css" />
+<script src="~/Content/scripts/validator/Validform.min.js"></script>
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+<script src="~/Content/scripts/nicescroll/nicescroll.min.js"></script>
+<script src="~/Content/scripts/base.js"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/audiojs/audio.min.js")"></script>
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<script src="@Url.Content("~/Content/scripts/jquery.cxscroll.min.js")"></script>
+<link href="~/Content/styles/layout.css" rel="stylesheet" />
+<!--播放器-->
+<link href="~/Content/scripts/plugins/video/css/video.min.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/video/js/video.min.js"></script>
+<script src="~/Content/scripts/plugins/video/js/videojs-contrib-hls.min.js"></script>
+<style>
+
+    ul li {
+        vertical-align: middle;
+        padding-top: 15px;
+    }
+
+    .images-container {
+        min-height: 120px;
+    }
+
+    .safeImg {
+        display: block;
+        width: 210px;
+        height: 140px;
+        position: relative;
+        padding-left: 5px;
+    }
+
+    .images-container li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+
+    .safeImg_short {
+        display: block;
+        width: 150px;
+        height: 150px;
+        position: relative;
+        padding-left: 5px;
+    }
+</style>
+<script>
+    jQuery(function () {
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#grid').setGridWidth(($('.gridPanel').width()));
+                $("#grid").setGridHeight($(window).height() - 140);
+            }, 200);
+            e.stopPropagation();
+        });
+
+        var id = jQuery('#ID').val();
+        jQuery('#grid').jqGrid({
+            colModel: [
+                { label: '评价人', name: 'EvaluateUser', width: 100, align: 'center', sortable: false },
+                { label: '评价部门', name: 'DeptName', width: 100, align: 'center', sortable: false },
+                { label: '评价时间', name: 'EvaluateDate', width: 100, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d H:i', newformat: 'Y-m-d H:i' } },
+                { label: '评分', name: 'Score', width: 100, align: 'center', sortable: false },
+                { label: '评价内容', name: 'EvaluateContent', align: 'center', sortable: false }
+            ],
+            height: 160,
+            autowidth: true,
+            url: '@Url.Action("GetDataEvaluate")?keyValue=' + id,
+            datatype: "json",
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 20,
+            rownumbers: true,
+            pager: false,
+            gridComplete: function () {
+            }
+        });
+
+        @*@for (int i = 0; i < Model.Answers.Count; i++) {
+            @Html.Raw(string.Format("layer.photos({{photos: '{0}',shift: 5}});", "#" + i + "images-container"));
+        }
+        @for (int i = 0; i < Model.Answers.Count; i++) {
+            @Html.Raw(string.Format("layer.photos({{photos: '{0}',shift: 5}});", "#" + i + "images-containercs"));
+        }
+        @for (int i = 0; i < Model.Answers.Count; i++) {
+            @Html.Raw(string.Format("layer.photos({{photos: '{0}',shift: 5}});", "#" + i + "images-containercs1"));
+        }
+        @Html.Raw(string.Format("layer.photos({{photos: '{0}',shift: 5}});", "#jkimages-container"));
+        @Html.Raw(string.Format("layer.photos({{photos: '{0}',shift: 5}});", "#jlimages-container"));*@
+                @Html.Raw(string.Format("layer.photos({{photos: '{0}',shift: 5}});", "#pic_list_1"));
+        $('.play-audio-container1').delegate('.play-audio', 'click', function () {
+            var Id = $(this).data('id');
+            document.getElementById(Id).play();
+            //var url = $(this).data('url');
+            //var html = '<audio id="audio" src="' + url + '" controls autoplay style="width:483px;display:block;"></audio>';
+            //$('#audio-warp').append(html);
+            //$('#audio')[0].addEventListener('canplaythrough', function () {
+            //    this.play();
+            //});
+            //layer.open({
+            //    type: 1,
+            //    area: ['460px', '36px'],
+            //    content: $('#audio-warp '),
+            //    title: false,
+            //    end: function () {
+            //        $('#audio-warp').empty();
+            //        $('#audio-warp').hide();
+            //    }
+            //})
+        });
+        $('.play-audio-container2').delegate('.play-audio', 'click', function () {
+            var Id = $(this).data('id');
+            document.getElementById(Id).play();
+            //var url = $(this).data('url');
+            //var html = '<audio id="audio" src="' + url + '" controls autoplay style="width:483px;display:block;"></audio>';
+            //$('#audio-warp').append(html);
+            //$('#audio')[0].addEventListener('canplaythrough', function () {
+            //    this.play();
+            //});
+            //layer.open({
+            //    type: 1,
+            //    area: ['460px', '36px'],
+            //    content: $('#audio-warp '),
+            //    title: false,
+            //    end: function () {
+            //        $('#audio-warp').empty();
+            //        $('#audio-warp').hide();
+            //    }
+            //})
+        });
+
+
+
+                $('.box').delegate('li', 'click', function () {
+            var dataimg = [];
+                    $(".safeImg").each(function (o, i) {
+
+                var imgsrc = { src: $(i).find("img").attr("src") };
+                dataimg.push(imgsrc);
+            })
+            var json = {
+                data: dataimg
+            };
+            layer.photos({
+                photos: json,
+                anim: 5
+            })
+        });
+    });
+    function btn_evaluate() {
+        var isEvaluate = 0;
+        var id = $('#ID').val();
+        $.SetForm({
+            url: '/..@Url.Action("GetIsEvaluate", "Activity")',
+            param: { keyValue: id, category: "" },
+            success: function (data) {
+                isEvaluate = data;
+            }
+        });
+        //currentNode = jQuery('#tree').getCurrentNode();
+        if (isEvaluate == 0) {
+            //id = jQuery('#ActivityId').val();
+            dialogOpen({
+                id: "form1",
+                title: '评价',
+                url: '/../@Url.Action("Evaluate")?id=' + id + "&iframeId=" + jQuery(self.frameElement).attr('id'),
+                width: "500px",
+                height: "330px",
+                callBack: function (iframeId) {
+
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+
+                }
+            });
+        } else {
+            layer.msg("无权限评价此活动");
+        }
+    }
+    function AcceptClick() {
+        $.SaveForm({
+            url: '@Url.Action("UpdateFormNew")',
+            param: {},
+            loading: "数据提交中...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        });
+
+    }
+
+    function opendoc(folderid) {
+            $.ajax({
+                     url: "@Url.Action("GetJavaVideoJson", "ResourceFile", new { area= "PublicInfoManage" })",
+                      data: { file_id: folderid },
+                      type: "post",
+                      async: true,
+                success: function (result) {
+                    var resultJosn = JSON.parse(result);
+                    window.open(resultJosn.data.url);
+                }
+                });
+
+    }
+  var i = 0;
+    function fn$play(e) {
+        var url = jQuery(e).data('url');
+        var otherurl = jQuery(e).data("otherurl");
+        var folderid = jQuery(e).data("folderid");
+        //debugger;
+        layer.open({
+            type: 1,
+            title: false,
+            area: ['660px', '490px'],
+            content: jQuery('#videodiv'),
+            end: function () {
+                jQuery('#videodiv').empty();
+                jQuery('#videodiv').attr('display', 'none');
+            }
+        });
+        jQuery('#videodiv').attr('display', 'normal');
+
+        if (folderid) {
+                   $.ajax({
+                     url: "@Url.Action("GetJavaVideoJson", "ResourceFile", new { area= "PublicInfoManage" })",
+                      data: { file_id: folderid },
+                      type: "post",
+                      async: true,
+                success: function (result) {
+                    var resultJosn = JSON.parse(result);
+                    jQuery('#videodiv').append('<video id="preview' + i +'" autoplay="autoplay"  preload="paused" width="640" height="480" style="padding-top:8px;" class="video-js vjs-default-skin vjs-big-play-centered" controls="true"></video>');
+                        var options = {
+                            'techOrder': ['html5']
+                        };
+                        var oVideo = videojs("preview"+i, options, function () {
+                            videojs.log('your player is ready !!!');
+                            this.on("loadstart", function () {
+                                videojs.log('your player is loadstart !!!');
+                            });
+
+                        });
+                        console.log('test');
+                        oVideo.src({
+                            src: resultJosn.data.url,
+                            type: 'application/X-mpegURL'
+                        });
+                    oVideo.play();
+                    i++;
+                     }
+                });
+        } else {
+            //CDN加速
+            if (otherurl) {
+                jQuery('#videodiv').append('<video id="preview' + i + '" autoplay="autoplay"  preload="paused" width="640" height="480" style="padding-top:8px;" class="video-js vjs-default-skin vjs-big-play-centered" controls="true"></video>');
+                var options = {
+                    'techOrder': ['html5']
+                };
+                var oVideo = videojs("preview" + i, options, function () {
+                    videojs.log('your player is ready !!!');
+                    this.on("loadstart", function () {
+                        videojs.log('your player is loadstart !!!');
+                    });
+
+                });
+                console.log('test');
+                oVideo.src({
+                    src: otherurl,
+                    type: 'application/X-mpegURL'
+                });
+                oVideo.play();
+                i++;
+            } else {
+                jQuery('#videodiv').append('<video src="' + url + '" autoplay="autoplay" width="640" height="480" style="padding-top:8px;" controls="controls"><source src="http://rm03.wscdn.hls.xiaoka.tv/live/fczjp0Dc_J60VGMN/playlist.m3u8" type="application/x-mpegURL" id="target"></video>');
+            }
+        }
+
+
+        //jQuery('#videodiv').attr('display', 'normal');
+        //jQuery('#videodiv').append('<video src="' + url + '" autoplay="autoplay" width="1200" height="770" style:"margin:0px auto;" controls="controls"></video>');
+    }
+    function valid() {
+        var d = $("#AppraiseContent").val();
+
+
+        if (d == "") {
+            dialogMsg('效果评价不能为空！', 0);
+            return false;
+        }
+        return true;
+    }
+</script>
+<div id="audio-warp" style="height:32px;width:460px;display: none;overflow:hidden;">
+</div>
+<div style="margin-left: 10px; margin-right: 10px;overflow-y:hidden;">
+    @Html.HiddenFor(x => x.ID)
+    @Html.HiddenFor(x => x.TeacherId)
+    @Html.HiddenFor(x => x.AppraisePeopleId)
+    @Html.HiddenFor(x => x.AppraisePeopleId)
+    <div class="tab-content" style="padding-top: 15px; ">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right:20px;">
+            <table class="form">
+
+                @if (Model.EduType != "5" && Model.EduType != "6")
+                {
+                    string tea = "主持人";
+                    if (Model.EduType == "1") { tea = "主讲人"; }
+                    if (Model.EduType != "2") //技术问答基本信息无题目
+                    {
+                        <tr>
+                            <td class="formTitle">题目</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextBoxFor(x => x.Theme, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td class="formTitle">@tea</td>
+                        <td class="formValue">
+                            @Html.TextBoxFor(x => x.Teacher, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+                        <td class="formTitle">记录人</td>
+                        <td class="formValue">
+                            @Html.TextBoxFor(x => x.RegisterPeople, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="formTitle">培训时间</td>
+                        <td class="formValue" colspan="3">
+                            @Html.TextBoxFor(x => x.ActivityDate, new { @class = "form-control", @style = "width:180px;float:left;", @readonly = "readonly", Value = string.Format("{0:yyyy-MM-dd HH:mm}", Model.ActivityDate) })
+                            @Html.TextBoxFor(x => x.ActivityEndDate, new { @class = "form-control", @style = "width:180px;float:left;margin-left:30px;", @readonly = "readonly", Value = string.Format("{0:yyyy-MM-dd HH:mm}", Model.ActivityEndDate) })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="formTitle">参加人员</td>
+                        <td class="formValue" colspan="3">
+                            @Html.TextAreaFor(x => x.AttendPeople, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+                    </tr>
+                    if (Model.EduType == "4")
+                    {
+                        <tr>
+                            <td class="formTitle">运行方式</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextBoxFor(x => x.RunWay, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="4"><hr /></td>
+                    </tr>
+                    if (Model.EduType == "1")
+                    {
+                        <tr>
+                            <td class="formTitle">讲课材料</td>
+                            <td class="formValue" colspan="3">
+                                @{
+                                    foreach (var f in Model.Files2)
+                                    {
+                                        if ((f.Description == "课件" && !f.FilePath.Contains("play")) || f.Description == "1")
+                                        {
+                                            if (!string.IsNullOrEmpty(f.FileType))
+                                            {
+                                                if (!f.FileType.Contains("video"))
+                                                {
+                                                    if (f.FileType.Contains("doc") && !string.IsNullOrEmpty(f.FolderId))
+                                                    {
+                                                        <a href="javascript:opendoc('@Url.Content(f.FolderId)')">@f.FileName</a><br />
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <a href="@Url.Content(f.FilePath)" target="_blank">@f.FileName</a><br />
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <a href="@Url.Content(f.FilePath)" target="_blank">@f.FileName</a><br />
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            if (!string.IsNullOrEmpty(f.FileType))
+                                            {
+                                                if (f.FileType == "java_doc")
+                                                {
+                                                    <a href="javascript:opendoc('@Url.Content(f.FolderId)')">@f.FileName</a><br />
+                                                }
+                                            }
+
+                                        }
+
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {  //新技术问答 - 新事故预想
+                    <tr>
+                        <td class="formTitle">题目</td>
+                        <td class="formValue" colspan="3">
+                            @Html.TextBoxFor(x => x.Theme, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+                    </tr>
+
+                    <tr>
+
+                        <td class="formTitle">出题人</td>
+                        <td class="formValue">
+                            @Html.TextBoxFor(x => x.Teacher, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+                        <td class="formTitle">答题人</td>
+                        <td class="formValue">
+                            @Html.TextBoxFor(x => x.RegisterPeople, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="formTitle">培训时间</td>
+                        <td class="formValue" colspan="3">
+                            @Html.TextBoxFor(x => x.ActivityDate, new { @class = "form-control", @style = "width:180px;float:left;", @readonly = "readonly", Value = string.Format("{0:yyyy-MM-dd HH:mm}", Model.ActivityDate) })
+                            @Html.TextBoxFor(x => x.ActivityEndDate, new { @class = "form-control", @style = "width:180px;float:left;margin-left:30px;", @readonly = "readonly", Value = string.Format("{0:yyyy-MM-dd HH:mm}", Model.ActivityEndDate) })
+                        </td>
+                    </tr>
+                }
+
+                <tr>
+                    <td colspan="4"><hr /></td>
+                </tr>
+
+                @if (Model.EduType == "1")
+                {
+                    <tr>
+                        <td colspan="2"><h3>讲课记录</h3></td>
+                    </tr>
+                    <tr style="height:20px;"></tr>
+                    <tr>
+                        <td class="formTitle">音频</td>
+
+                        <td class="formValue" colspan="3">
+                            <ul style="" class="play-audio-container1">
+
+
+                                @for (int i = 0; i < Model.Files2.Count; i++)
+                                {
+                                    if (Model.Files2[i].Description == "技术讲课音频")
+                                    {
+                                        <li class="">
+                                            <div class="play-audio" style="float:left;" data-id="@Model.Files2[i].FileId" data-url="@Url.Content(Model.Files2[i].FilePath)">
+                                                <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@Model.Files2[i].FileName
+                                            </div>
+                                            <div style="float:left;">
+                                                <audio id="@Model.Files2[i].FileId" preload="metadata" src="@Url.Content(Model.Files2[i].FilePath)" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio>
+                                            </div>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr style="height:15px;"></tr>
+                    <tr>
+                        <td class="formTitle">图片</td>
+
+                        <td class="formValue" colspan="3">
+
+                            <div class="safeImg_div" style="width:850px;">
+                                <div id="pic_list_2" class="scroll_horizontal" style="width:850px;">
+
+                                    <div class="box" style="width:790px;">
+                                        <ul class="list" id="Pul">
+
+
+                                            @for (int i = 0; i < Model.Files2.Count; i++)
+                                            {
+                                                if (Model.Files2[i].Description == "技术讲课图片")
+                                                {
+                                                    <li class="safeImg">
+                                                        <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = Model.Files2[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;">
+                                                    </li>
+                                                }
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td class="formTitle">文字</td>
+
+                        <td class="formValue" colspan="3">
+                            @Html.TextAreaFor(x => x.Describe, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td class="formTitle">效果评价</td>
+                        <td class="formValue" colspan="3">
+                            @Html.TextAreaFor(x => x.NewAppraiseContent, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="formTitle">评价人</td>
+
+                        <td class="formValue" colspan="3">
+                            @Html.TextBox("pjr", Model.RegisterPeople, new { @class = "form-control", @readonly = "readonly" })
+                        </td>
+
+                    </tr>
+                }
+                @if (Model.EduType == "2")
+                {
+                    for (int j = 0; j < Model.Answers.Count(); j++)
+                    {
+                        EduAnswerEntity obj = Model.Answers[j];
+                        var wdtpid = "wdtp" + j;
+                        <tr>
+                            <td class="formTitle">题目</td>
+                            <td class="formValue">
+                                @Html.TextBoxFor(x => obj.Question, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                            <td class="formTitle">答题人</td>
+                            <td class="formValue">
+                                @Html.TextBoxFor(x => obj.AnswerPeople, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">音频</td>
+                            <td class="formValue" colspan="3">
+                                <ul style="" class="play-audio-container1">
+
+                                    @for (int i = 0; i < obj.Files.Count; i++)
+                                    {
+                                        if (obj.Files[i].Description == "技术问答音频")
+                                        {
+
+                                            <li class="">
+                                                <div class="play-audio" style="float:left;" data-id="@obj.Files[i].FileId" data-url="@Url.Content(obj.Files[i].FilePath)">
+                                                    <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@obj.Files[i].FileName
+                                                </div>
+                                                <div style="float:left;">
+                                                    <audio id="@obj.Files[i].FileId" preload="metadata" src="@Url.Content(obj.Files[i].FilePath)" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio>
+                                                </div>
+                                            </li>
+
+                                        }
+                                    }
+
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">图片</td>
+                            <td class="formValue" colspan="3">
+                                <div class="safeImg_div" style="width:850px;">
+                                    <div id="@wdtpid" class="scroll_horizontal" style="width:850px;">
+                                        <div class="box" style="width:790px;">
+                                            <ul class="list" id="Pul">
+
+                                                @for (int i = 0; i < obj.Files.Count; i++)
+                                                {
+                                                    if (obj.Files[i].Description == "技术问答图片")
+                                                    {
+                                                        <li class="safeImg">
+                                                            <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = obj.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;">
+                                                        </li>
+
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <script>
+                            @if (obj.Files.Count(p => p.Description == "技术问答图片") > 4)
+                            {
+                 @Html.Raw("$('#" + wdtpid + "').cxScroll({  speed: 1000,  time: 2000  });");
+                            }
+                                </script>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="formTitle">文字</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextAreaFor(x => obj.AnswerContent, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">点评</td>
+                            <td class="formValue">
+                                @Html.TextAreaFor(x => obj.AppraiseContent, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                            <td class="formTitle">评分</td>
+                            <td class="formValue">
+                                @Html.TextBoxFor(x => obj.Grade, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4"><hr /></td>
+                        </tr>
+                    }
+                }
+                @if (Model.EduType == "3")
+                {
+                    for (int j = 0; j < Model.Answers.Count(); j++)
+                    {
+                        EduAnswerEntity obj = Model.Answers[j];
+                        var sgtpid = "sgxx" + j;
+                        var cstpid = "cqcs" + j;
+                        <tr>
+                            <td class="formTitle">答题人</td>
+                            <td class="formValue">
+                                @Html.TextBoxFor(x => obj.AnswerPeople, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr style="height:40px;">
+                            <td class="formTitle"><h5>事故现象</h5></td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">音频</td>
+                            <td class="formValue" colspan="3">
+                                <ul style="" class="play-audio-container1">
+
+
+                                    @for (int i = 0; i < obj.Files.Count; i++)
+                                    {
+                                        if (obj.Files[i].Description == "事故现象音频")
+                                        {
+                                            <li class="">
+                                                <div class="play-audio" style="float:left;" data-id="@obj.Files[i].FileId" data-url="@Url.Content(obj.Files[i].FilePath)">
+                                                    <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@obj.Files[i].FileName
+                                                </div>
+                                                <div style="float:left;">
+                                                    <audio id="@obj.Files[i].FileId" preload="metadata" src="@Url.Content(obj.Files[i].FilePath)" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio>
+                                                </div>
+                                            </li>
+                                        }
+                                    }
+
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">图片</td>
+                            <td class="formValue" colspan="3">
+                                <div class="safeImg_div" style="width:850px;">
+                                    <div id="@sgtpid" class="scroll_horizontal" style="width:850px;">
+
+                                        <div class="box" style="width:790px;">
+                                            <ul class="list" id="Pul">
+
+                                                @for (int i = 0; i < obj.Files.Count; i++)
+                                                {
+                                                    if (obj.Files[i].Description == "事故现象图片")
+                                                    {
+                                                        <li class="safeImg">
+                                                            <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = obj.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;">
+                                                        </li>
+
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <script>
+                            @if (obj.Files.Count(p => p.Description == "事故现象图片") > 4)
+                            {
+                 @Html.Raw("$('#" + sgtpid + "').cxScroll({  speed: 1000,  time: 2000  });");
+                            }
+                                </script>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="formTitle">文字</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextAreaFor(x => obj.Description, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr style="height:40px;">
+                            <td class="formTitle"><h5>采取措施</h5></td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">音频</td>
+                            <td class="formValue" colspan="3">
+                                <ul style="" class="play-audio-container2">
+                                    <li>
+                                        @for (int i = 0; i < obj.Files.Count; i++)
+                                        {
+                                            if (obj.Files[i].Description == "采取措施音频")
+                                            {
+
+                                            <li class="">
+                                                <div class="play-audio" style="float:left;" data-id="@obj.Files[i].FileId" data-url="@Url.Content(obj.Files[i].FilePath)">
+                                                    <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@obj.Files[i].FileName
+                                                </div>
+                                                <div style="float:left;">
+                                                    <audio id="@obj.Files[i].FileId" preload="metadata" src="@Url.Content(obj.Files[i].FilePath)" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio>
+                                                </div>
+                                            </li>
+
+                                        }
+                                    }
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="formTitle">图片</td>
+                                <td class="formValue" colspan="3">
+                                    <div class="safeImg_div" style="width:850px;">
+                                        <div id="@cstpid" class="scroll_horizontal" style="width:850px;">
+
+                                            <div class="box" style="width:790px;">
+                                                <ul class="list" id="Pul">
+
+                                                    @for (int i = 0; i < obj.Files.Count; i++)
+                                                    {
+                                                        if (obj.Files[i].Description == "采取措施图片")
+                                                        {
+                                                            <li class="safeImg">
+                                                                <img src="@Url.Action("DownloadFile", "ResourceFile", new{ keyValue = obj.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;">
+                                                            </li>
+
+                                                        }
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <script>
+                            @if (obj.Files.Count(p => p.Description == "采取措施图片") > 4)
+                            {
+                 @Html.Raw("$('#" + sgtpid + "').cxScroll({  speed: 1000,  time: 2000  });");
+                            }
+                                    </script>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="formTitle">文字</td>
+                                <td class="formValue" colspan="3">
+                                    @Html.TextAreaFor(x => obj.AnswerContent, new { @class = "form-control", @readonly = "readonly" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="formTitle">点评</td>
+                                <td class="formValue">
+                                    @Html.TextAreaFor(x => obj.AppraiseContent, new { @class = "form-control", @readonly = "readonly" })
+                                </td>
+                                <td class="formTitle">评分</td>
+                                <td class="formValue">
+                                    @Html.TextBoxFor(x => obj.Grade, new { @class = "form-control", @readonly = "readonly" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4"><hr /></td>
+                            </tr>
+                        }
+                    }
+                @if (Model.EduType == "4")
+                {
+                    for (int j = 0; j < Model.Answers.Count(); j++)
+                    {
+                        EduAnswerEntity obj = Model.Answers[j];
+                        var sgtpid = "sgtp" + j;
+                        var yytpid = "yytp" + j;
+                        var cstpid = "cstp" + j;
+                        <tr>
+                            <td class="formTitle">演习人</td>
+                            <td class="formValue">
+                                @Html.TextBoxFor(x => obj.AnswerPeople, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr style="height:40px;">
+                            <td class="formTitle"><h5>现象描述</h5></td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">音频</td>
+                            <td class="formValue" colspan="3">
+                                <ul style="" class="play-audio-container1">
+
+
+                                    @for (int i = 0; i < obj.Files.Count; i++)
+                                    {
+                                        if (obj.Files[i].Description == "事故现象音频")
+                                        {
+                                            <li class="">
+                                                <div class="play-audio" style="float:left;" data-id="@obj.Files[i].FileId" data-url="@Url.Content(obj.Files[i].FilePath)">
+                                                    <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@obj.Files[i].FileName
+                                                </div>
+                                                <div style="float:left;">
+                                                    <audio id="@obj.Files[i].FileId" preload="metadata" src="@Url.Content(obj.Files[i].FilePath)" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio>
+                                                </div>
+                                            </li>
+                                        }
+                                    }
+
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">图片</td>
+                            <td class="formValue" colspan="3">
+                                <div class="safeImg_div" style="width:850px;">
+                                    <div id="@sgtpid" class="scroll_horizontal" style="width:850px;">
+
+                                        <div class="box" style="width:790px;">
+                                            <ul class="list" id="Pul">
+
+                                                @for (int i = 0; i < obj.Files.Count; i++)
+                                                {
+                                                    if (obj.Files[i].Description == "事故现象图片")
+                                                    {
+                                                        <li class="safeImg">
+                                                            <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = obj.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;">
+                                                        </li>
+
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <script>
+                            @if (obj.Files.Count(p => p.Description == "事故现象图片") > 4)
+                            {
+                 @Html.Raw("$('#" + sgtpid + "').cxScroll({  speed: 1000,  time: 2000  });");
+                            }
+                                </script>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="formTitle">描述</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextAreaFor(x => obj.Description, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+
+                        <tr style="height:40px;">
+                            <td class="formTitle"><h5>原因分析</h5></td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">音频</td>
+                            <td class="formValue" colspan="3">
+                                <ul style="" class="play-audio-container1">
+                                    <li>
+                                        @for (int i = 0; i < obj.Files.Count; i++)
+                                        {
+                                            if (obj.Files[i].Description == "原因分析音频")
+                                            {
+
+                                            <li class="">
+                                                <div class="play-audio" style="float:left;" data-id="@obj.Files[i].FileId" data-url="@Url.Content(obj.Files[i].FilePath)">
+                                                    <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@obj.Files[i].FileName
+                                                </div>
+                                                <div style="float:left;">
+                                                    <audio id="@obj.Files[i].FileId" preload="metadata" src="@Url.Content(obj.Files[i].FilePath)" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio>
+                                                </div>
+                                            </li>
+
+                                        }
+                                    }
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="formTitle">图片</td>
+                                <td class="formValue" colspan="3">
+                                    <div class="safeImg_div" style="width:850px;">
+                                        <div id="@yytpid" class="scroll_horizontal" style="width:850px;">
+
+                                            <div class="box" style="width:790px;">
+                                                <ul class="list" id="Pul">
+
+                                                    @for (int i = 0; i < obj.Files.Count; i++)
+                                                    {
+                                                        if (obj.Files[i].Description == "原因分析图片")
+                                                        {
+                                                            <li class="safeImg">
+                                                                <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = obj.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;">
+                                                            </li>
+
+                                                        }
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <script>
+                            @if (obj.Files.Count(p => p.Description == "原因分析图片") > 4)
+                            {
+                 @Html.Raw("$('#" + yytpid + "').cxScroll({  speed: 1000,  time: 2000  });");
+                            }
+                                    </script>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="formTitle">描述</td>
+                                <td class="formValue" colspan="3">
+                                    @Html.TextAreaFor(x => obj.Reason, new { @class = "form-control", @readonly = "readonly" })
+                                </td>
+                            </tr>
+
+                            <tr style="height:40px;">
+                                <td class="formTitle"><h5>采取措施</h5></td>
+                            </tr>
+                            <tr>
+                                <td class="formTitle">音频</td>
+                                <td class="formValue" colspan="3">
+                                    <ul style="" class="play-audio-container1">
+                                        <li>
+                                            @for (int i = 0; i < obj.Files.Count; i++)
+                                            {
+                                                if (obj.Files[i].Description == "采取措施音频")
+                                                {
+
+                                                <li class="">
+                                                    <div class="play-audio" style="float:left;" data-id="@obj.Files[i].FileId" data-url="@Url.Content(obj.Files[i].FilePath)">
+                                                        <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@obj.Files[i].FileName
+                                                    </div>
+                                                    <div style="float:left;">
+                                                        <audio id="@obj.Files[i].FileId" preload="metadata" src="@Url.Content(obj.Files[i].FilePath)" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio>
+                                                    </div>
+                                                </li>
+
+                                            }
+                                        }
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="formTitle">图片</td>
+                                    <td class="formValue" colspan="3">
+                                        <div class="safeImg_div" style="width:850px;">
+                                            <div id="@cstpid" class="scroll_horizontal" style="width:850px;">
+
+                                                <div class="box" style="width:790px;">
+                                                    <ul class="list" id="Pul">
+
+                                                        @for (int i = 0; i < obj.Files.Count; i++)
+                                                        {
+                                                            if (obj.Files[i].Description == "采取措施图片")
+                                                            {
+                                                                <li class="safeImg">
+                                                                    <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = obj.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;">
+                                                                </li>
+
+                                                            }
+                                                        }
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <script>
+                            @if (obj.Files.Count(p => p.Description == "采取措施图片") > 4)
+                            {
+                 @Html.Raw("$('#" + cstpid + "').cxScroll({  speed: 1000,  time: 2000  });");
+                            }
+                                        </script>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="formTitle">描述</td>
+                                    <td class="formValue" colspan="3">
+                                        @Html.TextAreaFor(x => obj.AnswerContent, new { @class = "form-control", @readonly = "readonly" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="formTitle">点评</td>
+                                    <td class="formValue">
+                                        @Html.TextAreaFor(x => obj.AppraiseContent, new { @class = "form-control", @readonly = "readonly" })
+                                    </td>
+                                    <td class="formTitle">评分</td>
+                                    <td class="formValue">
+                                        @Html.TextBoxFor(x => obj.Grade, new { @class = "form-control", @readonly = "readonly" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="formTitle">记录人</td>
+                                    <td class="formValue">
+                                        @Html.TextBoxFor(x => x.RegisterPeople, new { @class = "form-control", @readonly = "readonly" })
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td colspan="4"><hr /></td>
+                                </tr>
+                            }
+                        }
+
+                @if (Model.EduType == "5" || Model.EduType == "7")
+                {
+                    for (int j = 0; j < Model.Answers.Count(); j++)
+                    {
+                        EduAnswerEntity obj = Model.Answers[j];
+                        var tpid = "wdtp" + j;
+                        <tr>
+                            <td class="formTitle">音频</td>
+                            <td class="formValue" colspan="3">
+                                <ul style="" class="play-audio-container1">
+
+                                    @for (int i = 0; i < obj.Files.Count; i++)
+                                    {
+                                        if (obj.Files[i].Description == "技术问答音频")
+                                        {
+
+                                            <li class="">
+                                                <div class="play-audio" style="float:left;" data-id="@obj.Files[i].FileId" data-url="@Url.Content(obj.Files[i].FilePath)">
+                                                    <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@obj.Files[i].FileName
+                                                </div>
+                                                <div style="float:left;">
+                                                    <audio id="@obj.Files[i].FileId" preload="metadata" src="@Url.Content(obj.Files[i].FilePath)" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio>
+                                                </div>
+                                            </li>
+
+                                        }
+                                    }
+
+                                </ul>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="formTitle">图片</td>
+                            <td class="formValue" colspan="3">
+                                <div class="safeImg_div" style="width:850px;">
+                                    <div id="@tpid" class="scroll_horizontal" style="width:850px;">
+                                        <div class="box" style="width:790px;">
+                                            <ul class="list" id="Pul">
+
+                                                @for (int i = 0; i < obj.Files.Count; i++)
+                                                {
+                                                    if (obj.Files[i].Description == "技术问答图片")
+                                                    {
+                                                        <li class="safeImg">
+                                                            <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = obj.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;">
+                                                        </li>
+
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <script>
+                            @if (obj.Files.Count(p => p.Description == "技术问答图片") > 4)
+                            {
+                 @Html.Raw("$('#" + tpid + "').cxScroll({  speed: 1000,  time: 2000  });");
+                            }
+                                </script>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="formTitle">文字</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextAreaFor(x => obj.AnswerContent, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">点评</td>
+                            <td class="formValue">
+                                @Html.TextAreaFor(x => obj.AppraiseContent, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                            <td class="formTitle">评分</td>
+                            <td class="formValue">
+                                @Html.TextBoxFor(x => obj.Grade, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4"><hr /></td>
+                        </tr>
+                    }
+                }
+                @if (Model.EduType == "6")
+                {
+                    for (int j = 0; j < Model.Answers.Count(); j++)
+                    {
+                        EduAnswerEntity obj = Model.Answers[j];
+                        var xxtpid = "sgxx" + j;
+                        var cstpid = "cqcs" + j;
+                        <tr style="height:40px;">
+                            <td class="formTitle"><h5>事故现象</h5></td>
+                        </tr>
+
+                        <tr>
+                            <td class="formTitle">音频</td>
+                            <td class="formValue" colspan="3">
+                                <ul style="" class="play-audio-container1">
+
+
+                                    @for (int i = 0; i < obj.Files.Count; i++)
+                                    {
+                                        if (obj.Files[i].Description == "事故现象音频")
+                                        {
+                                            <li class="">
+                                                <div class="play-audio" style="float:left;" data-id="@obj.Files[i].FileId" data-url="@Url.Content(obj.Files[i].FilePath)">
+                                                    <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@obj.Files[i].FileName
+                                                </div>
+                                                <div style="float:left;">
+                                                    <audio id="@obj.Files[i].FileId" preload="metadata" src="@Url.Content(obj.Files[i].FilePath)" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio>
+                                                </div>
+                                            </li>
+                                        }
+                                    }
+
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">图片</td>
+                            <td class="formValue" colspan="3">
+                                <div class="safeImg_div" style="width:850px;">
+                                    <div id="@xxtpid" class="scroll_horizontal" style="width:850px;">
+
+                                        <div class="box" style="width:790px;">
+                                            <ul class="list" id="Pul">
+
+                                                @for (int i = 0; i < obj.Files.Count; i++)
+                                                {
+                                                    if (obj.Files[i].Description == "事故现象图片")
+                                                    {
+                                                        <li class="safeImg">
+                                                            <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = obj.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;">
+                                                        </li>
+
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                    <script>
+                            @if (obj.Files.Count(p => p.Description == "事故现象图片") > 4)
+                            {
+                 @Html.Raw("$('#" + xxtpid + "').cxScroll({  speed: 1000,  time: 2000  });");
+                            }
+                                    </script>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="formTitle">文字</td>
+                            <td class="formValue" colspan="3">
+                                @Html.TextAreaFor(x => obj.Description, new { @class = "form-control", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr style="height:40px;">
+                            <td class="formTitle"><h5>采取措施</h5></td>
+                        </tr>
+                        <tr>
+                            <td class="formTitle">音频</td>
+                            <td class="formValue" colspan="3">
+                                <ul style="" class="play-audio-container2">
+                                    <li>
+                                        @for (int i = 0; i < obj.Files.Count; i++)
+                                        {
+                                            if (obj.Files[i].Description == "采取措施音频")
+                                            {
+
+                                            <li class="">
+                                                <div class="play-audio" style="float:left;" data-id="@obj.Files[i].FileId" data-url="@Url.Content(obj.Files[i].FilePath)">
+                                                    <img src="@Url.Content("~/Content/styles/static/images/horn-icon.png")" width="24">@obj.Files[i].FileName
+                                                </div>
+                                                <div style="float:left;">
+                                                    <audio id="@obj.Files[i].FileId" preload="metadata" src="@Url.Content(obj.Files[i].FilePath)" controls style="width:483px;display:block;">该浏览器不支持音频播放</audio>
+                                                </div>
+                                            </li>
+
+                                        }
+                                    }
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="formTitle">图片</td>
+                                <td class="formValue" colspan="3">
+                                    <div class="safeImg_div" style="width:850px;">
+                                        <div id="@cstpid" class="scroll_horizontal" style="width:850px;">
+
+                                            <div class="box" style="width:790px;">
+                                                <ul class="list" id="Pul">
+
+                                                    @for (int i = 0; i < obj.Files.Count; i++)
+                                                    {
+                                                        if (obj.Files[i].Description == "采取措施图片")
+                                                        {
+                                                            <li class="safeImg">
+                                                                <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = obj.Files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;">
+                                                            </li>
+
+                                                        }
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <script>
+                            @if (obj.Files.Count(p => p.Description == "采取措施图片") > 4)
+                            {
+                 @Html.Raw("$('#" + cstpid + "').cxScroll({  speed: 1000,  time: 2000  });");
+                            }
+                                    </script>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="formTitle">文字</td>
+                                <td class="formValue" colspan="3">
+                                    @Html.TextAreaFor(x => obj.AnswerContent, new { @class = "form-control", @readonly = "readonly" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="formTitle">点评</td>
+                                <td class="formValue">
+                                    @Html.TextAreaFor(x => obj.AppraiseContent, new { @class = "form-control", @readonly = "readonly" })
+                                </td>
+                                <td class="formTitle">评分</td>
+                                <td class="formValue">
+                                    @Html.TextBoxFor(x => obj.Grade, new { @class = "form-control", @readonly = "readonly" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4"><hr /></td>
+                            </tr>
+                        }
+                    }
+                    @*@if(Model.EduType!="5"&&Model.EduType!="6"){*@
+                <tr>
+                    <td colspan="4">
+                        <table class="form">
+                            <tr>
+                                <td class="formTitle">现场视频</td>
+                                <td class="formValue" colspan="3">
+                                    <ul class="images-container" id="images-container1">
+                                        @foreach (var f in Model.Files.Where(x => x.Description == "视频"))
+                                        {
+
+                                            <li>
+                                                <img src="@Url.Content("~/Content/images/album.png")" alt=""
+                                                     style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-otherurl="@(f.OtherUrl)" data-url="@Url.Content(f.FilePath)">
+                                            </li>
+                                        }
+
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="formTitle">课件材料</td>
+                                <td class="formValue" colspan="3">
+                                    <table>
+                                        @*<ul class="images-container">*@
+                                        @for (int i = 0; i < Model.Files2.Count; i++)
+                                        {
+                                            if (Model.Files2[i].Description == "课件")
+                                            {
+                                                if (!string.IsNullOrEmpty(Model.Files2[i].FileType))
+                                                {
+                                                    if (Model.Files2[i].FileType.Contains("doc"))
+                                                    {
+                                                        continue;
+                                                    }
+                                                }
+                                                if (!string.IsNullOrEmpty(Model.Files2[i].FolderId) && !string.IsNullOrEmpty(Model.Files2[i].FileType))
+                                                {
+
+                                                    switch (Model.Files2[i].FileType)
+                                                    {
+                                                        case "java_video":
+                                                            <tr><td><img src="@Url.Content("~/Content/images/album.png")" alt="" style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(Model.Files2[i].FilePath)" data-folderid="@Url.Content(Model.Files2[i].FolderId)" data-otherurl=""></td></tr>
+                                                            break;
+                                                        case "net_video":
+                                                            <tr><td><img src="@Url.Content("~/Content/images/album.png")" alt="" style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(Model.Files2[i].FilePath)" data-otherurl=""></td></tr>
+                                                            break;
+                                                        case "java_doc":
+                                                            <tr>
+                                                                <td>
+                                                                    <a class="" href="javascript:opendoc('@Url.Content(Model.Files2[i].FolderId)')">@Html.Raw(Model.Files2[i].FileName)</a><br />
+                                                                </td>
+                                                            </tr>
+                                                            break;
+                                                        default:
+
+                                                            break;
+                                                    }
+                                                }
+                                                else
+                                                if (!string.IsNullOrEmpty(Model.Files2[i].OtherUrl))
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            <img src="@Url.Content("~/Content/images/album.png")" alt="" style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(Model.Files2[i].FilePath)" data-otherurl="@Url.Content(Model.Files2[i].OtherUrl)">
+                                                        </td>
+                                                    </tr>
+                                                }
+                                                else
+                                                {
+                                                    if (Model.Files2[i].FilePath.Contains("play"))
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                <img src="@Url.Content("~/Content/images/album.png")" alt="" style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(Model.Files2[i].FilePath)" data-otherurl="@Url.Content(Model.Files2[i].FilePath)">
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        @*</ul>*@
+                                    </table>
+                                    @*<ul class="images-container" id="images-container1">
+                                            @foreach (var f in Model.Files2.Where(x => x.Description == "课件"))
+                                            {
+                                                if (!string.IsNullOrEmpty(f.FileType))
+                                                {
+                                                    if (f.FileType != "java_doc")
+                                                    {
+                                                        switch (f.FileType)
+                                                        {
+                                                            case "java_video":
+                                                                <li><img src="@Url.Content("~/Content/images/album.png")" alt="" style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(f.FilePath)" data-folderid="@Url.Content(f.FolderId)" data-otherurl=""></li>
+                                                                break;
+                                                            case "net_video":
+                                                                <li><img src="@Url.Content("~/Content/images/album.png")" alt="" style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(f.FilePath)" data-otherurl=""></li>
+                                                                break;
+                                                            case "java_doc":
+                                                                <li>
+                                                                    <div class="left">@Html.Raw(f.FileName)</div>
+                                                                    <div class="pull-left right">
+                                                                        <a class="my-btn w-100 bg-3669e1 c-fff mg-l-20" href="javascript:opendoc('@Url.Content(f.FolderId)')">查看</a>
+                                                                    </div>
+                                                                </li>
+                                                                break;
+                                                            default:
+                                                                <li><img src="@Url.Content("~/Content/images/album.png")" alt="" style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-url="@Url.Content(f.FilePath)" data-otherurl=""></li>
+                                                                break;
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <li>
+                                                        <img src="@Url.Content("~/Content/images/album.png")" alt=""
+                                                             style="width:160px;height:120px;cursor:pointer" onclick="fn$play(this)" data-otherurl="@(f.OtherUrl)" data-url="@Url.Content(f.FilePath)">
+                                                    </li>
+                                                }
+
+                                            }
+
+
+                                        </ul>*@
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="formTitle">现场照片</td>
+                                <td class="formValue" colspan="3">
+                                    <div class="safeImg_div" style="width:890px;">
+                                        <div id="pic_list_1" class="scroll_horizontal" style="width:850px">
+
+                                            <div class="box" style="width:790px">
+                                                <ul class="list" id="Pul">
+
+
+                                                    @for (int i = 0; i < Model.Files1.Count; i++)
+                                                    {
+                                                        <li class="safeImg_short">
+                                                            <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = Model.Files1[i].FileId, area = "PublicInfoManage" })" alt="" style="width:180px;height:120px;">
+                                                        </li>
+                                                    }
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                @*}*@
+                <tr>
+                    <td colspan="4">
+                        <div class="pd-20 bg-fff bd-t-e3ebfd">
+                            <div class="f-18 f-w c-0d0d0d"><a id="lr-edit" class="btn btn-default" onclick="btn_evaluate()"><i class="fa fa-pencil-square-o"></i>&nbsp;评价</a></div>
+                            <div class="f-16 c-4a4e50 lh-36 pd-b-20" style="word-break:break-all;height:auto;min-height:110px;padding-top:10px;padding-left:10px;">
+                                <div class="gridPanel">
+                                    <table id="grid"></table>
+                                    <div id="gridPager"></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+
+</div>
+<div id="videodiv" style="display:none; text-align:center;background-color:black;">
+    @*<video src="/bzzd/Resource/DocumentFile/84452e16-1e7a-11e9-bcff-00155dfdcb09.mp4" autoplay="autoplay" width="800" height="600"></video>*@
+</div>
+@*<script>
+     @if (Model.Files2.Count(p => p.Description == "技术讲课图片") > 4)
+         {
+                 @Html.Raw("$('#pic_list_2').cxScroll({  speed: 1000,  time: 2000  });");
+         }
+         @if (Model.Files1.Count() > 4)
+         {
+                 @Html.Raw("$('#pic_list_1').cxScroll({  speed: 1000,  time: 2000  });");
+         }
+    ;</script>*@

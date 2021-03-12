@@ -1,0 +1,94 @@
+﻿@using BSFramework.Application.Entity.Activity
+@{
+    ViewBag.Title = "EditList";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+
+
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<link rel="stylesheet" href="~/Content/styles/static/css/index.css">
+<link rel="stylesheet" href="~/Content/styles/static/css/extend.css">
+<link rel="stylesheet" href="~/Content/styles/static/css/launch-activity.css" />
+<link rel="stylesheet" href="~/Content/styles/static/css/before.css" />
+<script src="~/Content/scripts/validator/Validform.min.js"></script>
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+<script src="~/Content/scripts/nicescroll/nicescroll.min.js"></script>
+<script src="~/Content/scripts/base.js"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/audiojs/audio.min.js")"></script>
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<script>
+
+</script>
+<style>
+    .table thead tr th {
+    vertical-align:middle;
+    border-style:solid;
+    border-width:1px;
+    border-color:rgb(221, 221, 221);
+    }
+</style>
+<div style="margin-left: 10px; margin-right: 10px;overflow-y:hidden;">
+    <div class="tab-content" style="padding-top: 15px; ">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right:30px;">
+            <table class="form">
+                <tr>
+                    <td colspan="4">
+                        <table style="width:100%; text-align:center;margin-top:20px;" class="table table-bordered">
+                            <colgroup>
+                                <col style="width:100px;" />
+                                <col style="width:150px;" />
+                                <col style="width:150px;" />
+                                <col style="width:150px;" />
+                                <col style="width:250px;" />
+                                <col style="width:250px;" />
+                                <col style="width:250px;" />
+                                <col style="width:250px;" />
+                            </colgroup>
+                            <thead >
+                                <tr>
+                                    <th rowspan="2" class="bg-fff">序号</th>
+                                    <th rowspan="2" class="bg-fff">班组</th>
+                                    <th rowspan="2" class="bg-fff">工作负责人</th>
+                                    <th rowspan="2" class="bg-fff">修改时间</th>
+                                    <th colspan="2" class="bg-fff">原内容</th>
+                                    <th colspan="2" class="bg-fff">修改后内容</th>
+                                </tr>
+                                <tr>
+                                    <th>潜在的风险</th>
+                                    <th>防范措施</th>
+                                    <th>潜在的风险</th>
+                                    <th>防范措施</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    var dangers = (IList<DangerEntity>)ViewData["dangers"];
+                                    for (int i = 0; i < dangers.Count(); i++)
+                                    {
+                                        <tr>
+                                            <td style="vertical-align:middle;">
+                                                @Html.Raw(i + 1)
+                                            </td>
+                                            <td style="vertical-align:middle;">@Html.Raw(dangers[i].GroupName)</td>
+                                            <td style="vertical-align:middle;">@Html.Raw(dangers[i].JobUser)</td>
+                                            <td style="vertical-align:middle;">@Html.Raw(dangers[i].OperDate.Value.ToString("yyyy-MM-dd HH:mm"))</td>
+                                            <td style="vertical-align:middle;">@Html.Raw(dangers[i].olddanger)</td>
+                                            <td style="vertical-align:middle;">@Html.Raw(dangers[i].oldmeasure)</td>
+                                            <td style="vertical-align:middle;">@Html.Raw(dangers[i].newdanger)</td>
+                                            <td style="vertical-align:middle;">@Html.Raw(dangers[i].newmeasure)</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>

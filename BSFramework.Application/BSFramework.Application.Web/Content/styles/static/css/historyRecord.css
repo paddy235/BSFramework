@@ -1,0 +1,33 @@
+
+  
+
+	.list .list-item > div .content{
+		color: #fff;
+		font-size: 18px;
+		line-height: 36px;
+	}
+	.list .list-item > div .content h1{
+		font-size: 20px;
+		line-height: 60px;
+	}
+	.list .list-item > div .content p{
+		display: flex;
+		padding: 0 10%;
+		align-items: center;
+		justify-content: space-between;
+	}
+	.list .list-item > div .content i{
+		font-style: normal;
+		color:#cfcfcf;
+	}
+	.list .list-item > div .content span{
+		display: inline-block;
+		width:65px;
+		height: 25px;
+		text-align: center;
+		background: red;
+	  line-height: 25px;
+	}
+	.list .list-item > div .content .checkSpan{
+		background: #3669e1;
+	}

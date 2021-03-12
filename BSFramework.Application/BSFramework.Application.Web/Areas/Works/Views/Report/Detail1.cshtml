@@ -1,0 +1,82 @@
+﻿@model BSFramework.Application.Entity.Activity.ReportEntity
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@section Scripts {
+    <script>
+
+    </script>
+}
+
+<div style="margin-left: 10px; margin-right: 10px;">
+    @*<ul class="nav nav-tabs">
+            <li class="active"><a href="#BaseInfo" data-toggle="tab">基本信息</a></li>
+            <li><a href="#LInfo" data-toggle="tab">违章信息</a></li>
+            <li><a href="#EduInfo" data-toggle="tab">培训信息</a></li>
+        </ul>*@
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right: 30px;">
+            <table class="form">
+                <tr>
+                    <td class="formTitle">提交人</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.ReportUser, new { @class = "form-control", @readonly = "readonly" })
+                        @*<input id="ReportUser" type="text" class="form-control" readonly="readonly" />*@
+                    </td>
+                    <td class="formTitle">总结类型</td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.ReportType, new { @class = "form-control", @readonly = "readonly" })
+                        @*<input id="ReportType" type="text" class="form-control" readonly="readonly" />*@
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">总结时间</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextBox("ReportTime", Model.StartTime.Value.ToString("yyyy-M-d") + " ~ " + Model.EndTime.Value.ToString("yyyy-M-d"), new { @class="form-control" })
+                        @*<div>
+                                <input type="text" class="form-control" id="start" onfocus="WdatePicker();" readonly="readonly">
+                            </div>*@
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">本周工作总结</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.ReportContent, new { @class = "form-control", @readonly = "readonly", style = "height:80px;" })
+                        @*<div>
+                                <textarea class="form-control" style="height:80px;"></textarea>
+                            </div>*@
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">本周已完成工作</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.Tasks, new { @class = "form-control", @readonly = "readonly", style = "height:80px;" })
+                        @*<div>
+                                <textarea class="form-control" style="height:80px;"></textarea>
+                            </div>*@
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">本周未完成工作</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.Undo, new { @class = "form-control", @readonly = "readonly", style = "height:80px;" })
+                        @*<div>
+                                <textarea class="form-control" style="height:80px;"></textarea>
+                            </div>*@
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">下周工作重点</td>
+                    <td class="formValue" colspan="3">
+                        @Html.TextAreaFor(x => x.Plan, new { @class = "form-control", @readonly = "readonly", style = "height:80px;" })
+                        @*<div>
+                                <textarea class="form-control" style="height:80px;"></textarea>
+                            </div>*@
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

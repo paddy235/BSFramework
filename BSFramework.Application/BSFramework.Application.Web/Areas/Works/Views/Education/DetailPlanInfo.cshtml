@@ -1,0 +1,271 @@
+﻿@{
+    ViewBag.Title = "DetailPlanInfo";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<link rel="stylesheet" href="~/Content/styles/static/css/index.css">
+<link rel="stylesheet" href="~/Content/styles/static/css/extend.css">
+<link rel="stylesheet" href="~/Content/styles/static/css/launch-activity.css" />
+<link rel="stylesheet" href="~/Content/styles/static/css/before.css" />
+<script src="~/Content/scripts/validator/Validform.min.js"></script>
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+<script src="~/Content/scripts/nicescroll/nicescroll.min.js"></script>
+<script src="~/Content/scripts/base.js"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/audiojs/audio.min.js")"></script>
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<style>
+    ul li {
+        vertical-align: middle;
+        padding-top: 15px;
+    }
+</style>
+<script>
+    var deptCode = "@ViewBag.deptcode"
+    @*var id = '@ViewBag.planid';*@
+    var id = "1";
+    var verifyhtml = "verify";
+    jQuery(function () {
+
+        //$(window).resize(function (e) {
+        //    window.setTimeout(function () {
+        //        $('#grid').setGridWidth(($('.gridPanel').width()));
+        //        $("#grid").setGridHeight($(window).height() - 140);
+        //    }, 200);
+        //    e.stopPropagation();
+        //});
+        loadgrid();
+        loadgrid1();
+        initcontrol();
+
+    });
+    function initcontrol() {
+        debugger;
+        @*if ('@ViewBag.state' == '审核通过' || '@ViewBag.state' == '审核不通过')
+        {
+            $("#lr-edit").attr('disabled', true);
+            $("#lr-edit").click(function () { });
+        }*@
+    }
+    function loadgrid() {
+        var queryJson = {
+            deptCode: deptCode,
+            verifyhtml:verifyhtml
+        }
+        jQuery('#grid').jqGrid({
+            colModel: [
+                         { label: '主键', name: 'ID', hidden: true },
+                { label: '培训项目', name: 'TrainProject', width: 250, align: 'center', sortable: false },
+                { label: '培训内容', name: 'TrainContent', width: 180, align: 'center', sortable: false },
+                { label: '培训时间', name: 'time', width: 150, align: 'center', sortable: false,  formatter: function (cellvaue, options, rowObject) {
+
+                        if (rowObject.TrainDateMonth) {
+                            return rowObject.TrainDateYear + "年" + rowObject.TrainDateMonth + "月";
+
+                        } else {
+                            return rowObject.TrainDateYear + "年";
+                        }
+                }
+                },
+                { label: '培训对象', name: 'TrainUserName', width: 150, align: 'center', sortable: false },
+                { label: '培训类型', name: 'TrainTypeName', align: 'center', sortable: false },
+                { label: '备注', name: 'Remark', align: 'center', sortable: false }
+            ],
+            postData: queryJson,
+            height: 350,
+            autowidth: true,
+            url: '@Url.Action("GetEduPlanInfo")',
+            datatype: "json",
+
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 10,
+            rownumbers: true,
+            pager: "#gridPager",
+            onSelectRow: function () {
+                selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+                getjqGrid();
+            }
+        });
+
+        //查询事件
+        $("#btn_Search").click(function () {
+            var queryJson = {
+                deptCode: deptCode,
+                edutype: $("#type").val(),
+                month: $("#month").val(),
+                verifyhtml:verifyhtml
+            }
+            jQuery('#grid').jqGrid('setGridParam', {
+                postData: queryJson, page: 1
+            }).trigger('reloadGrid');
+        });
+        $("#btn_SearchAll").click(function () {
+            jQuery('#month').val('0');
+            jQuery('#type').val('0');
+            $('#btn_Search').trigger("click");
+        });
+        //查询回车
+        $('#txt_Keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+    }
+    function loadgrid1() {
+        var queryJson = {
+            keyValue: id
+        }
+        jQuery('#grid1').jqGrid({
+            postData: queryJson,
+            colModel: [
+                {
+                    label: '审核结论', name: 'VerifyResult', width: 150, align: 'center', sortable: false,
+                    formatter: function (cellvaue, options, rowObject) {
+                        var result = "";
+                        if (cellvaue == "0") result = "审核通过";
+                        if (cellvaue == "1") result = "审核不通过";
+                        if (cellvaue=="0"||cellvaue=="1") {
+                            $("#lr-edit").attr('disabled', true);
+                            $("#lr-edit").click(function () { });
+                        }
+                        return result;
+                    }
+                },
+                { label: '审核意见', name: 'VerifyContent', width: 300, align: 'center', sortable: false },
+                { label: '审核人', name: 'VerifyPerson', width: 150, align: 'center', sortable: false },
+                { label: '审核时间', name: 'VerifyDate', width: 150, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d H:i', newformat: 'Y-m-d H:i' } }
+            ],
+            height: 150,
+            autowidth: true,
+            url: '@Url.Action("GetEduPlanVerify")' ,
+            datatype: "json",
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 10,
+            rownumbers: true,
+            pager: "#gridPager1",
+            gridComplete: function () {
+            }
+        });
+    }
+    function btn_evaluate() {
+
+        var keyValue = $("#grid").jqGridRowValue("ID");
+        if (!keyValue) {
+            dialogMsg("请选择需要审核记录！", 0);
+            return false;
+        }
+        dialogOpen({
+            id: "form1",
+            title: '审核',
+            url: '/../@Url.Action("Verify")?id=' + keyValue + "&iframeId=" + jQuery(self.frameElement).attr('id'),
+            width: "600px",
+            height: "320px",
+            callBack: function (iframeId) {
+
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+
+            }
+        });
+    }
+
+    function getjqGrid() {
+        var queryJson = {
+            keyValue: $("#grid").jqGridRowValue("ID")
+        }
+               $("#lr-edit").attr('disabled', false);
+             $("#lr-edit").click(btn_evaluate);
+        jQuery('#grid1').jqGrid('setGridParam', {
+            postData: queryJson, page: 1
+        }).trigger('reloadGrid');
+    }
+    @*function AcceptClick() {
+        $.SaveForm({
+            url: '@Url.Action("SaveFormNew")',
+            param: {},
+            loading: "数据提交中...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        });
+
+    }*@
+
+</script>
+
+<div style="margin-left: 10px; margin-right: 10px;overflow-y:hidden;">
+
+    <div class="tab-content" style="margin-top:8px;">
+        <div class="title-search" style="text-align:center;">
+            <table>
+                <tr>
+                    <td style="padding-left: 15px;">
+                        <label for="type">培训类型</label>
+                        @Html.DropDownList("type", ViewData["edutype"] as IEnumerable<SelectListItem>, new { style = "width:120px" })
+                    </td>
+                    <td style="padding-left: 15px;">
+                        <label for="month">培训时间</label>
+                        <select id="month" style="width:80px;">
+                            <option value="0">全部</option>
+                            <option value="1">1月</option>
+                            <option value="2">2月</option>
+                            <option value="3">3月</option>
+                            <option value="4">4月</option>
+                            <option value="5">5月</option>
+                            <option value="6">6月</option>
+                            <option value="7">7月</option>
+                            <option value="8">8月</option>
+                            <option value="9">9月</option>
+                            <option value="10">10月</option>
+                            <option value="11">11月</option>
+                            <option value="12">12月</option>
+                        </select>
+                    </td>
+                    <td style="padding-left:30px;">
+                        <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                        <a id="btn_SearchAll" class="btn btn-primary">&nbsp;全部</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="BaseInfo" class="tab-pane active" style="padding-right:20px;">
+            <table class="form">
+                <tr>
+                    <td colspan="4">
+                        <div class="pd-20 bg-fff bd-t-e3ebfd">
+                            <div class="f-16 c-4a4e50 lh-36 pd-b-20" style="word-break:break-all;height:auto;min-height:110px;padding-top:10px;padding-left:10px;">
+                                <div class="gridPanel">
+                                    <table id="grid"></table>
+                                    <div id="gridPager"></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <div class="f-18 f-w c-0d0d0d"><a id="lr-edit" class="btn btn-default" onclick="btn_evaluate()"><i class="fa fa-pencil-square-o"></i>&nbsp;审核</a></div>
+                        <div class="pd-20 bg-fff bd-t-e3ebfd">
+
+                            <div class="f-16 c-4a4e50 lh-36 pd-b-20" style="word-break:break-all;height:auto;min-height:110px;padding-left:10px;">
+                                <div class="gridPanel">
+                                    <table id="grid1"></table>
+                                    <div id="gridPager1"></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+
+</div>

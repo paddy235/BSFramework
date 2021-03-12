@@ -1,0 +1,131 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>个性化皮肤设置</title>
+    <!--框架必需start-->
+    <script src="~/Content/scripts/jquery/jquery-1.10.2.min.js"></script>
+    <script src="~/Content/scripts/utils/framework-ui.js"></script>
+    <script src="~/Content/scripts/plugins/cookie/jquery.cookie.js"></script>
+    <style>
+        .skinSelect {
+            float: left;
+            width: 55px;
+            height: 46px;
+            margin-left: 20px;
+            margin-right: 20px;
+            margin-top: 20px;
+            display: block;
+            position: relative;
+            cursor: pointer;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+            box-shadow: 0 0 15px #ccc;
+        }
+    </style>
+    <!--框架必需end-->
+    <script>
+        $(function () {
+
+      
+            $('.skinSelect').click(function () {
+                var index = top.$.cookie('UItheme');
+                var color = $(this).attr('background');
+                top.$.cookie('SettingColor', color, { path: "/", expires: 30 });
+
+                top.$(".layui-layer-title").css('background', color);
+                top.$(".layui-layer-title").css('border-color', color);
+                top.$(".layui-layer-btn .layui-layer-btn0").css('background', color);
+                top.$(".layui-layer-btn .layui-layer-btn0").css('border', color);
+                if (index == "1") //主题风格-经典版  AdminDefault
+                {
+           
+                    top.$("#side").css('background', color);
+                    top.$("#nav .item").css('background', color);
+                    top.$(".sub-nav-wrap").css('background', color);
+                }  
+                else if (index == "2") //主题风格-风尚版  AdminLTE
+                {
+                    top.$(".skin-blue .main-header .logo:hover").css('background', color);
+                    top.$(".skin-blue .main-header .logo").css('background', color);
+                    top.$(".skin-blue .main-header .navbar .sidebar-toggle:hover").css('background', color);
+                    top.$("nav.navbar.navbar-static-top").css('background', color);
+                    top.$(".skin-blue .main-header .navbar").css('background', color);
+                }
+                else if (index == "3")//主题风格-炫动版  AdminWindos
+                {
+                    top.$(".main-header").css('background', color);
+                    top.$(".content-tabs").css('background', color);
+                    top.$(".page-tabs menuTabs").css('background', color);
+                    top.$(".button.roll-nav.roll-left.tabLeft").css('background', color);
+                    top.$(".button.roll-nav.roll-right.tabRight").css('background', color);
+                    top.$("roll-nav roll-right fullscreen").css('background', color);
+                    top.$(".dropdown user-menu").css('background', color);
+                    top.$(".navbar-custom-menu .navbar-nav>li>a").css('background', color);
+                    top.$(".ul.dropdown-menu.pull-right").css('background', color);
+                    top.$(".roll-nav roll-left tabLeft").css('background', color);
+                    top.$(".content-wrapper .content-tabs button").css('background', color);
+                    top.$(".footer").css('background', color);
+                    top.$(".sidebar-menu-left").css('background-color', color);
+                }
+                else if (index == "4")//主题风格-飞扬版  AdminPretty
+                {
+                    top.$(".lea-Head").css('background', color);
+                    top.$(".footer").css('background', color);
+         
+                    top.$(".dropdown-menu > li > a:hover").css('background-color', color);
+                    top.$(".lea-Head ").css('background-color', color);
+                    top.$(".menu .popover-menu .active > .menuItem, .menu .popover-menu .menuItem:hover").css('background-color', color);
+                    top.$(".page-tabs-content> .menuTab.active").css('border-top', color);
+                    top.$(".page-tabs-content> .menuTab.active").css('color', color);
+                    top.$(".lea-tabs .roll-nav:hover").css('color', color);
+                    top.$(".popover-moreMenu > .title").css('color', color);
+                    top.$(".moresubmenu .active > .menuItem, .moresubmenu .menuItem:hover, .moresubmenu > .treeview > a.active, .moresubmenu > .treeview > a:hover").css('background-color', color);
+                    top.$(".message-window-header").css('background', color);
+                    top.$(".layui-layer-iframe").css('border-top-color', color);
+                    top.$(".layui-layer-dialog").css('border-top-color', color);
+                    top.$(".layui-layer-title").css('border-color', color);
+                    top.$(".layui-layer-title").css('background', color);
+                    top.$(".layui-layer-title").css('border-color', color);
+                    top.$(".layui-layer-title").css('background', color);
+                    top.$(".layui-layer-btn .layui-layer-btn0").css('background', color);
+                    top.$(".layui-layer-btn .layui-layer-btn0").css('border-color', color);
+                    top.$(".menuTab").css("border-top-color", color);
+                    top.$(".menuTab").css("color", color);
+                    //top.$(".menu > .treeview.active > a ").css('background-color', color);
+                    //top.$(".page-tabs-content > .menuTab.active").css('color', color);
+                }
+
+            });
+        })
+    </script>
+</head>
+<body style="margin: 1px;">
+    <div class="gridPanel" style="border-top: none;">
+        <div title="间海蓝" class="skinSelect" background="#4A5B79" style="background: #4A5B79"></div>
+        <div  class="skinSelect" background="#4C58A4" style="background: #4C58A4"></div>
+        <div title="亮天蓝" class="skinSelect" background="#1e71b1" style="background: #1e71b1"></div>
+        @*<div title="玫瑰红" class="skinSelect" background="#B1181B" style="background: #B1181B"></div>*@
+        <div title="暗灰蓝" class="skinSelect" background="#34495e" style="background: #34495e"></div>
+        <div title="宝石绿" class="skinSelect" background="#28b779" style="background: #28b779"></div>
+        @*<div title="柠檬黄" class="skinSelect" background="#ffb848" style="background: #ffb848"></div>*@
+        @*<div title="玫瑰紫" class="skinSelect" background="#852b99" style="background: #852b99"></div>*@
+        <div title="古董褐" class="skinSelect" background="#623f18" style="background: #623f18"></div>
+        <div title="皇家黑" class="skinSelect" background="#333438" style="background: #333438"></div>
+        <div title="苹果绿" class="skinSelect" background="#9BBD33" style="background: #9BBD33"></div>
+        <div title="淡紫红" class="skinSelect" background="#C6487E" style="background: #C6487E"></div>
+        @*<div title="间春绿" class="skinSelect" background="#62b600" style="background: #62b600"></div>*@
+        <div title="暗桔黄" class="skinSelect" background="#DC6601" style="background: #DC6601"></div>
+        @*<div title="间暗蓝" class="skinSelect" background="#5D83A3" style="background: #5D83A3"></div>*@
+        <div title="咖啡黄" class="skinSelect" background="#B99A56" style="background: #B99A56"></div>
+        @*<div title="海军蓝" class="skinSelect" background="#4C88C0" style="background: #4C88C0"></div>*@
+        @*<div title="热粉红" class="skinSelect" background="#F2664A" style="background: #F2664A"></div>*@
+    </div>
+</body>
+</html>

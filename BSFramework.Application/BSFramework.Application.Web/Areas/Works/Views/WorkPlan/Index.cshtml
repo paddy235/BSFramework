@@ -1,0 +1,273 @@
+﻿
+@{
+    ViewBag.Title = "巡检表管理";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<script src="@Url.Content("~/Content/scripts/plugins/datepicker/WdatePicker.js")"></script>
+<script src="~/Content/scripts/plugins/AdminPrettyDesktopFirst/js/LoadData.js"></script>
+<script>
+
+    var _parentId = "";
+    var _isOrg = "";
+    var userId = top.currUserId; //当前用户Id
+    var deptCode = '@ViewBag.code';//当前用户所属部门Code
+    var orgCode = top.currUserOrgCode;//当前用户所属机构Code
+    var deptid = '@ViewBag.deptid';
+    var departmentId = "0";
+    var userid = '@ViewBag.userid';
+    $(function () {
+        InitialPage();
+
+        GetGrid();
+
+    });
+
+    //初始化页面
+    function InitialPage() {
+        $('#layout').layout({
+            west: {
+                size: 300
+            },
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+
+                $("#gridTable").setGridHeight($(window).height() - 170);
+            }, 200);
+            e.stopPropagation();
+        });
+        $("#departments").height($(window).height() - 50);
+    }
+
+    //<a style='text-decoration:none;' href=\"javascript:delnew('" + rowObject.ID + "')\" title=\"\">删除</a>
+    //加载表格
+    function GetGrid() {
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            url: "../../Works/WorkPlan/GetPlanJson",
+            datatype: "json",
+            height: $(window).height() - 170,
+            autowidth: true,
+            colModel: [
+               { label: '主键', name: 'id', hidden: true },
+
+                {
+                    label: '操作', name: '', index: '', width: 180, align: 'center', sortable: false,
+                    formatter: function (cellvaue, options, rowObject) {
+                        var html = "<a style='text-decoration:none;' href=\"javascript:ndetail('" + rowObject.ID + "')\" title=\"点击查看详情\">查看</a>";
+                        if (rowObject.CreateUserId == userid)
+                        {
+                            html += "<a style='text-decoration:none;' href=\"javascript:edit('" + rowObject.ID + "')\" title=\"编辑\">编辑</a><a style='text-decoration:none;' href=\"javascript:delnew('" + rowObject.ID + "')\" title=\"删除\">删除</a>";
+                        }
+                        return html;
+                    }
+                },
+                {
+                    label: '班组', name: 'UseDeptName', index: 'UseDeptName', width: 400, align: 'center', sortable: false
+                },
+                {
+                    label: '计划类型', name: 'PlanType', index: 'PlanType', width: 250, align: 'center', sortable: false
+                },
+                {
+                    label: '计划时间', name: 'date', index: 'date', width: 300, align: 'center', sortable: false
+                },
+                {
+                    label: '创建人', name: 'CreateUser', index: 'CreateUser', width: 180, align: 'center', sortable: false
+                },
+                {
+                    label: '创建时间', name: 'CreateDate', index: 'CreateDate', width: 200, align: 'center', formatter: 'date', sortable: false, formatoptions: { srcformat: 'Y-m-d H:m:s', newformat: 'Y-m-d H:m:s' }
+                },
+                {
+                    label: '完成情况', name: 'IsFinished', index: 'IsFinished', width: 160, align: 'center', sortable: false
+                },
+            ],
+            viewrecords: true,
+            rowNum: 30,
+            // rowList: [30, 50, 100],
+            pager: "#gridPager",
+            sortname: 'CreateDate',
+            sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            shrinkToFit: true,
+            forceFit: true,
+            onSelectRow: function () {
+                selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            },
+            gridComplete: function () {
+                @if (!BSFramework.Application.Code.OperatorProvider.Provider.Current().IsSystem) {
+                    @Html.Raw("AuthiruzeBtn($('.toolbar'), $('#gridTable'));");//操作按钮权限控制
+                }
+            },
+            loadError: function (xhr, status, error) {
+                //top.location.href = "../../Login/Index?Login_Error=1";
+            }
+
+        });
+        //$gridTable.authorizeColModel()
+        //查询条件
+        $("#queryCondition .dropdown-menu li").click(function () {
+            var text = $(this).find('a').html();
+            var value = $(this).find('a').attr('data-value');
+            $("#queryCondition .dropdown-text").html(text).attr('data-value', value)
+        });
+        //查询事件
+        $("#btn_Search").click(function () {
+            var from = $('#from').val();
+            var to = $('#to').val();
+            var queryJson = {
+                //name: $("#txt_Keyword").val(),
+                from: from,
+                to: to,
+                plantype: $("#type").val(),
+                code: deptCode
+            }
+            $gridTable.jqGrid('setGridParam', {
+                postData: queryJson, page: 1
+            }).trigger('reloadGrid');
+        });
+        $("#btn_SearchAll").click(function () {
+            $('#from').val('');
+            $('#to').val('');
+            jQuery('#type').val('全部');
+            //$("#txt_Keyword").val('');
+            $('#btn_Search').trigger("click");
+        });
+        //查询回车
+        $('#txt_Keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+
+    }
+    function onNodeSelected(item) {
+        console.log(item)
+        deptid = item.id;
+        deptCode = item.Code;
+
+        $('#btn_Search').trigger("click");
+    }
+
+    function fn$refresh() {
+        $('#gridTable').jqGrid('setGridParam', {
+            postData: queryJson, page: 1
+        }).trigger('reloadGrid');
+    }
+    //新增
+    function add() {
+        var height = "800px";
+        dialogOpen({
+            id: "Form",
+            title: '新增',
+            url: '/../@Url.Action("Form")',
+            width: "1000px",
+            height: height,
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+
+    };
+    function ndetail(id) {
+        url = '/../@Url.Action("Detail")/' + id
+        dialogOpen({
+            id: "Detail",
+            title: '查看',
+            url: url,
+            width: "1000px",
+            height: "650px",
+            btn: null
+            //callBack: function (iframeId) {
+            //    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            //}
+        });
+    }
+    function edit(id) {
+        url = '/../@Url.Action("Form")/' + id
+        dialogOpen({
+            id: "Edit",
+            title: '编辑',
+            url: url,
+            width: "1000px",
+            height: "650px",
+            //btn: null,
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+    function delnew(id) {
+
+        $.RemoveForm({
+            url: '/../@Url.Action("DeleteOne")/',
+            param: { keyValue: id },
+            success: function (data) {
+                $("#gridTable").resetSelection();
+                $("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+
+</script>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                <div class="col-md-10">
+                    组织机构
+                </div>
+                <div class="col-md-2 text-right" style="padding-right:8px;">
+                    <i class="fa fa-arrow-left" onclick="setBar(this)" style="cursor:pointer;" title="展开/收起"></i>
+                </div>
+            </div>
+            @Html.Partial("~/Areas/BaseManage/Views/Department/Tree.cshtml")
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title">工作计划</div>
+            <div class="titlePanel">
+                <div class="title-search form-inline">
+                    <div class="form-group">
+                        <label for="team"> 选择日期</label>
+                        <input id="from" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker();" style="width: 150px;" />-
+                        <input id="to" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker();" style="width: 150px;" />
+                    </div>
+                    <div class="form-group">
+                        <label for="team"> 计划类型</label>
+                        <select id="type">
+                            <option value="全部">全部</option>
+                            <option value="月工作计划">月工作计划</option>
+                            <option value="周工作计划">周工作计划</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                        <a id="btn_SearchAll" class="btn btn-primary">&nbsp;全部</a>
+                    </div>
+                </div>
+                <div class="toolbar">
+                    <div class="btn-group">
+                        <a id="replace" class="btn btn-default" onclick="reload();"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+                        <a id="add" class="btn btn-default" onclick="add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+                    </div>
+                    <div class="btn-group">
+                        <a id="dafen" code="dafen" class="btn btn-default" onclick="dafen()"><i class="fa fa-check"></i>&nbsp;考评打分</a>
+                    </div>
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="gridTable"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>
+

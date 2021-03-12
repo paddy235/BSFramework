@@ -1,0 +1,113 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<style>
+    a.linkbutton {
+        color: blue;
+        cursor: pointer;
+        text-decoration: underline;
+    }
+
+    a.disabled, a.disabled:hover {
+        color: gray;
+        cursor: none;
+    }
+</style>
+<script>
+    jQuery(function () {
+        jQuery('.table').on('click', 'i', function (e) {
+            if (jQuery(e.target).parent().data('value') == true) {
+                jQuery(e.target).parent().data('value', false);
+                jQuery(e.target).removeClass('fa-toggle-on');
+                jQuery(e.target).addClass('fa-toggle-off');
+            } else {
+                jQuery(e.target).parent().data('value', true);
+                jQuery(e.target).removeClass('fa-toggle-off');
+                jQuery(e.target).addClass('fa-toggle-on');
+            }
+        });
+
+        jQuery.getJSON('@Url.Action("GetDoshboardSetting")', function (data) {
+            jQuery.each(data, function (i, o) {
+                jQuery('.table tbody').append('<tr data-url="' + o.Url + '" data-PersonDoshboardId="' + o.PersonDoshboardId + '" data-SettingId="' + o.SettingId + '"><td data-value="' + o.Name + '">' + o.Name + '</td><td data-value="' + o.Enabled + '"><i style="color:#449d44;font-size:16px;" class="fa fa fa-toggle-' + (o.Enabled ? 'on' : 'off') + '"></i></td><td><a class="linkbutton moveup">上移</a> <a class="linkbutton movedown">下移</a></td></tr>');
+            });
+
+            ensureStatus();
+        });
+
+        jQuery('#dataGrid').on('click', '.moveup', moveUp);
+        jQuery('#dataGrid').on('click', '.movedown', moveDown);
+
+
+        ensureStatus();
+    });
+
+    function AcceptClick() {
+        var data = [];
+        jQuery('#dataGrid tbody tr').each(function (i) {
+            var el = jQuery(this);
+            var item = {
+                PersonDoshboardId: el.data('persondoshboardid') || '',
+                Name: el.find('td:first').data('value'),
+                Enabled: el.find('td:eq(1)').data('value'),
+                SettingId: el.data('settingid') || '',
+                Seq: i,
+                Url : el.data('url')
+            };
+            data.push(item);
+        });
+
+        $.SaveForm({
+            url: '@Url.Action("PostSettings")',
+            param: data,
+            contentType : "application/json",
+            loading: "正在保存数据...",
+            success: function () {
+                //$.currentIframe().$("#gridTable").resetSelection();
+                //$.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+
+    function moveUp(e) {
+        if (jQuery(e.target).hasClass('disabled'))
+            return;
+
+        jQuery(e.target).parent().parent().after(jQuery(e.target).parent().parent().prev());
+        ensureStatus()
+    }
+
+    function moveDown(e) {
+        if (jQuery(e.target).hasClass('disabled'))
+            return;
+
+        jQuery(e.target).parent().parent().before(jQuery(e.target).parent().parent().next());
+        ensureStatus();
+    }
+
+    function ensureStatus() {
+        jQuery('#dataGrid a').removeClass('disabled');
+
+        jQuery('#dataGrid > tbody > tr:first > td > .moveup').toggleClass('disabled');
+        jQuery('#dataGrid > tbody > tr:last > td > .movedown').toggleClass('disabled');
+    }
+
+</script>
+<table id="dataGrid" class="table table-striped table-bordered table-hover" style="font-size:15px;text-align:left;">
+    <thead>
+        <tr>
+            <th>
+                板块内容
+            </th>
+            <th style="width:80px;">
+                是否展示
+            </th>
+            <th style="width:160px;">
+                排序
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>

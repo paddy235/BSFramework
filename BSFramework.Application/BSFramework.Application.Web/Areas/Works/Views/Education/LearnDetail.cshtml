@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "LearnDetail";
+    Layout = "~/Views/Shared/_FlowIndex.cshtml";
+}
+
+
+<div style="margin-left: 10px; margin-right: 10px;overflow-y:hidden;">
+    <table style="width:100%; text-align:center;margin-top:20px;" class="table table-bordered">
+        <colgroup>
+            <col style="width:150px;" />
+            <col />
+            <col style="width:200px;" />
+            <col style="width:200px;" />
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="bg-fff">序号</th>
+                <th class="bg-fff">姓名</th>
+                <th class="bg-fff">岗位</th>
+                <th class="bg-fff">个人总学时/小时</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var measures = (IList<BSFramework.Application.Entity.PeopleManage.PeopleEntity>)ViewData["learns"];
+                for (int i = 0; i < measures.Count(); i++)
+                {
+                    <tr>
+                        <td style="vertical-align:middle;">
+                            @Html.Raw(i + 1)
+                        </td>
+                        <td style="vertical-align:middle;">@Html.Raw(measures[i].Name)</td>
+                        <td style="vertical-align:middle;">@Html.Raw(measures[i].Quarters)</td>
+                        <td style="vertical-align:middle;">@Html.Raw(measures[i].Scores)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+</div>

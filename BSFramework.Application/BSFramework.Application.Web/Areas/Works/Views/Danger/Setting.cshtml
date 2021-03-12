@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "Detail2";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<link rel="stylesheet" href="~/Content/styles/static/css/index.css">
+<link rel="stylesheet" href="~/Content/styles/static/css/extend.css">
+<link rel="stylesheet" href="~/Content/styles/static/css/launch-activity.css" />
+<link rel="stylesheet" href="~/Content/styles/static/css/before.css" />
+<script src="~/Content/scripts/validator/Validform.min.js"></script>
+<script src="~/Content/scripts/nicescroll/nicescroll.min.js"></script>
+<script src="~/Content/scripts/base.js"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/audiojs/audio.min.js")"></script>
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<script src="@Url.Content("~/Content/scripts/jquery.cxscroll.min.js")"></script>
+<link href="~/Content/styles/layout.css" rel="stylesheet" />
+<link href="~/content/scripts/plugins/webuploader/webuploader.css" rel="stylesheet" />
+<link href="~/content/scripts/plugins/webuploader/webuploader-demo.css" rel="stylesheet" />
+<script type="text/javascript" src="~/content/scripts/business/common.js"></script>
+<script type="text/javascript" src="~/content/scripts/plugins/webuploader/webuploader.min.js"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+
+<script>
+    function AcceptClick() {
+        var json = jQuery('#form1').serializeJSON();
+
+        $.SaveForm({
+            url: '@Url.Action("SaveSetting")',
+            param: json,
+            loading: "数据提交中...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        });
+    }
+</script>
+<div style="padding:20px 10px;overflow-y:hidden;">
+    <label style="font-size:14px; margin:10px;">危险预知训练关联工作任务状态</label><input id="yes" name="ItemValue" type="radio" value="是" @(ViewBag.setting == "是" ? "checked" : string.Empty) /><label style="font-size:14px; margin-left:5px; margin-right:10px;" for="yes">是</label><input id="no" name="ItemValue" type="radio" value="否" @(ViewBag.setting != "是" ? "checked" : string.Empty) /><label style="font-size:14px; margin-left:5px; margin-right:10px;" for="no">否</label>
+</div>

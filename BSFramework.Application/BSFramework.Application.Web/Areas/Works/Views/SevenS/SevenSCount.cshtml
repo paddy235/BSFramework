@@ -1,0 +1,178 @@
+﻿@{
+    ViewBag.Title = "SevenSCount";
+    Layout = "~/Views/Shared/_FlowIndex.cshtml";
+}
+
+<script src="~/Content/scripts/jquery/jquery-1.10.2.min.js"></script>
+<script src="~/Content/scripts/plugins/echarts/echarts.min.js"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/datepicker/WdatePicker.js")"></script>
+<script>
+    $(function () {
+        var from = $("#from").val();
+        var to = $("#to").val();
+
+        $.ajax({
+            url: '@Url.Action("GetCount", "SevenS", new { area = "Works" })',
+            type: 'post',
+            data: {from:from,to:to},
+            success: function (data) {
+                var rows = data.rows;
+                bindChart(rows);
+            }
+        });
+
+    });
+    function select()
+    {
+        var from = $("#from").val();
+        var to = $("#to").val();
+        $.ajax({
+            url: '@Url.Action("GetCount", "SevenS", new { area = "Works" })',
+            type: 'post',
+            data: { from: from, to: to },
+            success: function (data) {
+                var rows = data.rows;
+                bindChart(rows);
+            }
+        });
+    }
+    function selectall() {
+        $("#from").val('');
+        $("#to").val('');
+        var from = $("#from").val();
+        var to = $("#to").val();
+        $.ajax({
+            url: '@Url.Action("GetCount", "SevenS", new { area = "Works" })',
+            type: 'post',
+            data: { from: from, to: to },
+            success: function (data) {
+                var rows = data.rows;
+                bindChart(rows);
+            }
+        });
+    }
+
+    function bindChart(rows) {
+        var array = eval('(' + rows + ')');
+        var name = new Array();
+        var count = new Array();
+        for (var i in array) {
+            name.push(array[i].seven);
+            count.push(array[i].value);
+        }
+
+        var n = echarts.init(document.getElementById("mainChart")), t;
+
+        n.setOption(
+            {
+                backgroundColor: "#fff",
+                title: {
+                    text: "7S创新管理统计图",
+                    left: 20,
+                    top: 'top',
+                    textStyle: {
+                        color: "#666666",
+                        fontSize: 24,
+                        fontWeight: 100,
+                        fontFamily: "微软雅黑"
+                    },
+                    subtext: "",
+                    subtextStyle: {
+                        color: "#878787", fontSize: 14, fontWeight: 100, fontFamily: "微软雅黑"
+                    },
+                    itemGap: 20
+                },
+                tooltip: {
+                    trigger: "axis",
+                    axisPointer: {
+                        type: "shadow",
+                        textStyle: { color: "#fff" }
+                    }
+                },
+                //tooltip:
+                //    {
+                //        formatter: function (a) {
+                //            return (a['seriesName'] + '</br>' + a['name'] + ':' + a['value']);
+                //        }
+                //    },
+                legend: {
+                    //data: ["违章次数"],
+                    //x: 15, y: 45, textStyle: { color: "#878787" }
+                },
+                grid: {
+                    borderWidth: 0, top: 100, left: "2%", right: "1%", bottom: "12%", containLabel: !0
+                },
+
+                xAxis: [{
+                    type: "category",
+                    data: name,
+                    splitLine: !1, axisTick: !1,
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 40,
+                        textStyle: {}
+                    }
+                }],
+                yAxis: [{
+                    type: "value",
+                    splitLine: !1, axisTick: !1,
+                    splitNumber: 1
+                }],
+                series: [
+                     {
+                         name: '7S创新管理',
+                         type: 'bar',
+                         stack: 'sum',
+                         barWidth: 20,
+                         itemStyle: {
+                             normal: {
+                                 label: {
+                                     show: true,
+                                 },
+                                 color: 'RGB(100,149,237)'
+                             }
+                         },
+                         data: count
+
+                     }
+                ]
+            });
+    }
+
+</script>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;overflow-y:hidden;">
+
+    <div class="ui-layout-center" style="padding-left:5px;">
+        <div class="center-Panel">
+            <div class="titlePanel">
+                <div class="title-search">
+                    <table>
+                        <tr>
+                            <td style="padding-left: 15px; ">
+                                选择日期
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                <input id="from" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker();" style="width: 150px;" />
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                --
+                            </td>
+                            <td style="padding-left: 5px; ">
+                                <input id="to" type="text" class="form-control" readonly="readonly" onfocus="WdatePicker();" style="width: 150px;" />
+                            </td>
+                            <td style="padding-left: 5px;">
+                                <a id="btn_Search" class="btn btn-primary" onclick="select();"><i class="fa fa-search"></i>&nbsp;查询</a>
+                                <a id="btn_SearchAll" class="btn btn-primary" onclick="selectall();">&nbsp;全部</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="gridPanel">
+                <div class="content" id="mainChart" style="width:100%;height:750px;margin-top:50px;"></div>
+            </div>
+
+
+        </div>
+    </div>
+</div>

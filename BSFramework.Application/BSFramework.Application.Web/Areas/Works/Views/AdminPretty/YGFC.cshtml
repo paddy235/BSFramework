@@ -1,0 +1,76 @@
+﻿@{ Layout = null;
+                var photos = (IList<BSFramework.Application.Entity.PublicInfoManage.FileInfoEntity>)ViewData["Photos"]; }
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/swiper.min.css")" />
+<script src="~/Content/scripts/jquery/jquery-1.10.2.min.js"></script>
+<style>
+    .swiper-container {
+        width: 100%;
+        height: 200px;
+    }
+
+    .swiper-slide {
+        text-align: center;
+        font-size: 18px;
+        background: #fff;
+        height: 180px;
+        width: 300px;
+        /* Center slide text vertically */
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+    }
+
+        .swiper-slide img {
+            width: 250px;
+            height: 170px;
+        }
+</style>
+<div class="swiper-container">
+    <div class="swiper-wrapper">
+        @if (photos != null)
+        {
+            for (int i = 0; i < photos.Count(); i++)
+            {
+<div class="swiper-slide">
+    <img src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = photos[i].FileId, area = "PublicInfoManage" })" alt="">
+</div>}
+}
+    </div>
+    <div class="swiper-pagination" style="display:none;"></div>
+
+    <div class="swiper-button-next" style="display:none;"></div>
+    <div class="swiper-button-prev" style="display:none;"></div>
+</div>
+<script src="@Url.Content("~/Content/scripts/swiper.min.js")"></script>
+<script>
+    var swiper = new Swiper('.swiper-container', {
+        slidesPerView: 5,
+        spaceBetween: 50,
+        slidesPerGroup: 5,
+        loop: true,
+        loopFillGroupWithBlank: true,
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+    });
+    function next() {
+        $(".swiper-button-next").click();
+    }
+    $(function () {
+        setInterval(next, 5000);
+    });
+</script>

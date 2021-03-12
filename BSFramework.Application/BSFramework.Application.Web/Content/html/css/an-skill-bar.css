@@ -1,0 +1,58 @@
+@charset "utf-8";
+.skillbar{
+    width: 80%;
+    margin: 10px 0;
+    position: relative;
+    display: block;
+    overflow: hidden;
+    height: 12px;
+    background-color: #fff;
+    border-radius: 6px;
+}
+.perDiv{
+    position: relative;
+}
+.timeSpan{
+    position: absolute;
+    right: 0;
+    top: -8px;
+}
+.skillbar.acTime{
+    background-color: rgba(50, 150, 212, .16)
+}
+.skillbar.acTime .title{
+    background-color: #c96300;
+}
+.skillbar.acTime .filled{
+    background-color: #3296d4;
+}
+.skillbar .title{
+    background-color: rgba(0, 0, 0, .6);
+    height: 30px;
+    width: 85px;
+    text-align: center;
+    left: 0;
+    color: #f0f0f0;
+    border-radius: 5px 0 0 5px;
+}
+.skillbar .percent,.skillbar .title{
+    padding: 5px;
+    position: absolute;
+    top: 0;
+    z-index: 9;
+}
+.skillbar .percent{
+    right: 0;
+    color: #000;
+    font-weight: 700;
+}
+.skillbar .filled{
+    z-index: 8;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 80, 80, .3);
+    height: 100%;
+    width: 20px;
+    border-radius: 6px;
+}

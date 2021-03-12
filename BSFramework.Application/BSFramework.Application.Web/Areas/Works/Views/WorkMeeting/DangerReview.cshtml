@@ -1,0 +1,271 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutEdit.cshtml";
+}
+<link rel="stylesheet" href="~/Content/styles/static/css/extend.css">
+<style>
+    html, body, .container {
+        height: 100%;
+        width: 100%;
+    }
+
+    .container {
+        margin: 0px;
+    }
+
+    .dangers, .measures {
+        overflow-y: auto;
+        margin-top: 10px;
+        padding-left: 0px;
+    }
+
+    ul li {
+        height: 58px;
+        background-color: #ECF0FC;
+        border: 1px solid white;
+        font-size: 16px;
+        line-height: 18px;
+        display: table;
+        padding: 5px 10px;
+        width: 100%;
+    }
+
+        ul li.selected {
+            color: white;
+            background-color: #3668E1;
+        }
+
+    li .list-content {
+        display: table-cell;
+        vertical-align: middle;
+        font-weight: normal;
+    }
+
+    ul.dangers li .list-content {
+        width: 340px;
+    }
+
+    ul.measures li .list-content {
+        width: 780px;
+    }
+
+    li .list-total, li .list-checkbox {
+        padding-left: 10px;
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    .list-total div {
+        color: white;
+        background-color: #3669E0;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        text-align: center;
+        line-height: 20px;
+    }
+
+    ul li.selected .list-total div {
+        color: #3669E0;
+        background-color: white;
+    }
+</style>
+@section scripts{
+    <script>
+        var dangers;
+        var selectedDangers = [];
+
+        //滚动条
+        jQuery('.dangers,.measures').niceScroll();
+
+        jQuery(function () {
+            //设置高度
+            jQuery('#dangers,#measures').height(jQuery(window).height() - jQuery('#dangers').prev().height() - 30);
+
+            jQuery('#dangers').on('click', 'li', function () {
+                jQuery('#dangers li').removeClass('selected');
+
+                var id = jQuery(this).addClass('selected').data('id');
+                var danger = jQuery.grep(dangers, function (o, i) {
+                    return o.ID == id;
+                })[0];
+                var selectedDanger = jQuery.grep(selectedDangers, function (o, i) {
+                    return o.DangerousId == id;
+                })[0];
+
+                renderMeasures(danger, selectedDanger);
+            });
+
+            jQuery('#measures').on('change', 'li input:checkbox', function () {
+                ensureMeasures();
+            });
+
+            jQuery('#checkAll').click(function () {
+                jQuery('#measures li input:checkbox').prop('checked', jQuery(this).is(':checked'));
+                ensureMeasures();
+            });
+
+            loadSelecedDangers();
+
+            loadData();
+        });
+
+        //转入危险因素和防范措施
+        function loadData(id) {
+            jQuery.get('@Url.Action("List", "RiskFactorSet", new { area = "SetManage" })', { '_d': new Date().getTime() }, function (data) {
+                dangers = data;
+                reanderDangers(id);
+            }, 'json');
+        }
+
+        //载入已选择的危险因素和防范措施
+        function loadSelecedDangers() {
+            var oldDangers = parent.getJobDangers();
+            jQuery.each(oldDangers, function (i, o) {
+                selectedDangers.push(jQuery.extend(true, {}, o));
+            });
+        }
+
+        function reanderDangers(id) {
+            jQuery('#dangers').empty();
+            jQuery('#measures').empty();
+
+            jQuery.each(dangers, function (i, o) {
+                var selectedDanger = jQuery.grep(selectedDangers, function (p, j) {
+                    return p.DangerousId == o.ID;
+                });
+                renderDanger(this, selectedDanger.length ? selectedDanger[0].MeasureList.length : 0);
+            });
+
+            if (!!id) {
+                jQuery('#dangers li[data-id="' + id + '"]').click();
+            }
+        }
+
+        function renderDanger(danger, count) {
+            jQuery('#dangers').append('<li data-id="' + danger.ID + '"><label class="list-content">' + danger.Content + '</label><div class="list-total">' + (count ? '<div>' + count + '</div > ' : '') + '</div ></li > ');
+        }
+
+        function renderMeasures(danger, selectedDanger) {
+            jQuery('#measures').empty();
+            jQuery('#checkAll').prop('checked', false);
+            jQuery('#measures').prev().find('button').removeAttr('disabled');
+
+            jQuery.each(danger.measures, function (i, o) {
+                var isChecked = false;
+                if (selectedDanger && selectedDanger.MeasureList) {
+                    var isChecked = (jQuery.grep(selectedDanger.MeasureList, function (p, j) {
+                        return p.MeasureId == o.ID;
+                    })).length > 0;
+                }
+                renderMeasure(this, isChecked, i);
+            });
+        }
+
+        function renderMeasure(measure, checked, idx) {
+            jQuery('#measures').append('<li data-id="' + measure.ID + '"><label class="list-content" for="checkbox-' + idx + '">' + measure.Content + '</label><div class="list-checkbox"><input type="checkbox" id="checkbox-' + idx + '" name="checkbox-' + idx + '" ' + (checked ? 'checked="checked"' : '') + ' /></div></li>');
+        }
+
+        function ensureMeasures() {
+            jQuery('#dangers li.selected .list-total').empty();
+            var dangerDom = jQuery('#dangers li.selected');
+
+            var checkedObjs = jQuery('#measures li input:checked');
+            if (checkedObjs.length)
+                jQuery('#dangers li.selected .list-total').append('<div>' + checkedObjs.length + '</div>');
+            else {
+                if (selectedDangers.length) {
+                    selectedDangers = jQuery.grep(selectedDangers, function (o) {
+                        return o.DangerousId != dangerDom.data('id');
+                    });
+                }
+                return;
+            }
+
+            var selectedDanger = { DangerousId: dangerDom.data('id'), Content: dangerDom.find('label').text(), MeasureList: [] };
+
+            checkedObjs.each(function (i) {
+                selectedDanger.MeasureList.push({ MeasureId: jQuery(this).parent().parent().data('id'), Content: jQuery(this).parent().prev().text() });
+            });
+
+            var exists = false;
+            for (var i = 0; i < selectedDangers.length; i++) {
+                if (selectedDangers[i].DangerousId == selectedDanger.DangerousId) {
+                    selectedDangers[i] = selectedDanger;
+                    exists = true;
+                    break;
+                }
+            }
+            if (!exists)
+                selectedDangers.push(selectedDanger);
+        }
+
+        function fn$ok() {
+            return selectedDangers;
+        }
+
+        function fn$create() {
+            top.layer.open({
+                type: 2,
+                title: '新增危险因素和防范措施',
+                shade: 0.6,
+                area: ['500px', '800px'],
+                content: '@Url.Action("Create", "RiskFactorSet", new { area = "SetManage" })',
+                btn: ['确定', '取消'],
+                yes: function (idx, layero) {
+                    var iframeWin = top.window[layero.find('iframe')[0]['name']];
+                    iframeWin.fn$save();
+                },
+                btn2: function (idx, layero) {
+                    top.layer.close(idx);
+                }
+            });
+        }
+
+        function editCallback(id) {
+            loadData(id);
+        }
+
+        function fn$edit() {
+            var id = jQuery('li.selected').data('id')
+            top.layer.open({
+                type: 2,
+                title: '修改危险因素和防范措施',
+                shade: 0.6,
+                area: ['500px', '800px'],
+                content: '@Url.Action("Edit", "RiskFactorSet", new { area = "SetManage" })/' + id,
+                btn: ['确定', '取消'],
+                yes: function (idx, layero) {
+                    var iframeWin = top.window[layero.find('iframe')[0]['name']];
+                    iframeWin.fn$save();
+                },
+                btn2: function (idx, layero) {
+                    top.layer.close(idx);
+                }
+            });
+        }
+    </script>
+}
+<div class="row" style="height:100%;">
+    <div class="col-md-4" style="height:100%;padding-top:10px;">
+        <div>
+            <span style="font-size:1.6em;font-weight:bold;vertical-align:middle;">危险因素</span>
+            <button class="btn btn-primary btn-sm" style="float:right;" onclick="fn$create()">新增</button>
+        </div>
+        <ul class="dangers" id="dangers">
+        </ul>
+    </div>
+    <div class="col-md-8" style="height:100%;padding-top:10px;padding-left:0px;">
+        <div class="row">
+            <div class="col-md-9">
+                <span style="font-size:1.6em;font-weight:bold;vertical-align:middle;">防范措施</span>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-primary btn-sm" style="margin-left:50px;" onclick="fn$edit()" disabled="disabled">修改</button>
+                <label for="checkAll" style="font-size:16px;margin-bottom:0px;margin-left:50px;margin-left:13px;">全选</label>
+                <input type="checkbox" id="checkAll" name="checkAll" />
+            </div>
+        </div>
+        <ul class="measures" id="measures">
+        </ul>
+    </div>
+</div>

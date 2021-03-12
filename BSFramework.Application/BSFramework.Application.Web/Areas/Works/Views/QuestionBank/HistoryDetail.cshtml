@@ -1,0 +1,83 @@
+﻿@model BSFramework.Application.Entity.QuestionManage.HistoryQuestionEntity
+
+@{
+    ViewBag.Title = "HistoryDetail";
+    Layout = "~/Views/Shared/_OrderForm.cshtml";
+}
+
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+<script>
+</script>
+
+<div style="margin-left: 10px; margin-top: 20px; margin-right: 30px;">
+    <table id="from1" class="form">
+        <tr>
+            <td class="formValue" style="font-size:20px;font-weight:bold">@Model.topictype</td>
+
+        </tr>
+        <tr>
+            <td class="formValue" style="font-size:15px;">@Model.topictitle</td>
+
+        </tr>
+        @{
+            var answer = "";
+            if (Model.topictype != "判断题")
+            {
+                foreach (var item in Model.TheAnswer)
+                {
+
+                    <tr>
+                        <td class="formValue" style="font-size:15px">@item.answer . @item.description</td>
+
+                    </tr>
+                    if (item.istrue)
+                    {
+                        answer += item.answer + " ";
+                    }
+                }
+            }
+            else
+            {
+                if (Model.istrue)
+                {
+                    answer = "正确";
+                }
+                else
+                {
+                    answer = "错误";
+                }
+            }
+
+
+        }
+        <tr>
+            <td class="formValue" style="font-size:20px;font-weight:bold">答案：@answer</td>
+        </tr>
+        <tr>
+            <td class="formValue" style="font-size:20px;font-weight:bold">试题解析：</td>
+        </tr>
+        <tr>
+            <td class="formValue" style="font-size:15px;">@Model.description</td>
+        </tr>
+        <tr>
+            <td class="formValue" style="font-size:20px;font-weight:bold">关联材料：</td>
+        </tr>
+        @{
+            if (Model.Files != null)
+            {
+
+
+                foreach (var item in Model.Files)
+                {
+
+                    <tr>
+                        <td class="formValue" style="font-size:15px">@item.FileName</td>
+
+                    </tr>
+
+                }
+            }
+        }
+    </table>
+
+</div>

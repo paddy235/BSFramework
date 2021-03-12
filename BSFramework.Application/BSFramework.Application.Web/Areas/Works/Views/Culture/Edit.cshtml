@@ -1,0 +1,169 @@
+﻿@model BSFramework.Entity.WorkMeeting.CultureTemplateEntity
+
+@{
+    ViewBag.Title = "考评标准类别";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<script src="~/Content/scripts/business/Common.js" type="text/javascript"></script>
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+@System.Web.Optimization.Styles.Render("~/Content/scripts/plugins/jqgrid/css")
+@System.Web.Optimization.Scripts.Render("~/Content/scripts/plugins/jqgrid/js")
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.url.js")"></script>
+
+<script>
+    var selectedRowIndex, data, eid;
+
+    function fn$select() {
+        var select = 'single';
+        showModa('/..@Url.Action("DeptSelect", "Department", new { area = "BaseManage" })', '选择部门', '300px', '600px', { deptid:'@ViewBag.deptid',select: select, category: '省级,厂级,部门,班组' }, fn$selectover);
+    }
+
+    function fn$selectover(nodes) {
+        if (nodes) {
+            if (jQuery.type(nodes) == 'array') {
+                var str = '';
+                jQuery.each(nodes, function (i, o) {
+                    str += o.text + '|'
+                });
+                jQuery('#GroupId').val(str.replace(/\|$/, ''));
+            } else {
+                jQuery('#GroupName').val(nodes.text);
+                jQuery('#GroupId').val(nodes.value);
+            }
+        }
+    }
+
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+
+        var json = jQuery('#form1').serializeJSON();
+
+        jQuery.each(data, function (i, o) {
+            json['Contents[' + i + '].CultureTemplateItemId'] = o.CultureTemplateItemId;
+            json['Contents[' + i + '].ContentSubject'] = o.ContentSubject || '';
+            json['Contents[' + i + '].CultureContent'] = encodeURIComponent(o.CultureContent) || '';
+        });
+        $.SaveForm({
+            url: '@Url.Action("Edit")' + "/",
+            param: json,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().fn$refresh();
+            }
+        })
+    }
+
+    function fn$edit(id) {
+        eid = id;
+        dialogOpen({
+            id: "Form1",
+            title: '编辑板块',
+            url: '/../@Url.Action("Edit2",new  { id = string.Empty})/' + id,
+            width: "1000px",
+            height: "700px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick(fn$editover);
+            }
+        });
+    }
+
+    function fn$editover(id, subject, content) {
+        var current = jQuery.grep(data, function (dao) {
+            return dao.CultureTemplateItemId == id;
+        });
+
+        current[0].ContentSubject = subject;
+        current[0].CultureContent = content;
+
+        var gridata = jQuery('#grid').getRowData();
+        for (var i = 0; i < gridata.length; i++) {
+            if (gridata[i].CultureTemplateItemId == eid) break;
+        }
+
+        jQuery('#grid').jqGrid('setCell', i + 1, 'ContentSubject', subject || ' ');
+        jQuery('#grid').jqGrid('setCell', i + 1, 'CultureContent', content || ' ');
+    }
+
+    jQuery(function () {
+        data = jQuery.parseJSON('@HttpUtility.JavaScriptStringEncode(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.contents)))');
+        jQuery.each(data, function (i, o) {
+            o.ContentSubject = o.ContentSubject == 'null' ? '' : o.ContentSubject;
+            o.CultureContent = o.CultureContent == 'null' ? '' : o.CultureContent;
+        });
+        jQuery('#grid').jqGrid({
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'CultureTemplateItemId', hidden: true, align: 'center' },
+                { label: '操作', name: 'action', width: 120, align: 'center', sortable: false },
+                //{ label: '状态', name: 'IsActive', index: 'IsActive', width: 150, align: 'center', sortable: false },
+                { label: '板块', name: 'ContentSubject', index: 'ContentSubject', width: 180, align: 'center', sortable: false },
+                { label: '内容', name: 'CultureContent', index: 'CultureContent', width: 180, align: 'center', sortable: false },
+            ],
+            height: 360,
+            width: 600,
+            shrinkToFit: false,
+            //url: '@Url.Action("GetData")',
+            datatype: 'local',
+            viewrecords: true,
+            gridview: true,
+            sortable: false,
+            rowNum: 20,
+            rownumbers: true,
+            pager: "#gridPager",
+            data: data,
+            gridComplete: function () {
+                var gridid = this.id;
+                $("#" + this.id).setSelection(selectedRowIndex, false);
+                var rows = $("#" + this.id).jqGrid("getRowData");//获取当前页记录行数据
+                //查询用户对该模块的数据操作权限
+                $(rows).each(function (i, item) {
+                    var html = "";
+                    html += "<a href=\"javascript:fn$edit('" + item.CultureTemplateItemId + "')\" title=\"编辑\">编辑</a>";
+                    //html += "<a href=\"javascript:fn$approve('" + item.ID + "')\" title=\"核准\">核准</a>";
+                    //html += "<a href=\"javascript:btn_edit('" + uId + "')\" title=\"编辑\">编辑</a>";
+                    //html += "<a href=\"javascript:btn_delete('" + uId + "')\" title=\"删除\">删除</a>";
+                    $("td[aria-describedby='" + gridid + "_action']").eq(i).html(html);
+                });
+            }
+        });
+
+    });
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style="padding-right:30px;">
+            @Html.HiddenFor(x => x.CultureTemplateId)
+            <table class="form">
+                <tr>
+                    <td class="formTitle">文化墙主题<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        <select name="CultureTemplateSubject" id="CultureTemplateSubject">
+                            <option value="安全蓝">安全蓝</option>
+                            <option value="热情橙">热情橙</option>
+                        </select>
+                        @*@Html.DropDownList("CultureTemplateSubject", ViewData["level"] as IEnumerable<SelectListItem>, new { @class = "form-control", style = "width:120px" })*@
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">班组<font face="宋体">*</font></td>
+                    <td class="formValue">
+                        @Html.TextBoxFor(x => x.GroupName, new { @class = "form-control", placeholder = "请选择上级类别", onfocus = "this.blur()", onclick = "fn$select();", isvalid = "yes", checkexpession = "NotNull" })
+                        <span class="input-button" onclick="fn$select();" title="选择上级类别">...</span>
+                        @Html.HiddenFor(x => x.GroupId)
+                    </td>
+                </tr>
+            </table>
+            <table id="grid"></table>
+            <div id="gridPager"></div>
+        </div>
+        <div id="ExpandInfo" class="tab-pane">
+            <div class="app_layout app_preview" style="border-top: 1px solid #ccc;" id="frmpreview"></div>
+        </div>
+    </div>
+</div>
+

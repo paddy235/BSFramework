@@ -1,0 +1,256 @@
+﻿@using System.Diagnostics;
+@{
+    ViewBag.Title = "ScoreIndex";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<script>
+    var userId = request("userId");
+    var deptid = '@ViewBag.deptid';
+        var deptCode = '@ViewBag.deptCode';
+        var redirctParam;//用于传递 查询时间的值
+
+        $(function () {
+            $('#layout').layout({
+                west: {
+                    size: 300
+                },
+                onresize: function () {
+                    $(window).resize()
+                }
+            });
+            GetGrid();//加载树
+            $("#departments").height($(window).height() - 50);
+            $(window).resize(function (e) {
+                window.setTimeout(function () {
+
+                    $("#gridTable").setGridHeight($(window).height() - 170);
+                }, 200);
+                e.stopPropagation();
+            });
+    })
+
+    function onNodeSelected(item) {
+        deptid = item.id;
+        deptCode = item.Code;
+
+        $('#btn_Search').trigger("click");
+    }
+
+       function GetGrid() {
+           var serachDate = $('#serachDate').val();
+           var keyWord = $('#keyWord').val();
+            var queryJson = {
+                serachDate: serachDate,
+                keyWord: keyWord,
+                deptId : deptid,
+                deptCode: deptCode,
+                Gender: $("#Gender").val(),
+                userId: userId
+           }
+           redirctParam = serachDate;
+
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            postData: queryJson,
+            url: "@Url.Action("GetUserScorePagedList")",
+            datatype: "json",
+            height: $(window).height() - 170,
+            autowidth: true,
+            cellEdit: true,
+            colModel: [
+                { label: '主键', name: 'UserId', hidden: true, align: 'center' },
+                {
+                    label: '操作', name: 'action', width: 50, align: 'center', sortable: false, formatter: function (cellvalue, options, rowObject) {
+                        var html = "<a onclick=show('" + rowObject.UserId + "')  title='查看信息' style='cursor:pointer;'><i class='fa fa-eye'></i></a>";
+                        return html;
+                    }
+                },
+                { label: '所属单位', name: 'DeptName', index: 'DeptName', width: 200, align: 'center', sortable: false },
+                { label: '姓名', name: 'UserName', index: 'UserName', width: 150, align: 'center', sortable: false },
+                { label: '性别', name: 'Gender', index: 'Gender', width: 100, align: 'center', sortable: false },
+                { label: '岗位', name: 'DutyName', index: 'DutyName', width: 200, align: 'center', sortable: false },
+                {
+                    label: '月度积分', name: 'MonthScore', index: 'MonthScore', width: 120, align: 'center', sortable: true, formatter: function (cellvalue, options, rowObject) {
+                        var html = "<a onclick=ScoreDetail(" + JSON.stringify(rowObject) + "," + JSON.stringify(queryJson) + ",'月度')  title='查看信息' class='socre_link''>" + cellvalue + "</a>";
+                        return html;
+                    }
+                },
+                {
+                    label: '季度积分', name: 'QuarterScore', index: 'QuarterScore', width: 120, align: 'center', sortable: true, formatter: function (cellvalue, options, rowObject) {
+                        var html = "<a onclick=ScoreDetail(" + JSON.stringify(rowObject)+ "," + JSON.stringify(queryJson) + ",'季度')  title='查看信息' class='socre_link''>" + cellvalue + "</a>";
+                        return html;
+                    }
+                },
+                {
+                    label: '年度积分', name: 'YearScore', width: 120, align: 'center', sortable: true, formatter: function (cellvalue, options, rowObject) {
+                        var html = "<a onclick=ScoreDetail(" + JSON.stringify(rowObject) + "," + JSON.stringify(queryJson) + ",'年度')  title='查看信息' class='socre_link''>" + cellvalue + "</a>";
+                        return html;
+                    }
+                },
+            ],
+            sortorder: "desc",
+            sortname: "MonthScore",
+            viewrecords: true,
+            rowNum: 20,
+             rowList: [20, 50, 100],
+            pager: "#gridPager",
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            onSelectRow: function () {
+                selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            },
+            loadError: function (xhr, status, error) {
+               //top.location.href = "../../Login/Index?Login_Error=1";
+            },
+            gridComplete: function () {
+                 @*@if (!BSFramework.Application.Code.OperatorProvider.Provider.Current().IsSystem)
+                {
+                    @Html.Raw("AuthiruzeBtn($('.toolbar'), $('#gridTable'));");//操作按钮权限控制
+                }*@
+            }
+        });
+        //$gridTable.authorizeColModel()
+        /**查询条件 */
+        $("#queryCondition .dropdown-menu li").click(function () {
+            var text = $(this).find('a').html();
+            var value = $(this).find('a').attr('data-value');
+            $("#queryCondition .dropdown-text").html(text).attr('data-value', value)
+        });
+        /**查询事件 */
+        $("#btn_Search").click(function () {
+            var queryJson = {
+                //  condition: $("#queryCondition").find('.dropdown-text').attr('data-value'),
+                keyWord: $("#keyWord").val(),
+                deptCode: deptCode,
+                deptId: deptid,
+                serachDate: $("#serachDate").val(),
+                Gender: $("#Gender").val(),
+            }
+            redirctParam = $("#serachDate").val();
+            $gridTable.jqGrid('setGridParam', {
+                postData: queryJson, page: 1
+            }).trigger('reloadGrid');
+        });
+        $("#btn_SearchAll").click(function () {
+            $("#keyWord").val('');
+            $("#serachDate").val('@DateTime.Now.ToString("yyyy-MM")');
+            deptId = '@ViewBag.deptid';
+            deptCode = '@ViewBag.deptCode';
+            $("#Gender option[value=]").prop("selected", true);
+            $('#btn_Search').trigger("click");
+        });
+        /**查询回车 */
+        $('#keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                $('#btn_Search').trigger("click");
+            }
+        });
+
+        }
+
+        /**
+        * 查看
+        * @@param {string}  keyValue 主键
+        */
+    function show(keyValue) {
+       dialogOpen({
+            id: 'Form',
+            title: "个人积分详情",
+           url: '/..@Url.Action("ScoreForm")?actiontype=show&keyValue=' + keyValue,
+           btn: [],
+            width: ($(top.window).width() - 500) + "px",
+           height: ($(top.window).height() - 250) + "px",
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        })
+    }
+
+        /**
+         * 查看安全积分的详细数据
+         * @@param {JSON} userInfo 用户ID
+         * @@param {JSON} queryJson 页面上的查询条件，Json格式
+         * @@param {string} searchType 查询类型  年 季 月
+         */
+        var ScoreDetail = (userInfo, queryJson, searchType) => {
+            dialogOpen({
+                id: 'ScoreForm',
+                title: "个人积分详情",
+                url: '/..@Url.Action("UserScoreDetail")?userId=' + userInfo.UserId + '&DutyName=' + userInfo.DutyName + '&Gender=' + userInfo.Gender + '&UserName=' + userInfo.UserName + '&DeptName=' + userInfo.DeptName + '&searchDate=' + redirctParam + '&searchType=' + searchType,
+                btn: [],
+                width: ($(top.window).width() - 200) + "px",
+                height: ($(top.window).height() - 250) + "px",
+                callBack: function (iframeId) {
+                    top.document.getElementById(iframeId).contentWindow.AcceptClick();
+                }
+            });
+
+        }
+
+        function test() {
+            $('#btn_Search').trigger("click");
+        }
+</script>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                <div class="col-md-10">
+                    组织机构
+                </div>
+                <div class="col-md-2 text-right" style="padding-right:8px;">
+                    <i class="fa fa-arrow-left" onclick="setBar(this)" style="cursor:pointer;" title="展开/收起"></i>
+                </div>
+            </div>
+            @Html.Partial("~/Areas/BaseManage/Views/Department/Tree.cshtml")
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title">安全卫士积分</div>
+            <div class="titlePanel">
+                <div class="title-search">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label for="from">时间</label>
+                            <input id="serachDate" name="serachDate" type="text" class="form-control input-datepicker" value="@DateTime.Now.ToString("yyyy-MM")" onfocus="WdatePicker({ dateFmt: 'yyyy-MM' ,onpicked:test})" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label for="from">关键字</label>
+                            <input id="keyWord" type="text" name="keyWord" class="form-control" style="min-width:300px;" placeholder="姓名、岗位" />
+                        </div>
+                        <div class="form-group">
+                            <label for="from">性别</label>
+                            <select class="form-control" id="Gender" name="Gender"><option value="">全部</option><option value="1">男</option><option value="0">女</option></select>
+                        </div>
+                        <div class="form-group">
+                            <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                            <a id="btn_SearchAll" class="btn btn-primary"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="toolbar">
+                    <div class="btn-group">
+                        <a class="btn btn-default" onclick="reload()"><i class="fa fa-refresh"></i>刷新</a>
+                    </div>
+                    <script>
+                        $('.toolbar').authorizeButton();
+                    </script>
+                </div>
+            </div>
+            <div class="gridPanel">
+                <table id="gridTable"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style type="text/css">
+    .socre_link {
+        cursor: pointer;
+        color: #169BD5 !important;
+        text-decoration: underline;
+    }
+</style>

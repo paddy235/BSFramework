@@ -1,0 +1,190 @@
+﻿@charset "utf-8";
+.body-wrap{
+    width:1920px;
+    margin: 0 auto;
+    background: #f2f2f2;
+    height: 892px;
+}
+.index1,.index2{
+    padding: 0px 50px 0;
+}
+.body_title{
+    font-size: 36px;
+    color: #000;
+    text-align: center;
+    height: 60px;
+}
+.sec_top{
+    padding: 20px 26px 0 30px;
+}
+.sec_title{
+    font-size: 28px;
+    color: #000;
+    line-height: 36px;
+}
+.sec_title span{
+    font-size: 16px;
+    color: #b2b2b2;
+    font-weight: normal;
+    line-height: initial;
+}
+.top_list{
+    height: 36px;
+}
+.top_list li{
+    float: left;
+    width: 80px;
+    border: 1px solid #3296d4;
+    color: #3296d4;
+    text-align: center;
+    line-height: 34px;
+    font-size: 24px;
+    cursor: pointer;
+}
+.top_list li.active{
+    background: #3296d4;
+    color: #fff;
+}
+.normal_table{
+    width: 100%;
+}
+.normal_table th,.normal_table td{
+    padding: 8px 10px;
+    text-align: left;
+}
+.normal_table tr th:first-child,.normal_table tr td:first-child{
+    padding-left: 0;
+}
+.normal_table tr th:last-child,.normal_table tr td:last-child{
+    padding-right: 0;
+}
+.normal_table th{
+    font-size: 24px;
+    color: #333;
+    font-weight: normal;
+}
+.normal_table td{
+    font-size: 22px;
+    color: #666;
+}
+.normal_table td.not{
+    color: #ce474d;
+}
+.table1 tr th:first-child,.table1 tr td:first-child,.table1 tr th:nth-child(3),.table1 tr td:nth-child(3){
+    text-align: center;
+}
+.table2 tr th:first-child,.table2 tr td:first-child{
+    text-align: center;
+}
+.table3 tr th:first-child,.table3 tr td:first-child
+,.table3 tr th:nth-child(3),.table3 tr td:nth-child(3)
+,.table3 tr th:nth-child(4),.table3 tr td:nth-child(4){
+    text-align: center;
+}
+.main_left{
+    width: 630px;
+    float: left;
+}
+.mainLeft_sec1{
+    height: 410px;
+    margin-bottom: 10px;
+    background: #fff;
+}
+.info_main,.study_main{
+    margin-top: 10px;
+}
+.info_main1,.info_main2,.study_main1,.study_main2{
+    padding: 0 26px 0 30px;
+}
+.info_main2,.study_main2{
+    display: none;
+}
+.mainLeft_sec2{
+    height: 412px;
+    background: #fff;
+}
+.main_center{
+    width: 590px;
+    margin: 0 10px;
+    float: left;
+}
+.mainCenter_sec1{
+    height: 410px;
+    margin-bottom: 10px;
+    background: #fff;
+}
+.risk_main{
+    padding: 0 26px 0 30px;
+    margin-top: 10px;
+}
+.mainCenter_sec2{
+    height: 412px;
+    background: #fff;
+}
+#chart1{
+    width: 100%;
+    height: 330px;
+    margin-top: 20px;
+}
+.main_right{
+    width: 580px;
+    background: #fff;
+    height: 832px;
+    float: right;
+}
+.dynamic_list{
+    border-top: 1px solid #f2f2f2;
+    margin-top: 10px;
+}
+.dynamic_list li{
+    border-bottom: 1px solid #f2f2f2;
+    height: 58px;
+    line-height: 57px;
+    padding: 0 30px;
+    font-size: 22px;
+    cursor: pointer;
+}
+.dynamic_list li a{
+    display: block;
+    float: left;
+    /*width: 395px;*/
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #666;
+}
+.dynamic_list li span{
+    color: #999;
+    float: right;
+}
+.tz_list{
+    padding: 0 30px;
+    margin-top: 12px;
+}
+.tz_list li{
+    float: left;
+    width: calc(50% - 10px);
+    margin-right: 20px;
+    background: #f3f3f3;
+    height: 100px;
+    margin-bottom: 15px;
+    padding-left: 25px;
+    cursor: pointer;
+}
+.tz_list li:nth-of-type(2n){
+    margin-right: 0;
+}
+.tz_list li > div{
+    padding-top: 20px;
+}
+.tz_list li p{
+    color: #3296d4;
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+.tz_list li img{
+    height: 52px;
+    width: 52px;
+    float: right;
+    margin: 24px 25px 0 0;
+}

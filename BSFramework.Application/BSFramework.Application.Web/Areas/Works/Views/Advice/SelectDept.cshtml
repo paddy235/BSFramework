@@ -1,0 +1,51 @@
+﻿@{
+    ViewBag.Title = "人员选择";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+<script>
+    jQuery(function () {
+        $('#search').bind('keyup', function (event) {
+            if (event.keyCode == "13") {
+                search();
+            }
+        });
+
+
+        $('#layout').layout({
+            applyDemoStyles: false,
+            west: {
+                size: 300,
+            },
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+
+        jQuery('#tree').treeview({
+            height: $(window).height() - 50,
+            url: '@Url.Action("getDept")'
+
+        });
+    });
+
+    function AcceptClick(callback) {
+        var node = jQuery('#tree').getCurrentNode();
+        if (node.ckselect!="") {
+            dialogMsg(node.ckselect, 0);
+            return;
+        }
+        callback(node);
+        dialogClose();
+    }
+</script>
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-center">
+        <div class="panel">
+            <div class="panel-Title">
+                选择部门
+            </div>
+            <div id="tree"></div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,158 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="~/Content/styles/static/js/rem.js"></script>
+    <link href="~/Content/styles/static/css/indexmanage.css" rel="stylesheet" />
+    <!-- jQuery 2.1.4 -->
+    <script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+    <script src="@Url.Content("~/Content/scripts/plugins/echarts/echarts.min.js")"></script>
+    <link href="~/Content/styles/framework-ui.css" rel="stylesheet" />
+    <script src="~/Content/scripts/plugins/datepicker/WdatePicker.js"></script>
+    <style>
+        .select_width {
+            width: 4rem;
+            height: 1rem;
+            line-height: 1rem;
+            border-radius: 0.15rem;
+            margin-right: 0.1rem;
+        }
+    </style>
+    <script>
+        $(function () {
+
+            SetSelect();
+            $("#SelectYear")
+        });
+        function SetSelect() {
+            var nowTime = new Date();
+            var nowYear = nowTime.getFullYear();
+            var html = "";
+            for (var i = 0; i < 10; i++) {
+
+                    html += '<option value="' + (nowYear - i) + ' ">' + (nowYear -i)+'</option>';
+
+
+            }
+            $("#SelectYear").append(html);
+            getData(nowYear);
+        }
+        function goData(obj) {
+            var year = $(obj).val();
+            getData(year);
+        }
+        function getData(nowYear) {
+            $.ajax({
+                url: "@Url.Action("GetIndexHiddenDanger", "IndexManage", new { area = "SystemManage" })?year=" + nowYear,
+            type: "post",
+            dataType: "json",
+            async: false,
+                success: function (data) {
+                    var setData = new Array();
+                    var setMonth = new Array();
+                    var setName = new Array();
+                    for (var item in data) {
+                        setName.push(data[item].name);
+                        if (setMonth.length == 0) {
+                            for (var month in data[item].month) {
+                                setMonth.push(data[item].month[month] + "月");
+                            }
+
+                        }
+                        var one = {};
+                        one.name = data[item].name
+                        one.type = "line";
+                        one.data = new Array();
+                        for (var monthdata in data[item].monthdata) {
+                            one.data.push(data[item].monthdata[monthdata]);
+                        }
+
+                        setData.push(one);
+                    }
+
+                    chartData(setData, setMonth, setName);
+            }
+            });
+          }
+        function chartData(setData,setMonth,setName) {
+            var option = {
+                textStyle: {
+                    color: '#000'
+                },
+                tooltip: {
+                    trigger: "item",
+                    formatter: "{a} <br/>{b} : {c}"
+                },
+                legend: {
+                    x: 'center',
+                    data: setName,
+                    textStyle: {
+                        function(params) {
+                            var colorList = ['#00afff', '#bf2caf', '#ffb01b', '#5264ff', '#13f2a3'];
+                            return colorList[params.dataIndex]
+                        }
+                    },
+                },
+                xAxis: [
+                    {
+                        type: "category",
+                        name: "",
+                        splitLine: { show: false },
+                        data: setMonth
+
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: "value",
+                        name: ""
+                    }
+                ],
+                calculable: true,
+                series: setData
+                //series: [
+                //    {
+                //        name: "管理人员",
+                //        type: "line",
+                //        data: [1, 3, 9, 27, 81, 50, 40, 70, 90, 20, 50, 60, 80]
+
+                //    },
+                //    {
+                //        name: "作业人员",
+                //        type: "line",
+                //        data: [1, 2, 4, 8, 16, 32, 64, 150, 100, 50, 15, 30, 50]
+
+                //    }
+                //]
+            };
+            var myChart = echarts.init(document.getElementById('chart3'));
+            myChart.setOption(option);
+        }
+
+    </script>
+</head>
+<body>
+    <div>
+        <div class="item_title">
+            <a   style="cursor:pointer;" onclick="top.openTab('67fdd0b7-6629-48dc-a70f-3eb7ba2df1f0','../HiddenTroubleManage/HTBaseInfo/Index','隐患台账')">
+                <h2 style="float: left;">隐患趋势</h2>
+            </a>
+            <div style="float:right;">
+                @*<select class="select_width">
+                        <option value="value">全部</option>
+                    </select>*@
+                <label>年度：</label>
+
+                <select class="select_width" id="SelectYear" onchange="goData(this);">
+                </select>
+            </div>
+        </div>
+
+        <div class="">
+            <div id="chart3" style="min-height:300px;"></div>
+        </div>
+    </div>
+</body>
+</html>

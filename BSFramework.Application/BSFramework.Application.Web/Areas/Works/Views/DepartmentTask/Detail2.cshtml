@@ -1,0 +1,139 @@
+﻿@model BSFramework.Entity.WorkMeeting.DepartmentTaskEntity
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<style>
+
+    .form-control[readonly] {
+        background-color: #eee;
+    }
+</style>
+<script src="~/Content/scripts/business/common.js"></script>
+<script src="~/Content/scripts/jquery/jquery.serializeJSON.min.js"></script>
+<script src="~/Content/scripts/jquery/jquery.url.js"></script>
+@Html.Partial("UserSelect")
+
+<script>
+    var id = '@ViewBag.id', section;
+    jQuery(function () {
+        var task;
+        if (top.document.getElementById("Edit"))
+            task = top.document.getElementById("Edit").contentWindow.getTask(id);
+        else {
+            task = $.currentIframe().getTask(id);
+        }
+        jQuery('#Content').val(task.Content);
+        jQuery('#StartDate').val(task.StartDate);
+        jQuery('#EndDate').val(task.EndDate);
+        jQuery('#DutyDepartmentId').val(task.DutyDepartmentId);
+        jQuery('#DutyDepartment').val(task.DutyDepartment);
+        jQuery('#DutyUserId').val(task.DutyUserId);
+        jQuery('#DutyUser').val(task.DutyUser);
+        jQuery('#Remark').val(task.Remark);
+        jQuery('#UpdateRecords').val(task.UpdateRecords);
+        jQuery('#CreateUser').val(task.CreateUser);
+        jQuery('#CreateTime').val(task.CreateTime);
+        jQuery('#Status').val(task.Status);
+    });
+
+    function select() {
+        selectUser(jQuery('#DutyDepartmentId').val(), 'single', function (data) {
+            jQuery('#DutyUserId').val(data.UserId);
+            jQuery('#DutyUser').val(data.RealName);
+        });
+    }
+
+    function selectdept() {
+        selectDept('/..@Url.Action("Select", "Department", new { area = "BaseManage" })', '@ViewBag.deptid', 0, 0, '选择部门', window.document.body, 'DutyDepartment,,DutyDepartmentId', '厂级,部门')
+    }
+
+    function AcceptClick() {
+        var formdata = jQuery('form').serializeJSON();
+        if (!formdata.Content) {
+            dialogMsg('请输入工作任务！', 0);
+            return;
+        }
+        if (!formdata.StartDate) {
+            dialogMsg('请选择计划时间！', 0);
+            return;
+        }
+        if (!formdata.EndDate) {
+            dialogMsg('请选择计划时间！', 0);
+            return;
+        }
+        if (!formdata.DutyDepartment) {
+            dialogMsg('请选择责任部门！', 0);
+            return;
+        }
+        if (!formdata.DutyUser) {
+            dialogMsg('请选择责任人！', 0);
+            return;
+        }
+        formdata.TaskId = id;
+
+        if (section == 'new') formdata.IsNew = true;
+        top.document.getElementById("Edit").contentWindow.newtaskcallback(formdata);
+        dialogClose();
+    }
+</script>
+<div class="container-fluid">
+    <div class="panel-body form-horizontal">
+        <div class="form-group">
+            <label class="col-xs-2 control-label">工作任务<span style="color:red;">*</span></label>
+            <div class="col-xs-10">
+                @Html.TextAreaFor(x => x.Content, new { @class = "form-control", placeholder = "请输入", rows = "3", maxlength = 500, @readonly = "readonly" })
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label">状态<span style="color:red;">*</span></label>
+            <div class="col-xs-10">
+                @Html.TextBoxFor(x => x.Status, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label">计划时间<span style="color:red;">*</span></label>
+            <div class="col-xs-10">
+                @Html.TextBoxFor(x => x.StartDate, new { @class = "form-control", style = "width:200px;display:inline", @readonly = "readonly" })
+                <span style="line-height:26px;">~</span>
+                @Html.TextBoxFor(x => x.EndDate, new { @class = "form-control", style = "width:200px;display:inline", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label">责任部门<span style="color:red;">*</span></label>
+            <div class="col-xs-4">
+                @Html.HiddenFor(x => x.DutyDepartmentId)
+                @Html.TextBoxFor(x => x.DutyDepartment, new { @class = "form-control", onfocus = "this.blur()", @readonly = "readonly" })
+            </div>
+            <label class="col-xs-2 control-label">责任人<span style="color:red;">*</span></label>
+            <div class="col-xs-4">
+                @Html.HiddenFor(x => x.DutyUserId)
+                @Html.TextBoxFor(x => x.DutyUser, new { @class = "form-control", onfocus = "this.blur()", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label">任务说明</label>
+            <div class="col-xs-10">
+                @Html.TextAreaFor(x => x.Remark, new { @class = "form-control", placeholder = "请输入", rows = "3", maxlength = 500, @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label">变更记录</label>
+            <div class="col-xs-10">
+                @Html.TextAreaFor(x => x.UpdateRecords, new { @class = "form-control", rows = "3", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label">创建人</label>
+            <div class="col-xs-4">
+                @Html.TextBoxFor(x => x.CreateUser, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+            <label class="col-xs-2 control-label">创建时间</label>
+            <div class="col-xs-4">
+                @Html.TextBoxFor(x => x.CreateTime, new { @class = "form-control", Value = string.Empty, @readonly = "readonly" })
+            </div>
+        </div>
+    </div>
+</div>

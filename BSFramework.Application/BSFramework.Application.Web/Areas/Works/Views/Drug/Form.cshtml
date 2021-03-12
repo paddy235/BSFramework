@@ -1,0 +1,408 @@
+﻿@model BSFramework.Application.Entity.DrugManage.DrugInventoryEntity
+@using BSFramework.Application.Entity.PublicInfoManage
+@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_FlowForm.cshtml";
+}
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script src="@Url.Content("~/Content/scripts/jquery/jquery.serializeJSON.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>
+<style>
+    .images-container {
+        min-height: 120px;
+    }
+
+        .images-container li {
+            list-style: none;
+            float: left;
+            padding: 0px 5px;
+        }
+
+    .yinpin li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+
+    .items li {
+        list-style: none;
+        float: left;
+        padding: 0px 5px;
+    }
+
+    table tr {
+        height: 45px;
+    }
+    .imgDiv {
+        display:inline-block;
+        position:relative;
+    }
+    .imgDiv .delete {
+        position:absolute;
+        top:0px;
+        right:0px;
+        width:50px;
+        height:50px;
+        display:none;
+    }
+
+</style>
+<script>
+    $(function () {
+        init();
+        $('#uploadFile').change(cp);
+        $('#uploadFile1').change(cp1);
+        $('#uploadFile2').change(cp2);
+    });
+    function init() {
+        $(".imgDiv").mouseenter(function () {
+            $(this).find(".delete").show();
+        });
+        $(".imgDiv").mouseleave(function () {
+            $(this).find(".delete").hide();
+        });
+    }
+
+    function AcceptClick() {
+
+        if (!valid()) {
+            return false;
+        }
+        var name = $("#DrugName").val();
+        $.ajax({
+            url: '@Url.Action("CheckName")',
+            type: 'post',
+            data: { name: name },
+            loading: "数据提交中...",
+            success: function (data) {
+                if (data.success) {
+                    dialogMsg('药品已存在！', 0);
+                } else {
+                    saveform();
+                }
+            }
+        });
+
+    }
+    function AcceptClick1() {
+
+        if (!valid()) {
+            return false;
+        }
+        saveform();
+
+    }
+    function saveform()
+    {
+        var json = jQuery('#form1').serializeJSON();
+        $.SaveForm({
+            url: '@Url.Action("SaveForm")',
+            param: json,
+            loading: "数据提交中...",
+            success: function (data) {
+
+                if (data.success) {
+                    $.currentIframe().$("#grid").trigger("reloadGrid");
+                } else {
+                    //alert('1');
+                }
+            }
+        });
+    }
+
+    function delimg(id) {
+        $.ajax({
+            url: '@Url.Action("delimg")',
+            type: 'post',
+            data: { id: id,drugid:'@Model.Id' },
+            loading: "数据提交中...",
+            success: function (data) {
+                var data = JSON.parse(data);
+                var html = '';
+                var dv = document.getElementById("pics");
+                dv.innerHTML = "";
+
+                for (var i = 0; i < data.resultdata.files.length; i++) {
+                    html += '<img src="' + top.location.origin + top.contentPath + data.resultdata.files[i].FilePath + '" style="width:180px;height:180px;padding-left:20px;"  /><a id="' + data.resultdata.files[i].FileId + '"  style="color:red;font-size:10px;vertical-align:bottom;" onclick="delimg(this.id)">删除</a>';
+                }
+                html += '<input type="file" name="uploadFile2" id="uploadFile2" style="display:none;"><label for="uploadFile2" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                dv.innerHTML = html;
+                $('#uploadFile2').change(cp2);
+            }
+        });
+    }
+    function msds(id) {
+        var id = '@Model.Id';
+        dialogOpen({
+            id: "Detail",
+            title: '查看详情',
+            url: '/../@Url.Action("MSDS")/' + id,
+            width: "1300px",
+            height: "900px",
+            btn: null
+        });
+    }
+    function video(id) {
+        var id = '@Model.Id';
+        dialogOpen({
+            id: "Detail",
+            title: '查看详情',
+            url: '/../@Url.Action("Video")/' + id,
+            width: "1050px",
+            height: "720px",
+            btn: null
+        });
+    }
+    function cp() {
+        $.ajaxFileUpload({
+            url: "@Url.Action("UploadFileNew")?uptype=0&id=@Model.Id",
+            secureuri: false,
+            fileElementId: 'uploadFile',
+            dataType: 'json',
+            success: function (data) {
+                if (data.message == "1") {
+                    var obj = document.getElementById('uploadFile');
+                    obj.outerHTML = obj.outerHTML;
+                    alert("请上传PDF文件！");
+                    $('#uploadFile').change(cp);
+                } else
+                {
+                    dialogMsg('上传成功！', 1);
+                    $('#uploadFile').change(cp);
+                }
+                //  $('#msds').attr('href', top.location.origin + top.contentPath + data.resultdata.path);
+            }
+        });
+    }
+    function cp1() {
+        $.ajaxFileUpload({
+            url: "@Url.Action("UploadFileNew")?uptype=1&id=@Model.Id",
+            secureuri: false,
+            fileElementId: 'uploadFile1',
+            dataType: 'json',
+            success: function (data) {
+                if (data.message == "1") {
+                    var obj = document.getElementById('uploadFile1');
+                    obj.outerHTML = obj.outerHTML;
+                    alert("请上传MP4视频文件！");
+                    $('#uploadFile1').change(cp1);
+                } else {
+                    dialogMsg('上传成功！', 1);
+                    $('#uploadFile1').change(cp1);
+                }
+                //  $('#video').attr('href', top.location.origin + top.contentPath + data.resultdata.path);
+            }
+        });
+    }
+    //上传警示图片
+    function cp2() {
+        $.ajaxFileUpload({
+            url: "@Url.Action("UploadFileNew")?uptype=2&id=@Model.Id",
+            secureuri: false,
+            fileElementId: 'uploadFile2',
+            dataType: 'json',
+            success: function (data) {
+                if (data.message == "1") {
+                    var obj = document.getElementById('uploadFile2');
+                    obj.outerHTML = obj.outerHTML;
+                    alert("请上传GIF,PNG,JPG格式的图片！");
+                    $('#uploadFile2').change(cp2);
+                } else {
+                    var html = '';
+                    var dv = document.getElementById("pics");
+                    dv.innerHTML = "";
+                    for (var i = 0; i < data.resultdata.files.length; i++) {
+                        html += '<img src="' + data.resultdata.files [i].FilePath+ '" style="width:180px;height:180px;padding-left:20px;"  /><a id="' + data.resultdata.files[i].FileId + '"  style="color:red;font-size:10px;vertical-align:bottom;" onclick="delimg(this.id)">删除</a>';
+                    }
+                    html += '<input type="file" name="uploadFile2" id="uploadFile2" style="display:none;"><label for="uploadFile2" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>';
+                    dv.innerHTML = html;
+                    $('#uploadFile2').change(cp2);
+                }
+            }
+        });
+    }
+    function valid() {
+        var name = $("#DrugName").val();
+        if (name == "") {
+            dialogMsg('药品名称不能为空！', 0);
+            return false;
+        }
+
+        return true;
+    }
+</script>
+<div style="margin-left: 10px; margin-right: 10px;">
+    <div class="tab-content" style="padding-top: 15px;">
+        <div id="BaseInfo" class="tab-pane active" style=" padding-right: 30px;">
+            <table class="form">
+                <tr>
+
+                    <td class="formTitle">药品名称<font face="宋体">*</font></td>
+                    <td class="formValue" colspan="2">
+                        @Html.TextBoxFor(x => x.DrugName, new { @class = "form-control" })
+                        @Html.HiddenFor(x => x.CreateDate)
+                        @Html.HiddenFor(x => x.CreateUserId)
+                        @Html.HiddenFor(x => x.CreateUserName)
+                        @Html.HiddenFor(x => x.Id)
+                        @Html.HiddenFor(x=>x.DeptCode)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">英文名</td>
+                    <td class="formValue" colspan="2">
+
+                        @Html.TextBoxFor(x => x.EnglishName, new { @class = "form-control" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle">CAS NO.</td>
+                    <td class="formValue" colspan="2">
+
+                        @Html.TextBoxFor(x => x.CASNO, new { @class = "form-control" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle">分子式</td>
+                    <td class="formValue" colspan="2">
+
+                        @Html.TextBoxFor(x => x.MolecularFormula, new { @class = "form-control" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle">分子量</td>
+                    <td class="formValue" colspan="2">
+
+                        @Html.TextBoxFor(x => x.MolecularWeight, new { @class = "form-control" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle">性状</td>
+                    <td class="formValue" colspan="2">
+
+                        @Html.TextBoxFor(x => x.Properties, new { @class = "form-control" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle">用途</td>
+                    <td class="formValue" colspan="2">
+
+                        @Html.TextBoxFor(x => x.Purpose, new { @class = "form-control" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle" rowspan="2">危险性说明</td>
+                    @*<td style="text-align:center;">
+                            <img src="" id="pic" alt="" style="width:150px;height:126px;">
+                        </td>*@
+                    <td class="formValue" colspan="2">
+                        <div id="pics" class="imgDiv">
+                            @{
+                                List<FileInfoEntity> files = (List<FileInfoEntity>)ViewBag.pics;
+                                if (files.Count() > 0)
+                                {
+
+                                    for (int i = 0; i < files.Count(); i++)
+                                    {
+                                        <img  src="@Url.Action("DownloadFile", "ResourceFile", new { keyValue = files[i].FileId, area = "PublicInfoManage" })" alt="" style="width:200px; height:180px; padding-left:20px;">
+    <a id="@files[i].FileId" onclick="delimg(this.id)"  style="color:red;font-size:10px;vertical-align:bottom;">删除</a>
+                                    }
+                                }
+}
+                            <input type="file" name="uploadFile2" id="uploadFile2" style="display:none;"><label for="uploadFile2" style="margin-left:20px;color:blue;text-align:right;vertical-align:middle;font-size:12px;">上传</label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formValue" colspan="2">
+
+                        @Html.TextBoxFor(x => x.DangerInstruction, new { @class = "form-control" })
+                    </td>
+
+                </tr>
+                <tr style="line-height:100px;">
+                    <td class="formTitle">
+                        预防措施
+                    </td>
+                    <td class="formValue" colspan="2">
+                        @Html.TextAreaFor(x => x.Measure, new { @style = "height:120px;", @class = "form-control", placeholder = "" })
+                        @*<textarea id="Dangers" class="form-control" style="height: 70px;"></textarea>*@
+                    </td>
+                </tr>
+                <tr style="line-height:100px;">
+                    <td class="formTitle">
+                        事故响应
+                    </td>
+                    <td class="formValue" colspan="2">
+                        @Html.TextAreaFor(x => x.Danger, new { @style = "height:120px;", @class = "form-control", placeholder = "" })
+                        @*<textarea id="Measure" class="form-control" style="height: 70px;"></textarea>*@
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formTitle">安全储存</td>
+                    <td class="formValue" colspan="2">
+
+                        @Html.TextBoxFor(x => x.Position, new { @class = "form-control" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle">废气处理</td>
+                    <td class="formValue" colspan="2">
+
+                        @Html.TextBoxFor(x => x.Dispose, new { @class = "form-control" })
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="formTitle" rowspan="2">
+                        相关文件
+                    </td>
+
+                    <td style="text-align:center;">
+                        @{
+                                if (ViewBag.msds != "")
+                                {
+                                     <a id="msds" onclick="msds()" style="text-decoration:none;color:blue;" >MSDS</a>
+                                }
+                                else
+                                {
+                                    <a id="msds" style="text-decoration: none; color: blue;" target="_blank">MSDS</a>
+                                }
+                            }
+                       
+                    </td>
+                    <td>
+                        <input type="file" name="uploadFile" id="uploadFile" style="display:none;">
+                        <label for="uploadFile" style="margin-left:20px;color:blue;text-align:center;vertical-align:middle;font-size:12px;">上传</label>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td style="text-align:center;">
+                        @{
+                                if (ViewBag.video != "")
+                                {
+                                    <a id="video" onclick="video()" style="text-decoration:none;color:blue;" target="_blank">操作视频</a>
+                                }
+                                else
+                                {
+                                    <a id="video" style="text-decoration: none; color: blue;" target="_blank">操作视频</a>
+                                }
+                            }
+                        
+                    </td>
+                    <td>
+                        <input type="file" name="uploadFile1" id="uploadFile1" style="display:none;">
+                        <label for="uploadFile1" style="margin-left:20px;color:blue;text-align:center;vertical-align:middle;font-size:12px;">上传</label>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

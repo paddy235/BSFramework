@@ -1,0 +1,26 @@
+﻿@{
+    ViewBag.Title = "NewIndex";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    $(function () {
+
+    })
+
+</script>
+@using (Html.BeginForm("NewIndex", "EduTrain"))
+{
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <iframe src=@(ViewData["EduPageUrl"] + "/page/businesspage/trainstat/trainstat.aspx?data=" + ViewData["valCode"]) style="width:100%;height:810px;border:none;" scrolling="no"></iframe>
+
+
+
+            <footer class="main-footer">
+                武汉博晟安全技术股份有限公司   版权所有
+            </footer>
+        </div>
+
+    </div>
+}

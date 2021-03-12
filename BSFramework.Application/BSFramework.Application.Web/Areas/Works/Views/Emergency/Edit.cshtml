@@ -1,0 +1,182 @@
+﻿@model BSFramework.Application.Entity.EmergencyManage.EmergencyEntity
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/index.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/extend.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/Font-Awesome/css/font-awesome.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/styles/static/css/peccancy.css")" />
+
+
+<script src="@Url.Content("~/Content/scripts/plugins/jQuery/jQuery-2.1.4.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/plugins/uploadify/ajaxfileupload.js")"></script>
+<script src="@Url.Content("~/Content/scripts/validator/Validform.min.js")"></script>
+<script src="@Url.Content("~/Content/scripts/layui/layui.all.js")"></script>
+<script>
+    var keyValue = '@Model.ID';
+    $(function () {
+        jQuery('.sf').Validform({
+            tiptype: 3
+        });
+        $('#uploadFile').change(cp);
+
+        var json = {
+            "data": [
+                @{
+                    var img = (List<string>)ViewData["src"];
+    }
+                @foreach (var item in img)
+    {
+                      @Html.Raw(string.Format("{{ \"src\" : \"{0}\"}},", item));
+    }
+            ]
+        }
+        $('.images-container').delegate('li', 'click', function () {
+            json.start = jQuery(this).index();
+            //layer.photos({
+            //    photos: json,
+            //    anim: 5
+            //})
+        });
+
+
+    });
+    var vimg;
+    function cp() {
+        $.ajaxFileUpload({
+            url: "@Url.Action("UploadFile", new { emid = Model.ID })",
+            secureuri: false,
+            fileElementId: 'uploadFile',
+            dataType: 'json',
+            success: function (data) {
+                if (data.resultdata.code == 0) {
+                    var src = $("#newpath").val();
+                    if (src != "") {
+                        src = src + ',';
+                    }
+                    var name = $("#filename").val();
+                    if (name != "") {
+                        name = name + ',';
+                    }
+                    $("#filename").val(name + data.resultdata.name);
+                    $("#newpath").val(src + data.resultdata.path);
+                    
+                    $('#uploadFile').change(cp);
+                    
+                } else {
+                    vimg = layer.open({
+                        type: 1,
+                        title: '数据验证',
+                        content: $('#up'),
+                        area: ['400px', '180px']
+                    })
+                    $('#uploadFile').change(cp);
+                }
+            }
+        });
+    }
+    function del(id, path) {
+        $.ajax({
+            url: '@Url.Action("delImg")',
+            type: 'post',
+            data: { id: id, path: path },
+            success: function (data) {
+                window.location.href = '@Url.Action("Edit", new { id=Model.ID})';
+            }
+        });
+    }
+    function ret() {
+        window.location.href = '@Url.Action("Index")';
+    }
+    function save() {
+        var name = $('#Name').val();
+        var newpath = $("#newpath").val();
+        $.ajax({
+            url: '@Url.Action("saveobj")',
+            type: 'post',
+            data: { id: keyValue, name: name, path: newpath },
+            success: function (data) {
+                window.location.href = '@Url.Action("Index")';
+            }
+        });
+    }
+</script>
+<div class="main-content" style="height:100%;">
+    <div class="container-fluid" style="height:99%;overflow-y:auto;">
+    @using (Html.BeginForm("Edit", "Emergency", FormMethod.Post, new { @class = "sf", style = "height:100%;" }))
+    {
+
+        @*<div class="mg-b-10" style="height:4%;">
+            <div class="title" style="text-align:right;width:100%;">
+
+                <button class="btn-bg" onclick="save(); return false;">提交</button>
+                <button class="btn-bd" onclick="ret(); return false;">返回</button>
+            </div>
+        </div>*@
+    <div class="mg-b-10" style="height:4%;">
+        <div class="" style="overflow: hidden;">
+            <div class="pull-left title">
+                <a href="@Url.Action("Index")">
+                    <img src="~/Content/styles/static/images/arrow-back-icon.png" alt="">
+                    返回
+                </a>
+            </div>
+            <div class="pull-right title">
+                <button class="btn-bg" onclick="save(); return false;">提交</button>
+            </div>
+            </div>
+    </div>
+        <div class="bg-e3ebfd pd-10" >
+            <div class="bg-fff add-peccancy" >
+                <div class="form-wrap" style="margin-left:200px;">
+                    <div>
+                        <label>应急卡名称 </label>
+                        <div>
+                            @Html.TextBoxFor(x => x.Name, new { nullmsg = "名称不能为空", datatype = "*", placeholder = "请输入应急处置卡名称" })
+                        </div>
+                    </div>
+                    <div>
+                        <label style="text-align:right;">附件</label>
+                        <div class="file" >
+                            <input type="file" name="uploadFile" id="uploadFile" style="display:none;">
+                            <label for="uploadFile" style="width:80%;">
+                                <input type="text" readonly="readonly" id="filename" style="text-overflow:ellipsis;padding-right:0px;" placeholder="点击图标上传图片文件" />
+                                <input type="text" name="newpath" id="newpath" style="display:none;">
+                                <img src="~/Content/styles/static/images/import-icon.png" alt="" style="margin-top:30px;">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="bs-area-1" style="text-align:center;">
+                    <ul class="images-container">
+                        @{
+            var imgs = (List<string>)ViewData["src"];
+                        }
+                        @foreach (string path in imgs)
+                                {
+                                <li>
+                                    <img src="@path" style="margin:10px;max-width:100%;max-height:100%;">
+                                    <button class="btn bg-3669e1 c-fff" id="@Model.ID" value="@path" style="width:100px;margin-top:15px;" onclick="del(this.id,this.value); return false;">删除</button>
+                                </li>
+                                }
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+    <footer class="main-footer" style="height:4%">
+        武汉博晟安全技术股份有限公司   版权所有
+    </footer>
+    }
+        </div>
+    </div>
+        
+<div class="area-modal" id="up">
+    <div style="text-align:center;">
+        <h4 style="margin-top:35px;">请上传BMP,GIF,JPG,PNG,JPEG格式的图片文件！</h4>
+        <button class="btn bg-3669e1 c-fff" style="width:100px;margin-top:15px;" onclick="layer.close(vimg);">确认</button>
+    </div>
+</div>

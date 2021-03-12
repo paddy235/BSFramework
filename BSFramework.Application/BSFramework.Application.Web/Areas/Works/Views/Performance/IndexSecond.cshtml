@@ -1,0 +1,302 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+
+<script>
+    var deptId = '@ViewBag.DeptId';
+    var gettime = '@ViewBag.gettime';
+    var settime='@ViewBag.settime';
+    $(function () {
+        setTime();
+        InitialPage();
+        GetTree();
+        GetGrid();
+
+    });
+
+    //初始化页面
+    function InitialPage() {
+        $('#layout').layout({
+            applyDemoStyles: false,
+            onresize: function () {
+                $(window).resize()
+            }
+        });
+        // resize重设(表格、树形)宽高
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
+                $('#gridTable').setGridWidth(($('.gridPanel').width()));
+                $("#gridTable").setGridHeight($(window).height() - 141.5);
+                //$("#itemTree").setTreeHeight($(window).height());
+            }, 200);
+            e.stopPropagation();
+        });
+    }
+
+    //加载组织机构树
+    function GetTree() {
+        var item = {
+            height: $(window).height() - 50,
+            url: '/..@Url.Action("GetDepartmentTree", "Department", new { area = "BaseManage"})?deptid=@ViewBag.treedept',
+            onnodeclick: function (item) {
+                deptId = item.value;
+                go();
+            }
+        };
+        //初始化
+        $("#itemTree").treeview(item);
+    }
+
+    function setTime() {
+
+        $("#time").val(settime);
+
+    }
+    function getcolModel() {
+
+
+        var colModel = new Array();
+        $.ajax({
+            url: "/..@Url.Action("GetTitleSecond")?time=" + gettime + "&deptid=" + deptId,
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data) {
+                    colModel[0] = {
+                        label: '姓名', name: 'username', width: 140, align: 'center', sortable: false
+
+                    };
+                    colModel[1] = {
+                        label: '职务', name: 'quarters', width: 140, align: 'center', sortable: false
+
+                    };
+                    for (var i = 0; i < data.length; i++) {
+                        colModel[i + 2] = {
+                            label: data[i], name: 'title' + i, width: 140, align: 'center', sortable: false
+
+                        };
+                    }
+                }
+            }
+        });
+        return colModel;
+    }
+
+    //加载表格
+    function GetGrid() {
+
+        var colModel = getcolModel();
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+             datatype: "local",
+            height: $(window).height() - 165,
+            shrinkToFit: false,
+            gridview: true,
+            autowidth: true,
+            colModel: colModel,
+            rownumbers: true,
+            viewrecords: true,
+            rowNum:1000
+        });
+        $.ajax({
+            url: "/..@Url.Action("GetScoreSecond")?time=" + gettime + "&deptid=" + deptId,
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data) {
+                    if (data.rows) {
+                        $("#gridTable").jqGrid('setGridParam', {  // 重新加载数据
+                            datatype: 'local',
+                            data: data.rows  //  newdata 是符合格式要求的需要重新加载的数据
+                        }).trigger("reloadGrid");
+                    }
+                    $("#score").text(data.total);
+                    $("#state").text(data.isup);
+                    $("#deptname").text(data.deptname);
+                } else {
+
+                }
+            }
+        });
+
+        work();
+    }
+    function work() {
+        var parentid = '@ViewBag.parentid';
+        $.ajax({
+            url: "/..@Url.Action("getWorkSecond")?time=" + gettime + "&deptid=" + parentid,
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data) {
+                    $("#monthnum").text(data.monthcount);
+                  //  $("#monthyear").text(data.yearcount);
+                } else {
+
+                }
+            }
+        });
+
+    }
+
+    function go() {
+        var Strtime = $("#time").val();
+        var year = Strtime.replace("年", "-");
+        var month = year.replace("月", "-");
+        var str = month.split('-')[1];
+        if (str < 10) {
+            gettime = month.substring(0, 4) + month.substring(4, month.length).replace(str,"0"+str) + "01";
+        } else {
+            gettime = month + "01";
+        }
+        jQuery('#gridTable').GridUnload();
+        var colModel = getcolModel();
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            datatype: "local",
+            height: $(window).height() - 165,
+            shrinkToFit: false,
+            gridview: true,
+            autowidth: true,
+            colModel: colModel,
+            rownumbers: true,
+            viewrecords: true,
+            rowNum: 1000
+        });
+        jQuery('#gridTable').jqGrid('setFrozenColumns');
+        $.ajax({
+            url: "/..@Url.Action("GetScoreSecond")?time=" + gettime + "&deptid=" + deptId,
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data) {
+                    if (data.rows) {
+
+                    $("#gridTable").jqGrid('setGridParam', {  // 重新加载数据
+                        datatype: 'local',
+                        data: data.rows  //  newdata 是符合格式要求的需要重新加载的数据
+                        }).trigger("reloadGrid");
+                    }
+                    $("#score").text(data.total);
+                    $("#state").text(data.isup);
+                    $("#deptname").text(data.deptname);
+                } else {
+                }
+            }
+        });
+        work();
+    }
+
+
+
+    function goup(type) {
+        var time = "";
+        if (type) {
+            time = gettime.split('-')[0];
+        } else {
+            time = gettime;
+        }
+         var parentid = '@ViewBag.parentid';
+
+        dialogOpen({
+            id: "Detail",
+            title: '查看',
+            url: '/../@Url.Action("IndexupSecond")?time=' + time + "&deptid=" + parentid,
+            width: "1000px",
+            height: "650px",
+            btn: null,
+            callBack: function (iframeId) {
+                top.document.getElementById(iframeId).contentWindow.AcceptClick();
+            }
+        });
+    }
+
+    //$gridTable.authorizeColModel()
+    @*//查询事件
+    $("#btn_Search").click(function () {
+        var queryJson = {
+            planeStart: $("#planeStart").val(),
+            planeEnd: $("#planeEnd").val(),
+            state: $("#state").val(),
+            evaluationState: $("#evaluationState").val(),
+            deptId: deptId
+        }
+
+    });*@
+
+</script>
+
+
+<div class="ui-layout" id="layout" style="height: 100%; width: 100%;">
+    <div class="ui-layout-west">
+        <div class="west-Panel">
+            <div class="panel-Title">
+                <div class="col-md-10">
+                    组织机构
+                </div>
+                <div class="col-md-2 text-right" style="padding-right:8px;">
+                    <i class="fa fa-arrow-left" onclick="setBar(this)" style="cursor:pointer;" title="展开/收起"></i>
+                </div>
+            </div>
+            <div id="itemTree"></div>
+        </div>
+    </div>
+    <div class="ui-layout-center">
+        <div class="center-Panel">
+            <div class="panel-Title">
+
+            </div>
+            <div class="titlePanel">
+                <div class="title-search">
+                    <div class="form-inline">
+
+                        <div class="form-group">
+                            <label for="team">绩效考核月度</label>
+                            <input type="text" class="form-control" id="time" onfocus="WdatePicker({ dateFmt: 'yyyy年M月',maxDate:'%y-#{%M-1}', onpicked: go });" readonly="readonly">
+                        </div>
+                        <div class="form-group">
+                            <label id="deptname"></label>班组绩效总额：<label id="score"></label>元
+                        </div>
+                        <div class="form-group">
+                            状态：<label id="state"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="toolbar">
+                    <div class="btn-group">
+                        <div class="form-group">
+                            <label name="upselect" style="color:blue;text-decoration:underline; cursor:pointer;" onclick="goup()">
+                                <a style="color:blue;"> 未提交该月度绩效的班组：<label id="monthnum"></label>个 </a>
+                            </label>
+                            @*<label name="upselect" style="color:blue;text-decoration:underline; cursor:pointer;" onclick="goup('1')">  <a style="color:blue;">未提交该年度绩效的班组：<label id="monthyear"></label>个</a>
+                                </label>*@
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+            <div class="gridPanel">
+                <table id="gridTable"></table>
+                <div id="gridPager"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+

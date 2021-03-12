@@ -1,0 +1,502 @@
+﻿@{
+    ViewBag.Title = "模板表单页面";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<link href="~/Content/scripts/plugins/jqgrid/jqgrid.css" rel="stylesheet" />
+<link href="~/content/scripts/plugins/dialog/dialog.css" rel="stylesheet" />
+<script src="~/Content/scripts/plugins/layout/jquery.layout.js"></script>
+<script src="~/Content/scripts/business/Common.js" type="text/javascript"></script>
+<script src="~/Content/scripts/plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="~/Content/scripts/plugins/jqgrid/jqgrid.min.js"></script>
+<link href="~/content/scripts/plugins/icheck/skins/square/_all.css" type="text/css" rel="stylesheet" />
+<script src="~/content/scripts/plugins/icheck/js/icheck.min.js" type="text/javascript"></script>
+<script src="~/content/scripts/plugins/icheck/js/custom.min.js" type="text/javascript"></script>
+<script>
+    var keyvalue = request('keyvalue');
+    var mode = request('mode');
+    //初始化
+    $(function () {
+        GetGrid();
+        if (keyvalue) {
+            ShowData(keyvalue);
+            showMode(mode);
+        } else {
+            $("#TitleInfo").css("display", "block");
+            $("#FormInfo").css("display", "block");
+        }
+    });
+    //自定义和模板切换
+    function showCustom(g) {
+        var ck = "";
+        jQuery('#CustomCheck input').each(function (i, o) {
+            if (g != o) {
+                jQuery(o).attr("checked", false);
+            } else {
+                jQuery(o).attr("checked", true);
+                ck = jQuery(g).val();
+            }
+        })
+        if (ck == 1) {
+            $("#TitleInfo").css("display", "block");
+            $("#FormInfo").css("display", "block");
+            $("#templateInfo").css("display", "none");
+
+        } else {
+            $("#templateInfo").css("display", "block");
+            $("#TitleInfo").css("display", "none");
+            $("#FormInfo").css("display", "none");
+            //jQuery('#table_TitleSet').html();
+            //jQuery('#table_FormSet').html();
+        }
+
+    }
+
+    //加载表格
+    function GetGrid() {
+        var queryJson = {
+            istemplate: "超级管理员"
+        }
+        var selectedRowIndex = 0;
+        var $gridTable = $('#gridTable');
+        $gridTable.jqGrid({
+            url: '/..@Url.Action("GetCTPageListJson")',
+            datatype: "json",
+            height:200,
+            postData: { queryJson: JSON.stringify(queryJson) },
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'CTId', hidden: true },
+                {
+                    label: '操作', name: 'action', width: 135, align: 'center', sortable: false
+                },
+                { label: '模板名称', name: 'TemplateName', index: 'TemplateName', width: 600, align: 'center', sortable: false}
+            ],
+            viewrecords: true,
+            rowNum: 5,
+            // rowList: [30, 50, 100],
+            pager: "#gridPager",
+            //sortname: 'createdate',
+            //sortorder: 'desc',
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true,
+            gridComplete: function () {
+                var gridid = this.id;
+                $("#" + this.id).setSelection(selectedRowIndex, false);
+                var rows = $("#" + this.id).jqGrid("getRowData");//获取当前页记录行数据
+                //查询用户对该模块的数据操作权限
+                $(rows).each(function (i, item) {
+                    var html = "";
+                    html += "<a href=\"javascript:show('" + item.CTId + "')\" title=\"查看\">查看</a>";
+                    $("td[aria-describedby='" + gridid + "_action']").eq(i).html(html);
+
+                });
+            }
+            //,
+            //loadError: function (xhr, status, error) {
+            //    top.location.href = "../../Login/Index?Login_Error=1";
+            //}
+        });
+
+    }
+
+
+    //添加标题tr
+    function fn$addTitle() {
+        var trlength = (jQuery('#table_TitleSet tr').length + 1);
+        if (trlength==21) {
+            dialogMsg('文本框数量限定为20个！', 0);
+            return false;
+        }
+        var imgSrc = $("#imgSrc").attr("src");
+        jQuery('#table_TitleSet').append("<tr class='grid-row'  style='padding: 10px'><td>" + (jQuery('#table_TitleSet tr').length + 1) + "<input  hidden='hidden' value='" + (jQuery('#table_TitleSet tr').length + 1) + "' /></td><td>" +
+            "<a onclick='upTr(this);'  href='javascript:void(0)' ><img  src='" + imgSrc + "/customup.png' /></a>" +
+            "<a onclick='deleteTitleTr(this);'  href='javascript:void(0)' ><img  src='" + imgSrc + "/customdel.png' /></a>" +
+            "<a onclick='downTr(this);'  href='javascript:void(0)' ><img  src='" + imgSrc + "/customdown.png' /></a>" +
+            "</td><td><input  type='text' class='form-control'  maxlength='8' />" +
+            "</td><td><select ><option value='25'>短（25字节以下）</option><option value='100'>长（100字节以下）</option></select></td>" +
+            "<td><select><option value='是'>是</option><option value='否'>否</option></select></td></tr>")
+    }
+    //添加表单tr
+    function fn$addForm() {
+        var trlength = (jQuery('#table_FormSet tr').length + 1);
+        if (trlength == 9) {
+            dialogMsg('文本框数量限定为8个！', 0);
+            return false;
+        }
+        var imgSrc = $("#imgSrc").attr("src");
+        jQuery('#table_FormSet').append("<tr class='grid-row'><td>" + (jQuery('#table_FormSet tr').length + 1) + "<input  hidden='hidden' value='" + (jQuery('#table_FormSet tr').length + 1) + "' /></td><td>" +
+            "<a onclick='upTr(this);'  href='javascript:void(0)' ><img src='" + imgSrc + "/customup.png' /></a>" +
+            "<a onclick='deleteFormTr(this);'  href='javascript:void(0)' ><img src='" + imgSrc + "/customdel.png' /></a>" +
+            "<a onclick='downTr(this);'  href='javascript:void(0)' ><img  src='" + imgSrc + "/customdown.png' /></a>" +
+            "</td><td><input  type='text' class='form-control' maxlength='6'/>" +
+            "<td><select><option value='是'>是</option><option value='否'>否</option></select></td></tr>")
+    }
+    //获取班组
+    function getDept(o) {
+        selectDept('/..@Url.Action("SelectBZ", "Department", new { area = "BaseManage" })', '', 1, 0, '选择部门', o.parentNode, 'UserDpet,UserDpetId,UserDpetCode')
+    }
+    //删除标题tr
+    function deleteTitleTr(o) {
+        jQuery(o).parent().parent().remove();
+        $("#table_TitleSet tr").each(function (i, o) {
+            var ModelDetail = $(o);
+            ModelDetail.find("td").eq(0).html(i + 1 + "<input  hidden='hidden' value='" + (i + 1) + "' />");
+        })
+
+    }
+    //删除表单tr
+    function deleteFormTr(o) {
+        jQuery(o).parent().parent().remove();
+        $("#table_FormSet tr").each(function (i, o) {
+            var ModelDetail = $(o);
+            ModelDetail.find("td").eq(0).html(i + 1 + "<input  hidden='hidden' value='" + (i + 1) + "' />");
+        })
+    }
+
+    //上移
+    function upTr(o) {
+        var modelTr = jQuery(o).parent().parent();
+        var upTr = modelTr.prev();
+        if (upTr.length==0) {
+            dialogMsg('已经处于第一位，无法上移！', 0);
+            return false;
+        }
+        var sortTd = modelTr.find("td").eq(0);
+        var upsortTd = upTr.find("td").eq(0);
+        var sortTdhtml=sortTd.html();
+        var upsortTdhtml = upsortTd.html();
+        sortTd.html(upsortTdhtml);
+        upsortTd.html(sortTdhtml);
+        modelTr.insertBefore(upTr);
+
+    }
+    //下移
+    function downTr(o) {
+        var modelTr = jQuery(o).parent().parent();
+        var downTr = modelTr.next();
+        if (downTr.length == 0) {
+            dialogMsg('已经处于最后一位，无法下移！', 0);
+            return false;
+        }
+        var sortTd = modelTr.find("td").eq(0);
+        var downsortTd = downTr.find("td").eq(0);
+        var sortTdhtml = sortTd.html();
+        var downsortTdhtml = downsortTd.html();
+        sortTd.html(downsortTdhtml);
+        downsortTd.html(sortTdhtml);
+        modelTr.insertAfter(downTr);
+    }
+
+    //获取模板
+    function show(id) {
+        SetData(id);
+        mode = "templateEdit";
+        jQuery('#CustomCheck input').eq(0).click();
+
+    }
+    //获取数据
+    function SetData(keyvalue) {
+
+           $.ajax({
+                    url: "@Url.Action("getEntity")?keyvalue=" + keyvalue,
+                    type: "get",
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        //   $("#UserDpet").val(data.UserDpet);
+                        //$("#UserDpetId").val(data.UserDpetId);
+                        //$("#UserDpetCode").val(data.UserDpetCode);
+                        //   $("#TemplateName").val(data.TemplateName);
+                           if (mode=="edit") {
+                              $("#CTId").val(data.CTId);
+                           }
+                           SetTitle(data.TitleContent);
+                           SetForm(data.FormContent);
+
+                     }
+           });
+
+    }
+        //获取数据
+    function ShowData(keyvalue) {
+
+           $.ajax({
+                    url: "@Url.Action("getEntity")?keyvalue=" + keyvalue,
+                    type: "get",
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                           $("#UserDpet").val(data.UserDpet);
+                        $("#UserDpetId").val(data.UserDpetId);
+                        $("#UserDpetCode").val(data.UserDpetCode);
+                           $("#TemplateName").val(data.TemplateName);
+                           if (mode=="edit") {
+                              $("#CTId").val(data.CTId);
+                           }
+                           SetTitle(data.TitleContent);
+                           SetForm(data.FormContent);
+
+                     }
+           });
+
+    }
+    //页面展示
+    function showMode(mode) {
+        if (mode == 'edit') {
+            $("#TitleInfo").css("display", "block");
+            $("#FormInfo").css("display", "block");
+        }
+            //else {
+        //    $("#CustomCheck").css("display", "none");
+        //    $("#TitleInfo").css("display", "block");
+        //    $("#FormInfo").css("display", "block");
+
+        //    $("input").attr("disabled","disabled");
+        //    $("select").attr("disabled", "disabled");
+        //}
+    }
+    //遍历标题
+    function SetTitle(jsonStr) {
+        jQuery('#table_TitleSet').html('');
+        var TitelData = jQuery.parseJSON(jsonStr);
+        var imgSrc = $("#imgSrc").attr("src");
+        for (var i = 0; i < TitelData.length; i++) {
+            var maxSelecthtml = "";
+            if (TitelData[i].custommaxlength==25) {
+                maxSelecthtml="<select ><option value='25' selected>短（25字节以下）</option><option value='100'>长（100字节以下）</option></select>"
+            } else {
+                maxSelecthtml = "<select ><option value='25' >短（25字节以下）</option><option value='100' selected>长（100字节以下）</option></select>"
+            }
+            var requiredSelecthtml = "";
+            if (TitelData[i].customrequired == "是") {
+                requiredSelecthtml = "<select><option value='是' selected >是</option><option value='否'>否</option></select>"
+            } else {
+                requiredSelecthtml = "<select><option value='是'>是</option><option value='否'  selected >否</option></select>"
+            }
+            jQuery('#table_TitleSet').append("<tr class='grid-row'  style='padding: 10px'><td>" + TitelData[i].customsort + "<input  hidden='hidden' value='" + TitelData[i].customsort + "' /></td><td>" +
+                "<a onclick='upTr(this);'  href='javascript:void(0)' ><img  src='" + imgSrc + "/customup.png' /></a>" +
+                "<a onclick='deleteTitleTr(this);'  href='javascript:void(0)' ><img  src='" + imgSrc + "/customdel.png' /></a>" +
+                "<a onclick='downTr(this);'  href='javascript:void(0)' ><img  src='" + imgSrc + "/customdown.png' /></a>" +
+                "</td><td><input  type='text' class='form-control' value='" + TitelData[i].customlabel + "'  maxlength='8' />" +
+                "</td><td>" + maxSelecthtml+"</td>" +
+                "<td>" + requiredSelecthtml+"</td></tr>")
+        }
+    }
+    //遍历表单
+    function SetForm(jsonStr) {
+        jQuery('#table_FormSet').html('');
+        var FormData = jQuery.parseJSON(jsonStr);
+        var imgSrc = $("#imgSrc").attr("src");
+        for (var i = 0; i < FormData.length; i++) {
+            var requiredSelecthtml = "";
+            if (FormData[i].customrequired == "是") {
+                requiredSelecthtml = "<select><option value='是' selected >是</option><option value='否'>否</option></select>"
+            } else {
+                requiredSelecthtml = "<select><option value='是'>是</option><option value='否'  selected >否</option></select>"
+            }
+            jQuery('#table_FormSet').append("<tr class='grid-row'><td>" + FormData[i].customsort + "<input  hidden='hidden' value='" + FormData[i].customsort + "' /></td><td>" +
+                "<a onclick='upTr(this);'  href='javascript:void(0)' ><img src='" + imgSrc + "/customup.png' /></a>" +
+                "<a onclick='deleteFormTr(this);'  href='javascript:void(0)' ><img src='" + imgSrc + "/customdel.png' /></a>" +
+                "<a onclick='downTr(this);'  href='javascript:void(0)' ><img  src='" + imgSrc + "/customdown.png' /></a>" +
+                "</td><td><input  type='text' class='form-control' value='" + FormData[i].customlabel+"' maxlength='6'/>" +
+                "<td>" + requiredSelecthtml + "</td></tr>")
+        }
+
+    }
+     //获取标题数据
+    function getTitleTable() {
+        var data = new Array();
+        var ck = true;
+        $("#table_TitleSet tr").each(function (i, o) {
+            var detail = {};
+            var ModelDetail = $(o);
+            var customsort = ModelDetail.find("input").eq(0).val();
+            detail["customsort"] = customsort;
+            var customlabel = ModelDetail.find("input").eq(1).val();
+            if (!customlabel) {
+                dialogMsg('请检查填写，文本框名称不能为空！', 0);
+                ck = false;
+                return false;
+            }
+            detail["customlabel"] = customlabel;
+            var custommaxlength = ModelDetail.find("select").eq(0).find("option:selected").val();
+            detail["custommaxlength"] = custommaxlength;
+            var customrequired = ModelDetail.find("select").eq(1).find("option:selected").val();
+            detail["customrequired"] = customrequired;
+            data.push(detail);
+        })
+        if (data.length == 0 && ck) {
+            dialogMsg('请编辑文本框！', 0);
+        }
+        return data
+    }
+    //获取表单数据
+    function getFormTable() {
+        var data = new Array();
+        var ck = true;
+        $("#table_FormSet tr").each(function (i, o) {
+            var detail = {};
+            var ModelDetail = $(o);
+            var customsort = ModelDetail.find("input").eq(0).val();
+            detail["customsort"] = customsort;
+            var customlabel = ModelDetail.find("input").eq(1).val();
+            if (!customlabel) {
+                dialogMsg('请检查填写，表头名称不能为空！', 0);
+                ck = false;
+                return false;
+            }
+            detail["customlabel"] = customlabel;
+            var customrequired = ModelDetail.find("select").eq(0).find("option:selected").val();
+            detail["customrequired"] = customrequired;
+            data.push(detail);
+        })
+        if (data.length==0&&ck) {
+            dialogMsg('请编辑表格信息！', 0);
+
+        }
+        return data
+    }
+    function AcceptClick() {
+        var data = {};
+        var UserDpet = $("#UserDpet").val();
+        var UserDpetId = $("#UserDpetId").val();
+        var UserDpetCode = $("#UserDpetCode").val();
+        var TemplateName = $("#TemplateName").val();
+        if (!TemplateName) {
+            dialogMsg('台账类别名称不能为空！', 0);
+            return false;
+        }
+        var TitleContent = getTitleTable();
+        if (TitleContent.length==0) {
+            return false;
+        }
+        var FormContent = getFormTable();
+        if (FormContent.length == 0) {
+            return false;
+        }
+        var CTId = $("#CTId").val();
+        data["UserDpet"] = UserDpet;
+        data["UserDpetId"] = UserDpetId;
+        data["UserDpetCode"] = UserDpetCode;
+        data["FormContent"] = JSON.stringify(FormContent);
+        data["TitleContent"] = JSON.stringify(TitleContent);
+        data["CTId"] = CTId;
+        data["TemplateName"] = TemplateName;
+        $.SaveForm({
+            url: '@Url.Action("SaveForm")',
+            param: data,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+
+<div style="padding-top:20px; margin-right: 10px;margin-left: 10px;">
+    <input hidden="hidden" id="imgSrc" src="~/Content/images" />
+    <div class="form-group">
+        <table class="form">
+            <tr>
+                <td class="formTitle" style="width:100px">台账类别名称<font face="宋体">*</font></td>
+                <td class="formValue" colspan="2">
+                    <input type="text" class="form-control" id="TemplateName" placeholder="" maxlength="5">
+                    <input type="text" class="form-control" id="CTId" style="display:none">
+                </td>
+            </tr>
+            <tr id="CustomCheck">
+                <td class="formTitle" style="width:100px"></td>
+                <td class="formValue">
+                    <input type="checkbox" checked onclick="showCustom(this)" value="1" />自定义模板
+                </td>
+                <td class="formValue">
+                    <input type="checkbox" onclick="showCustom(this)" value="2" />选择现有模板
+                </td>
+            </tr>
+        </table>
+
+    </div>
+    <div class="form-group" id="templateInfo" style="display:none">
+        <div class="gridPanel">
+            <table id="gridTable"></table>
+            <div id="gridPager"></div>
+        </div>
+    </div>
+    <div id="TitleInfo" class="panel panel-default" style="display:none;text-align:center">
+        <div class="panel-heading">
+            <strong>&nbsp;&nbsp;编辑文本框</strong>
+            <span class="tools pull-right">
+                <a id="add" class="btn btn-default" style="padding: 2px 5px;" onclick="fn$addTitle()"><i class="fa fa-plus"></i>&nbsp;新增</a>&nbsp;&nbsp;&nbsp;<a class="fa fa-chevron-down" title="展开/收起"></a>
+            </span>
+        </div>
+        <div class="panel-body">
+            <table class="form" style="border-collapse:separate;border-spacing:0px 10px">
+                <colgroup>
+                    <col style="width:50px;" />
+                    <col style="width:80px;" />
+                    <col style="width:150px;" />
+                    <col style="width:150px;" />
+                    <col style="width:150px;" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th class="bg-fff">序号</th>
+                        <th class="bg-fff">操作</th>
+                        <th class="bg-fff">文本框名称</th>
+                        <th class="bg-fff">文本框长度</th>
+                        <th class="bg-fff">是否必填</th>
+                    </tr>
+                </thead>
+                <tbody id="table_TitleSet">
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+    <div id="FormInfo" class="panel panel-default" style="display:none;text-align:center">
+        <div class="panel-heading">
+            <strong>&nbsp;&nbsp;编辑表格信息</strong>
+            <span class="tools pull-right">
+                <a id="add" class="btn btn-default" style="padding: 2px 5px;" onclick="fn$addForm()"><i class="fa fa-plus"></i>&nbsp;新增</a>&nbsp;&nbsp;&nbsp;<a class="fa fa-chevron-down" title="展开/收起"></a>
+            </span>
+        </div>
+        <div class="panel-body">
+            <table class="form" style="border-collapse:separate;border-spacing:0px 10px">
+                <colgroup>
+                    <col style="width:50px;" />
+                    <col style="width:80px;" />
+                    <col style="width:150px;" />
+                    <col style="width:150px;" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th class="bg-fff">序号</th>
+                        <th class="bg-fff">操作</th>
+                        <th class="bg-fff">表头名称</th>
+                        <th class="bg-fff">是否必填</th>
+                    </tr>
+                </thead>
+                <tbody id="table_FormSet">
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <table class="form">
+            <tr>
+                <td class="formTitle" style="width:100px">适用班组</td>
+                <td class="formValue">
+                    <input type="text" class="form-control" readonly isvalid="yes" id="UserDpet" checkexpession="NotNull" onclick="getDept(this)">
+                    <input type="hidden" id="UserDpetId" />
+                    <input type="hidden" id="UserDpetCode" />
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+</div>

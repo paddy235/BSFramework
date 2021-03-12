@@ -1,0 +1,224 @@
+﻿@model IEnumerable<BSFramework.Entity.WorkMeeting.JobTemplateEntity>
+@{ ViewBag.Title = "BaseData";
+                Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<script src="~/Content/scripts/layui/layui.all.js"></script>
+<div class="main-content">
+    <div class="container-fluid">
+        @using (Html.BeginForm("Index", "BaseData", new { page = 1, pagesize = 12 }, FormMethod.Post))
+        {@*<div class="title">
+        <a href="@Url.Action("Index")">
+            <img src="@Url.Content("~/Content/styles/static/images/arrow-back-icon.png")" alt="">
+            历史记录
+        </a>
+    </div>*@
+                        <div class="bg-f5f8fe pd-20 my-body">
+                            <div class="text-center">
+                                <span class="my-input mg-r-15">
+                                    <input type="text" name="name" id="name" value="@ViewData["name"]" placeholder="任务">
+                                </span>
+                                <button class="my-btn bg-3669e1 mg-r-15">
+                                    <img src="@Url.Content("~/Content/styles/static/images/search-icon.png")" alt="">
+                                    搜索
+                                </button>
+                                <button class="my-btn bg-8fadce" onclick="fn$all();">全部</button>
+                                <div class="pull-right">
+                                    <a class="new" style="line-height: 60px;color:#0d0d0d;font-size:16px;">
+                                        <img src="@Url.Content("~/Content/styles/static/images/btn-new.png")" alt="">&nbsp;
+                                        新增
+                                    </a>
+                                    <a class="import" style="line-height: 60px;color:#0d0d0d;font-size:16px;">
+                                        <img src="@Url.Content("~/Content/styles/static/images/icon-18.png")" alt="">&nbsp;
+                                        导入
+                                    </a>
+                                </div>
+
+                            </div>
+                            <div>
+                                <div>
+                                    <table class="table text-left table-striped no-mg c-67748d">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:50px;">序号</th>
+                                                <th style="width:200px;">工作任务</th>
+                                                @*<th style="width:200px;">设备</th>*@
+
+                                                <th style="width:200px;">作业人</th>
+                                                <th style="width:180px;">周期</th>
+                                                @*<th style="width:200px;">危险因素</th>*@
+                                                @*<th style="width:200px;">防范措施</th>*@
+
+                                                @*<th style="width:120px;">日期</th>*@
+                                                <th style="width:100px;">风险等级</th>
+                                                <th style="width:100px;">危险预知训练</th>
+                                                <th style="width:100px;">操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{ var idx = 1;}
+                                            @foreach (var item in Model)
+                                            {
+                            <tr>
+                                <td>@Html.Raw(idx)</td>
+                                <td>@Html.Raw(item.JobContent)</td>
+                                @*<td>@Html.Raw(item.Device)</td>*@
+                                <td>
+                                    @{ if (!string.IsNullOrEmpty(item.JobPerson))
+                                        {
+                                            var name = item.JobPerson.Split(',');
+                                            for (int i = 0; i < name.Length; i++)
+                                            {
+                                                if (i == 0)
+                                                {
+                    <span style="color:gold">@name[i]</span> }
+                                                else
+                                                {
+                    @Html.Raw("," + name[i]) }
+                                            }
+                                        } }
+
+                                    @if (!string.IsNullOrEmpty(item.otherperson))
+                                    {
+                @Html.Raw("," + item.otherperson)}
+                                </td>
+                                <td>
+                                    @Html.Raw(item.Cycle)
+                                    @if (!string.IsNullOrEmpty(item.CycleDate))
+                                    {
+                @Html.Raw(item.CycleDate.Replace(";", "").Replace(",", "、"))}
+
+                                </td>
+                                @*<td>@Html.Raw(item.Dangerous)</td>*@
+                                @*<td>@Html.Raw(item.Measure)</td>*@
+                                <td>@Html.Raw(item.RiskLevel)</td>
+                                <td>@Html.Raw(item.EnableTraining ? "是" : "否")</td>
+                                <td>
+                                    <a class="c-orange" onclick="fn$edit('@Html.Raw(item.JobId)');" style="color:orange;cursor:pointer;">修改</a>
+                                    <a class="c-orange" onclick="fn$delete('@Html.Raw(item.JobId)');" style="color:orange;cursor:pointer;">删除</a>
+                                </td>
+                                @*<td>@Html.Raw(item.LllegalAddress)</td>
+                                    <td>@Html.Raw(item.LllegalPerson)</td>*@
+                                @*<td>
+                                        <a href="@Url.Action("Detail", new { id = item.ID })">
+                                            <img src="@Url.Content("~/Content/styles/static/images/detail-icon.png")" alt="">
+                                            详情
+                                        </a>
+                                    </td>*@
+                            </tr>idx++;
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div style="text-align:center;">
+                                    <ul class="pagination" style="margin:0px auto;">
+                                        @if ((int)ViewBag.current == 1)
+                                        {
+                        <li class="disabled">
+                            <a>首页</a>
+                        </li>
+                                            <li class="disabled">
+                                                <a>上一页</a>
+                                            </li> }
+                                                            else
+                                                            {
+                                            <li>
+                                                @Html.ActionLink("首页", "Index", new { page = "1", pagesize = "15" })
+                                            </li>
+                                                                <li>
+                                                                    @Html.ActionLink("上一页", "Index", new { page = ((int)ViewBag.current - 1).ToString(), pagesize = "15" })
+                                                                </li>}
+                                        @for (int i = (ViewBag.current - 1) / 10 * 10; i < (Math.Ceiling((decimal)ViewBag.current / 10) * 10 > ViewBag.pages ? ViewBag.pages : Math.Ceiling((decimal)ViewBag.current / 10) * 10); i++)
+                                        {
+                        <li class="@((i + 1) == ViewBag.current ? "active" : string.Empty)">
+                            @Html.ActionLink((i + 1).ToString(), "Index", new { page = (i + 1).ToString(), pagesize = "15" })
+                        </li>}
+                                        @if ((int)ViewBag.current == (int)ViewBag.pages || (int)ViewBag.pages == 0)
+                                        {
+                        <li class="disabled">
+                            <a>下一页</a>
+                        </li>
+                                            <li class="disabled">
+                                                <a>末页</a>
+                                            </li> }
+                                                            else
+                                                            {
+                                            <li>
+                                                @Html.ActionLink("下一页", "Index", new { page = ((int)ViewBag.current + 1).ToString(), pagesize = "15" })
+                                            </li>
+                                                                <li>
+                                                                    @Html.ActionLink("末页", "Index", new { page = ((int)ViewBag.pages).ToString(), pagesize = "15" })
+                                                                </li>}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                                        <footer class="main-footer">
+                                            武汉博晟安全技术股份有限公司   版权所有
+                                        </footer>}
+
+    </div>
+
+</div>
+<script>
+    $('.import').click(function () {
+        layer.open({
+            area: ['680px', '415px'],
+            title: '班组任务数据库导入',
+            type: 2,
+            content: '@Url.Action("Import")'
+        });
+    });
+
+    jQuery('.new').click(function () {
+        layer.open({
+            area: ['1200px', '700px'],
+            title: '新增任务',
+            type: 2,
+            content: '@Url.Action("Edit")'
+        });
+    });
+
+    function fn$all() {
+        jQuery('#name').val('');
+    }
+
+    function fn$reload() {
+        setInterval(function () {
+            window.location.reload();
+        }, 200);
+    }
+
+    function fn$edit(id) {
+        layer.open({
+            area: ['1200px', '700px'],
+            title: '修改任务',
+            type: 2,
+            content: '@Url.Action("Edit")/' + id
+        });
+    }
+
+    function fn$delete(id) {
+        layer.confirm('确定要删除此任务？', { btn: ['确定', '取消'] }, function () {
+            layer.closeAll();
+            layer.load("删除中");
+            jQuery.post('@Url.Action("DoDelete")', { id: id }, function (data) {
+                layer.closeAll();
+                if (data.success) {
+                    //layer.msg("删除成功");
+                    window.location.reload();
+                }
+                else if (data.success)
+                    layer.msg(data.message);
+            }, 'json');
+        });
+    }
+
+    function fn$callback() {
+        setTimeout(function () {
+            layer.closeAll();
+            window.location.reload();
+        }, 200);
+    }
+
+</script>

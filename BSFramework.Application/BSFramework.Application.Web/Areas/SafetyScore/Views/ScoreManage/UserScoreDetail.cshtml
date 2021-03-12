@@ -1,0 +1,326 @@
+﻿@{
+    ViewBag.Title = "UserScoreDetail";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script>
+        var searchDate = new Date(request("searchDate"));
+        var searchType = request("searchType");
+        var startDate;
+        var endDate;
+
+        $(function () {
+            $("#year").val(searchDate.getFullYear());
+
+            switch (searchType) {
+                case "月度":
+                    $("#month").val(searchDate.getMonth() + 1);
+                    startDate = searchDate.getFullYear() + '-' + (searchDate.getMonth() + 1) + '-1';
+                    endDate = searchDate.getFullYear() + '-' + (searchDate.getMonth() + 2) + '-1';
+                    break;
+                case "季度":
+                    var quarter = 1;
+                    switch (searchDate.getMonth() + 1) {
+                        case 4:
+                        case 5:
+                        case 6:
+                            quarter = 2;
+                            startDate = searchDate.getFullYear() + '-4-1';
+                            endDate = searchDate.getFullYear() + '-7-1';
+                            break;
+                        case 7:
+                        case 8:
+                        case 9:
+                            startDate = searchDate.getFullYear() + '-7-1';
+                            endDate = searchDate.getFullYear() + '-10-1';
+                            quarter = 3;
+                            break;
+                        case 10:
+                        case 11:
+                        case 12:
+                            quarter = 4;
+                            startDate = searchDate.getFullYear() + '-10-1';
+                            endDate = (searchDate.getFullYear()+1) + '-1-1';
+                            break;
+                        default:
+                            startDate = searchDate.getFullYear() + '-1-1';
+                            endDate = searchDate.getFullYear() + '-4-1';
+                            break;
+                    }
+                    $("#quarter").val(quarter);
+                    break;
+                case "年度":
+                    startDate = searchDate.getFullYear() + '-1-1';
+                    endDate = (searchDate.getFullYear()+1) + '-1-1';
+                    break;
+                default:
+                    break;
+            }
+
+
+
+            $("#year").change(() => {
+                $("#quarter").val("0");
+                $("#month").val("0");
+                if ($("#year").val() == "0") {
+                    startDate = "1900-01-01";
+                    endDate = "2099-12-31";
+                } else {
+                    startDate = $("#year").val() + "-01-01";
+                    endDate = (parseInt($("#year").val()) + 1) + "-01-01";
+                }
+                console.log(startDate + "     " + endDate)
+            })
+
+            $("#month").change(() => {
+                $("#quarter").val("0")
+                if ($("#month").val() == "0") {
+                    startDate = $("#year").val()+ "-01-01";
+                    endDate = (parseInt($("#year").val()) + 1)  + "-01-01";
+                } else {
+                    startDate = $("#year").val() + "-" + $("#month").val() + "-01";
+                    endDate = $("#year").val()+ "-" + (parseInt($("#month").val()) + 1) + "-01";
+                }
+
+                console.log(startDate + "     " + endDate)
+            })
+
+            $("#quarter").change(() => {
+                $("#month").val("0")
+                if ($("#year").val() == "0") {
+                    $("#year").val(searchDate.getFullYear());
+                }
+                switch ($("#quarter").val()) {
+                    case "1":
+                        startDate = $("#year").val() + "-01-01"
+                        endDate = $("#year").val() + "-04-01";
+                        break;
+                    case "2":
+                        startDate = $("#year").val() + "-04-01"
+                        endDate = $("#year").val() + "-07-01";
+                        break;
+                    case "3":
+                        startDate = $("#year").val() + "-07-01"
+                        endDate = $("#year").val() + "-10-01";
+                        break;
+                    case "4":
+                        startDate = $("#year").val() + "-10-01"
+                        endDate = (parseInt($("#year").val())+1) + "-01-01";
+                        break;
+                    default:
+                        //全部  即全年
+                        startDate = $("#year").val()  + "-01-01"
+                        endDate = (parseInt($("#year").val()) + 1)+ "-01-01";
+                        break;
+                }
+
+                console.log(startDate + "     " + endDate)
+            })
+
+
+            $("#btn_SearchAll").click(() => {
+                startDate = "1900-01-01";
+                endDate = "2099-12-31";
+                $("#quarter").val("0")
+                $("#month").val("0")
+                $("#year").val("0")
+                $("#btn_Search").trigger("click");
+                console.log(startDate + "     " + endDate)
+            })
+
+
+
+
+
+
+            GetGrid();
+        })
+        function GetGrid() {
+
+            var serachDate = $('#searchDate').val();
+            var keyWord = $('#keyWord').val();
+            var queryJson = {
+                serachDate: serachDate,
+                keyWord: keyWord,
+                //Gender: $("#Gender").val(),
+                userId: '@Request["userId"]'
+            }
+
+
+            var $gridTable = $('#gridTable');
+            $gridTable.jqGrid({
+                postData: { queryJson: JSON.stringify(queryJson) },
+                url: "@Url.Action("GetPagedList")",
+                datatype: "json",
+                height: $(window).height() - 170,
+                autowidth: true,
+                cellEdit: true,
+                colModel: [
+                    { label: '主键', name: 'id', hidden: true, align: 'center' },
+                    { label: '提交时间', name: 'CreateDate', index: 'CreateDate', width: 180, align: 'center', sortable: false, formatter: 'date', formatoptions: { srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s' } },
+                    { label: '区域', name: 'Area', index: 'Area', width: 200, align: 'center', sortable: false },
+                    { label: '分值', name: 'Score', index: 'Score', width: 100, align: 'center', sortable: false },
+                    { label: '积分原因', name: 'Reasons', index: 'Reasons', width: 300, align: 'center', sortable: false },
+                    {
+                        label: '提交人', name: 'CreateUserName', index: 'CreateUserName', width: 100, align: 'center', sortable: false, formatter: function (cellObj, option, rowObje) {
+                            if (rowObje.ScoreType == "自动") {
+                                return "自动计分"
+                            } else {
+                                return cellObj;
+                            }
+                        }
+                    },
+                ],
+                viewrecords: true,
+                rowNum: 30,
+                rowList: [30, 50, 100],
+                pager: "#gridPager",
+                rownumbers: true,
+                shrinkToFit: false,
+                gridview: true,
+                onSelectRow: function () {
+                    selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+                },
+                loadError: function (xhr, status, error) {
+                    //top.location.href = "../../Login/Index?Login_Error=1";
+                },
+                gridComplete: function () {
+
+                }
+            });
+
+            /**查询事件 */
+            $("#btn_Search").click(function () {
+                var queryJson = {
+                    startDate: startDate,
+                    endDate: endDate,
+                    userId: request("userId")
+
+                }
+                $gridTable.jqGrid('setGridParam', {
+                    postData: { queryJson: JSON.stringify(queryJson) }, page: 1
+                }).trigger('reloadGrid');
+            });
+        }
+        ///**时间改变事件 */
+        //var DateChange = () => {
+        //    var date = new Date($("#searchDate").val());
+        //    var month = date.getMonth() + 1;
+        //    var quarter = 1;
+        //    switch (month) {
+        //        case 4:
+        //        case 5:
+        //        case 6:
+        //            quarter = 2;
+        //            break;
+        //        case 7:
+        //        case 8:
+        //        case 9:
+        //            quarter = 3;
+        //            break;
+        //        case 10:
+        //        case 11:
+        //        case 12:
+        //            quarter = 4;
+        //            break;
+        //        default:
+        //            break;
+        //    }
+        //    $("#Quarter").val(quarter);
+
+
+</script>
+<div style="margin-top: 20px; margin-right: 30px;">
+    <table class="form">
+        <tr>
+            <th class="formTitle">姓名</th>
+            <td class="formValue">
+                <div class="input-group" style="width:100%;">
+                    <input type="text" class="form-control" readonly value="@Request["UserName"]" />
+                </div>
+            </td>
+            <th class="formTitle">性别</th>
+            <td class="formValue">
+                <input type="text" class="form-control" readonly value="@Request["Gender"]" />
+            </td>
+        </tr>
+        <tr>
+            <th class="formTitle">所属单位</th>
+            <td class="formValue">
+                <input type="text" class="form-control" readonly value="@Request["DeptName"]" />
+            </td>
+            <th class="formTitle">岗位</th>
+            <td class="formValue">
+                <input type="text" class="form-control" readonly value="@Request["DutyName"]" />
+            </td>
+
+
+        </tr>
+    </table>
+    <div style="    border: 1px solid #ccc; margin-top:10px; padding:10px 10px;">
+        <div class="title-search">
+            <div class="form-inline">
+                <div class="form-group">
+
+                    <select id="year" class="form-control">
+                        <option value="0">全部</option>
+                        @{
+                            int year = DateTime.Now.Year;
+                            int count = 0;
+                            while (count < 20)
+                            {
+                                <option value="@year">@year</option>
+                                count++;
+                                year--;
+                            }
+
+                        }
+                    </select>
+                    <label for="from">年</label>
+                    <input type="hidden" id="startDate" name="startDate" />
+                    <input type="hidden" id="endDate" name="endDate" />
+                </div>
+                <div class="form-group">
+                    <select id="month" name="month" class="form-control">
+                        <option value="0">全部</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                    </select>
+                    <label for="from">月</label>
+                </div>
+                <div class="form-group">
+                    <select id="quarter" name="quarter" class="form-control">
+                        <option value="0">全部</option>
+                        <option value="1">一</option>
+                        <option value="2">二</option>
+                        <option value="3">三</option>
+                        <option value="4">四</option>
+                    </select>
+                    <label for="from">季度</label>
+                </div>
+
+                <div class="form-group">
+                    <a id="btn_Search" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;查询</a>
+                    <a id="btn_SearchAll" class="btn btn-primary"><i class="fa fa-refresh"></i>&nbsp;全部</a>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="gridPanel" style="margin-top:10px;">
+            <table id="gridTable"></table>
+            <div id="gridPager"></div>
+        </div>
+    </div>
+</div>
+
+

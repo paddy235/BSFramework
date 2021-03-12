@@ -1,0 +1,96 @@
+﻿@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = request('keyValue');
+    $(function () {
+        initControl();
+    });
+    //初始化控件
+    function initControl() {
+        //获取表单
+        if (!!keyValue) {
+            $.SetForm({
+                url: "../../Works/Safetyday/GetFormJson",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#form1").formDeserialize(data.formData);
+                    if (data.files.length > 0) {
+                        var html = "";
+                        $(data.files).each(function (i, item) {
+                            html += '<div class="row" style="margin:10px;"><div class="col-sm-6">' + (item.FileName + item.FileExtensions) + '</div><div class="col-sm-2"><a href="../../ResourceFile/DownloadFile?keyValue=' + item.FileId + '\" target="_blank" style="cursor:pointer"  title="下载文件"><i class="fa fa-download"></i></a></div></div>';
+                        });
+                        $("#dndArea").append(html);
+                    }
+                }
+            })
+        } else {
+            keyValue = $("#Id").val();
+        }
+    }
+    //保存表单;
+    function AcceptClick() {
+        if (!$('#form1').Validform()) {
+            return false;
+        }
+        if ($(".filelist").find(".row").length == 0) {
+            dialogMsg('请上传材料！', -1);
+            return false;
+        }
+        var postData = $("#form1").formSerialize(keyValue);
+        $.SaveForm({
+            url: "../../Works/Safetyday/SaveForm?keyValue=" + keyValue,
+            param: postData,
+            loading: "正在保存数据...",
+            success: function () {
+                $.currentIframe().$("#gridTable").trigger("reloadGrid");
+            }
+        })
+    }
+
+</script>
+<div style="margin-top: 20px; margin-right: 30px;">
+    <table class="form">
+        <tr>
+            <td class="formTitle">活动主题</td>
+            <td class="formValue">
+                <input id="Subject" type="text" class="form-control" isvalid="yes" checkexpession="NotNull" readonly />
+                <input type="hidden" id="Id" value="@Guid.NewGuid().ToString()" />
+            </td>
+        </tr>
+        <tr>
+            <td class="formTitle">活动说明</td>
+            <td class="formValue">
+                <textarea id="Explain" class="form-control" rows="5" isvalid="yes" checkexpession="NotNull" readonly></textarea>
+            </td>
+        </tr>
+        @*<tr>
+            <td class="formTitle">推送范围<font face="宋体">*</font></td>
+            <td class="formValue">
+                <textarea id="DeptName" class="form-control" isvalid="yes" checkexpession="NotNull" readonly rows="3" style="width:100%;"></textarea>
+            </td>
+        </tr>*@
+        <tr>
+            <td class="formTitle">推送材料<font face="宋体">*</font></td>
+            <td class="formValue">
+                <div id="uploader" style="border:2px dashed gray; margin-top:10px; height:200px;">
+                    <div class="queueList">
+                        <div id="dndArea" class="placeholder">
+                            <div id="filePicker" style="margin-left:25px; margin-top:10px;"></div>
+                        </div>
+                    </div>
+                    <div class="statusBar" style="display:none;">
+                        <div class="progress">
+                            <span class="text">0%</span>
+                            <span class="percentage"></span>
+                        </div>
+                        <div class="info"></div>
+
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
